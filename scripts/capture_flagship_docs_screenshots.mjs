@@ -6,11 +6,14 @@
  * curated shot groups using the zero-zombie native Node 22+ WebSocket CDP runner
  * and an isolated ephemeral static `dist/` server:
  *   - core       (5 shots):  Showcase landing, Armory Vault, CT Cutaway, AK-15 Studio, Blueprint Exploded M4A1
- *   - sculptures (19 shots): Waves 1–7 Blender 5.2 hyper-sculpted exhibits (M1911A1..MP5)
- *   - labs       (8 shots):  3D 1,000m Range + Schlieren Bullet-Cam, 3D Armor Theater,
+ *   - sculptures (22 shots): Waves 1–8 Blender 5.2 hyper-sculpted exhibits (M1911A1..MP5 + Wave 8 G17/M82A1/AWM)
+ *   - labs       (11 shots): 3D 1,000m Range + Schlieren Bullet-Cam, 3D Armor Theater,
  *                            3D Split Cutaway, 1:1 Cartridge Duel, 1:1 Scale Wall,
  *                            Blueprint Daylight Recoil Lab, 34×33 Showdown 6-Axis Radar,
- *                            Blueprint Daylight 3D Caliper Imperial Sprite
+ *                            Blueprint Daylight 3D Caliper Imperial Sprite,
+ *                            V7 1:1 MBT 3-Petal Sabot Discard & Bore-Evacuator Plume,
+ *                            V7 GAU-8/A 7-Barrel Rotary Motion-Blur Halo,
+ *                            V7 Armorer Passport Radial SVG Mastery Ring
  *
  * Enforces strict capture invariants on every single frame:
  *   - 0 console errors, 0 uncaught page errors, 0 failed network requests
@@ -61,6 +64,31 @@ export const VALID_SHOT_GROUPS = Object.freeze([
   'labs',
   'sculptures',
 ]);
+
+export const POST_ACTION_CONFIGS = Object.freeze({
+  ballistics_bullet_cam: Object.freeze({
+    description: 'Switch 1,000m Proving Ground into Bullet-Cam and trigger live shot',
+  }),
+  cartridge_duel_toggle: Object.freeze({
+    description: 'Enable 1v1 Ballistic Duel comparison overlay in Cartridge Lab',
+  }),
+  open_showdown_radar: Object.freeze({
+    description: 'Press KeyS on Armory Vault to open Mechanism Showdown 6-Axis Radar modal',
+  }),
+  open_caliper_imperial: Object.freeze({
+    description: 'Press KeyK on Workbench to open 3D Vernier Caliper in Imperial mode with envelope measurement',
+  }),
+  mbt_sabot_discard: Object.freeze({
+    description:
+      'Frame ZTZ-99A 125mm muzzle & forward ballistic corridor via OrbitControls and scrub fireProgress to mid-discard APFSDS 3-petal sabot separation + bore-evacuator plume',
+    fireProgress: 0.315,
+  }),
+  gau8_rotary_blur: Object.freeze({
+    description:
+      'Select 1.0x high-RPM speed, frame full GAU-8/A muzzle corridor, and scrub fireProgress to peak 3,900 RPM 7-barrel rotary motion-blur halo + 30mm blast',
+    fireProgress: 0.215,
+  }),
+});
 
 export const FLAGSHIP_DOC_SHOTS = Object.freeze([
   // ==================== Core Museum Views (5) ====================
@@ -115,7 +143,7 @@ export const FLAGSHIP_DOC_SHOTS = Object.freeze([
     readySelector: '.top-bar',
   }),
 
-  // ==================== Refreshed Sculptures — Waves 1–7 (19) ====================
+  // ==================== Refreshed Sculptures — Waves 1–8 (22) ====================
   Object.freeze({
     id: 'm1911-v6-hero',
     filename: 'm1911-v6-hero.jpg',
@@ -306,8 +334,38 @@ export const FLAGSHIP_DOC_SHOTS = Object.freeze([
     expectsWebgl: true,
     readySelector: '.top-bar',
   }),
+  Object.freeze({
+    id: 'g17-v3-macro',
+    filename: 'g17-v3-macro.jpg',
+    group: 'sculptures',
+    label: 'Glock 17 Gen 5 9×19mm (Wave 8 Iconic Duty Sculpture)',
+    query: 'screen=workbench&weapon=g17',
+    weaponId: 'g17',
+    expectsWebgl: true,
+    readySelector: '.top-bar',
+  }),
+  Object.freeze({
+    id: 'm82a1-v3-macro',
+    filename: 'm82a1-v3-macro.jpg',
+    group: 'sculptures',
+    label: 'Barrett M82A1 .50 BMG Anti-Materiel Rifle (Wave 8 Sniper Sculpture)',
+    query: 'screen=workbench&weapon=m82a1',
+    weaponId: 'm82a1',
+    expectsWebgl: true,
+    readySelector: '.top-bar',
+  }),
+  Object.freeze({
+    id: 'awm-v3-macro',
+    filename: 'awm-v3-macro.jpg',
+    group: 'sculptures',
+    label: 'Accuracy International AWM .338 Lapua Magnum (Wave 8 Sniper Sculpture)',
+    query: 'screen=workbench&weapon=awm',
+    weaponId: 'awm',
+    expectsWebgl: true,
+    readySelector: '.top-bar',
+  }),
 
-  // ==================== Refreshed & New Interactive Labs (8) ====================
+  // ==================== Refreshed & New Interactive Labs (11) ====================
   Object.freeze({
     id: 'v6-range-3d',
     filename: 'v6-range-3d.jpg',
@@ -391,6 +449,38 @@ export const FLAGSHIP_DOC_SHOTS = Object.freeze([
     expectsWebgl: true,
     readySelector: '.top-bar',
     postAction: 'open_caliper_imperial',
+  }),
+  Object.freeze({
+    id: 'v7-mbt-sabot-discard',
+    filename: 'v7-mbt-sabot-discard.jpg',
+    group: 'labs',
+    label: 'ZTZ-99A 125mm APFSDS 3-Petal Discarding Sabot Aerodynamic Separation',
+    query: 'screen=workbench&weapon=ztz99a&mode=firing&xray=0',
+    weaponId: 'ztz99a',
+    expectsWebgl: true,
+    readySelector: '.firing-slider, .top-bar',
+    postAction: 'mbt_sabot_discard',
+  }),
+  Object.freeze({
+    id: 'v7-gau8-rotary-blur',
+    filename: 'v7-gau8-rotary-blur.jpg',
+    group: 'labs',
+    label: 'GAU-8/A Avenger 3,900 RPM 7-Barrel Rotary Motion-Blur Sweep Halo',
+    query: 'screen=workbench&weapon=gau8&mode=firing',
+    weaponId: 'gau8',
+    expectsWebgl: true,
+    readySelector: '.firing-slider, .top-bar',
+    postAction: 'gau8_rotary_blur',
+  }),
+  Object.freeze({
+    id: 'v7-passport-mastery',
+    filename: 'v7-passport-mastery.jpg',
+    group: 'labs',
+    label: 'Armorer Mastery Passport w/ Radial SVG Progress Ring & Next-Drill CTA',
+    query: 'screen=armory&panel=passport',
+    weaponId: null,
+    expectsWebgl: false,
+    readySelector: '[data-testid="passport-mastery-ring"], [role="dialog"], dialog[open]',
   }),
 ]);
 
@@ -903,6 +993,78 @@ async function dispatchKey(cdp, key, code, windowsVirtualKeyCode) {
   });
 }
 
+async function adjustOrbitCamera(cdp, { wheelSteps = 0, wheelDeltaY = 260, panDx = 0, panDy = 0 }) {
+  const cx = Math.round(QA_VIEWPORT_WIDTH * 0.52);
+  const cy = Math.round(QA_VIEWPORT_HEIGHT * 0.5);
+  for (let i = 0; i < wheelSteps; i += 1) {
+    await cdp.send('Input.dispatchMouseEvent', {
+      type: 'mouseWheel',
+      x: cx,
+      y: cy,
+      deltaX: 0,
+      deltaY: wheelDeltaY,
+    });
+    await sleep(70);
+  }
+  if (panDx !== 0 || panDy !== 0) {
+    const startX = cx;
+    const startY = cy;
+    await cdp.send('Input.dispatchMouseEvent', {
+      type: 'mousePressed',
+      x: startX,
+      y: startY,
+      button: 'right',
+      buttons: 2,
+      clickCount: 1,
+    });
+    const steps = 10;
+    for (let s = 1; s <= steps; s += 1) {
+      await cdp.send('Input.dispatchMouseEvent', {
+        type: 'mouseMoved',
+        x: Math.round(startX + (panDx * s) / steps),
+        y: Math.round(startY + (panDy * s) / steps),
+        button: 'right',
+        buttons: 2,
+      });
+      await sleep(25);
+    }
+    await cdp.send('Input.dispatchMouseEvent', {
+      type: 'mouseReleased',
+      x: Math.round(startX + panDx),
+      y: Math.round(startY + panDy),
+      button: 'right',
+      buttons: 0,
+      clickCount: 1,
+    });
+  }
+  await sleep(350);
+}
+
+async function scrubFiringSlider(cdp, progress01) {
+  await waitForSelector(cdp, 'input.firing-slider', 8_000);
+  const sliderVal = Math.max(0, Math.min(1000, Math.round(progress01 * 1000)));
+  await evalValue(
+    cdp,
+    `(() => {
+      const input = document.querySelector('input.firing-slider');
+      if (!input) return false;
+      const setter = Object.getOwnPropertyDescriptor(
+        window.HTMLInputElement.prototype,
+        'value'
+      )?.set;
+      if (setter) {
+        setter.call(input, ${JSON.stringify(String(sliderVal))});
+      } else {
+        input.value = ${JSON.stringify(String(sliderVal))};
+      }
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      return true;
+    })()`
+  );
+  await sleep(450);
+}
+
 async function runPostAction(cdp, actionName) {
   if (!actionName) return;
   if (actionName === 'open_showdown_radar') {
@@ -952,6 +1114,24 @@ async function runPostAction(cdp, actionName) {
       })()`
     );
     await sleep(650);
+    return;
+  }
+  if (actionName === 'mbt_sabot_discard') {
+    await adjustOrbitCamera(cdp, { wheelSteps: 6, wheelDeltaY: 340, panDx: -640, panDy: 0 });
+    await scrubFiringSlider(cdp, POST_ACTION_CONFIGS.mbt_sabot_discard.fireProgress);
+    return;
+  }
+  if (actionName === 'gau8_rotary_blur') {
+    await evalValue(
+      cdp,
+      `(() => {
+        const btns = [...document.querySelectorAll('button.speed-pill')];
+        const normalBtn = btns.find((b) => /1\.0x/i.test(b.textContent || ''));
+        if (normalBtn) normalBtn.click();
+      })()`
+    );
+    await adjustOrbitCamera(cdp, { wheelSteps: 2, wheelDeltaY: 240, panDx: -180, panDy: 0 });
+    await scrubFiringSlider(cdp, POST_ACTION_CONFIGS.gau8_rotary_blur.fireProgress);
   }
 }
 

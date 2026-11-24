@@ -246,9 +246,9 @@ if "--postprocess" in sys.argv:
         oil_cloud = np.repeat(np.repeat(oil_cloud, 4, axis=0), 4, axis=1)
         oil_cloud = np.clip(oil_cloud * 2.6, -1.0, 1.0)
 
-        decal_height = 0.018 * ndlc_grain * slide_hero
-        rgh = np.clip(rgh + (0.022 * ndlc_grain + 0.024 * oil_cloud) * slide_hero, 0.16, 0.94)
-        albedo = np.clip(albedo + (0.016 * ndlc_grain * slide_hero)[..., None], 0.0, 1.0)
+        decal_height = 0.014 * ndlc_grain * slide_hero
+        rgh = np.clip(rgh + (0.018 * ndlc_grain + 0.014 * oil_cloud) * slide_hero, 0.16, 0.94)
+        albedo = np.clip(albedo + (0.010 * ndlc_grain * slide_hero)[..., None], 0.0, 1.0)
 
         # Crisp machined chamfer highlights flanking every front (6) & rear (7) vertical cocking serration
         # so serration ribs catch subtle studio specular light cleanly on flat vertical slide walls!
@@ -266,16 +266,16 @@ if "--postprocess" in sys.argv:
             for i in range(7):
                 sx = -6.88 + i * 0.37
                 d_edge = np.minimum(np.abs(wx_b - (sx - 0.098)), np.abs(wx_b - (sx + 0.098)))
-                serr_edge_hi = np.maximum(serr_edge_hi, np.exp(-((d_edge / 0.026) ** 2)) * in_ry * in_b)
+                serr_edge_hi = np.maximum(serr_edge_hi, np.exp(-((d_edge / 0.022) ** 2)) * in_ry * in_b)
             # Front 6 serrations (sx = 7.38 + i*0.35, half-w = 0.0875, wy in [1.19, 2.97])
             in_fy = (wy_b >= 1.19) & (wy_b <= 2.97)
             for i in range(6):
                 sx = 7.38 + i * 0.35
                 d_edge = np.minimum(np.abs(wx_b - (sx - 0.093)), np.abs(wx_b - (sx + 0.093)))
-                serr_edge_hi = np.maximum(serr_edge_hi, np.exp(-((d_edge / 0.024) ** 2)) * in_fy * in_b)
+                serr_edge_hi = np.maximum(serr_edge_hi, np.exp(-((d_edge / 0.020) ** 2)) * in_fy * in_b)
 
-        _mix(albedo, (0.52, 0.55, 0.60), serr_edge_hi * 0.55)
-        _mix(rgh, 0.24, serr_edge_hi * 0.50)
+        _mix(albedo, (0.44, 0.46, 0.50), serr_edge_hi * 0.42)
+        _mix(rgh, 0.21, serr_edge_hi * 0.48)
 
         # Slide Hero Bands:
         #   World X in [-7.54, 11.14] (span 18.68 cm), Y in [0.82, 3.48] (span 2.66 cm)
@@ -357,15 +357,14 @@ if "--postprocess" in sys.argv:
         _paste_uv_band(brass_kiss, brass_r, 0.015, 0.985, 0.815, 0.985)
         brass_kiss = ndimage.gaussian_filter(brass_kiss, sigma=3.5) * 0.55
 
-        # Crisp laser-deep Gen 5 rollmarks: silvery-light laser-annealed steel groove inside dark bevel pocket!
+        # Crisp laser-deep Gen 5 rollmarks: luminous laser-annealed steel groove inside dark nDLC bevel pocket!
         eng_bev = _bevel_mask(engraved, width_px=1.35)
         eng_rim = np.clip(ndimage.maximum_filter(engraved, size=3) - engraved, 0.0, 1.0)
         decal_height -= 0.78 * eng_bev
-        # Subtle dark engraved pocket edge + bright crisp laser-etched silver-grey steel infill!
-        _mix(albedo, (0.14, 0.15, 0.165), eng_rim * 0.55)
-        _mix(albedo, (0.64, 0.67, 0.72), engraved * 0.90)
-        _mix(rgh, 0.48, engraved * 0.85)
-        _mix(met, 0.58, engraved * 0.80)
+        _mix(albedo, (0.10, 0.11, 0.12), eng_rim * 0.55)
+        _mix(albedo, (0.76, 0.79, 0.84), engraved * 0.92)
+        _mix(rgh, 0.44, engraved * 0.85)
+        _mix(met, 0.52, engraved * 0.80)
         ao *= 1.0 - 0.24 * engraved
 
         # Subtle brass kiss behind ejection port
@@ -574,21 +573,21 @@ if "--postprocess" in sys.argv:
         decal_height += 0.46 * _bevel_mask(molded_raised, width_px=1.4) * not_follower
         decal_height -= 0.32 * _bevel_mask(molded_recess, width_px=1.2) * not_follower
 
-        # Visual contrast: RTF4 troughs slightly darker & rougher matte, pyramid crowns catch subtle light
+        # Visual contrast: RTF4 troughs deep matte obsidian, pyramid crowns catch rich Austrian polymer sheen
         trough_m = rtf_panel_mask * (1.0 - rtf_height) * not_follower
         crown_m = rtf_panel_mask * rtf_height * not_follower
-        _mix(albedo, (0.108, 0.112, 0.120), trough_m * 0.68)
-        _mix(albedo, (0.184, 0.190, 0.200), crown_m * 0.44)
-        _mix(rgh, 0.78, trough_m * 0.82)
-        _mix(rgh, 0.62, crown_m * 0.48)
-        ao *= 1.0 - 0.28 * trough_m - 0.22 * border_groove * not_follower
+        _mix(albedo, (0.082, 0.086, 0.093), trough_m * 0.72)
+        _mix(albedo, (0.172, 0.178, 0.189), crown_m * 0.48)
+        _mix(rgh, 0.80, trough_m * 0.82)
+        _mix(rgh, 0.58, crown_m * 0.48)
+        ao *= 1.0 - 0.28 * trough_m - 0.24 * border_groove * not_follower
 
-        # Molded recessed GLOCK medallion: slightly smoother satin recess + crisp lighter raised logo
-        _mix(albedo, (0.138, 0.143, 0.152), med_recess * not_follower * 0.55)
+        # Molded recessed GLOCK medallion: clean satin recess + crisp lighter raised logo
+        _mix(albedo, (0.106, 0.110, 0.118), med_recess * not_follower * 0.58)
         _mix(rgh, 0.68, med_recess * not_follower * 0.60)
-        _mix(albedo, (0.215, 0.222, 0.234), molded_raised * not_follower * 0.72)
-        _mix(rgh, 0.54, molded_raised * not_follower * 0.70)
-        _mix(albedo, (0.118, 0.123, 0.132), molded_recess * not_follower * 0.58)
+        _mix(albedo, (0.194, 0.201, 0.212), molded_raised * not_follower * 0.78)
+        _mix(rgh, 0.50, molded_raised * not_follower * 0.70)
+        _mix(albedo, (0.092, 0.096, 0.103), molded_recess * not_follower * 0.60)
         _mix(rgh, 0.74, molded_recess * not_follower * 0.60)
 
         # ---------------------------------------------------------------------
@@ -827,9 +826,9 @@ if "--postprocess" in sys.argv:
         _mix(met, 0.96, wear_all * 0.80)
 
         decal_height = -0.74 * _bevel_mask(engraved, width_px=1.4) + 0.010 * lathe_wave
-        _mix(albedo, (0.62, 0.65, 0.70), engraved * 0.92)
-        _mix(rgh, 0.44, engraved * 0.85)
-        _mix(met, 0.62, engraved * 0.80)
+        _mix(albedo, (0.76, 0.79, 0.84), engraved * 0.94)
+        _mix(rgh, 0.42, engraved * 0.85)
+        _mix(met, 0.54, engraved * 0.80)
         ao *= 1.0 - 0.24 * engraved
 
         decal_nrm = _height_to_normal_01(decal_height, strength=2.5)
@@ -871,7 +870,7 @@ MODELS_OUT.parent.mkdir(parents=True, exist_ok=True)
 TEX_OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 ATLAS_SIZE = 2048
-BAKE_AO_SAMPLES = 48
+BAKE_AO_SAMPLES = 28
 BAKE_NORMAL_SAMPLES = 16
 GRIP_ANGLE_RAD = math.radians(-20.0)
 
@@ -1112,9 +1111,9 @@ def _build_pbr_mat(
 
     base_col_a = srgb_to_lin(*base_srgb)
     base_col_b = srgb_to_lin(
-        min(1.0, base_srgb[0] * 1.06),
-        min(1.0, base_srgb[1] * 1.06),
-        min(1.0, base_srgb[2] * 1.06),
+        min(1.0, base_srgb[0] * 1.032),
+        min(1.0, base_srgb[1] * 1.032),
+        min(1.0, base_srgb[2] * 1.032),
     )
     mix_base = nt.nodes.new("ShaderNodeMix")
     mix_base.data_type = "RGBA"
@@ -1136,20 +1135,25 @@ def _build_pbr_mat(
     met_sock = met_node.outputs[0]
 
     if edge_wear > 0.001:
-        # Per-pixel raytraced geometric convexity (AO inside=True) -> razor-sharp bevel wear
-        # with ZERO vertex-interpolated Pointiness triangulation streaking on flat machined walls!
+        # Tight localized per-pixel geometric convexity (AO inside=True, Distance=0.044)
+        # -> razor-sharp nDLC bevel wear with ZERO cloudy grey smudges around extractor/ejection-port slots!
         ao_edge = nt.nodes.new("ShaderNodeAmbientOcclusion")
         ao_edge.samples = 8
         ao_edge.inside = True
         ao_edge.only_local = True
-        ao_edge.inputs["Distance"].default_value = 0.068
+        ao_edge.inputs["Distance"].default_value = 0.044
+
+        inv_ao = nt.nodes.new("ShaderNodeMath")
+        inv_ao.operation = "SUBTRACT"
+        inv_ao.inputs[0].default_value = 1.0
+        nt.links.new(ao_edge.outputs["AO"], inv_ao.inputs[1])
 
         ramp = nt.nodes.new("ShaderNodeValToRGB")
-        ramp.color_ramp.elements[0].position = 0.30
-        ramp.color_ramp.elements[0].color = (edge_wear, edge_wear, edge_wear, 1.0)
-        ramp.color_ramp.elements[1].position = 0.76
-        ramp.color_ramp.elements[1].color = (0.0, 0.0, 0.0, 1.0)
-        nt.links.new(ao_edge.outputs["AO"], ramp.inputs["Fac"])
+        ramp.color_ramp.elements[0].position = 0.26
+        ramp.color_ramp.elements[0].color = (0.0, 0.0, 0.0, 1.0)
+        ramp.color_ramp.elements[1].position = 0.66
+        ramp.color_ramp.elements[1].color = (edge_wear, edge_wear, edge_wear, 1.0)
+        nt.links.new(inv_ao.outputs["Value"], ramp.inputs["Fac"])
 
         mul_w = nt.nodes.new("ShaderNodeMath")
         mul_w.operation = "MULTIPLY"
@@ -1248,62 +1252,62 @@ def _build_muzzle_crown_soot_mat() -> bpy.types.Material:
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
         # --- SUITE 1: g17_v3_slide (slide, front_sight, rear_sight, slide_cover_plate, extractor) ---
-        # Gen 5 Satin nDLC Gunmetal Steel (sRGB 0.31-0.36, M=0.82, R=0.355 -> luminous satin gunmetal on flat vertical walls!)
+        # Gen 5 Satin nDLC Gunmetal Steel (AgX dark-studio calibrated: sRGB 0.242-0.268, M=0.84, R=0.31 -> luminous silky nDLC on flat vertical walls, never crushed black!)
         "S_SlideNDLC": _build_pbr_mat(
             "S_SlideNDLC",
-            base_srgb=(0.318, 0.334, 0.356),
-            roughness=0.355,
-            metallic=0.82,
-            bevel_r=0.028,
-            edge_wear=0.62,
-            edge_srgb=(0.74, 0.78, 0.84),
-            grain_scale=44.0,
-            grain_bump=0.024,
+            base_srgb=(0.242, 0.252, 0.268),
+            roughness=0.31,
+            metallic=0.84,
+            bevel_r=0.024,
+            edge_wear=0.30,
+            edge_srgb=(0.68, 0.72, 0.78),
+            grain_scale=46.0,
+            grain_bump=0.020,
             aniso_stretch=(0.18, 3.4, 3.4),
-            voronoi_grain=0.22,
+            voronoi_grain=0.16,
             voronoi_scale=96.0,
-            rough_var=0.036,
+            rough_var=0.030,
         ),
-        # Milled slide serration roots, ejection port interior, striker/plunger bores (dark contrast against 0.33 satin ribs!)
+        # Milled slide serration roots, ejection port interior, striker/plunger bores (deep dark machined steel)
         "S_SlideMilled": _build_pbr_mat(
             "S_SlideMilled",
-            base_srgb=(0.148, 0.158, 0.172),
-            roughness=0.44,
-            metallic=0.80,
-            bevel_r=0.016,
-            edge_wear=0.22,
+            base_srgb=(0.132, 0.140, 0.152),
+            roughness=0.42,
+            metallic=0.82,
+            bevel_r=0.014,
+            edge_wear=0.18,
             edge_srgb=(0.48, 0.52, 0.58),
             grain_scale=52.0,
-            grain_bump=0.030,
-            rough_var=0.042,
-        ),
-        # MIM External Extractor & Backplate satin gunmetal steel
-        "S_ExtractorSteel": _build_pbr_mat(
-            "S_ExtractorSteel",
-            base_srgb=(0.285, 0.298, 0.318),
-            roughness=0.34,
-            metallic=0.83,
-            bevel_r=0.020,
-            edge_wear=0.56,
-            edge_srgb=(0.70, 0.74, 0.80),
-            grain_scale=48.0,
             grain_bump=0.026,
-            voronoi_grain=0.34,
-            voronoi_scale=88.0,
             rough_var=0.036,
         ),
-        # Matte anti-glare sight body & polymer backplate outer shell
+        # MIM External Extractor & Backplate satin charcoal-gunmetal steel (slight tonal separation from nDLC slide)
+        "S_ExtractorSteel": _build_pbr_mat(
+            "S_ExtractorSteel",
+            base_srgb=(0.228, 0.238, 0.254),
+            roughness=0.30,
+            metallic=0.86,
+            bevel_r=0.018,
+            edge_wear=0.30,
+            edge_srgb=(0.68, 0.72, 0.78),
+            grain_scale=48.0,
+            grain_bump=0.022,
+            voronoi_grain=0.24,
+            voronoi_scale=88.0,
+            rough_var=0.028,
+        ),
+        # Matte anti-glare blued/nitrided duty steel sight body & backplate housing
         "S_SightBody": _build_pbr_mat(
             "S_SightBody",
-            base_srgb=(0.165, 0.172, 0.182),
-            roughness=0.58,
-            metallic=0.04,
-            bevel_r=0.016,
-            edge_wear=0.14,
-            edge_srgb=(0.28, 0.29, 0.31),
+            base_srgb=(0.172, 0.180, 0.192),
+            roughness=0.38,
+            metallic=0.74,
+            bevel_r=0.015,
+            edge_wear=0.22,
+            edge_srgb=(0.50, 0.53, 0.58),
             grain_scale=58.0,
-            grain_bump=0.028,
-            rough_var=0.040,
+            grain_bump=0.022,
+            rough_var=0.034,
         ),
         # High-contrast bright crisp white Glock front dot & rear U-outline paint infill
         "S_SightWhite": _build_pbr_mat(
@@ -1328,63 +1332,63 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
 
         # --- SUITE 2: g17_v3_polymer (frame, mag_body, mag_follower [ORANGE], controls, housing) ---
-        # Gen 5 Sculpted Glass-Filled Polyamide Frame (deep matte charcoal sRGB 0.165, M=0.0, R=0.64)
+        # Gen 5 Sculpted Glass-Filled Austrian Polymer-2 Frame (rich charcoal sRGB 0.142, M=0.0, R=0.66)
         "P_PolyamideSmooth": _build_pbr_mat(
             "P_PolyamideSmooth",
-            base_srgb=(0.165, 0.171, 0.181),
-            roughness=0.64,
+            base_srgb=(0.142, 0.148, 0.157),
+            roughness=0.66,
             metallic=0.00,
-            bevel_r=0.032,
-            edge_wear=0.14,
-            edge_srgb=(0.235, 0.244, 0.256),
+            bevel_r=0.028,
+            edge_wear=0.12,
+            edge_srgb=(0.218, 0.226, 0.238),
             grain_scale=68.0,
-            grain_bump=0.052,
-            voronoi_grain=0.45,
+            grain_bump=0.044,
+            voronoi_grain=0.40,
             voronoi_scale=94.0,
-            rough_var=0.044,
+            rough_var=0.036,
         ),
         # Darker recessed frame cavities, Picatinny cross-slot, magwell interior, checkering troughs
         "P_PolyamideRecess": _build_pbr_mat(
             "P_PolyamideRecess",
-            base_srgb=(0.125, 0.130, 0.138),
-            roughness=0.72,
+            base_srgb=(0.102, 0.106, 0.114),
+            roughness=0.76,
             metallic=0.00,
-            bevel_r=0.020,
+            bevel_r=0.018,
             grain_scale=72.0,
-            grain_bump=0.062,
-            voronoi_grain=0.52,
+            grain_bump=0.056,
+            voronoi_grain=0.48,
             voronoi_scale=98.0,
-            rough_var=0.048,
+            rough_var=0.042,
         ),
         # 3D Object-space RTF4 stippled polyamide for sculpted frontstrap & backstrap (non-hero faces)
         "P_PolyamideStrapRTF": _build_pbr_mat(
             "P_PolyamideStrapRTF",
-            base_srgb=(0.148, 0.154, 0.163),
-            roughness=0.72,
+            base_srgb=(0.128, 0.134, 0.143),
+            roughness=0.76,
             metallic=0.00,
-            bevel_r=0.022,
-            edge_wear=0.08,
-            edge_srgb=(0.22, 0.23, 0.24),
+            bevel_r=0.020,
+            edge_wear=0.07,
+            edge_srgb=(0.195, 0.202, 0.214),
             grain_scale=96.0,
-            grain_bump=0.34,
-            voronoi_grain=0.92,
+            grain_bump=0.30,
+            voronoi_grain=0.90,
             voronoi_scale=84.0,
-            rough_var=0.045,
+            rough_var=0.040,
         ),
         # Polymer magazine jacket (slightly slicker glass-filled nylon 66 for drop-free magwell speed)
         "P_MagPolymer": _build_pbr_mat(
             "P_MagPolymer",
-            base_srgb=(0.176, 0.182, 0.192),
+            base_srgb=(0.152, 0.158, 0.168),
             roughness=0.56,
             metallic=0.00,
-            bevel_r=0.024,
-            edge_wear=0.14,
-            edge_srgb=(0.25, 0.26, 0.27),
+            bevel_r=0.022,
+            edge_wear=0.12,
+            edge_srgb=(0.228, 0.236, 0.248),
             grain_scale=62.0,
-            grain_bump=0.036,
-            voronoi_grain=0.34,
+            grain_bump=0.032,
+            voronoi_grain=0.32,
             voronoi_scale=82.0,
-            rough_var=0.042,
+            rough_var=0.036,
         ),
         # Inlaid brushed stainless serial plate, 4 embedded frame rails, mag steel liner/feed lips & #336 ejector
         "P_BrushedStainless": _build_pbr_mat(
@@ -1415,19 +1419,19 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
 
         # --- SUITE 3: g17_v3_metal (GMB barrel + 12 Safe Action metal internals) ---
-        # Satin nDLC Glock Marksman Barrel steel (silky charcoal-gunmetal harmonizing with Gen 5 slide!)
+        # Satin nDLC Glock Marksman Barrel steel (silky satin charcoal-gunmetal harmonizing with Gen 5 slide!)
         "M_BarrelNDLC": _build_pbr_mat(
             "M_BarrelNDLC",
-            base_srgb=(0.295, 0.310, 0.332),
-            roughness=0.31,
-            metallic=0.84,
-            bevel_r=0.024,
-            edge_wear=0.48,
+            base_srgb=(0.236, 0.246, 0.262),
+            roughness=0.285,
+            metallic=0.86,
+            bevel_r=0.022,
+            edge_wear=0.30,
             edge_srgb=(0.70, 0.74, 0.80),
             grain_scale=42.0,
-            grain_bump=0.020,
+            grain_bump=0.018,
             aniso_stretch=(2.6, 0.45, 0.45),
-            rough_var=0.030,
+            rough_var=0.026,
         ),
         # Gleaming Mirror-Polished Stainless (barrel feed ramp, Safe Action trigger bar, connector, firing-pin safety)
         "M_MirrorStainless": _build_pbr_mat(
@@ -1460,25 +1464,25 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # Dark nDLC hardware (slide lock, slide stop lever, grooved trigger pin)
         "M_HardwareNDLC": _build_pbr_mat(
             "M_HardwareNDLC",
-            base_srgb=(0.178, 0.188, 0.204),
-            roughness=0.29,
-            metallic=0.88,
-            bevel_r=0.020,
-            edge_wear=0.45,
+            base_srgb=(0.195, 0.205, 0.220),
+            roughness=0.30,
+            metallic=0.86,
+            bevel_r=0.018,
+            edge_wear=0.32,
             edge_srgb=(0.64, 0.68, 0.74),
             grain_scale=44.0,
-            grain_bump=0.026,
-            rough_var=0.038,
+            grain_bump=0.022,
+            rough_var=0.030,
         ),
         # Internal polygonal bore & chamber throat
         "M_BoreDark": _build_pbr_mat(
             "M_BoreDark",
-            base_srgb=(0.22, 0.235, 0.258),
-            roughness=0.26,
+            base_srgb=(0.20, 0.214, 0.236),
+            roughness=0.24,
             metallic=0.92,
             bevel_r=0.010,
             grain_scale=44.0,
-            grain_bump=0.022,
+            grain_bump=0.020,
             aniso_stretch=(0.18, 4.0, 4.0),
         ),
         "M_MuzzleCrownSoot": _build_muzzle_crown_soot_mat(),
@@ -1495,30 +1499,30 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # Matte polymer trigger shoe (matches Gen 5 frame polyamide!) & extractor SLB bearing
         "M_TriggerPolymer": _build_pbr_mat(
             "M_TriggerPolymer",
-            base_srgb=(0.184, 0.190, 0.200),
-            roughness=0.60,
+            base_srgb=(0.148, 0.154, 0.164),
+            roughness=0.62,
             metallic=0.00,
-            bevel_r=0.022,
-            edge_wear=0.14,
-            edge_srgb=(0.26, 0.27, 0.28),
+            bevel_r=0.020,
+            edge_wear=0.12,
+            edge_srgb=(0.22, 0.23, 0.24),
             grain_scale=64.0,
-            grain_bump=0.044,
-            voronoi_grain=0.40,
+            grain_bump=0.038,
+            voronoi_grain=0.38,
             voronoi_scale=88.0,
-            rough_var=0.040,
+            rough_var=0.034,
         ),
         # Contrasting satin Safe Action center trigger safety blade tongue (visually distinct from shoe!)
         "M_TriggerSafetyBlade": _build_pbr_mat(
             "M_TriggerSafetyBlade",
-            base_srgb=(0.245, 0.256, 0.272),
-            roughness=0.50,
+            base_srgb=(0.215, 0.225, 0.240),
+            roughness=0.46,
             metallic=0.00,
             bevel_r=0.014,
-            edge_wear=0.18,
-            edge_srgb=(0.34, 0.36, 0.39),
+            edge_wear=0.16,
+            edge_srgb=(0.31, 0.33, 0.36),
             grain_scale=52.0,
-            grain_bump=0.026,
-            rough_var=0.032,
+            grain_bump=0.024,
+            rough_var=0.030,
         ),
     }
 
@@ -2103,6 +2107,7 @@ def finish_part(
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-6, edges=bm.edges)
     degen = [f for f in bm.faces if f.calc_area() < 1e-10]
     if degen:
         bmesh.ops.delete(bm, geom=degen, context="FACES")
@@ -2148,33 +2153,34 @@ def finish_part(
 # SUITE 1 BUILDERS (5 parts): slide, front_sight, rear_sight, slide_cover_plate, extractor
 # =============================================================================
 def _slide_profile_zy(half_z: float, top_y: float, bot_y: float, sh_w: float, sh_h: float) -> list[tuple[float, float]]:
-    """Fixed-topology 28-vertex Glock Gen 5 slab-side cross-section in (Z, Y) for silky smooth bullnose lofting!"""
-    # Bottom flat -> lower corner -> right vertical wall -> upper right smooth shoulder -> top flat -> left upper shoulder -> left wall
+    """Fixed-topology 44-vertex Glock Gen 5 slab-side cross-section in (Z, Y) for liquid-smooth bullnose lofting!"""
+    # Bottom flat -> lower radiused fillet -> right vertical wall -> upper right smooth shoulder -> top flat -> left upper shoulder -> left wall
     pts = [
-        (-half_z + 0.055, bot_y),
-        ( half_z - 0.055, bot_y),
-        ( half_z,         bot_y + 0.055),
-        ( half_z,         top_y - sh_h),
+        (-half_z + 0.065, bot_y),
+        ( half_z - 0.065, bot_y),
     ]
-    # Right upper Glock signature curved shoulder bevel (10 smooth segments)
+    pts += _quad_bez((half_z - 0.065, bot_y), (half_z, bot_y), (half_z, bot_y + 0.065), segs=3)
+    pts.append((half_z, top_y - sh_h))
+    # Right upper Glock signature curved shoulder bevel (16 smooth segments for crisp AgX specular wrap)
     pts += _cubic_bez(
         (half_z, top_y - sh_h),
         (half_z, top_y - sh_h * 0.42),
         (half_z - sh_w * 0.42, top_y),
         (half_z - sh_w, top_y),
-        segs=10,
+        segs=16,
     )
     pts.append((-half_z + sh_w, top_y))
-    # Left upper Glock signature curved shoulder bevel (10 smooth segments)
+    # Left upper Glock signature curved shoulder bevel (16 smooth segments)
     pts += _cubic_bez(
         (-half_z + sh_w, top_y),
         (-half_z + sh_w * 0.42, top_y),
         (-half_z, top_y - sh_h * 0.42),
         (-half_z, top_y - sh_h),
-        segs=10,
+        segs=16,
     )
-    pts.append((-half_z, bot_y + 0.055))
-    return pts
+    pts.append((-half_z, bot_y + 0.065))
+    pts += _quad_bez((-half_z, bot_y + 0.065), (-half_z, bot_y), (-half_z + 0.065, bot_y), segs=3)
+    return pts[:-1]
 
 
 def build_slide(mats: dict) -> bpy.types.Object:
@@ -2183,17 +2189,22 @@ def build_slide(mats: dict) -> bpy.types.Object:
     m_out = mats["S_SlideNDLC"]
     m_mil = mats["S_SlideMilled"]
 
-    # 1. Multi-station lofted Gen 5 slide envelope with authentic sculpted bullnose muzzle taper!
+    # 1. Multi-station C2-smooth lofted Gen 5 slide envelope with authentic sculpted bullnose muzzle taper!
     # Stations: (x, half_z, top_y, bot_y, sh_w, sh_h)
     stations = [
         (-7.535, 1.242, 3.418, 0.885, 0.36, 0.46),  # rear micro-chamfer edge
-        (-7.490, 1.280, 3.455, 0.855, 0.36, 0.47),  # rear main body
+        (-7.515, 1.268, 3.442, 0.866, 0.36, 0.47),  # rear transition bevel
+        (-7.485, 1.280, 3.455, 0.855, 0.36, 0.47),  # rear main body
         ( 9.950, 1.280, 3.455, 0.855, 0.36, 0.47),  # full width up to front sight
-        (10.300, 1.272, 3.446, 0.855, 0.38, 0.48),  # start of Gen 5 bullnose bevel
-        (10.620, 1.225, 3.395, 0.858, 0.42, 0.50),  # mid-rear bullnose curve
-        (10.900, 1.132, 3.298, 0.865, 0.44, 0.50),  # mid-front bullnose curve
-        (11.080, 1.015, 3.185, 0.878, 0.43, 0.48),  # nose chamfer lip
-        (11.135, 0.962, 3.138, 0.892, 0.41, 0.46),  # crisp flat muzzle face
+        (10.160, 1.278, 3.452, 0.855, 0.37, 0.475), # bullnose onset tangent
+        (10.350, 1.268, 3.442, 0.856, 0.385, 0.485),# upper bullnose entry
+        (10.520, 1.244, 3.416, 0.857, 0.405, 0.495),# mid-rear bullnose curve
+        (10.680, 1.206, 3.376, 0.860, 0.425, 0.500),# mid bullnose curve
+        (10.830, 1.154, 3.322, 0.864, 0.440, 0.500),# mid-front bullnose curve
+        (10.960, 1.090, 3.258, 0.870, 0.440, 0.492),# forward bullnose taper
+        (11.060, 1.028, 3.198, 0.877, 0.432, 0.482),# nose chamfer shoulder
+        (11.115, 0.982, 3.155, 0.886, 0.418, 0.468),# nose chamfer lip
+        (11.135, 0.962, 3.138, 0.892, 0.410, 0.460),# crisp flat muzzle face
     ]
 
     bm = bmesh.new()
@@ -2216,7 +2227,7 @@ def build_slide(mats: dict) -> bpy.types.Object:
 
     # Authentic protruding U-shaped front recoil-spring chin collar (nests inside frame dust cover U-channel)
     chin_main = mk_cyl(
-        "slide_chin", 0.655, 0.655, 1.12, "x", 36,
+        "slide_chin", 0.655, 0.655, 1.12, "x", 48,
         [("t", 10.48, 1.12, 0.0)], m_out, bevel=0.045,
     )
     chin_bridge = mk_box(
@@ -2233,12 +2244,12 @@ def build_slide(mats: dict) -> bpy.types.Object:
     cutters.append(mk_box("c_rail", 17.30, 0.20, 2.18, [("t", 1.00, 1.06, 0.0)], m_mil))
 
     # 2. Barrel tunnel (r=0.76 for clean Browning tilt clearance) + internal hood vault
-    cutters.append(mk_cyl("c_bbl_tun", 0.76, 0.76, 12.2, "x", 36, [("t", 5.38, 2.55, 0.0)], m_mil))
+    cutters.append(mk_cyl("c_bbl_tun", 0.76, 0.76, 12.2, "x", 48, [("t", 5.38, 2.55, 0.0)], m_mil))
     cutters.append(mk_box("c_vault", 7.30, 1.36, 1.68, [("t", 6.20, 2.56, 0.0)], m_mil))
 
     # Recoil spring tunnel + front guide-rod bore + central web clearance
-    cutters.append(mk_cyl("c_rec_tun", 0.50, 0.50, 9.35, "x", 30, [("t", 6.20, 1.38, 0.0)], m_mil))
-    cutters.append(mk_cyl("c_gr_bore", 0.37, 0.37, 1.45, "x", 28, [("t", 10.92, 1.35, 0.0)], m_mil))
+    cutters.append(mk_cyl("c_rec_tun", 0.50, 0.50, 9.35, "x", 36, [("t", 6.20, 1.38, 0.0)], m_mil))
+    cutters.append(mk_cyl("c_gr_bore", 0.37, 0.37, 1.45, "x", 32, [("t", 10.92, 1.35, 0.0)], m_mil))
     cutters.append(mk_box("c_web", 9.00, 1.10, 1.18, [("t", 6.15, 1.95, 0.0)], m_mil))
 
     # 3. Clean Open Ejection Port with lowered right-wall flare & angled brass-clearance bevel
@@ -2452,9 +2463,9 @@ def _mk_unified_gen5_frame_hull(
 
     # Extrude unified hull with silky edge bevel (Z in [-1.242, +1.242]; bmesh.ops.bevel insets edges inward
     # so flat outer receiver cheeks sit at exact factory Z = +-1.242 flush w/ slide & 3 cross-pins!)
-    obj = mk_extrude_z("frame_hull", body_xy, -1.242, 1.242, bevel=0.072, bevel_segs=3, mat=mat_smooth)
+    obj = mk_extrude_z("frame_hull", body_xy, -1.242, 1.242, bevel=0.086, bevel_segs=4, mat=mat_smooth)
 
-    # Quad-slice ONLY the grip body via bisect_plane (10 grip-horizontal slices + 4 grip-vertical slices)
+    # Quad-slice ONLY the grip body via bisect_plane (16 grip-horizontal slices + 7 grip-vertical slices)
     # so the C2 organic palm swell, rounded frontstrap/backstrap & Gen 5 flared magwell sculpt with silky smoothness!
     ox, oy = -5.26, -4.25
     ca_w, sa_w = math.cos(GRIP_ANGLE_RAD), math.sin(GRIP_ANGLE_RAD)
@@ -2463,11 +2474,14 @@ def _mk_unified_gen5_frame_hull(
     bm = bmesh.new()
     bm.from_mesh(obj.data)
 
-    # Bisect horizontal slices along grip axis (gy from -4.55 to +2.45) restricting to grip verts (ty < -0.55)
+    # Bisect 16 horizontal slices along grip axis (gy from -4.60 to +2.45) restricting to grip verts (ty < -0.52)
     # In Blender coords: bx = tx, by = -tz, bz = ty
     n_gy_three = Vector((-sa_w, ca_w, 0.0))  # unit vector along +gy in Three.js
     n_gy_b = Vector((n_gy_three.x, 0.0, n_gy_three.y))
-    for gy_cut in (-4.55, -4.20, -3.65, -2.95, -2.15, -1.30, -0.45, 0.40, 1.25, 2.05):
+    for gy_cut in (
+        -4.60, -4.35, -4.02, -3.65, -3.22, -2.75, -2.25, -1.72,
+        -1.18, -0.62, -0.05,  0.50,  1.02,  1.52,  1.98,  2.40,
+    ):
         p_w = Vector((ox - gy_cut * sa_w, oy + gy_cut * ca_w, 0.0))
         p_b = Vector((p_w.x, 0.0, p_w.y))
         grip_geom = [f for f in bm.faces if f.calc_center_median().z < -0.52 and f.calc_center_median().x < -1.45]
@@ -2479,10 +2493,10 @@ def _mk_unified_gen5_frame_hull(
                 plane_co=p_b, plane_no=n_gy_b, dist=1e-5,
             )
 
-    # Bisect 4 longitudinal slices along frontstrap-to-backstrap (gx) inside grip body for rounded cross-section
+    # Bisect 7 longitudinal slices along frontstrap-to-backstrap (gx) inside grip body for smooth oval cross-section
     n_gx_three = Vector((ca_w, sa_w, 0.0))
     n_gx_b = Vector((n_gx_three.x, 0.0, n_gx_three.y))
-    for gx_cut in (-1.15, -0.35, 0.45, 1.25, 1.90):
+    for gx_cut in (-1.40, -0.85, -0.25, 0.35, 0.95, 1.50, 1.98):
         p_w = Vector((ox + gx_cut * ca_w, oy + gx_cut * sa_w, 0.0))
         p_b = Vector((p_w.x, 0.0, p_w.y))
         grip_geom = [f for f in bm.faces if f.calc_center_median().z < -0.55 and f.calc_center_median().x < -1.55]
@@ -2494,7 +2508,7 @@ def _mk_unified_gen5_frame_hull(
                 plane_co=p_b, plane_no=n_gx_b, dist=1e-5,
             )
 
-    # Smooth C2 ergonomic 3D grip sculpting pass (zero deformation on upper receiver/dustcover ty > -0.60!)
+    # Smooth C2 ergonomic 3D grip sculpting pass (zero deformation on upper receiver/dustcover ty > -0.58!)
     def _sstep(e0: float, e1: float, x: float) -> float:
         t = max(0.0, min(1.0, (x - e0) / (e1 - e0)))
         return t * t * (3.0 - 2.0 * t)
@@ -2503,29 +2517,29 @@ def _mk_unified_gen5_frame_hull(
         tx, ty, tz = v.co.x, v.co.z, -v.co.y
         if ty > -0.58 or tx > -1.35:
             continue
-        w_grip = _sstep(-0.58, -2.05, ty)
+        w_grip = _sstep(-0.58, -1.95, ty)
         dx, dy = tx - ox, ty - oy
         gx = dx * cos_g - dy * sin_g
         gy = dx * sin_g + dy * cos_g
 
-        # 1) Organic anatomical palm swell (+0.028 cm in mid-grip)
-        w_palm = math.exp(-(((gy + 1.05) / 2.25) ** 2))
-        palm_dz = 0.028 * w_palm
+        # 1) Organic anatomical palm swell (+0.036 cm in mid-grip)
+        w_palm = math.exp(-(((gy + 1.05) / 2.20) ** 2))
+        palm_dz = 0.036 * w_palm
 
-        # 2) Rounded frontstrap & backstrap cross-section (gently tapers Z near front/rear straps so grip feels oval!)
+        # 2) Rounded frontstrap & backstrap cross-section (genuinely oval Austrian grip comfort!)
         gx_norm = max(-1.0, min(1.0, (gx - 0.34) / 2.02))
-        strap_round = -0.075 * (gx_norm ** 4) * (1.0 - _sstep(-3.85, -4.65, gy))
+        strap_round = -0.105 * (abs(gx_norm) ** 3.2) * (1.0 - _sstep(-3.85, -4.65, gy))
 
-        # 3) Subtle ergonomic thumb-web waist pinch under beavertail (gy in [+1.2, +3.2], rear backstrap)
-        w_web = math.exp(-(((gy - 2.20) / 1.05) ** 2)) * _sstep(0.20, -1.45, gx)
-        web_dz = -0.032 * w_web
+        # 3) Ergonomic concave thumb-web waist pinch under beavertail (gy in [+1.2, +3.2], rear backstrap)
+        w_web = math.exp(-(((gy - 2.20) / 1.02) ** 2)) * _sstep(0.25, -1.45, gx)
+        web_dz = -0.044 * w_web
 
-        # 4) Authentic Gen 5 FLARED MAGWELL smooth outward skirt flare (gy in [-3.75, -4.76] -> half_z = 1.288!)
-        w_flare = _sstep(-3.70, -4.68, gy)
-        flare_dz = 0.046 * w_flare
+        # 4) Authentic Gen 5 FLARED MAGWELL smooth outward skirt flare (gy in [-3.68, -4.72] -> half_z <= 1.286!)
+        w_flare = _sstep(-3.68, -4.68, gy)
+        flare_dz = 0.044 * w_flare
 
         scale_z = (1.242 + w_grip * (palm_dz + strap_round + web_dz + flare_dz)) / 1.242
-        tz_new = tz * scale_z
+        tz_new = max(-1.286, min(1.286, tz * scale_z))
         v.co.y = -tz_new
 
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
@@ -2562,18 +2576,18 @@ def build_frame(mats: dict) -> bpy.types.Object:
 
     # 2. Signature Squared-Front Glock Trigger Guard SOLIDLY WELDED up into the dustcover (Y=+0.18)!
     tg_out = [(2.40, 0.18), (2.34, -1.85), (2.44, -2.52)]
-    tg_out += _quad_bez((2.44, -2.52), (2.42, -3.06), (1.92, -3.10), 8)
+    tg_out += _quad_bez((2.44, -2.52), (2.42, -3.06), (1.92, -3.10), 12)
     tg_out.append((-1.52, -3.10))
     # Smooth ergonomic Gen 5 undercut sweeping seamlessly into the frontstrap root!
-    tg_out += _cubic_bez((-1.52, -3.10), (-1.94, -3.06), (-1.84, -2.34), (-2.12, -1.96), 10)
+    tg_out += _cubic_bez((-1.52, -3.10), (-1.94, -3.06), (-1.84, -2.34), (-2.12, -1.96), 14)
     tg_out.append((-2.08, 0.18))
 
-    tg_solid = mk_extrude_z("f_tg_sol", tg_out, -0.59, 0.59, bevel=0.055, bevel_segs=2, mat=m_sm)
+    tg_solid = mk_extrude_z("f_tg_sol", tg_out, -0.59, 0.59, bevel=0.064, bevel_segs=3, mat=m_sm)
     tg_hole_xy = [(1.62, -0.46)]
-    tg_hole_xy += _quad_bez((1.62, -0.46), (1.76, -0.52), (1.76, -1.85), 8)
-    tg_hole_xy += _quad_bez((1.76, -1.85), (1.76, -2.58), (1.32, -2.62), 8)
+    tg_hole_xy += _quad_bez((1.62, -0.46), (1.76, -0.52), (1.76, -1.85), 12)
+    tg_hole_xy += _quad_bez((1.76, -1.85), (1.76, -2.58), (1.32, -2.62), 12)
     tg_hole_xy.append((-1.32, -2.62))
-    tg_hole_xy += _quad_bez((-1.32, -2.62), (-1.68, -2.55), (-1.68, -1.88), 8)
+    tg_hole_xy += _quad_bez((-1.32, -2.62), (-1.68, -2.55), (-1.68, -1.88), 12)
     tg_hole_xy.append((-1.54, -0.46))
     tg_hole = mk_extrude_z("c_tg_hole", tg_hole_xy, -0.95, 0.95, mat=m_rec)
     trigger_guard = bool_subtract(tg_solid, [tg_hole])
@@ -2595,7 +2609,7 @@ def build_frame(mats: dict) -> bpy.types.Object:
 
     # 5. True U-contoured Dust-Cover Recoil Channel (upper slot + semicircular chin cradle)
     cutters.append(mk_box("c_dust_top", 9.50, 0.62, 1.72, [("t", 6.55, 0.76, 0.0)], m_rec))
-    cutters.append(mk_cyl("c_dust_cyl", 0.74, 0.74, 9.50, "x", 28, [("t", 6.55, 1.02, 0.0)], m_rec))
+    cutters.append(mk_cyl("c_dust_cyl", 0.74, 0.74, 9.50, "x", 36, [("t", 6.55, 1.02, 0.0)], m_rec))
 
     # 6. Slide-lock cross-mortise & central leaf-spring trench at X = 2.05 (cleanly ABOVE trigger guard weld!)
     cutters.append(mk_box("c_sl_mort", 0.22, 0.62, 2.85, [("t", 2.05, 0.44, 0.0)], m_rec))
@@ -2644,20 +2658,22 @@ def build_frame(mats: dict) -> bpy.types.Object:
         cutters.append(mk_box(f"c_acc_s{sign}", 6.45, 0.16, 0.20, [("t", 8.08, -0.10, sign * 1.16)], m_rec))
     cutters.append(mk_box("c_rail_xs", 0.50, 0.26, 2.76, [("t", 7.85, -0.13, 0.0)], m_rec))
 
-    # 10. Sculpted ergonomic thumb-rest scallops & slide-lock recessed dimples on both flanks
+    # 10. Sculpted ergonomic thumb-rest scallops, Gen 5 right-side ambi slide-stop relief & slide-lock dimples
     for sign in (-1.0, 1.0):
         cutters.append(
             mk_cyl(
-                f"c_thmb_{sign}", 0.62, 0.62, 1.95, "x", 22,
+                f"c_thmb_{sign}", 0.62, 0.62, 1.95, "x", 28,
                 [("s", 1.10, 0.52, 0.26), ("rz", -0.18), ("t", -3.95, -1.16, sign * 1.35)], m_rec,
             )
         )
         cutters.append(
             mk_sphere(
-                f"c_slsc_{sign}", 0.44, 18, 12,
+                f"c_slsc_{sign}", 0.44, 24, 16,
                 [("s", 1.08, 1.28, 0.30), ("t", 2.05, 0.38, sign * 1.32)], m_rec,
             )
         )
+    # Gen 5 right-flank recessed ambidextrous slide-stop lever pocket (strictly flush inside Z<=1.242!)
+    cutters.append(mk_box("c_ambi_r", 1.05, 0.30, 0.14, [("t", -2.68, 0.72, 1.22)], m_rec))
 
     # 11. Recessed underside dustcover pocket for inlaid stainless serial plate
     cutters.append(mk_box("c_ser_pk", 1.67, 0.08, 0.70, [("t", 5.15, -0.165, 0.0)], m_rec))
@@ -2668,7 +2684,7 @@ def build_frame(mats: dict) -> bpy.types.Object:
         ( 0.65,  0.58, 0.155),
         (-5.65,  0.10, 0.155),
     )):
-        cutters.append(mk_cyl(f"c_pin_{idx}", pr, pr, 2.95, "z", 22, [("t", px, py, 0.0)], m_rec))
+        cutters.append(mk_cyl(f"c_pin_{idx}", pr, pr, 2.95, "z", 28, [("t", px, py, 0.0)], m_rec))
 
     carved = bool_subtract(solid_frame, cutters)
 
@@ -2801,7 +2817,7 @@ def build_mag_body(mats: dict) -> bpy.types.Object:
     bm = bmesh.new()
     rings = []
     for y_st, rx, rz, cr in mag_stations:
-        prof = _rounded_rect_xz(rx, rz, cr, corner_segs=6)
+        prof = _rounded_rect_xz(rx, rz, cr, corner_segs=10)
         rings.append([bm.verts.new((x, y_st, z)) for (x, z) in prof])
     n_p = len(rings[0])
     bm.faces.new(rings[0])
@@ -2818,7 +2834,7 @@ def build_mag_body(mats: dict) -> bpy.types.Object:
     base_rails = mk_box("mag_br", 2.66, 0.16, 1.82, [("t", 0.0, -4.67, 0.0)], m_r, bevel=0.015)
 
     # Hardened Brushed Stainless-Steel Inner Liner + Sculpted Double-Stack-to-Single-Feed Stamped Lips
-    liner_prof = _rounded_rect_xz(1.13, 0.72, 0.16, corner_segs=5)
+    liner_prof = _rounded_rect_xz(1.13, 0.72, 0.16, corner_segs=8)
     liner = mk_extrude_y("mag_liner", liner_prof, -4.72, 5.42, mat=m_st)
     lip_l = mk_box("mag_lipl", 2.04, 0.38, 0.14, [("rx",  0.34), ("t", 0.05, 5.48, -0.43)], m_st, bevel=0.014)
     lip_r = mk_box("mag_lipr", 2.04, 0.38, 0.14, [("rx", -0.34), ("t", 0.05, 5.48,  0.43)], m_st, bevel=0.014)
@@ -2907,8 +2923,8 @@ def _mk_gmb_polygonal_rifling_sleeve(mat: bpy.types.Material) -> bpy.types.Objec
     amp = 0.015
     lobes = 6
     twist_len = 25.0
-    rad_segs = 48
-    ax_segs = 18
+    rad_segs = 64
+    ax_segs = 24
 
     twist_tot = ((x_end - x_start) / twist_len) * 2.0 * math.pi
     bm = bmesh.new()
@@ -2951,22 +2967,22 @@ def build_barrel(mats: dict) -> bpy.types.Object:
     m_soot = mats["M_MuzzleCrownSoot"]
 
     # 1. Precision cylindrical GMB tube + beveled outer muzzle collar
-    tube = mk_cyl("bbl_tube", 0.65, 0.65, 8.70, "x", 44, [("t", 6.83, 2.55, 0.0)], m_ndlc)
-    crown_col = mk_cyl("bbl_col", 0.585, 0.650, 0.14, "x", 44, [("t", 11.25, 2.55, 0.0)], m_pol)
+    tube = mk_cyl("bbl_tube", 0.65, 0.65, 8.70, "x", 56, [("t", 6.83, 2.55, 0.0)], m_ndlc)
+    crown_col = mk_cyl("bbl_col", 0.585, 0.650, 0.14, "x", 56, [("t", 11.25, 2.55, 0.0)], m_pol)
 
     # 2. Boxy Glock Tilting Chamber Locking Hood with smooth upper shoulder radii
     hood_zy = [(-0.78, 1.86), (0.78, 1.86), (0.78, 3.24)]
-    hood_zy += _quad_bez((0.78, 3.24), (0.78, 3.40), (0.62, 3.40), 8)
+    hood_zy += _quad_bez((0.78, 3.24), (0.78, 3.40), (0.62, 3.40), 12)
     hood_zy.append((-0.62, 3.40))
-    hood_zy += _quad_bez((-0.62, 3.40), (-0.78, 3.40), (-0.78, 3.24), 8)
-    hood = mk_extrude_x("bbl_hood", hood_zy, -0.50, 2.52, bevel=0.028, bevel_segs=2, mat=m_ndlc)
+    hood_zy += _quad_bez((-0.62, 3.40), (-0.78, 3.40), (-0.78, 3.24), 12)
+    hood = mk_extrude_x("bbl_hood", hood_zy, -0.50, 2.52, bevel=0.032, bevel_segs=3, mat=m_ndlc)
 
     # 3. Browning 40-deg Camming & Locking Under-Lug
     lug_xy = [
         (-0.44, 1.90), (1.86, 1.90), (1.86, 1.24), (1.66, 1.12), (1.32, 0.96),
         ( 0.88, 0.96), (0.42, 1.42), (0.08, 1.42), (-0.18, 1.04), (-0.48, 1.22),
     ]
-    lug = mk_extrude_z("bbl_lug", lug_xy, -0.39, 0.39, bevel=0.022, bevel_segs=2, mat=m_ndlc)
+    lug = mk_extrude_z("bbl_lug", lug_xy, -0.39, 0.39, bevel=0.024, bevel_segs=3, mat=m_ndlc)
 
     # 4. Gleaming Mirror-Polished Feed Ramp block at rear-bottom of chamber
     ramp = mk_box("bbl_ramp", 0.62, 0.68, 0.72, [("rz", 0.54), ("t", -0.58, 1.72, 0.0)], m_pol, bevel=0.020)
@@ -2975,14 +2991,14 @@ def build_barrel(mats: dict) -> bpy.types.Object:
 
     cutters = [
         # Hollow 9mm bore + stepped 9x19mm chamber throat
-        mk_cyl("c_bore", 0.462, 0.462, 12.6, "x", 36, [("t", 5.40, 2.55, 0.0)], m_bore),
-        mk_cyl("c_chmb", 0.490, 0.500, 2.62, "x", 32, [("t", 0.76, 2.55, 0.0)], m_bore),
+        mk_cyl("c_bore", 0.462, 0.462, 12.6, "x", 48, [("t", 5.40, 2.55, 0.0)], m_bore),
+        mk_cyl("c_chmb", 0.490, 0.500, 2.62, "x", 40, [("t", 0.76, 2.55, 0.0)], m_bore),
         # Recessed 11-deg target muzzle crown dish (conical counter-sink)
-        mk_cyl("c_crown", 0.555, 0.460, 0.16, "x", 40, [("t", 11.26, 2.55, 0.0)], m_soot),
+        mk_cyl("c_crown", 0.555, 0.460, 0.16, "x", 48, [("t", 11.26, 2.55, 0.0)], m_soot),
         # Concave mirror-polished scooped feed-ramp throat
-        mk_cyl("c_fr_sc", 0.32, 0.34, 1.08, "x", 28, [("rz", -0.54), ("t", -0.62, 1.92, 0.0)], m_pol),
+        mk_cyl("c_fr_sc", 0.32, 0.34, 1.08, "x", 32, [("rz", -0.54), ("t", -0.62, 1.92, 0.0)], m_pol),
         # Half-moon recoil guide rod seat on front of under-lug
-        mk_cyl("c_gr_st", 0.24, 0.24, 0.92, "z", 22, [("t", 1.86, 1.35, 0.0)], m_ndlc),
+        mk_cyl("c_gr_st", 0.24, 0.24, 0.92, "z", 26, [("t", 1.86, 1.35, 0.0)], m_ndlc),
         # Top-rear Loaded Chamber Witness Notch + Right-side Extractor Claw Cutout
         mk_box("c_lci_n", 0.32, 0.22, 0.24, [("t", -0.44, 3.35, 0.0)], m_bore),
         mk_box("c_ext_c", 0.36, 0.42, 0.34, [("t", -0.42, 2.55, 0.68)], m_bore),
@@ -3183,12 +3199,12 @@ def build_trigger_with_bar(mats: dict) -> bpy.types.Object:
 
     # 1. Sculpted Gen 5 smooth-face matte-polymer curved Trigger Shoe
     shoe_xy = [(-0.32, 0.38), (0.28, 0.38)]
-    shoe_xy += _cubic_bez((0.28, 0.38), (0.36, -0.35), (0.34, -1.15), (0.12, -1.78), 14)
-    shoe_xy += _quad_bez((0.12, -1.78), (-0.04, -2.28), (-0.28, -2.26), 10)
-    shoe_xy += _quad_bez((-0.28, -2.26), (-0.48, -2.22), (-0.38, -1.86), 8)
-    shoe_xy += _cubic_bez((-0.38, -1.86), (-0.18, -1.25), (-0.22, -0.55), (-0.32, 0.38), 14)
+    shoe_xy += _cubic_bez((0.28, 0.38), (0.36, -0.35), (0.34, -1.15), (0.12, -1.78), 18)
+    shoe_xy += _quad_bez((0.12, -1.78), (-0.04, -2.28), (-0.28, -2.26), 12)
+    shoe_xy += _quad_bez((-0.28, -2.26), (-0.48, -2.22), (-0.38, -1.86), 10)
+    shoe_xy += _cubic_bez((-0.38, -1.86), (-0.18, -1.25), (-0.22, -0.55), (-0.32, 0.38), 18)
 
-    shoe_raw = mk_extrude_z("tr_shoe", shoe_xy, -0.31, 0.31, bevel=0.028, bevel_segs=2, mat=m_poly)
+    shoe_raw = mk_extrude_z("tr_shoe", shoe_xy, -0.31, 0.31, bevel=0.032, bevel_segs=3, mat=m_poly)
     c_slot = mk_box("c_tr_sl", 0.96, 1.95, 0.18, [("t", 0.05, -1.25, 0.0)], m_poly)
     c_pin = mk_cyl("c_tr_pn", 0.195, 0.195, 0.90, "z", 22, [("t", 0.0, 0.15, 0.0)], m_poly)
     shoe = bool_subtract(shoe_raw, [c_slot, c_pin])
@@ -3786,7 +3802,7 @@ def bake_atlas_suite(
         arr[:, 3] = 1.0
         img_m.pixels.foreach_set(arr.ravel())
         nodes_m = _attach_bake_image_node({white_mat}, img_m)
-        scene.cycles.samples = 1
+        scene.cycles.samples = 4
         select_only(ext_targets, ext_targets[0])
         bpy.ops.object.bake(type="EMIT", margin=6, use_clear=False)
         _save_image_npy(img_m, tmp_dir / f"{prefix}_ext_mask.npy")
@@ -3876,6 +3892,134 @@ def export_draco_glb(all_objs: list[bpy.types.Object]):
         export_draco_texcoord_quantization=12,
     )
     print(f"[EXPORT] Wrote Draco GLB -> {MODELS_OUT} ({MODELS_OUT.stat().st_size / 1024:.1f} KB)")
+
+
+def render_studio_preview(all_objs: list[bpy.types.Object]):
+    """Renders 5 museum AgX studio QA views using the FINAL baked 2K 5-Ch ORM WebP atlases!"""
+    scene = bpy.context.scene
+    # Assemble all 26 parts in world space
+    for o in all_objs:
+        o.hide_render = False
+        px, py, pz = ASSEMBLED_POS[o.name]
+        o.location = t2b(px, py, pz)
+        rx, ry, rz = ASSEMBLED_ROT_THREE.get(o.name, (0.0, 0.0, 0.0))
+        o.rotation_euler = (rx, -rz, ry)
+
+    def _mk_baked_mat(label: str, tex_prefix: str) -> bpy.types.Material:
+        mat = bpy.data.materials.new(f"QA_{label}")
+        nt = mat.node_tree
+        nt.nodes.clear()
+        out = nt.nodes.new("ShaderNodeOutputMaterial")
+        bsdf = nt.nodes.new("ShaderNodeBsdfPrincipled")
+        nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+
+        tex_alb = nt.nodes.new("ShaderNodeTexImage")
+        tex_alb.image = bpy.data.images.load(str(TEX_OUT_DIR / f"{tex_prefix}_albedo.webp"))
+        tex_alb.image.colorspace_settings.name = "sRGB"
+
+        tex_orm = nt.nodes.new("ShaderNodeTexImage")
+        tex_orm.image = bpy.data.images.load(str(TEX_OUT_DIR / f"{tex_prefix}_roughness.webp"))
+        tex_orm.image.colorspace_settings.name = "Non-Color"
+        sep = nt.nodes.new("ShaderNodeSeparateColor")
+        nt.links.new(tex_orm.outputs["Color"], sep.inputs["Color"])
+
+        mix_ao = nt.nodes.new("ShaderNodeMix")
+        mix_ao.data_type = "RGBA"
+        mix_ao.blend_type = "MULTIPLY"
+        mix_ao.inputs["Factor"].default_value = 0.85
+        nt.links.new(tex_alb.outputs["Color"], mix_ao.inputs[6])
+        nt.links.new(sep.outputs["Red"], mix_ao.inputs[7])
+        nt.links.new(mix_ao.outputs[2], bsdf.inputs["Base Color"])
+        nt.links.new(sep.outputs["Green"], bsdf.inputs["Roughness"])
+        nt.links.new(sep.outputs["Blue"], bsdf.inputs["Metallic"])
+
+        tex_nrm = nt.nodes.new("ShaderNodeTexImage")
+        tex_nrm.image = bpy.data.images.load(str(TEX_OUT_DIR / f"{tex_prefix}_normal.webp"))
+        tex_nrm.image.colorspace_settings.name = "Non-Color"
+        nmap = nt.nodes.new("ShaderNodeNormalMap")
+        nmap.inputs["Strength"].default_value = 1.0
+        nt.links.new(tex_nrm.outputs["Color"], nmap.inputs["Color"])
+        nt.links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
+        return mat
+
+    mat_slide = _mk_baked_mat("slide", "g17_v3_slide")
+    mat_poly = _mk_baked_mat("polymer", "g17_v3_polymer")
+    mat_metal = _mk_baked_mat("metal", "g17_v3_metal")
+    for o in all_objs:
+        o.data.materials.clear()
+        if o.name in SLIDE_PARTS:
+            o.data.materials.append(mat_slide)
+        elif o.name in POLYMER_PARTS:
+            o.data.materials.append(mat_poly)
+        else:
+            o.data.materials.append(mat_metal)
+
+    # Museum studio AgX lighting rig (neutral charcoal cyclorama + soft key/fill/rim)
+    world = scene.world
+    world.use_nodes = True
+    wnt = world.node_tree
+    wnt.nodes.clear()
+    wout = wnt.nodes.new("ShaderNodeOutputWorld")
+    wbg = wnt.nodes.new("ShaderNodeBackground")
+    wbg.inputs["Color"].default_value = (0.045, 0.048, 0.055, 1.0)
+    wbg.inputs["Strength"].default_value = 0.55
+    wnt.links.new(wbg.outputs["Background"], wout.inputs["Surface"])
+
+    def _add_area(name: str, pos_t: tuple, aim_t: tuple, energy: float, sx: float, sy: float, col=(1.0, 0.98, 0.95)):
+        ld = bpy.data.lights.new(name, type="AREA")
+        ld.shape = "RECTANGLE"
+        ld.energy = energy
+        ld.size = sx
+        ld.size_y = sy
+        ld.color = col
+        lo = bpy.data.objects.new(name, ld)
+        scene.collection.objects.link(lo)
+        lo.location = t2b(*pos_t)
+        d = Vector(t2b(*aim_t)) - Vector(lo.location)
+        lo.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
+
+    _add_area("KeyTop",   ( 2.0,  22.0,  26.0), (1.0, -2.0, 0.0), 4800.0, 30.0, 16.0, (1.0, 0.98, 0.95))
+    _add_area("FillLeft", ( 2.0,  16.0, -28.0), (1.0, -2.0, 0.0), 3600.0, 28.0, 16.0, (0.93, 0.96, 1.0))
+    _add_area("SideRight",( 4.0,   4.0,  28.0), (1.0,  0.5, 0.0), 1800.0, 22.0, 12.0, (0.96, 0.97, 1.0))
+    _add_area("SideLeft", ( 4.0,   4.0, -28.0), (1.0,  0.5, 0.0), 1800.0, 22.0, 12.0, (0.95, 0.97, 1.0))
+    _add_area("RimBack",  (-16.0, 14.0,   6.0), (2.0,  0.5, 0.0), 2200.0, 18.0, 10.0, (0.96, 0.98, 1.0))
+    _add_area("UnderBounce", (2.0, -16.0, 8.0), (1.0, -2.0, 0.0), 1100.0, 24.0, 12.0, (0.94, 0.95, 0.98))
+
+    cam_data = bpy.data.cameras.new("QACam")
+    cam_obj = bpy.data.objects.new("QACam", cam_data)
+    scene.collection.objects.link(cam_obj)
+    scene.camera = cam_obj
+
+    scene.view_settings.view_transform = "AgX"
+    try:
+        scene.view_settings.look = "AgX - Medium High Contrast"
+    except Exception:
+        scene.view_settings.look = "None"
+    scene.view_settings.exposure = 0.35
+    scene.cycles.samples = 48
+    scene.cycles.use_denoising = True
+    scene.cycles.max_bounces = 6
+    scene.cycles.diffuse_bounces = 3
+    scene.cycles.glossy_bounces = 3
+    scene.render.image_settings.file_format = "PNG"
+
+    views = [
+        ("/tmp/g17_qa_right.png",        ( 6.8,  1.2,  34.5), ( 1.6, -2.6, 0.0), 48.0, 1440, 960),
+        ("/tmp/g17_qa_left.png",         ( 6.8,  1.2, -34.5), ( 1.6, -2.6, 0.0), 48.0, 1440, 960),
+        ("/tmp/g17_qa_macro_breech.png", ( 3.2,  3.2,  14.2), ( 0.4,  1.6, 0.2), 75.0, 1200, 900),
+        ("/tmp/g17_qa_macro_left.png",   ( 2.8,  2.8, -14.8), ( 1.6,  1.7,-0.2), 72.0, 1200, 900),
+        ("/tmp/g17_qa_macro_grip.png",   (-2.5, -4.6, -15.2), (-4.6, -4.2, 0.0), 72.0, 1200, 900),
+    ]
+    for path, pos_t, aim_t, lens, rx, ry in views:
+        scene.render.resolution_x = rx
+        scene.render.resolution_y = ry
+        cam_data.lens = lens
+        cam_obj.location = t2b(*pos_t)
+        d = Vector(t2b(*aim_t)) - Vector(cam_obj.location)
+        cam_obj.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
+        scene.render.filepath = path
+        bpy.ops.render.render(write_still=True)
+        print(f"[PREVIEW] Rendered {path}")
 
 
 def main():
@@ -3992,6 +4136,9 @@ def main():
     print(f"  TOTAL ({len(outputs)} files): {total_mb:.2f} MB (budget <= 12.00 MB)")
     print(f"=== COMPLETE in {time.time() - t_start:.1f}s ===")
     assert total_mb <= 12.0, f"Asset budget exceeded: {total_mb:.2f} MB > 12.00 MB"
+
+    if "--preview" in sys.argv:
+        render_studio_preview(all_objs)
 
 
 if __name__ == "__main__":
