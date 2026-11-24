@@ -47,7 +47,7 @@
 
 ## v6.0 3D Physics Theaters, Modular Attachment Bench & Ten-Hall Legend Expansion (`WP-26 ~ WP-30` · Live WebGL 2.0)
 
-*Every V6.0 theater below runs 100% live in WebGL 2.0 at 60 FPS with Zero-GC physics and full mechanical/acoustic coupling. Below the three live 1080p Chromium captures are the five new V6.0 exhibits (`BAY-30 ~ BAY-34`) rendered via our reproducible MIT Blender 5.2 Cycles pipeline.*
+*Every V6.0 theater and new exhibit (`BAY-30 ~ BAY-34`) below runs 100% live in WebGL 2.0 at 60 FPS with Zero-GC physics and full mechanical/acoustic coupling — every frame is an unretouched `1920×1080` Chromium WebGL 2.0 capture.*
 
 | **🛡️ 1:1 3D Composite Armor Penetration Cutaway Theater (`WP-27` · ERA / Spall Cone)** | **🎯 3D 1,000m Interactive Firing Range & Slow-Motion Bullet-Cam (`WP-28` · RK4 / Gel / AR500)** |
 | :---: | :---: |
@@ -57,19 +57,17 @@
 | :---: |
 | ![M4A1 Modular Titanium K-Baffle Suppressor and 1-8x LPVO Live CT Cutaway](docs/screenshots/v6-mods-cutaway.jpg) |
 
-<!-- Wave 3C archival swap: replace the 5 public/plates/{gau8,m1911,mg42,k98k,thompson}/cover_hero.webp links below with docs/screenshots/{gau8,m1911,mg42,k98k,thompson}-v6-hero.jpg once archived from 1080p visual QA -->
-
 | **✈️ 10th Hall (`ordnance`) · BAY-34 GE GAU-8/A "Avenger" (`30×173mm` · `6.06 m` 1:1 · 7-Barrel 3,900 RPM & 1,150-Rd Drum · `2.87 MB`)** |
 | :---: |
-| ![GE GAU-8/A Avenger 30mm 7-Barrel Rotary Autocannon and 1,150-Round Helical Drum](public/plates/gau8/cover_hero.webp) |
+| ![GE GAU-8/A Avenger 30mm 7-Barrel Rotary Autocannon and 1,150-Round Helical Drum Live WebGL 2.0](docs/screenshots/gau8-v6-hero.jpg) |
 
 | **🇺🇸 BAY-30 Colt M1911A1 (`.45 ACP`) · *Browning 0.278" Single-Link Short-Recoil & Triple-Leaf Sear Spring (`1.88 MB`)*** | **🇩🇪 BAY-31 MG 42 (`7.92×57mm Mauser`) · *Twin-Roller 1,200 RPM Short-Recoil, 5-Sec Barrel Gate & S-Cam Feed (`1.88 MB`)*** |
 | :---: | :---: |
-| ![Colt M1911A1 .45 ACP U.S. Army Pistol Cycles Master Render](public/plates/m1911/cover_hero.webp) | ![MG 42 7.92x57mm General-Purpose Machine Gun Cycles Master Render](public/plates/mg42/cover_hero.webp) |
+| ![Colt M1911A1 .45 ACP U.S. Army Pistol Live WebGL 2.0 Hero](docs/screenshots/m1911-v6-hero.jpg) | ![MG 42 7.92x57mm General-Purpose Machine Gun Live WebGL 2.0 Hero](docs/screenshots/mg42-v6-hero.jpg) |
 
 | **🇩🇪 BAY-32 Mauser Karabiner 98k (`7.92×57mm`) · *90° 3-Lug Safety Bolt, Non-Rotating Claw CRF & 3-Pos Flag Safety (`1.77 MB`)*** | **🇺🇸 BAY-33 Thompson M1928A1 (`.45 ACP`) · *45° Bronze H-Shaped Blish Lock, Finned Barrel & 50-Rd Type L Drum (`1.71 MB`)*** |
 | :---: | :---: |
-| ![Mauser Karabiner 98k Bolt-Action Rifle Cycles Master Render](public/plates/k98k/cover_hero.webp) | ![Thompson M1928A1 Submachine Gun with 50-Round Drum Cycles Master Render](public/plates/thompson/cover_hero.webp) |
+| ![Mauser Karabiner 98k Bolt-Action Rifle Live WebGL 2.0 Hero](docs/screenshots/k98k-v6-hero.jpg) | ![Thompson M1928A1 Submachine Gun with 50-Round Drum Live WebGL 2.0 Hero](docs/screenshots/thompson-v6-hero.jpg) |
 
 ---
 

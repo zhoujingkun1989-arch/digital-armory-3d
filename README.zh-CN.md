@@ -47,7 +47,7 @@
 
 ## v6.0 三维物理剧场、模块化改装台与十殿堂传奇扩馆（`WP-26 ~ WP-30` · WebGL 2.0 实机直拍）
 
-*以下三维剧场均在浏览器 WebGL 2.0 内以 60 FPS Zero-GC 实时渲染与物理耦合运行；下方五款 V6.0 新增展品（`BAY-30 ~ BAY-34`）展示自开源 MIT Blender 5.2 Cycles 印刷级主图。*
+*以下三维剧场与五款 V6.0 新增展品（`BAY-30 ~ BAY-34`）均在浏览器 WebGL 2.0 内以 60 FPS Zero-GC 实时渲染与物理耦合运行，全部画面均为 `1920×1080` Chromium 实机未修直拍。*
 
 | **🛡️ 1:1 复合装甲三维慢动作穿甲剖视剧场 (`WP-27` · ERA 双飞板 / 崩落粒子锥)** | **🎯 1,000m 三维交互实弹靶场与子弹时间镜头 (`WP-28` · RK4 / 明胶空腔 / AR500)** |
 | :---: | :---: |
@@ -57,19 +57,17 @@
 | :---: |
 | ![M4A1 模块化钛合金 K 挡板消音器与 1-8x LPVO 实时 CT 纵剖](docs/screenshots/v6-mods-cutaway.jpg) |
 
-<!-- Wave 3C archival swap: replace the 5 public/plates/{gau8,m1911,mg42,k98k,thompson}/cover_hero.webp links below with docs/screenshots/{gau8,m1911,mg42,k98k,thompson}-v6-hero.jpg once archived from 1080p visual QA -->
-
 | **✈️ 第十展厅 (`ordnance`) · BAY-34 GE GAU-8/A「复仇者」(`30×173mm` · 1:1 全长 `6.06 m` · 7 管 3,900 RPM 与 1,150 发螺旋弹鼓 · `2.87 MB`)** |
 | :---: |
-| ![GE GAU-8/A 复仇者 30mm 七管航炮与 1,150 发螺旋弹鼓 Cycles 主图](public/plates/gau8/cover_hero.webp) |
+| ![GE GAU-8/A 复仇者 30mm 七管航炮与 1,150 发螺旋弹鼓 1:1 实机直拍](docs/screenshots/gau8-v6-hero.jpg) |
 
 | **🇺🇸 BAY-30 柯尔特 M1911A1 (`.45 ACP`) · *勃朗宁 0.278" 单绞链短后坐与三叉板簧 (`1.88 MB`)*** | **🇩🇪 BAY-31 MG 42 (`7.92×57mm`) · *对称双滚柱 1,200 RPM 短后坐、5 秒快换枪管门与 S 槽拨弹 (`1.88 MB`)*** |
 | :---: | :---: |
-| ![柯尔特 M1911A1 军用自动手枪 Cycles 主图](public/plates/m1911/cover_hero.webp) | ![MG 42 通用机枪 Cycles 主图](public/plates/mg42/cover_hero.webp) |
+| ![柯尔特 M1911A1 军用自动手枪 WebGL 2.0 实机直拍](docs/screenshots/m1911-v6-hero.jpg) | ![MG 42 通用机枪 WebGL 2.0 实机直拍](docs/screenshots/mg42-v6-hero.jpg) |
 
 | **🇩🇪 BAY-32 毛瑟 Karabiner 98k (`7.92×57mm`) · *90° 三突笋防爆栓动、全长不旋转大抓钩受控供弹 (`1.77 MB`)*** | **🇺🇸 BAY-33 汤姆逊 M1928A1 (`.45 ACP`) · *45° 青铜 H 型布利什锁、散热鳍枪管与 50 发发条圆鼓 (`1.71 MB`)*** |
 | :---: | :---: |
-| ![毛瑟 Karabiner 98k 栓动步枪 Cycles 主图](public/plates/k98k/cover_hero.webp) | ![汤姆逊 M1928A1 冲锋枪与 50 发弹鼓 Cycles 主图](public/plates/thompson/cover_hero.webp) |
+| ![毛瑟 Karabiner 98k 栓动步枪 WebGL 2.0 实机直拍](docs/screenshots/k98k-v6-hero.jpg) | ![汤姆逊 M1928A1 冲锋枪与 50 发弹鼓 WebGL 2.0 实机直拍](docs/screenshots/thompson-v6-hero.jpg) |
 
 ---
 
