@@ -611,8 +611,9 @@ def _build_pbr_mat(
 def _build_laminated_beech_mat(name: str = "W_LaminatedBeech") -> bpy.types.Material:
     """
     Authentic WWII German K98k Schichtholz (phenolic-resin laminated beechwood):
-    distinct alternating horizontal dark/light beech laminate plies (stacked along Blender Z = world Y)
-    so sculpted buttstock, comb, and forend contours reveal unmistakable topographic laminate lines!
+    distinct alternating diagonal dark/light beech laminate plies (tilted ~7.2 deg along stock
+    with subtle lateral cant) so the sculpted semi-pistol grip, comb, beveled sling slot, and
+    dual finger grooves reveal unmistakable topographic laminate ply rings with satin-oil sheen!
     """
     mat = bpy.data.materials.new(name)
     nt = mat.node_tree
@@ -624,41 +625,41 @@ def _build_laminated_beech_mat(name: str = "W_LaminatedBeech") -> bpy.types.Mate
 
     tc = nt.nodes.new("ShaderNodeTexCoord")
 
-    # Slight 2.2° longitudinal tilt so laminate layers cross the buttstock and wrist authentically
+    # Authentic ~7.2 deg diagonal longitudinal ply tilt + subtle 2.8 deg roll for rich topographic ply contours!
     rot_lam = nt.nodes.new("ShaderNodeMapping")
-    rot_lam.inputs["Rotation"].default_value = (0.0, math.radians(-2.2), 0.0)
+    rot_lam.inputs["Rotation"].default_value = (math.radians(2.8), math.radians(-7.2), 0.0)
     nt.links.new(tc.outputs["Object"], rot_lam.inputs["Vector"])
 
-    # Primary laminate ply stack (horizontal bands along Blender Z = Three.js Y, ~2.2mm thick plies!)
+    # Primary laminate ply stack (~2.0mm phenolic-bonded beech veneer plies)
     map_ply = nt.nodes.new("ShaderNodeMapping")
-    map_ply.inputs["Scale"].default_value = (0.04, 0.06, 1.42)
+    map_ply.inputs["Scale"].default_value = (0.045, 0.065, 1.56)
     nt.links.new(rot_lam.outputs["Vector"], map_ply.inputs["Vector"])
 
     wave_ply = nt.nodes.new("ShaderNodeTexWave")
     wave_ply.wave_type = "BANDS"
     wave_ply.bands_direction = "Z"
     wave_ply.wave_profile = "SAW"
-    wave_ply.inputs["Scale"].default_value = 1.65
-    wave_ply.inputs["Distortion"].default_value = 1.35
-    wave_ply.inputs["Detail"].default_value = 2.5
-    wave_ply.inputs["Detail Scale"].default_value = 1.2
+    wave_ply.inputs["Scale"].default_value = 1.72
+    wave_ply.inputs["Distortion"].default_value = 1.55
+    wave_ply.inputs["Detail"].default_value = 3.0
+    wave_ply.inputs["Detail Scale"].default_value = 1.25
     nt.links.new(map_ply.outputs["Vector"], wave_ply.inputs["Vector"])
 
-    # Secondary harmonic ply contrast (alternating light/mid beech plies + sharp dark phenolic glue line)
+    # Warm rich German beechwood laminate palette (alternating golden-honey/amber plies + dark phenolic seams)
     ramp_ply = nt.nodes.new("ShaderNodeValToRGB")
     ramp_ply.color_ramp.interpolation = "LINEAR"
     el0 = ramp_ply.color_ramp.elements[0]
     el0.position = 0.04
-    el0.color = srgb_to_lin(0.185, 0.088, 0.042)  # Dark phenolic resin glue line
+    el0.color = srgb_to_lin(0.172, 0.080, 0.036)  # Dark phenolic resin glue line
     el1 = ramp_ply.color_ramp.elements[1]
     el1.position = 0.16
-    el1.color = srgb_to_lin(0.320, 0.175, 0.088)  # Darker roasted beech veneer
+    el1.color = srgb_to_lin(0.335, 0.182, 0.088)  # Roasted amber-brown beech veneer
     el2 = ramp_ply.color_ramp.elements.new(0.46)
-    el2.color = srgb_to_lin(0.515, 0.315, 0.165)  # Warm honey-amber beech ply
+    el2.color = srgb_to_lin(0.545, 0.340, 0.174)  # Warm honey-golden beech ply
     el3 = ramp_ply.color_ramp.elements.new(0.76)
-    el3.color = srgb_to_lin(0.425, 0.242, 0.122)  # Mid reddish beech ply
+    el3.color = srgb_to_lin(0.442, 0.254, 0.124)  # Mid chestnut beech ply
     el4 = ramp_ply.color_ramp.elements.new(0.94)
-    el4.color = srgb_to_lin(0.205, 0.100, 0.048)  # Next phenolic glue seam
+    el4.color = srgb_to_lin(0.192, 0.092, 0.042)  # Next phenolic glue seam
     nt.links.new(wave_ply.outputs["Fac"], ramp_ply.inputs["Fac"])
 
     # Fine beech wood grain fiber along X
@@ -669,7 +670,7 @@ def _build_laminated_beech_mat(name: str = "W_LaminatedBeech") -> bpy.types.Mate
     n_fib = nt.nodes.new("ShaderNodeTexNoise")
     n_fib.inputs["Scale"].default_value = 2.4
     n_fib.inputs["Detail"].default_value = 6.0
-    n_fib.inputs["Distortion"].default_value = 0.48
+    n_fib.inputs["Distortion"].default_value = 0.52
     nt.links.new(map_fib.outputs["Vector"], n_fib.inputs["Vector"])
 
     # Beechwood characteristic short dark flecks / medullary rays
@@ -696,18 +697,18 @@ def _build_laminated_beech_mat(name: str = "W_LaminatedBeech") -> bpy.types.Mate
     fib_mod.inputs["From Min"].default_value = 0.25
     fib_mod.inputs["From Max"].default_value = 0.75
     fib_mod.inputs["To Min"].default_value = 0.0
-    fib_mod.inputs["To Max"].default_value = 0.24
+    fib_mod.inputs["To Max"].default_value = 0.26
     nt.links.new(n_fib.outputs["Fac"], fib_mod.inputs["Value"])
 
     mix_fib = nt.nodes.new("ShaderNodeMix")
     mix_fib.data_type = "RGBA"
-    mix_fib.inputs[7].default_value = srgb_to_lin(0.56, 0.36, 0.19)
+    mix_fib.inputs[7].default_value = srgb_to_lin(0.58, 0.38, 0.20)
     nt.links.new(fib_mod.outputs["Result"], mix_fib.inputs[0])
     nt.links.new(ramp_ply.outputs["Color"], mix_fib.inputs[6])
 
     fleck_mul = nt.nodes.new("ShaderNodeMath")
     fleck_mul.operation = "MULTIPLY"
-    fleck_mul.inputs[1].default_value = 0.36
+    fleck_mul.inputs[1].default_value = 0.34
     nt.links.new(fleck_m.outputs["Result"], fleck_mul.inputs[0])
 
     mix_col = nt.nodes.new("ShaderNodeMix")
@@ -717,18 +718,18 @@ def _build_laminated_beech_mat(name: str = "W_LaminatedBeech") -> bpy.types.Mate
     nt.links.new(mix_fib.outputs[2], mix_col.inputs[6])
     nt.links.new(mix_col.outputs[2], bsdf.inputs["Base Color"])
 
-    # Military oiled/lacquered beech roughness (0.44 - 0.62)
+    # Refined military linseed-oiled / satin-lacquered beechwood roughness (R = 0.34-0.44, never flat matte!)
     r_wood = nt.nodes.new("ShaderNodeMapRange")
     r_wood.clamp = True
     r_wood.inputs["From Min"].default_value = 0.15
     r_wood.inputs["From Max"].default_value = 0.85
-    r_wood.inputs["To Min"].default_value = 0.44
-    r_wood.inputs["To Max"].default_value = 0.58
+    r_wood.inputs["To Min"].default_value = 0.34
+    r_wood.inputs["To Max"].default_value = 0.42
     nt.links.new(n_fib.outputs["Fac"], r_wood.inputs["Value"])
 
     r_fleck = nt.nodes.new("ShaderNodeMath")
     r_fleck.operation = "MULTIPLY_ADD"
-    r_fleck.inputs[1].default_value = 0.12
+    r_fleck.inputs[1].default_value = 0.05
     nt.links.new(fleck_m.outputs["Result"], r_fleck.inputs[0])
     nt.links.new(r_wood.outputs["Result"], r_fleck.inputs[2])
     nt.links.new(r_fleck.outputs["Value"], bsdf.inputs["Roughness"])
@@ -743,16 +744,16 @@ def _build_laminated_beech_mat(name: str = "W_LaminatedBeech") -> bpy.types.Mate
 
     h_fib = nt.nodes.new("ShaderNodeMath")
     h_fib.operation = "MULTIPLY_ADD"
-    h_fib.inputs[1].default_value = 0.18
+    h_fib.inputs[1].default_value = 0.16
     nt.links.new(n_fib.outputs["Fac"], h_fib.inputs[0])
     nt.links.new(h_ply.outputs["Value"], h_fib.inputs[2])
 
     bev = nt.nodes.new("ShaderNodeBevel")
-    bev.samples = 4
-    bev.inputs["Radius"].default_value = 0.028
+    bev.samples = 5
+    bev.inputs["Radius"].default_value = 0.024
     bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.15
-    bump.inputs["Distance"].default_value = 0.018
+    bump.inputs["Strength"].default_value = 0.11
+    bump.inputs["Distance"].default_value = 0.015
     nt.links.new(h_fib.outputs["Value"], bump.inputs["Height"])
     nt.links.new(bev.outputs["Normal"], bump.inputs["Normal"])
     nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
@@ -761,26 +762,26 @@ def _build_laminated_beech_mat(name: str = "W_LaminatedBeech") -> bpy.types.Mate
 
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
-        # Suite 1: Laminated beechwood + embedded steel takedown disk & recoil cross-bolt
+        # Suite 1: Laminated beechwood + embedded steel takedown disk, sling keeper & recoil cross-bolt
         "W_LaminatedBeech": _build_laminated_beech_mat("W_LaminatedBeech"),
         "S_TakedownSteel": _build_pbr_mat(
             "S_TakedownSteel",
-            base_srgb=(0.240, 0.262, 0.305),
-            roughness=0.32,
-            metallic=0.89,
+            base_srgb=(0.248, 0.270, 0.314),
+            roughness=0.30,
+            metallic=0.90,
             bevel_r=0.022,
-            edge_wear=0.45,
+            edge_wear=0.48,
             grain_scale=36.0,
-            grain_bump=0.022,
+            grain_bump=0.020,
         ),
-        # Suite 2: AgX-calibrated deep German blued steel (sRGB 0.18-0.28, R=0.25-0.38)
+        # Suite 2: AgX-calibrated deep German blued steel (sRGB 0.20-0.28, R=0.25-0.35)
         "R_GermanBlued": _build_pbr_mat(
             "R_GermanBlued",
-            base_srgb=(0.196, 0.220, 0.272),
-            roughness=0.28,
+            base_srgb=(0.208, 0.232, 0.284),
+            roughness=0.27,
             metallic=0.90,
             bevel_r=0.026,
-            edge_wear=0.54,
+            edge_wear=0.52,
             edge_srgb=(0.78, 0.81, 0.86),
             grain_scale=40.0,
             grain_bump=0.018,
@@ -789,21 +790,21 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "R_ParkHardware": _build_pbr_mat(
             "R_ParkHardware",
-            base_srgb=(0.235, 0.256, 0.296),
-            roughness=0.35,
-            metallic=0.86,
+            base_srgb=(0.244, 0.266, 0.306),
+            roughness=0.33,
+            metallic=0.87,
             bevel_r=0.024,
-            edge_wear=0.50,
+            edge_wear=0.48,
             edge_srgb=(0.74, 0.78, 0.83),
             grain_scale=48.0,
-            grain_bump=0.026,
+            grain_bump=0.024,
             rough_var=0.032,
         ),
         "R_InnerDark": _build_pbr_mat(
             "R_InnerDark",
-            base_srgb=(0.165, 0.182, 0.212),
-            roughness=0.40,
-            metallic=0.82,
+            base_srgb=(0.180, 0.198, 0.230),
+            roughness=0.38,
+            metallic=0.84,
             bevel_r=0.016,
             grain_scale=44.0,
             grain_bump=0.020,
@@ -811,14 +812,14 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # Suite 3: Stepped blued barrel, spring-tempered claw extractor, bright white bolt steel & brass stripper clip
         "M_GermanBlued": _build_pbr_mat(
             "M_GermanBlued",
-            base_srgb=(0.194, 0.218, 0.270),
-            roughness=0.29,
+            base_srgb=(0.206, 0.230, 0.282),
+            roughness=0.28,
             metallic=0.90,
             bevel_r=0.024,
-            edge_wear=0.52,
+            edge_wear=0.50,
             edge_srgb=(0.78, 0.81, 0.86),
             grain_scale=42.0,
-            grain_bump=0.020,
+            grain_bump=0.018,
             aniso_stretch=(3.8, 0.5, 0.5),
             rough_var=0.028,
         ),
@@ -1146,6 +1147,154 @@ def bool_subtract(target: bpy.types.Object, cutters: list[bpy.types.Object], sol
     return target
 
 
+def _smoothstep_f(e0: float, e1: float, x: float) -> float:
+    t = max(0.0, min(1.0, (x - e0) / max(e1 - e0, 1e-6)))
+    return t * t * (3.0 - 2.0 * t)
+
+
+def sample_quad_bezier(
+    p0: tuple[float, float],
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    steps: int = 12,
+    include_start: bool = False,
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = []
+    start = 0 if include_start else 1
+    for i in range(start, steps + 1):
+        t = i / steps
+        mt = 1.0 - t
+        pts.append((
+            mt * mt * p0[0] + 2.0 * mt * t * p1[0] + t * t * p2[0],
+            mt * mt * p0[1] + 2.0 * mt * t * p1[1] + t * t * p2[1],
+        ))
+    return pts
+
+
+def sample_cubic_bezier(
+    p0: tuple[float, float],
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    steps: int = 16,
+    include_start: bool = False,
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = []
+    start = 0 if include_start else 1
+    for i in range(start, steps + 1):
+        t = i / steps
+        mt = 1.0 - t
+        pts.append((
+            mt**3 * p0[0] + 3.0 * mt**2 * t * p1[0] + 3.0 * mt * t**2 * p2[0] + t**3 * p3[0],
+            mt**3 * p0[1] + 3.0 * mt**2 * t * p1[1] + 3.0 * mt * t**2 * p2[1] + t**3 * p3[1],
+        ))
+    return pts
+
+
+def mk_swept_bow(
+    name: str,
+    centerline_xy: list[tuple[float, float]],
+    rx_fn,
+    rz_fn,
+    sec_n: int = 24,
+    super_exp: float = 0.72,
+    xform=None,
+    mat=None,
+) -> bpy.types.Object:
+    bm = bmesh.new()
+    rings = []
+    n_pts = len(centerline_xy)
+    for i, (cx, cy) in enumerate(centerline_xy):
+        t = i / max(1, n_pts - 1)
+        if i == 0:
+            tx, ty = centerline_xy[1][0] - cx, centerline_xy[1][1] - cy
+        elif i == n_pts - 1:
+            tx, ty = cx - centerline_xy[-2][0], cy - centerline_xy[-2][1]
+        else:
+            tx, ty = centerline_xy[i + 1][0] - centerline_xy[i - 1][0], centerline_xy[i + 1][1] - centerline_xy[i - 1][1]
+        tl = max(1e-6, math.hypot(tx, ty))
+        nx, ny = -ty / tl, tx / tl
+        rx = rx_fn(t)
+        rz = rz_fn(t)
+        ring = []
+        for s in range(sec_n):
+            a = (s / sec_n) * 2.0 * math.pi
+            ca, sa = math.cos(a), math.sin(a)
+            px = math.copysign(abs(ca) ** super_exp, ca) * rx
+            pz = math.copysign(abs(sa) ** super_exp, sa) * rz
+            ring.append(bm.verts.new((cx + nx * px, cy + ny * px, pz)))
+        rings.append(ring)
+    for i in range(len(rings) - 1):
+        for s in range(sec_n):
+            sn = (s + 1) % sec_n
+            bm.faces.new((rings[i][s], rings[i][sn], rings[i + 1][sn], rings[i + 1][s]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_stadium_2d(length_x: float, height_y: float, arc_segs: int = 12) -> list[tuple[float, float]]:
+    """Smooth stadium/oval 2D contour centered at (0, 0) with semicircular ends."""
+    r = height_y * 0.5
+    half_straight = max(0.0, length_x * 0.5 - r)
+    pts: list[tuple[float, float]] = []
+    # Right semicircle (-pi/2 -> +pi/2)
+    for k in range(arc_segs + 1):
+        a = -math.pi * 0.5 + math.pi * (k / arc_segs)
+        pts.append((half_straight + r * math.cos(a), r * math.sin(a)))
+    # Left semicircle (+pi/2 -> +3*pi/2)
+    for k in range(arc_segs + 1):
+        a = math.pi * 0.5 + math.pi * (k / arc_segs)
+        pts.append((-half_straight + r * math.cos(a), r * math.sin(a)))
+    return pts
+
+
+def bool_union(objs: list[bpy.types.Object], name: str, solver: str = "EXACT") -> bpy.types.Object:
+    objs = [o for o in objs if o is not None]
+    assert len(objs) >= 1
+    base = objs[0]
+    rest = objs[1:]
+    for idx, other in enumerate(rest):
+        for m in other.data.materials:
+            if m and m.name not in [tm.name for tm in base.data.materials if tm]:
+                base.data.materials.append(m)
+        backup_mesh = base.data.copy()
+        tried = [solver, "MANIFOLD" if solver == "EXACT" else "EXACT"]
+        ok = False
+        for slv in tried:
+            select_only([base], base)
+            mod = base.modifiers.new(name=f"Union_{idx}", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = slv
+            mod.object = other
+            if slv == "EXACT":
+                mod.use_self = True
+                mod.use_hole_tolerant = True
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+            if _count_non_manifold(base) == 0 and len(base.data.polygons) > 0:
+                ok = True
+                break
+            old_m = base.data
+            base.data = backup_mesh.copy()
+            bpy.data.meshes.remove(old_m)
+        if not ok:
+            select_only([base], base)
+            mod = base.modifiers.new(name=f"UnionF_{idx}", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = "EXACT"
+            mod.use_self = True
+            mod.use_hole_tolerant = True
+            mod.object = other
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.meshes.remove(backup_mesh)
+    delete_objs(rest)
+    base.name = name
+    base.data.name = name
+    return base
+
+
 def finish_part(obj: bpy.types.Object, sharp_deg: float = 36.0, weighted_normals: bool = True) -> bpy.types.Object:
     bm = bmesh.new()
     bm.from_mesh(obj.data)
@@ -1357,98 +1506,263 @@ def build_k98k_receiver(mats):
     return finish_part(rec, sharp_deg=36.0)
 
 
+def _eval_k98k_stock_ring(x: float, n_ring: int = 36, offset_r: float = 0.0, with_flutes: bool = True) -> list[tuple[float, float]]:
+    """
+    Shared analytical Mauser Karabiner 98k laminated beechwood stock cross-section evaluator (local x in [-47.8, +47.8]):
+      - Iconic semi-pistol grip pommel (-18.8) + slender ergonomic oval wrist (-15..-22) + subtle comb nose drop
+      - Smooth concave belly cove behind pistol grip sweeping to rounded butt toe (-47.8)
+      - Organic pear/oval cross-section w/ narrow comb crest, flat-sided receiver cheeks, & tapered forend
+      - Sculpted dual forend finger grooves along x in [+7.5, +24.8] baked directly into loft geometry!
+    """
+    top_pts = [
+        (-47.80, 2.15), (-40.00, 2.24), (-31.00, 2.34), (-25.50, 2.38),
+        (-23.20, 2.26), (-21.20, 1.88), (-19.20, 1.66), (-17.20, 1.80),
+        (-15.20, 2.48), (-13.60, 2.86), ( -5.00, 2.94), (  5.00, 2.96),
+        ( 15.00, 3.04), ( 29.00, 3.12), ( 40.00, 3.16), ( 47.80, 3.20),
+    ]
+    bot_pts = [
+        (-47.80, -9.25), (-41.00, -8.02), (-33.00, -6.54), (-26.50, -5.36),
+        (-23.50, -4.96), (-21.80, -4.94), (-20.20, -5.36), (-18.80, -5.66),
+        (-17.50, -5.54), (-16.20, -4.84), (-14.80, -3.45), (-13.20, -2.52),
+        (-10.50, -2.30), ( -5.00, -2.28), (  2.50, -2.26), (  6.50, -1.94),
+        ( 14.00, -1.26), ( 23.00, -0.52), ( 31.00,  0.08), ( 40.00,  0.66),
+        ( 47.80,  1.12),
+    ]
+    w_pts = [
+        (-47.80, 2.02), (-39.00, 2.00), (-30.00, 1.92), (-24.50, 1.76),
+        (-21.00, 1.54), (-18.20, 1.46), (-15.50, 1.56), (-12.50, 1.94),
+        ( -6.00, 2.04), (  5.00, 2.04), ( 12.00, 1.92), ( 22.00, 1.76),
+        ( 30.00, 1.62), ( 40.00, 1.50), ( 47.80, 1.40),
+    ]
+
+    def _samp(pts: list[tuple[float, float]], xv: float) -> float:
+        if xv <= pts[0][0]:
+            return pts[0][1]
+        if xv >= pts[-1][0]:
+            return pts[-1][1]
+        for i in range(len(pts) - 1):
+            x0, y0 = pts[i]
+            x1, y1 = pts[i + 1]
+            if x0 <= xv <= x1:
+                u = (xv - x0) / max(x1 - x0, 1e-6)
+                return y0 + (y1 - y0) * u
+        return pts[-1][1]
+
+    yt = _samp(top_pts, x) + offset_r
+    yb = _samp(bot_pts, x) - offset_r
+    hw = _samp(w_pts, x) + offset_r
+    ym = 0.5 * (yt + yb)
+    hy = max(0.35, 0.5 * (yt - yb))
+
+    # Narrow sculpted comb crest on buttstock (0.56), slender oval wrist, crisper flat receiver cheeks (0.94)
+    if x < -22.0:
+        top_taper = 0.56
+    elif x < -12.5:
+        top_taper = 0.56 + 0.38 * _smoothstep_f(-22.0, -12.5, x)
+    elif x < 8.0:
+        top_taper = 0.94
+    else:
+        top_taper = 0.94 - 0.08 * _smoothstep_f(8.0, 47.8, x)
+
+    # Organic oval on buttstock & wrist (2.15), crisp slightly flatter receiver cheeks (2.60), rounded forend U (2.25)
+    if x < -14.0:
+        exp_n = 2.15
+    elif x < -9.0:
+        exp_n = 2.15 + 0.45 * _smoothstep_f(-14.0, -9.0, x)
+    elif x < 8.0:
+        exp_n = 2.60
+    else:
+        exp_n = 2.60 - 0.35 * _smoothstep_f(8.0, 22.0, x)
+
+    # Dual sculpted Kar98k forend finger grooves along both flanks (x in [+7.5, +24.8])!
+    flute_x = 0.0
+    if with_flutes and 7.5 < x < 24.8:
+        u_fl = (x - 7.5) / (24.8 - 7.5)
+        # Smooth canoe-ended profile (steep rounded ends, flat long trough)
+        flute_x = _smoothstep_f(0.0, 0.14, u_fl) * (1.0 - _smoothstep_f(0.86, 1.0, u_fl))
+
+    ring: list[tuple[float, float]] = []
+    for k in range(n_ring):
+        th = 2.0 * math.pi * k / n_ring
+        ct, st = math.cos(th), math.sin(th)
+        sz = math.copysign(abs(ct) ** (2.0 / exp_n), ct)
+        sy = math.copysign(abs(st) ** (2.0 / exp_n), st)
+        if sy > 0.0:
+            w_scale = 1.0 - (1.0 - top_taper) * (sy ** 1.42)
+        else:
+            w_scale = 1.0 - 0.24 * (abs(sy) ** 1.65)
+        z_val = hw * w_scale * sz
+        # Carve smooth concave dual finger grooves along upper-mid forend cheeks (sy ~ +0.26)
+        if flute_x > 0.001 and abs(ct) > 0.45:
+            dy_f = (sy - 0.26) / 0.32
+            if abs(dy_f) < 1.0:
+                groove_d = 0.25 * flute_x * ((math.cos(dy_f * math.pi * 0.5)) ** 1.4)
+                z_val -= math.copysign(groove_d, z_val)
+        ring.append((z_val, ym + hy * sy))
+    return ring
+
+
 def build_k98k_stock(mats):
     m_wood, m_steel = mats["W_LaminatedBeech"], mats["S_TakedownSteel"]
 
-    # Organically lofted laminated beechwood K98k military rifle stock (local x in [-47.8, +47.8])
-    def _stock_ring(ytop: float, ybot: float, rz: float, segs: int = 32):
-        cy = 0.5 * (ytop + ybot)
-        ry = max(0.35, 0.5 * (ytop - ybot))
-        ring = []
-        for k in range(segs):
-            a = 2.0 * math.pi * k / segs
-            # Slightly flatter sides for crisp military stock feel
-            sn = math.sin(a)
-            cn = math.cos(a)
-            z = math.copysign(abs(sn) ** 0.82, sn) * rz
-            y = cy + math.copysign(abs(cn) ** 0.88, cn) * ry
-            ring.append((z, y))
-        return ring
-
-    stations = [
-        (-47.8, _stock_ring(2.20, -9.30, 2.04, 32)),
-        (-36.0, _stock_ring(2.34, -7.15, 2.04, 32)),
-        (-25.0, _stock_ring(2.48, -4.95, 1.92, 32)),
-        (-20.2, _stock_ring(2.55, -3.65, 1.62, 32)),
-        (-15.5, _stock_ring(2.78, -4.15, 1.64, 32)),  # Semi-pistol grip swell
-        (-11.0, _stock_ring(2.85, -2.55, 1.88, 32)),
-        ( -5.0, _stock_ring(2.92, -2.25, 2.05, 32)),
-        (  5.0, _stock_ring(2.96, -2.25, 2.05, 32)),
-        ( 15.0, _stock_ring(3.04, -1.30, 1.90, 32)),
-        ( 30.0, _stock_ring(3.12, -0.05, 1.68, 32)),
-        ( 47.8, _stock_ring(3.20,  1.15, 1.44, 32)),
+    # High-resolution 36-station x 36-ring organically lofted Mauser Kar98k laminated beechwood stock!
+    xs = [
+        -47.80, -45.50, -42.00, -38.00, -34.00, -30.00, -26.50, -24.50,
+        -23.00, -21.60, -20.20, -18.80, -17.50, -16.20, -14.80, -13.40,
+        -11.80,  -9.50,  -6.00,  -2.00,   2.50,   6.00,   7.50,   9.20,
+         11.50,  15.00,  19.00,  22.50,  24.80,  27.50,  31.00,  35.50,
+         40.50,  45.00,  47.20,  47.80,
     ]
+    stations = [(x, _eval_k98k_stock_ring(x, 36, offset_r=(-0.04 if x >= 47.75 else 0.0))) for x in xs]
     blank = mk_loft_x("k98k_stk_b", stations, mat=m_wood)
 
-    # Receiver/mag inletting, barrel channel, iconic buttstock sling slot & twin finger grooves
-    act_c = mk_box("c_stk_a", 18.20, 4.40, 2.85, [("t", -5.80, 2.10, 0.0)], mat=m_wood)
-    mag_c = mk_box("c_stk_m", 9.80, 5.20, 2.55, [("t", -2.90, -0.40, 0.0)], mat=m_wood)
-    bbl_c = mk_cyl("c_stk_b", 1.18, 1.18, 47.20, axis="x", segs=24, xform=[("t", 25.20, 3.60, 0.0)], mat=m_wood)
-    sling_c = mk_box("c_stk_sl", 4.80, 2.50, 5.40, [("t", -40.40, -2.70, 0.0)], mat=m_wood, bevel=0.22)
-    grv_l = mk_box("c_stk_gl", 14.50, 0.65, 0.48, [("t", 14.50, 1.35, -2.02)], mat=m_wood, bevel=0.12)
-    grv_r = mk_box("c_stk_gr", 14.50, 0.65, 0.48, [("t", 14.50, 1.35,  2.02)], mat=m_wood, bevel=0.12)
-    carved = bool_subtract(blank, [act_c, mag_c, bbl_c, sling_c, grv_l, grv_r])
+    # Receiver/mag inletting, barrel channel & iconic beveled oval Kar98k side sling slot!
+    act_c = mk_box("c_stk_a", 18.20, 4.40, 2.82, [("t", -5.80, 2.15, 0.0)], mat=m_wood)
+    mag_c = mk_box("c_stk_m", 9.60, 5.20, 2.52, [("t", -2.90, -0.45, 0.0)], mat=m_wood)
+    bbl_c = mk_cyl("c_stk_b", 1.15, 1.15, 47.40, axis="x", segs=28, xform=[("t", 25.20, 3.58, 0.0)], mat=m_wood)
 
-    # Iconic K98k circular steel bolt takedown disk (Zerlegescheibe) with center recess + recoil cross-bolt
-    td_o = mk_cyl("k98k_stk_tdo", 1.28, 1.28, 4.22, axis="z", segs=28, xform=[("t", -32.20, -2.30, 0.0)], mat=m_steel, bevel=0.06)
-    td_h = mk_cyl("c_stk_tdh", 0.42, 0.42, 4.60, axis="z", segs=18, xform=[("t", -32.20, -2.30, 0.0)], mat=m_steel)
-    td_disk = bool_subtract(td_o, [td_h])
-    xbolt = mk_cyl("k98k_stk_xb", 0.45, 0.45, 4.24, axis="z", segs=18, xform=[("t", 2.70, 0.90, 0.0)], mat=m_steel, bevel=0.04)
+    # Smooth beveled OVAL (stadium) Kar98k buttstock sling slot (replaces ugly square box hole!)
+    sl_x, sl_y = -40.40, -2.70
+    sling_thru = mk_extrude_z("c_stk_sl", mk_stadium_2d(4.65, 1.78, arc_segs=14), -3.20, 3.20, xform=[("t", sl_x, sl_y, 0.0)], mat=m_wood)
+    # 45-deg flared stadium chamfer cutters on left (-Z) and right (+Z) buttstock flanks!
+    sl_in = mk_stadium_2d(4.55, 1.68, arc_segs=14)
+    sl_out = mk_stadium_2d(5.45, 2.58, arc_segs=14)
+    def _mk_sling_chamfer(tag: str, z_inner: float, z_outer: float) -> bpy.types.Object:
+        bm = bmesh.new()
+        r0 = [bm.verts.new((sl_x + px, sl_y + py, z_inner)) for (px, py) in sl_in]
+        r1 = [bm.verts.new((sl_x + px, sl_y + py, z_outer)) for (px, py) in sl_out]
+        n = len(r0)
+        for k in range(n):
+            kn = (k + 1) % n
+            bm.faces.new((r0[k], r0[kn], r1[kn], r1[k]))
+        bm.faces.new(list(reversed(r0)))
+        bm.faces.new(r1)
+        bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+        _apply_three_xform(bm, [])
+        return _bm_to_obj(tag, bm, m_wood)
 
-    stk = join_objects([carved, td_disk, xbolt], "k98k_stock")
-    return finish_part(stk, sharp_deg=42.0)
+    sl_ch_l = _mk_sling_chamfer("c_stk_sll", -1.45, -2.45)
+    sl_ch_r = _mk_sling_chamfer("c_stk_slr",  1.45,  2.45)
+
+    # Circular inset wood counterbore seats for the Kar98k bolt-disassembly takedown disc (Zerlegescheibe)!
+    td_x, td_y = -32.20, -2.30
+    td_rec_l = mk_cyl("c_td_rl", 1.28, 1.38, 0.42, axis="z", segs=32, xform=[("t", td_x, td_y, -1.96)], mat=m_wood)
+    td_rec_r = mk_cyl("c_td_rr", 1.38, 1.28, 0.42, axis="z", segs=32, xform=[("t", td_x, td_y,  1.96)], mat=m_wood)
+
+    carved = bool_subtract(blank, [act_c, mag_c, bbl_c, sling_thru, sl_ch_l, sl_ch_r, td_rec_l, td_rec_r])
+
+    # Iconic K98k circular steel bolt takedown disk (Zerlegescheibe) w/ beveled flanged grommet & center bore
+    td_o = mk_cyl("k98k_stk_tdo", 1.28, 1.28, 4.02, axis="z", segs=32, xform=[("t", td_x, td_y, 0.0)], mat=m_steel, bevel=0.07)
+    td_h = mk_cyl("c_stk_tdh", 0.44, 0.44, 4.50, axis="z", segs=22, xform=[("t", td_x, td_y, 0.0)], mat=m_steel)
+    td_dish_l = mk_cyl("c_td_dl", 0.44, 0.96, 0.24, axis="z", segs=28, xform=[("t", td_x, td_y, -1.96)], mat=m_steel)
+    td_dish_r = mk_cyl("c_td_dr", 0.96, 0.44, 0.24, axis="z", segs=28, xform=[("t", td_x, td_y,  1.96)], mat=m_steel)
+    td_disk = bool_subtract(td_o, [td_h, td_dish_l, td_dish_r])
+
+    # Iconic blued steel Kar98k side-sling keeper bar recessed inside front of oval buttstock sling slot!
+    sling_bar = mk_cyl("k98k_stk_sbar", 0.16, 0.16, 1.92, axis="y", segs=16, xform=[("t", sl_x + 1.55, sl_y, 0.0)], mat=m_steel, bevel=0.02)
+    sling_tab_l = mk_box("k98k_stk_stl", 1.15, 2.35, 0.18, [("t", sl_x + 2.38, sl_y, -1.92)], mat=m_steel, bevel=0.03)
+    sling_tab_r = mk_box("k98k_stk_str", 1.15, 2.35, 0.18, [("t", sl_x + 2.38, sl_y,  1.92)], mat=m_steel, bevel=0.03)
+
+    # Recoil cross-bolt & flush nut
+    xbolt = mk_cyl("k98k_stk_xb", 0.44, 0.44, 4.18, axis="z", segs=22, xform=[("t", 2.70, 0.90, 0.0)], mat=m_steel, bevel=0.04)
+
+    stk = join_objects([carved, td_disk, sling_bar, sling_tab_l, sling_tab_r, xbolt], "k98k_stock")
+    return finish_part(stk, sharp_deg=44.0)
 
 
 def build_k98k_handguard(mats):
     m_wood = mats["W_LaminatedBeech"]
-    outer = mk_cyl("k98k_hg_o", 1.44, 1.68, 38.80, axis="x", segs=32, xform=[("t", 0.0, -0.30, 0.0)], mat=m_wood, bevel=0.08)
-    bore = mk_cyl("c_hg_b", 0.92, 1.08, 39.80, axis="x", segs=28, xform=[("t", 0.0, -0.75, 0.0)], mat=m_wood)
-    low = mk_box("c_hg_l", 40.40, 2.10, 4.40, [("t", 0.0, -1.65, 0.0)], mat=m_wood)
-    swin = mk_box("c_hg_sw", 7.40, 2.60, 2.35, [("t", -14.70, 0.55, 0.0)], mat=m_wood, bevel=0.06)
-    hg = bool_subtract(outer, [bore, low, swin])
+    # Gracefully tapered thin-walled arched laminated beechwood upper handguard (22-seg arch loft along X in [-19.4, +19.4])
+    # Hugs the stepped Mauser barrel and sits flush onto the stock's upper forend lips (zero blocky bar or floating gap!)
+    n_arc = 22
+    xs = [-19.40, -19.25, -17.50, -14.00, -10.00, -5.00, 0.00, 5.00, 10.00, 15.00, 18.80, 19.25, 19.40]
+    stations = []
+    for x in xs:
+        u = (x + 19.40) / 38.80
+        r_out = 1.62 - u * 0.28     # smoothly tapers 1.62 -> 1.34 toward H-band
+        r_in = 1.14 - u * 0.22      # clears stepped Mauser barrel (r=1.12 -> 0.80)
+        yc = -0.62 + u * 0.06       # world Y = 2.25 - 0.62 = 1.63 (concentric w/ barrel bore at Y=1.50!)
+        y_skirt = -1.20 + u * 0.14  # world Y = 1.05..1.19 -> seats cleanly against stock upper lip!
+        lip_in = 0.05 if (x <= -19.30 or x >= 19.30) else 0.0
+        ro = r_out - lip_in
+        ring = [(ro, y_skirt)]
+        for k in range(n_arc + 1):
+            a = math.pi * (k / n_arc)
+            ring.append((ro * math.cos(a), yc + ro * math.sin(a)))
+        ring.extend([(-ro, y_skirt), (-r_in, y_skirt)])
+        for k in range(n_arc, -1, -1):
+            a = math.pi * (k / n_arc)
+            ring.append((r_in * math.cos(a), yc + r_in * math.sin(a)))
+        ring.append((r_in, y_skirt))
+        stations.append((x, ring))
+
+    arch = mk_loft_x("k98k_hg_o", stations, mat=m_wood)
+    # Cleanly contoured rear tangent-sight saddle opening (local x in [-18.4, -11.0])
+    swin = mk_box("c_hg_sw", 7.45, 2.75, 2.18, [("t", -14.70, 0.45, 0.0)], mat=m_wood, bevel=0.08)
+    hg = bool_subtract(arch, [swin])
     hg.name = "k98k_handguard"
     hg.data.name = "k98k_handguard"
-    return finish_part(hg, sharp_deg=40.0)
+    return finish_part(hg, sharp_deg=42.0)
+
+
+def _mk_k98k_band_collar(name: str, x0: float, x1: float, r_top: float, y_top_c: float, hw_bot: float, y_bot: float, mat) -> bpy.types.Object:
+    """Builds an authentic contoured Mauser rounded-arch steel barrel band wrapping upper handguard & rounded forend belly."""
+    n_arc = 18
+    def _ring(inset: float = 0.0) -> list[tuple[float, float]]:
+        rt = r_top - inset
+        wb = hw_bot - inset
+        yb = y_bot + inset
+        pts: list[tuple[float, float]] = []
+        # Smooth semicircular top arch over handguard/barrel
+        for k in range(n_arc + 1):
+            a = math.pi * (k / n_arc)
+            pts.append((rt * math.cos(a), y_top_c + rt * math.sin(a)))
+        # Rounded U-belly wrapping stock forend underside
+        n_bot = 14
+        for k in range(1, n_bot):
+            a = math.pi + math.pi * (k / n_bot)
+            ca, sa = math.cos(a), math.sin(a)
+            pz = wb * math.copysign(abs(ca) ** 0.78, ca)
+            py = y_top_c + (y_top_c - yb) * sa
+            pts.append((pz, py))
+        return pts
+
+    xm0 = x0 + 0.07
+    xm1 = x1 - 0.07
+    return mk_loft_x(name, [(x0, _ring(0.045)), (xm0, _ring(0.0)), (xm1, _ring(0.0)), (x1, _ring(0.045))], mat=mat)
 
 
 def build_k98k_front_band(mats):
     m_park, m_blue, m_dark = mats["R_ParkHardware"], mats["R_GermanBlued"], mats["R_InnerDark"]
-    r_str = mk_box("k98k_fb_r", 1.55, 3.65, 3.25, [("t", -2.20, 0.25, 0.0)], mat=m_park, bevel=0.09)
-    f_str = mk_box("k98k_fb_f", 1.55, 3.45, 3.15, [("t",  1.85, 0.20, 0.0)], mat=m_park, bevel=0.09)
-    br_l = mk_box("k98k_fb_bl", 4.40, 1.35, 0.36, [("t", -0.20, 0.25, -1.45)], mat=m_park, bevel=0.04)
-    br_r = mk_box("k98k_fb_br", 4.40, 1.35, 0.36, [("t", -0.20, 0.25,  1.45)], mat=m_park, bevel=0.04)
+    # Authentic contoured H-pattern Mauser front steel barrel band (rounded arch-top collars + recessed H side bridges!)
+    r_col = _mk_k98k_band_collar("k98k_fb_r", -2.95, -1.42, 1.46, 0.76, 1.54, -1.25, m_park)
+    f_col = _mk_k98k_band_collar("k98k_fb_f",  1.08,  2.60, 1.38, 0.74, 1.48, -1.18, m_park)
+    br_l = mk_box("k98k_fb_bl", 4.35, 1.24, 0.34, [("t", -0.18, 0.25, -1.36)], mat=m_park, bevel=0.05)
+    br_r = mk_box("k98k_fb_br", 4.35, 1.24, 0.34, [("t", -0.18, 0.25,  1.36)], mat=m_park, bevel=0.05)
     # T-bar S84/98 bayonet lug underneath muzzle
-    bstem = mk_box("k98k_fb_bs", 5.20, 0.72, 0.68, [("t", 3.15, -0.95, 0.0)], mat=m_blue, bevel=0.04)
-    brail = mk_box("k98k_fb_blg", 4.80, 0.38, 1.18, [("t", 3.25, -1.35, 0.0)], mat=m_blue, bevel=0.04)
-    solid = join_objects([r_str, f_str, br_l, br_r, bstem, brail], "k98k_fb_tmp")
-    bh = mk_cyl("c_fb_bh", 0.85, 0.85, 7.40, axis="x", segs=26, xform=[("t", 0.0, 0.65, 0.0)], mat=m_dark)
-    sh = mk_box("c_fb_sh", 5.80, 1.55, 2.35, [("t", -0.20, -0.55, 0.0)], mat=m_dark)
+    bstem = mk_box("k98k_fb_bs", 5.20, 0.70, 0.66, [("t", 3.15, -0.95, 0.0)], mat=m_blue, bevel=0.045)
+    brail = mk_box("k98k_fb_blg", 4.80, 0.38, 1.16, [("t", 3.25, -1.35, 0.0)], mat=m_blue, bevel=0.045)
+    solid = bool_union([r_col, f_col, br_l, br_r, bstem, brail], "k98k_fb_tmp")
+    bh = mk_cyl("c_fb_bh", 0.85, 0.85, 7.40, axis="x", segs=28, xform=[("t", 0.0, 0.65, 0.0)], mat=m_dark)
+    sh = mk_cyl("c_fb_sh", 1.15, 1.15, 5.80, axis="x", segs=24, xform=[("t", -0.20, -0.35, 0.0)], mat=m_dark)
     res = bool_subtract(solid, [bh, sh])
     res.name = "k98k_front_band"
     res.data.name = "k98k_front_band"
-    return finish_part(res, sharp_deg=34.0)
+    return finish_part(res, sharp_deg=36.0)
 
 
 def build_k98k_rear_band(mats):
     m_park, m_blue, m_dark = mats["R_ParkHardware"], mats["R_GermanBlued"], mats["R_InnerDark"]
-    strap = mk_box("k98k_rb_s", 2.25, 3.65, 3.55, None, mat=m_park, bevel=0.10)
-    bh = mk_cyl("c_rb_bh", 0.92, 0.92, 2.80, axis="x", segs=26, xform=[("t", 0.0, 0.60, 0.0)], mat=m_dark)
-    wh = mk_box("c_rb_wh", 2.80, 1.85, 2.65, [("t", 0.0, -0.60, 0.0)], mat=m_dark)
+    # Contoured rounded-arch steel rear barrel band hugging the arched handguard & rounded forend belly!
+    strap = _mk_k98k_band_collar("k98k_rb_s", -1.10, 1.10, 1.56, 0.75, 1.74, -1.30, m_park)
+    bh = mk_cyl("c_rb_bh", 0.92, 0.92, 2.80, axis="x", segs=28, xform=[("t", 0.0, 0.60, 0.0)], mat=m_dark)
+    wh = mk_cyl("c_rb_wh", 1.32, 1.32, 2.80, axis="x", segs=26, xform=[("t", 0.0, -0.45, 0.0)], mat=m_dark)
     ring = bool_subtract(strap, [bh, wh])
-    pt = mk_box("k98k_rb_pt", 0.55, 0.42, 0.85, [("t", 0.0,  0.95, -2.05)], mat=m_blue, bevel=0.04)
-    pb = mk_box("k98k_rb_pb", 0.55, 0.42, 0.85, [("t", 0.0, -0.95, -2.05)], mat=m_blue, bevel=0.04)
-    sb = mk_box("k98k_rb_sb", 0.42, 2.25, 0.34, [("t", 0.0,  0.00, -2.32)], mat=m_blue, bevel=0.04)
-    return finish_part(join_objects([ring, pt, pb, sb], "k98k_rear_band"), sharp_deg=34.0)
+    # Authentic left-side cavalry sling bar & contoured mounting ears
+    pt = mk_cyl("k98k_rb_pt", 0.24, 0.24, 0.85, axis="z", segs=18, xform=[("t", 0.0,  0.92, -1.96)], mat=m_blue, bevel=0.03)
+    pb = mk_cyl("k98k_rb_pb", 0.24, 0.24, 0.85, axis="z", segs=18, xform=[("t", 0.0, -0.92, -1.96)], mat=m_blue, bevel=0.03)
+    sb = mk_cyl("k98k_rb_sb", 0.17, 0.17, 2.18, axis="y", segs=16, xform=[("t", 0.0,  0.00, -2.26)], mat=m_blue, bevel=0.03)
+    return finish_part(join_objects([ring, pt, pb, sb], "k98k_rear_band"), sharp_deg=36.0)
 
 
 def build_k98k_cleaning_rod(mats):
@@ -1470,16 +1784,27 @@ def build_k98k_cleaning_rod(mats):
 
 def build_k98k_buttplate(mats):
     m_park, m_dark = mats["R_ParkHardware"], mats["R_InnerDark"]
-    outer = mk_extrude_z(
+    # Contoured cupped stamped steel Kar98k buttplate lofted directly from the exact rear stock oval!
+    # stock Y (-2.10) - buttplate Y (-5.65) = +3.55 cm -> 100% flush wrap around rounded comb heel & toe!
+    y_shift = 3.55
+    r_front = [(z, y + y_shift) for (z, y) in _eval_k98k_stock_ring(-47.80, 36, offset_r=0.09, with_flutes=False)]
+    r_mid   = [(z, y + y_shift) for (z, y) in _eval_k98k_stock_ring(-47.80, 36, offset_r=0.10, with_flutes=False)]
+    r_back  = [(z * 0.96, y + y_shift) for (z, y) in _eval_k98k_stock_ring(-47.80, 36, offset_r=0.02, with_flutes=False)]
+    r_rim   = [(z * 0.88, y + y_shift) for (z, y) in _eval_k98k_stock_ring(-47.80, 36, offset_r=-0.12, with_flutes=False)]
+    outer = mk_loft_x(
         "k98k_bp_o",
-        [(-0.85, -5.75), (1.45, -5.75), (1.45, 5.75), (-0.85, 5.75), (-1.05, 0.0)],
-        -2.09, 2.09, bevel=0.14, mat=m_park,
+        [(1.38, r_front), (0.15, r_mid), (-0.64, r_back), (-0.82, r_rim)],
+        mat=m_park,
     )
-    cup = mk_box("c_bp_cup", 1.85, 10.60, 3.55, [("t", 0.75, 0.0, 0.0)], mat=m_dark, bevel=0.06)
+    # Hollow inner cup matching wood buttstock end so buttplate genuinely wraps like a steel shoe!
+    c_in = [(z, y + y_shift) for (z, y) in _eval_k98k_stock_ring(-47.80, 36, offset_r=-0.14, with_flutes=False)]
+    cup = mk_loft_x("c_bp_cup", [(0.08, c_in), (1.65, c_in)], mat=m_dark)
     res = bool_subtract(outer, [cup])
-    res.name = "k98k_buttplate"
-    res.data.name = "k98k_buttplate"
-    return finish_part(res, sharp_deg=36.0)
+    # Twin recessed buttplate wood-screw heads on rear shoulder face
+    scr_t = mk_cyl("k98k_bp_st", 0.25, 0.25, 0.22, axis="x", segs=18, xform=[("t", -0.78,  3.75, 0.0)], mat=m_dark, bevel=0.025)
+    scr_b = mk_cyl("k98k_bp_sb", 0.25, 0.25, 0.22, axis="x", segs=18, xform=[("t", -0.78, -3.95, 0.0)], mat=m_dark, bevel=0.025)
+    res = join_objects([res, scr_t, scr_b], "k98k_buttplate")
+    return finish_part(res, sharp_deg=38.0)
 
 
 def build_k98k_trigger(mats):
@@ -1489,7 +1814,12 @@ def build_k98k_trigger(mats):
         [(-1.45, 0.15), (1.42, 0.15), (1.35, 0.95), (0.45, 0.72), (-0.15, 1.05), (-1.35, 0.62)],
         -0.31, 0.31, bevel=0.04, mat=m_blue,
     )
-    blade = mk_box("k98k_tr_b", 0.62, 2.45, 0.54, [("rz", 0.24), ("t", -0.22, -1.18, 0.0)], mat=m_blue, bevel=0.06)
+    # Gracefully curved two-stage Mauser crescent trigger blade dropping cleanly into oval trigger-guard bow!
+    bl_pts = [(-0.44, 0.32), (0.20, 0.32)]
+    bl_pts.extend(sample_cubic_bezier((0.20, 0.32), (0.04, -1.15), (0.12, -2.35), (0.68, -3.32), steps=14))
+    bl_pts.extend(sample_quad_bezier((0.68, -3.32), (0.40, -3.52), (0.08, -3.28), steps=6))
+    bl_pts.extend(sample_cubic_bezier((0.08, -3.28), (-0.52, -2.25), (-0.58, -1.08), (-0.44, 0.32), steps=14))
+    blade = mk_extrude_z("k98k_tr_b", bl_pts, -0.27, 0.27, bevel=0.06, bevel_segs=3, mat=m_blue)
     return finish_part(join_objects([head, blade], "k98k_trigger"), sharp_deg=34.0)
 
 
@@ -1505,25 +1835,54 @@ def build_k98k_sear(mats):
 
 def build_k98k_trigger_guard(mats):
     m_blue, m_dark = mats["R_GermanBlued"], mats["R_InnerDark"]
-    bplate = mk_box("k98k_tg_bp", 17.40, 0.58, 2.75, [("t", -0.35, -1.15, 0.0)], mat=m_blue, bevel=0.06)
-    mbox = mk_box("k98k_tg_mb", 9.20, 3.55, 2.65, [("t", 2.90, 0.65, 0.0)], mat=m_blue, bevel=0.08)
-    gbow = mk_extrude_z(
-        "k98k_tg_gb",
-        [(-8.40, -0.88), (-3.20, -0.88), (-3.40, -2.15), (-4.80, -2.55), (-7.20, -2.55), (-8.30, -1.85)],
-        -0.69, 0.69, bevel=0.06, mat=m_blue,
+    # Sleek rounded-end milled bottom tang plate flush with stock belly (world Y = -4.35)
+    bplate = mk_extrude_z(
+        "k98k_tg_bp",
+        mk_stadium_2d(17.60, 2.76, arc_segs=10),
+        -1.44, -0.86, bevel=0.06, bevel_segs=2,
+        xform=[("rx", -math.pi * 0.5), ("t", -0.35, 0.0, 0.0)],
+        mat=m_blue,
     )
-    solid = join_objects([bplate, mbox, gbow], "k98k_tg_tmp")
+    # Wait: verify rotation ("rx", -pi/2) maps (x, y, z) -> (x, z, -y) -> z in [-1.44, -0.86] maps to y in [-1.44, -0.86]!
+    # And stadium y in [-1.38, +1.38] maps to z in [-1.38, +1.38]! Exact!
+    mbox = mk_box("k98k_tg_mb", 9.20, 3.55, 2.65, [("t", 2.90, 0.65, 0.0)], mat=m_blue, bevel=0.08, bevel_segs=3)
+
+    # Unmistakable Mauser 98 smoothly curved milled oval trigger-guard bow welded watertight into tang!
+    # Drops cleanly beneath stock wrist (local y down to -3.45 -> world Y = -6.65) framing curved trigger!
+    tg_center: list[tuple[float, float]] = []
+    tg_center.extend(
+        sample_cubic_bezier((-9.05, -1.04), (-9.02, -2.35), (-8.38, -3.28), (-7.05, -3.42), steps=14, include_start=True)
+    )
+    tg_center.extend(
+        sample_cubic_bezier((-7.05, -3.42), (-5.80, -3.52), (-4.42, -3.42), (-3.58, -2.72), steps=14, include_start=False)
+    )
+    tg_center.extend(
+        sample_cubic_bezier((-3.58, -2.72), (-2.94, -2.18), (-2.88, -1.52), (-2.68, -1.04), steps=12, include_start=False)
+    )
+
+    def _tg_rx(t: float) -> float:
+        f0 = 0.16 * ((1.0 - _smoothstep_f(0.0, 0.16, t)) ** 1.5)
+        f1 = 0.18 * (_smoothstep_f(0.84, 1.0, t) ** 1.5)
+        return 0.225 + f0 + f1
+
+    def _tg_rz(t: float) -> float:
+        f0 = 0.24 * ((1.0 - _smoothstep_f(0.0, 0.20, t)) ** 1.4)
+        f1 = 0.26 * (_smoothstep_f(0.80, 1.0, t) ** 1.4)
+        return 0.66 + f0 + f1
+
+    gbow = mk_swept_bow("k98k_tg_gb", tg_center, _tg_rx, _tg_rz, sec_n=24, super_exp=0.72, mat=m_blue)
+
+    # Guard screw bosses at front & rear tang ends (classic Mauser action screws!)
+    boss_f = mk_cyl("k98k_tg_bf", 0.48, 0.54, 0.56, axis="y", segs=22, xform=[("t", 7.85, -1.16, 0.0)], mat=m_blue, bevel=0.04)
+    boss_r = mk_cyl("k98k_tg_br", 0.44, 0.50, 0.54, axis="y", segs=22, xform=[("t", -8.65, -1.16, 0.0)], mat=m_blue, bevel=0.04)
+
+    solid = bool_union([bplate, mbox, gbow, boss_f, boss_r], "k98k_tg_tmp")
     m_in = mk_box("c_tg_mi", 8.45, 4.60, 2.15, [("t", 2.90, 0.55, 0.0)], mat=m_dark)
-    ghole = mk_extrude_z(
-        "c_tg_gh",
-        [(-7.75, -1.20), (-3.90, -1.20), (-4.15, -2.02), (-5.05, -2.18), (-6.95, -2.18), (-7.70, -1.72)],
-        -1.10, 1.10, mat=m_dark,
-    )
-    tslot = mk_box("c_tg_ts", 2.20, 1.20, 0.72, [("t", -6.40, -1.00, 0.0)], mat=m_dark)
-    res = bool_subtract(solid, [m_in, ghole, tslot])
+    tslot = mk_box("c_tg_ts", 2.40, 1.40, 0.72, [("t", -6.40, -1.10, 0.0)], mat=m_dark)
+    res = bool_subtract(solid, [m_in, tslot])
     res.name = "k98k_trigger_guard"
     res.data.name = "k98k_trigger_guard"
-    return finish_part(res, sharp_deg=34.0)
+    return finish_part(res, sharp_deg=36.0)
 
 
 def build_k98k_mag_follower(mats):
@@ -1536,10 +1895,19 @@ def build_k98k_mag_follower(mats):
 
 def build_k98k_mag_floorplate(mats):
     m_blue, m_park = mats["R_GermanBlued"], mats["R_ParkHardware"]
-    plate = mk_box("k98k_fp_p", 8.90, 0.36, 2.38, None, mat=m_blue, bevel=0.05)
+    # Sleek rounded-end milled Mauser magazine floorplate seated flush in trigger-guard frame!
+    plate = mk_extrude_z(
+        "k98k_fp_p",
+        mk_stadium_2d(8.90, 2.38, arc_segs=10),
+        -0.18, 0.18, bevel=0.055, bevel_segs=3,
+        xform=[("rx", -math.pi * 0.5)],
+        mat=m_blue,
+    )
     lip = mk_box("k98k_fp_l", 0.95, 0.46, 1.95, [("t", 3.85, 0.22, 0.0)], mat=m_blue, bevel=0.04)
-    stud = mk_cyl("k98k_fp_st", 0.26, 0.26, 0.48, axis="y", segs=16, xform=[("t", -3.80, -0.05, 0.0)], mat=m_park, bevel=0.03)
-    return finish_part(join_objects([plate, lip, stud], "k98k_mag_floorplate"), sharp_deg=34.0)
+    # Recessed bullet-tip floorplate release button & spring-plunger collar
+    collar = mk_cyl("k98k_fp_cl", 0.38, 0.40, 0.26, axis="y", segs=20, xform=[("t", -3.72, -0.06, 0.0)], mat=m_park, bevel=0.03)
+    stud = mk_cyl("k98k_fp_st", 0.22, 0.22, 0.46, axis="y", segs=18, xform=[("t", -3.72, -0.08, 0.0)], mat=m_blue, bevel=0.03)
+    return finish_part(join_objects([plate, lip, collar, stud], "k98k_mag_floorplate"), sharp_deg=34.0)
 
 
 def build_k98k_stripper_clip(mats):

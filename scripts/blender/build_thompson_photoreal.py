@@ -160,12 +160,13 @@ if "--postprocess" in sys.argv:
         stamp_d = ndimage.gaussian_filter(stamp_map, sigma=0.7) * 0.60
 
         albedo *= 1.0 - 0.28 * stamp_d[..., None]
-        _mix(rgh, 0.64, stamp_d * 0.60)
+        _mix(rgh, 0.62, stamp_d * 0.60)
         ao *= 1.0 - 0.28 * stamp_d
         nrm_final = _rnm_blend(nrm, _height_to_normal_01(-0.50 * stamp_d, strength=4.0))
 
-        rgh = np.clip(rgh, 0.28, 0.88)
-        met = np.clip(met, 0.00, 0.04)
+        rgh = np.clip(rgh, 0.22, 0.86)
+        # Preserve metallic channel for W_MountSteel (isolated behind >=80px UV firewall in STEEL_HW zone!)
+        met = np.clip(met, 0.00, 0.95)
         orm = np.stack((ao, rgh, met), axis=-1)
 
         _save_webp_rgb(albedo, out_dir / "thompson_v3_walnut_albedo.webp", 92)
@@ -556,7 +557,8 @@ def _build_pbr_mat(
     return mat
 
 
-def _build_walnut_mat(name: str = "W_ThompsonWalnut") -> bpy.types.Material:
+def _build_walnut_mat(name: str = "W_ThompsonWalnut", vertical_grip: bool = False) -> bpy.types.Material:
+    """Rich hand-rubbed linseed-oiled American Black Walnut (Juglans nigra) with satin sheen (R = 0.34-0.44)."""
     mat = bpy.data.materials.new(name)
     nt = mat.node_tree
     nt.nodes.clear()
@@ -565,52 +567,79 @@ def _build_walnut_mat(name: str = "W_ThompsonWalnut") -> bpy.types.Material:
     nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
 
     tc = nt.nodes.new("ShaderNodeTexCoord")
+    rot_w = nt.nodes.new("ShaderNodeMapping")
+    if vertical_grip:
+        # Align grain vertically along sculpted foregrip / pistol-grip spine!
+        rot_w.inputs["Rotation"].default_value = (0.0, math.radians(12.0), 0.0)
+    else:
+        # Slight natural buttstock slope along X
+        rot_w.inputs["Rotation"].default_value = (0.0, math.radians(-5.0), 0.0)
+    nt.links.new(tc.outputs["Object"], rot_w.inputs["Vector"])
+
     map_wood = nt.nodes.new("ShaderNodeMapping")
-    map_wood.inputs["Scale"].default_value = (0.072, 0.72, 0.58)
-    nt.links.new(tc.outputs["Object"], map_wood.inputs["Vector"])
+    map_wood.inputs["Scale"].default_value = (0.76, 0.68, 0.11) if vertical_grip else (0.068, 0.64, 0.56)
+    nt.links.new(rot_w.outputs["Vector"], map_wood.inputs["Vector"])
 
     wave = nt.nodes.new("ShaderNodeTexWave")
     wave.wave_type = "RINGS"
-    wave.rings_direction = "X"
-    wave.inputs["Scale"].default_value = 1.05
-    wave.inputs["Distortion"].default_value = 7.2
-    wave.inputs["Detail"].default_value = 6.0
+    wave.rings_direction = "Z" if vertical_grip else "X"
+    wave.wave_profile = "SIN"
+    wave.inputs["Scale"].default_value = 1.25 if vertical_grip else 1.10
+    wave.inputs["Distortion"].default_value = 8.4
+    wave.inputs["Detail"].default_value = 7.0
+    wave.inputs["Detail Scale"].default_value = 1.65
+    wave.inputs["Detail Roughness"].default_value = 0.58
     nt.links.new(map_wood.outputs["Vector"], wave.inputs["Vector"])
 
-    n_fib = nt.nodes.new("ShaderNodeTexNoise")
-    n_fib.inputs["Scale"].default_value = 2.2
-    n_fib.inputs["Detail"].default_value = 6.5
-    n_fib.inputs["Distortion"].default_value = 0.65
-    nt.links.new(map_wood.outputs["Vector"], n_fib.inputs["Vector"])
+    map_fib = nt.nodes.new("ShaderNodeMapping")
+    map_fib.inputs["Scale"].default_value = (3.8, 3.8, 0.36) if vertical_grip else (0.36, 3.8, 3.8)
+    nt.links.new(rot_w.outputs["Vector"], map_fib.inputs["Vector"])
 
+    n_fib = nt.nodes.new("ShaderNodeTexNoise")
+    n_fib.inputs["Scale"].default_value = 2.4
+    n_fib.inputs["Detail"].default_value = 6.5
+    n_fib.inputs["Distortion"].default_value = 0.72
+    nt.links.new(map_fib.outputs["Vector"], n_fib.inputs["Vector"])
+
+    # Warm rich hand-oiled American walnut heartwood palette (deep chocolate -> cognac -> golden amber figure)
     mix1 = nt.nodes.new("ShaderNodeMix")
     mix1.data_type = "RGBA"
-    mix1.inputs[6].default_value = srgb_to_lin(0.185, 0.088, 0.044)
-    mix1.inputs[7].default_value = srgb_to_lin(0.385, 0.192, 0.094)
+    mix1.inputs[6].default_value = srgb_to_lin(0.148, 0.066, 0.031)
+    mix1.inputs[7].default_value = srgb_to_lin(0.365, 0.175, 0.080)
     nt.links.new(wave.outputs["Fac"], mix1.inputs[0])
+
+    fib_f = nt.nodes.new("ShaderNodeMapRange")
+    fib_f.clamp = True
+    fib_f.inputs["From Min"].default_value = 0.28
+    fib_f.inputs["From Max"].default_value = 0.78
+    fib_f.inputs["To Min"].default_value = 0.0
+    fib_f.inputs["To Max"].default_value = 0.56
+    nt.links.new(n_fib.outputs["Fac"], fib_f.inputs["Value"])
 
     mix2 = nt.nodes.new("ShaderNodeMix")
     mix2.data_type = "RGBA"
-    mix2.inputs[7].default_value = srgb_to_lin(0.515, 0.275, 0.136)
-    nt.links.new(n_fib.outputs["Fac"], mix2.inputs[0])
+    mix2.inputs[7].default_value = srgb_to_lin(0.525, 0.282, 0.134)
+    nt.links.new(fib_f.outputs["Result"], mix2.inputs[0])
     nt.links.new(mix1.outputs[2], mix2.inputs[6])
     nt.links.new(mix2.outputs[2], bsdf.inputs["Base Color"])
 
+    # Refined satin hand-rubbed linseed-oil sheen (R = 0.34-0.44, never flat matte plastic!)
     rmap = nt.nodes.new("ShaderNodeMapRange")
+    rmap.clamp = True
     rmap.inputs["From Min"].default_value = 0.20
     rmap.inputs["From Max"].default_value = 0.80
     rmap.inputs["To Min"].default_value = 0.34
-    rmap.inputs["To Max"].default_value = 0.48
+    rmap.inputs["To Max"].default_value = 0.43
     nt.links.new(n_fib.outputs["Fac"], rmap.inputs["Value"])
     nt.links.new(rmap.outputs["Result"], bsdf.inputs["Roughness"])
     bsdf.inputs["Metallic"].default_value = 0.0
 
     bev = nt.nodes.new("ShaderNodeBevel")
-    bev.samples = 4
-    bev.inputs["Radius"].default_value = 0.024
+    bev.samples = 5
+    bev.inputs["Radius"].default_value = 0.022
     bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.14
-    bump.inputs["Distance"].default_value = 0.016
+    bump.inputs["Strength"].default_value = 0.095
+    bump.inputs["Distance"].default_value = 0.014
     nt.links.new(n_fib.outputs["Fac"], bump.inputs["Height"])
     nt.links.new(bev.outputs["Normal"], bump.inputs["Normal"])
     nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
@@ -619,11 +648,12 @@ def _build_walnut_mat(name: str = "W_ThompsonWalnut") -> bpy.types.Material:
 
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
-        "W_ThompsonWalnut": _build_walnut_mat("W_ThompsonWalnut"),
+        "W_ThompsonWalnut": _build_walnut_mat("W_ThompsonWalnut", vertical_grip=False),
+        "W_ThompsonGripWalnut": _build_walnut_mat("W_ThompsonGripWalnut", vertical_grip=True),
         "W_MountSteel": _build_pbr_mat(
             "W_MountSteel",
-            base_srgb=(0.192, 0.214, 0.260),
-            roughness=0.28,
+            base_srgb=(0.205, 0.230, 0.282),
+            roughness=0.27,
             metallic=0.90,
             bevel_r=0.022,
             edge_wear=0.45,
@@ -631,11 +661,11 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # Pre-war Du-Lite Deep Blued Billet Steel (AgX calibrated, zero black crush)
         "R_DuLiteBlue": _build_pbr_mat(
             "R_DuLiteBlue",
-            base_srgb=(0.192, 0.218, 0.272),
+            base_srgb=(0.208, 0.234, 0.288),
             roughness=0.25,
             metallic=0.90,
             bevel_r=0.026,
-            edge_wear=0.56,
+            edge_wear=0.50,
             edge_srgb=(0.78, 0.81, 0.86),
             grain_scale=36.0,
             grain_bump=0.018,
@@ -643,11 +673,11 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "R_ControlBlue": _build_pbr_mat(
             "R_ControlBlue",
-            base_srgb=(0.215, 0.238, 0.285),
-            roughness=0.28,
+            base_srgb=(0.224, 0.248, 0.296),
+            roughness=0.27,
             metallic=0.89,
-            bevel_r=0.020,
-            edge_wear=0.48,
+            bevel_r=0.022,
+            edge_wear=0.46,
         ),
         "R_Polished": _build_pbr_mat(
             "R_Polished",
@@ -659,20 +689,20 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "M_BluedSteel": _build_pbr_mat(
             "M_BluedSteel",
-            base_srgb=(0.190, 0.216, 0.268),
-            roughness=0.26,
+            base_srgb=(0.204, 0.230, 0.284),
+            roughness=0.25,
             metallic=0.90,
             bevel_r=0.022,
-            edge_wear=0.52,
+            edge_wear=0.48,
             aniso_stretch=(3.8, 0.5, 0.5),
         ),
         "M_DrumBlue": _build_pbr_mat(
             "M_DrumBlue",
-            base_srgb=(0.202, 0.226, 0.274),
-            roughness=0.27,
+            base_srgb=(0.214, 0.238, 0.288),
+            roughness=0.26,
             metallic=0.89,
             bevel_r=0.024,
-            edge_wear=0.48,
+            edge_wear=0.46,
         ),
         "M_PolishedSteel": _build_pbr_mat(
             "M_PolishedSteel",
@@ -948,6 +978,208 @@ def bool_subtract(target: bpy.types.Object, cutters: list[bpy.types.Object], sol
     return target
 
 
+def _smoothstep_f(e0: float, e1: float, x: float) -> float:
+    t = max(0.0, min(1.0, (x - e0) / max(e1 - e0, 1e-6)))
+    return t * t * (3.0 - 2.0 * t)
+
+
+def sample_quad_bezier(
+    p0: tuple[float, float],
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    steps: int = 12,
+    include_start: bool = False,
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = []
+    start = 0 if include_start else 1
+    for i in range(start, steps + 1):
+        t = i / steps
+        mt = 1.0 - t
+        pts.append((
+            mt * mt * p0[0] + 2.0 * mt * t * p1[0] + t * t * p2[0],
+            mt * mt * p0[1] + 2.0 * mt * t * p1[1] + t * t * p2[1],
+        ))
+    return pts
+
+
+def sample_cubic_bezier(
+    p0: tuple[float, float],
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    steps: int = 16,
+    include_start: bool = False,
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = []
+    start = 0 if include_start else 1
+    for i in range(start, steps + 1):
+        t = i / steps
+        mt = 1.0 - t
+        pts.append((
+            mt**3 * p0[0] + 3.0 * mt**2 * t * p1[0] + 3.0 * mt * t**2 * p2[0] + t**3 * p3[0],
+            mt**3 * p0[1] + 3.0 * mt**2 * t * p1[1] + 3.0 * mt * t**2 * p2[1] + t**3 * p3[1],
+        ))
+    return pts
+
+
+def mk_swept_bow(
+    name: str,
+    centerline_xy: list[tuple[float, float]],
+    rx_fn,
+    rz_fn,
+    sec_n: int = 24,
+    super_exp: float = 0.72,
+    xform=None,
+    mat=None,
+) -> bpy.types.Object:
+    bm = bmesh.new()
+    rings = []
+    n_pts = len(centerline_xy)
+    for i, (cx, cy) in enumerate(centerline_xy):
+        t = i / max(1, n_pts - 1)
+        if i == 0:
+            tx, ty = centerline_xy[1][0] - cx, centerline_xy[1][1] - cy
+        elif i == n_pts - 1:
+            tx, ty = cx - centerline_xy[-2][0], cy - centerline_xy[-2][1]
+        else:
+            tx, ty = centerline_xy[i + 1][0] - centerline_xy[i - 1][0], centerline_xy[i + 1][1] - centerline_xy[i - 1][1]
+        tl = max(1e-6, math.hypot(tx, ty))
+        nx, ny = -ty / tl, tx / tl
+        rx = rx_fn(t)
+        rz = rz_fn(t)
+        ring = []
+        for s in range(sec_n):
+            a = (s / sec_n) * 2.0 * math.pi
+            ca, sa = math.cos(a), math.sin(a)
+            px = math.copysign(abs(ca) ** super_exp, ca) * rx
+            pz = math.copysign(abs(sa) ** super_exp, sa) * rz
+            ring.append(bm.verts.new((cx + nx * px, cy + ny * px, pz)))
+        rings.append(ring)
+    for i in range(len(rings) - 1):
+        for s in range(sec_n):
+            sn = (s + 1) % sec_n
+            bm.faces.new((rings[i][s], rings[i][sn], rings[i + 1][sn], rings[i + 1][s]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_loft_x(name: str, stations: list[tuple[float, list[tuple[float, float]]]], xform=None, mat=None):
+    bm = bmesh.new()
+    n_ring = len(stations[0][1])
+    rings = [[bm.verts.new((x, y, z)) for (z, y) in zy_ring] for x, zy_ring in stations]
+    for s in range(len(rings) - 1):
+        a, b = rings[s], rings[s + 1]
+        for k in range(n_ring):
+            kn = (k + 1) % n_ring
+            bm.faces.new((a[k], b[k], b[kn], a[kn]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_loft_y(name: str, stations: list[tuple[float, list[tuple[float, float]]]], cap_bot: bool = True, cap_top: bool = True, xform=None, mat=None):
+    bm = bmesh.new()
+    n_ring = len(stations[0][1])
+    rings = [[bm.verts.new((x, y, z)) for (x, z) in xz_ring] for y, xz_ring in stations]
+    for s in range(len(rings) - 1):
+        a, b = rings[s], rings[s + 1]
+        for k in range(n_ring):
+            kn = (k + 1) % n_ring
+            bm.faces.new((a[k], b[k], b[kn], a[kn]))
+    if cap_bot:
+        bm.faces.new(list(reversed(rings[0])))
+    if cap_top:
+        bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_tube_along_pts(name: str, pts_three: list[Vector], radius: float, ring_segs: int = 14, closed: bool = False, xform=None, mat=None):
+    bm = bmesh.new()
+    rings = []
+    prev_n = None
+    n_pts = len(pts_three)
+    for i, p in enumerate(pts_three):
+        if closed:
+            tang = (pts_three[(i + 1) % n_pts] - pts_three[(i - 1) % n_pts]).normalized()
+        elif i == 0:
+            tang = (pts_three[1] - pts_three[0]).normalized()
+        elif i == n_pts - 1:
+            tang = (pts_three[-1] - pts_three[-2]).normalized()
+        else:
+            tang = (pts_three[i + 1] - pts_three[i - 1]).normalized()
+        if prev_n is None:
+            ref = Vector((0, 0, 1)) if abs(tang.z) < 0.85 else Vector((1, 0, 0))
+            n_vec = tang.cross(ref).normalized()
+        else:
+            n_vec = (prev_n - tang * prev_n.dot(tang)).normalized()
+        prev_n = n_vec
+        b_vec = tang.cross(n_vec).normalized()
+        rings.append([bm.verts.new(p + (n_vec * math.cos(2.0 * math.pi * s / ring_segs) + b_vec * math.sin(2.0 * math.pi * s / ring_segs)) * radius) for s in range(ring_segs)])
+    end_idx = len(rings) if closed else len(rings) - 1
+    for i in range(end_idx):
+        ni = (i + 1) % len(rings)
+        for s in range(ring_segs):
+            sn = (s + 1) % ring_segs
+            bm.faces.new((rings[i][s], rings[ni][s], rings[ni][sn], rings[i][sn]))
+    if not closed:
+        bm.faces.new(list(reversed(rings[0])))
+        bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def bool_union(objs: list[bpy.types.Object], name: str, solver: str = "EXACT") -> bpy.types.Object:
+    objs = [o for o in objs if o is not None]
+    assert len(objs) >= 1
+    base = objs[0]
+    rest = objs[1:]
+    for idx, other in enumerate(rest):
+        for m in other.data.materials:
+            if m and m.name not in [tm.name for tm in base.data.materials if tm]:
+                base.data.materials.append(m)
+        backup_mesh = base.data.copy()
+        tried = [solver, "MANIFOLD" if solver == "EXACT" else "EXACT"]
+        ok = False
+        for slv in tried:
+            select_only([base], base)
+            mod = base.modifiers.new(name=f"Union_{idx}", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = slv
+            mod.object = other
+            if slv == "EXACT":
+                mod.use_self = True
+                mod.use_hole_tolerant = True
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+            if _count_non_manifold(base) == 0 and len(base.data.polygons) > 0:
+                ok = True
+                break
+            old_m = base.data
+            base.data = backup_mesh.copy()
+            bpy.data.meshes.remove(old_m)
+        if not ok:
+            select_only([base], base)
+            mod = base.modifiers.new(name=f"UnionF_{idx}", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = "EXACT"
+            mod.use_self = True
+            mod.use_hole_tolerant = True
+            mod.object = other
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.meshes.remove(backup_mesh)
+    delete_objs(rest)
+    base.name = name
+    base.data.name = name
+    return base
+
+
 def finish_part(obj: bpy.types.Object, sharp_deg: float = 36.0, weighted_normals: bool = True) -> bpy.types.Object:
     bm = bmesh.new()
     bm.from_mesh(obj.data)
@@ -984,24 +1216,25 @@ def finish_part(obj: bpy.types.Object, sharp_deg: float = 36.0, weighted_normals
 # =============================================================================
 def build_thompson_barrel(mats):
     m_bl, m_pol = mats["M_BluedSteel"], mats["M_PolishedSteel"]
-    pts = [(0.57, -13.30), (1.32, -13.30), (1.32, -11.20), (1.18, -11.00)]
-    # 28 deeply machined radial cooling fins across [-10.8, +10.6]
+    pts = [(0.57, -13.30), (1.34, -13.30), (1.34, -11.20), (1.20, -11.00)]
+    # 28 deeply machined crisp radial cooling fins across [-10.8, +10.6] w/ steep sidewalls & sharp highlight crests!
     fin_count = 28
     x0_all, x1_all = -10.80, 10.60
     pitch = (x1_all - x0_all) / fin_count
     for i in range(fin_count):
+        t = i / fin_count
         xa = x0_all + i * pitch
-        xb = xa + pitch * 0.36
-        xc = xa + pitch * 0.56
-        xd = xa + pitch * 0.94
-        r_peak = 1.25 - (i / fin_count) * 0.16
-        r_root = 0.90 - (i / fin_count) * 0.08
+        xb = xa + pitch * 0.24
+        xc = xa + pitch * 0.64
+        xd = xa + pitch * 0.88
+        r_peak = 1.28 - t * 0.17
+        r_root = 0.84 - t * 0.08
         pts.extend([(r_root, xa), (r_peak, xb), (r_peak, xc), (r_root, xd)])
     pts.extend([(0.82, 10.90), (0.82, 13.30), (0.57, 13.30), (0.57, -13.30)])
 
-    outer = mk_lathe_x("th_bbl_o", pts, segs=38, mat=m_bl)
+    outer = mk_lathe_x("th_bbl_o", pts, segs=48, mat=m_bl)
     lands = mk_helical_lands("th_land", 6, 0.57, 0.016, 0.18, -10.5, 13.0, 40.6, segs_x=24, mat=m_pol)
-    return finish_part(join_objects([outer, *lands], "thompson_barrel"), sharp_deg=36.0)
+    return finish_part(join_objects([outer, *lands], "thompson_barrel"), sharp_deg=34.0)
 
 
 def build_thompson_cutts_comp(mats):
@@ -1009,20 +1242,25 @@ def build_thompson_cutts_comp(mats):
     body = mk_lathe_x(
         "th_cc_b",
         [
-            (0.62, -3.60), (1.06, -3.60), (1.06, -1.60), (1.28, -1.20),
-            (1.28, 2.25), (1.10, 2.48), (1.10, 3.55), (0.94, 3.64),
-            (0.62, 3.64), (0.62, -3.60),
+            (0.62, -3.60), (1.06, -3.60), (1.06, -1.65), (1.14, -1.42),
+            (1.30, -1.16), (1.30, 2.25), (1.12, 2.48), (1.12, 3.55),
+            (0.94, 3.66), (0.62, 3.66), (0.62, -3.60),
         ],
-        segs=36, mat=m_bl,
+        segs=44, mat=m_bl,
     )
+    # 4 crisp deep angled Cutts top recoil-compensation gas ports w/ chamfered edges
     slots = [
-        mk_box(f"c_cc_s{i}", 0.46, 1.50, 1.65, [("rz", -0.24), ("t", -0.75 + i * 0.72, 1.08, 0.0)], mat=m_bl)
+        mk_box(f"c_cc_s{i}", 0.44, 1.56, 1.72, [("rz", -0.26), ("t", -0.78 + i * 0.72, 1.06, 0.0)], mat=m_bl, bevel=0.03)
         for i in range(4)
     ]
     body = bool_subtract(body, slots)
-    ring_boss = mk_cyl("th_cc_rb", 1.28, 1.28, 1.25, axis="x", segs=28, xform=[("t", 2.65, 0.0, 0.0)], mat=m_bl, bevel=0.04)
-    ring_boss = bool_subtract(ring_boss, [mk_cyl("c_cc_rb", 0.65, 0.65, 1.60, axis="x", segs=24, xform=[("t", 2.65, 0.0, 0.0)], mat=m_bl)])
-    post = mk_extrude_z("th_cc_fs", [(-0.85, 0.0), (0.75, 0.0), (0.45, 1.45), (-0.15, 1.45)], -0.14, 0.14, bevel=0.02, xform=[("t", 2.65, 1.15, 0.0)], mat=m_bl)
+    ring_boss = mk_cyl("th_cc_rb", 1.30, 1.30, 1.25, axis="x", segs=36, xform=[("t", 2.65, 0.0, 0.0)], mat=m_bl, bevel=0.05)
+    ring_boss = bool_subtract(ring_boss, [mk_cyl("c_cc_rb", 0.65, 0.65, 1.60, axis="x", segs=28, xform=[("t", 2.65, 0.0, 0.0)], mat=m_bl)])
+    post_pts = [(-0.85, 0.0), (0.76, 0.0)]
+    post_pts.extend(sample_quad_bezier((0.76, 0.0), (0.58, 0.85), (0.44, 1.46), steps=8))
+    post_pts.extend([(-0.14, 1.46)])
+    post_pts.extend(sample_quad_bezier((-0.14, 1.46), (-0.52, 0.82), (-0.85, 0.0), steps=8))
+    post = mk_extrude_z("th_cc_fs", post_pts, -0.135, 0.135, bevel=0.025, bevel_segs=2, xform=[("t", 2.65, 1.14, 0.0)], mat=m_bl)
     return finish_part(join_objects([body, ring_boss, post], "thompson_cutts_comp"), sharp_deg=36.0)
 
 
@@ -1114,62 +1352,295 @@ def build_thompson_lyman_sight(mats):
 
 def build_thompson_lower_frame(mats):
     m_rec, m_ctl = mats["R_DuLiteBlue"], mats["R_ControlBlue"]
-    frame = mk_box("th_lf_f", 17.40, 2.26, 3.06, [("t", 0.20, 0.15, 0.0)], mat=m_rec, bevel=0.10)
-    frame = bool_subtract(frame, [mk_box("c_lf_fc", 9.20, 1.68, 1.76, [("t", 0.50, 0.45, 0.0)], mat=m_ctl)])
-    # Solid closed-loop milled trigger guard (front + bottom + rear!)
-    tg_f = mk_box("th_lf_tf", 0.58, 2.68, 1.26, [("rz", -0.20), ("t", 4.65, -1.75, 0.0)], mat=m_ctl, bevel=0.05)
-    tg_b = mk_box("th_lf_tb", 6.85, 0.54, 1.26, [("t", 1.45, -2.92, 0.0)], mat=m_ctl, bevel=0.05)
-    tg_r = mk_box("th_lf_tr", 0.70, 2.48, 1.36, [("t", -1.75, -1.75, 0.0)], mat=m_ctl, bevel=0.05)
-    tang = mk_box("th_lf_st", 3.45, 1.46, 2.26, [("t", -9.40, 0.15, 0.0)], mat=m_ctl, bevel=0.08)
-    return finish_part(join_objects([frame, tg_f, tg_b, tg_r, tang], "thompson_lower_frame"), sharp_deg=36.0)
+    frame = mk_box("th_lf_f", 17.40, 2.26, 3.06, [("t", 0.20, 0.15, 0.0)], mat=m_rec, bevel=0.10, bevel_segs=3)
+    # Smoothly swept closed-loop milled Thompson trigger-guard bow welded watertight into lower frame!
+    tg_center: list[tuple[float, float]] = []
+    tg_center.extend(
+        sample_cubic_bezier((-1.82, -0.55), (-1.92, -2.18), (-1.45, -2.92), (-0.15, -2.94), steps=14, include_start=True)
+    )
+    tg_center.extend(
+        sample_cubic_bezier((-0.15, -2.94), (1.60, -2.96), (3.50, -2.96), (4.30, -2.55), steps=14, include_start=False)
+    )
+    tg_center.extend(
+        sample_cubic_bezier((4.30, -2.55), (4.86, -2.18), (4.84, -1.30), (4.48, -0.55), steps=12, include_start=False)
+    )
+
+    def _tg_rx(t: float) -> float:
+        f0 = 0.16 * ((1.0 - _smoothstep_f(0.0, 0.16, t)) ** 1.5)
+        f1 = 0.16 * (_smoothstep_f(0.84, 1.0, t) ** 1.5)
+        return 0.255 + f0 + f1
+
+    def _tg_rz(t: float) -> float:
+        f0 = 0.24 * ((1.0 - _smoothstep_f(0.0, 0.18, t)) ** 1.4)
+        f1 = 0.22 * (_smoothstep_f(0.82, 1.0, t) ** 1.4)
+        return 0.62 + f0 + f1
+
+    tg_bow = mk_swept_bow("th_lf_tgb", tg_center, _tg_rx, _tg_rz, sec_n=22, super_exp=0.72, mat=m_ctl)
+    tang = mk_box("th_lf_st", 3.45, 1.46, 2.26, [("t", -9.40, 0.15, 0.0)], mat=m_ctl, bevel=0.08, bevel_segs=3)
+    solid = bool_union([frame, tg_bow, tang], "th_lf_solid")
+    res = bool_subtract(solid, [mk_box("c_lf_fc", 9.20, 1.68, 1.76, [("t", 0.50, 0.45, 0.0)], mat=m_ctl)])
+    res.name = "thompson_lower_frame"
+    res.data.name = "thompson_lower_frame"
+    return finish_part(res, sharp_deg=36.0)
 
 
 def build_thompson_foregrip(mats):
-    m_wal, m_st = mats["W_ThompsonWalnut"], mats["W_MountSteel"]
-    bar = mk_box("th_fg_b", 13.20, 1.06, 1.56, [("t", -3.80, 3.65, 0.0)], mat=m_st, bevel=0.08)
-    pts = [
-        (-1.35, 3.25), (1.75, 3.25), (2.35, 0.40), (1.85, -1.40),
-        (2.30, -3.20), (1.85, -5.20), (2.15, -7.20), (0.85, -8.15),
-        (-1.45, -7.85), (-1.85, -3.20),
-    ]
-    grip = mk_extrude_z("th_fg_g", pts, -1.36, 1.36, bevel=0.34, bevel_segs=4, mat=m_wal)
-    return finish_part(join_objects([bar, grip], "thompson_foregrip"), sharp_deg=42.0)
+    m_wal, m_st = mats["W_ThompsonGripWalnut"], mats["W_MountSteel"]
+    # Precision milled steel foregrip mount hanger bar + contoured neck saddle
+    bar = mk_box("th_fg_b", 13.20, 1.02, 1.56, [("t", -3.80, 3.66, 0.0)], mat=m_st, bevel=0.08, bevel_segs=3)
+    saddle = mk_box("th_fg_sd", 3.60, 0.42, 1.92, [("t", 0.15, 3.24, 0.0)], mat=m_st, bevel=0.06, bevel_segs=2)
+
+    # Iconic ergonomically sculpted, rounded Thompson 1928A1 vertical pistol foregrip w/ 4 smooth curved finger grooves!
+    # True 3D vertical loft (56 stations along Y x 36 elliptical-teardrop ring verts) + tapered top neck + rounded heel!
+    n_st = 56
+    n_ring = 36
+    y_top = 3.28
+    y_bot = -8.22
+    stations = []
+    for i in range(n_st + 1):
+        t = i / n_st  # 0 = bottom domed heel (-8.22), 1 = top mounting shoulder (+3.28)
+        y = y_bot + (y_top - y_bot) * t
+
+        # Smooth anatomical heel dome closure at very bottom (t in [0, 0.085])
+        if t < 0.085:
+            u_h = max(0.015, t / 0.085)
+            heel_scale = math.pow(math.sin(u_h * math.pi * 0.5), 0.58)
+        else:
+            heel_scale = 1.0
+
+        # Subtle authentic ~8.5 deg forward rake along Thompson vertical foregrip
+        x_ctr = 0.24 - 0.16 * (1.0 - t)
+
+        # Tapered top mounting neck (t in [0.76, 1.0]) transitioning seamlessly into steel mount bar
+        neck_pinch = math.sin(_smoothstep_f(0.74, 0.96, t) * math.pi)
+        top_flare = _smoothstep_f(0.90, 1.0, t)
+
+        # 4 deep smooth ergonomic finger grooves along front (+X) face (y in [-6.80, +0.95])!
+        groove_env = _smoothstep_f(-7.15, -6.30, y) * (1.0 - _smoothstep_f(0.55, 1.35, y))
+        # Period = 1.85 cm -> 4 crisp finger troughs at y = -0.35, -2.20, -4.05, -5.90 separated by rounded knuckle ridges!
+        fg_wave = 0.5 + 0.5 * math.cos(2.0 * math.pi * (y - (-1.275)) / 1.85)
+        groove_cut = 0.44 * (fg_wave ** 1.25) * groove_env
+
+        # Front (+X), Back (-X), and Lateral (+-Z) radii defining lush organic palm-swelled cross-section
+        rx_front = (2.12 - 0.34 * neck_pinch - 0.24 * top_flare - groove_cut) * heel_scale
+        rx_back = (1.66 + 0.24 * math.sin(math.pi * _smoothstep_f(0.12, 0.85, t)) - 0.28 * neck_pinch - 0.20 * top_flare) * heel_scale
+        rz = (1.42 + 0.08 * math.sin(math.pi * _smoothstep_f(0.12, 0.82, t)) - 0.26 * neck_pinch - 0.22 * top_flare) * heel_scale
+
+        # Subtle top shoulder bevel for crisp wood-to-steel mating seam
+        if t > 0.975:
+            top_bev = 1.0 - 0.05 * ((t - 0.975) / 0.025)
+            rx_front *= top_bev
+            rx_back *= top_bev
+            rz *= top_bev
+
+        ring: list[tuple[float, float]] = []
+        for k in range(n_ring):
+            a = 2.0 * math.pi * k / n_ring  # 0 = +X front finger ridge, pi/2 = +Z flank, pi = -X backstrap
+            ca, sa = math.cos(a), math.sin(a)
+            if ca >= 0.0:
+                # Front half: slightly narrower sculpted finger-groove contour
+                px = x_ctr + rx_front * (ca ** 0.90)
+                w_front = 1.0 - 0.16 * (ca ** 1.3)
+                pz = rz * w_front * math.copysign(abs(sa) ** 0.92, sa)
+            else:
+                # Rear half: full rounded ergonomic palm-swell backstrap
+                px = x_ctr - rx_back * ((-ca) ** 0.88)
+                pz = rz * math.copysign(abs(sa) ** 0.88, sa)
+            ring.append((px, pz))
+        stations.append((y, ring))
+
+    grip = mk_loft_y("th_fg_g", stations, mat=m_wal)
+    # Recessed blued steel grip-bolt washer & slotted screw seated cleanly in rounded bottom heel
+    cb = mk_cyl("c_fg_cb", 0.44, 0.44, 0.40, axis="y", segs=22, xform=[("t", 0.05, -8.12, 0.0)], mat=m_wal)
+    grip = bool_subtract(grip, [cb])
+    bolt = mk_cyl("th_fg_bolt", 0.36, 0.38, 0.24, axis="y", segs=22, xform=[("t", 0.05, -8.02, 0.0)], mat=m_st, bevel=0.03)
+    return finish_part(join_objects([bar, saddle, grip, bolt], "thompson_foregrip"), sharp_deg=44.0)
 
 
 def build_thompson_pistol_grip(mats):
-    m_wal = mats["W_ThompsonWalnut"]
-    pts = [
-        (-1.35, 3.90), (2.15, 3.90), (1.80, 1.60), (1.25, -0.40),
-        (0.85, -2.50), (0.35, -4.65), (-2.45, -4.25), (-2.85, -0.80), (-2.10, 2.20),
+    m_wal, m_st = mats["W_ThompsonGripWalnut"], mats["W_MountSteel"]
+    # Ergonomically sculpted 3D rounded Thompson 1928A1 rear pistol grip (52 stations x 36 elliptical verts)!
+    n_st = 52
+    n_ring = 36
+    y_top = 3.94
+    y_bot = -4.76
+    stations = []
+    for i in range(n_st + 1):
+        t = i / n_st  # 0 = smooth rounded heel (-4.76), 1 = upper lower-frame mount shoulder (+3.94)
+        y = y_bot + (y_top - y_bot) * t
+
+        if t < 0.095:
+            u_h = max(0.015, t / 0.095)
+            heel_scale = math.pow(math.sin(u_h * math.pi * 0.5), 0.56)
+        else:
+            heel_scale = 1.0
+
+        # Classic Thompson ~22-deg rearward sweep from top collar to heel
+        x_ctr = -1.16 + 1.62 * (t ** 0.94)
+        # Graceful palm-swell belly peaking in lower-middle palm (t ~ 0.36) + slender ergonomic thumb web (t ~ 0.80)
+        palm = math.sin(math.pi * _smoothstep_f(0.08, 0.84, t))
+        web_pinch = math.sin(math.pi * _smoothstep_f(0.68, 0.96, t))
+
+        # Subtle sculpted 3-finger ergonomic contour along frontstrap (+X)
+        fg_env = _smoothstep_f(0.16, 0.28, t) * (1.0 - _smoothstep_f(0.76, 0.88, t))
+        fg_wave = 0.5 + 0.5 * math.cos(2.0 * math.pi * (y - (-1.20)) / 1.95)
+        fg_dip = 0.22 * (fg_wave ** 1.2) * fg_env
+
+        rx_front = (1.66 + 0.14 * _smoothstep_f(0.84, 1.0, t) - 0.18 * web_pinch - fg_dip) * heel_scale
+        rx_back = (1.56 + 0.36 * palm - 0.24 * web_pinch) * heel_scale
+        rz = (1.36 + 0.18 * palm - 0.18 * web_pinch) * heel_scale
+
+        if t > 0.975:
+            top_bev = 1.0 - 0.04 * ((t - 0.975) / 0.025)
+            rx_front *= top_bev
+            rx_back *= top_bev
+            rz *= top_bev
+
+        ring: list[tuple[float, float]] = []
+        for k in range(n_ring):
+            a = 2.0 * math.pi * k / n_ring
+            ca, sa = math.cos(a), math.sin(a)
+            if ca >= 0.0:
+                px = x_ctr + rx_front * (ca ** 0.90)
+                w_front = 1.0 - 0.14 * (ca ** 1.3)
+                pz = rz * w_front * math.copysign(abs(sa) ** 0.90, sa)
+            else:
+                px = x_ctr - rx_back * ((-ca) ** 0.86)
+                pz = rz * math.copysign(abs(sa) ** 0.88, sa)
+            ring.append((px, pz))
+        stations.append((y, ring))
+
+    grip = mk_loft_y("th_pg_g", stations, mat=m_wal)
+    cb = mk_cyl("c_pg_cb", 0.44, 0.44, 0.40, axis="y", segs=22, xform=[("t", -1.16, -4.66, 0.0)], mat=m_wal)
+    grip = bool_subtract(grip, [cb])
+    bolt = mk_cyl("th_pg_bolt", 0.36, 0.38, 0.24, axis="y", segs=22, xform=[("t", -1.16, -4.56, 0.0)], mat=m_st, bevel=0.03)
+    return finish_part(join_objects([grip, bolt], "thompson_pistol_grip"), sharp_deg=44.0)
+
+
+def _eval_thompson_stock_ring(x: float, n_ring: int = 36, offset_r: float = 0.0) -> list[tuple[float, float]]:
+    """Shared analytical oval-comb cross-section for Thompson M1928A1 detachable walnut buttstock & contoured buttplate!"""
+    top_pts = [
+        (-12.80, 2.52), (-9.00, 2.86), (-4.00, 3.30), (1.50, 3.74),
+        (5.20, 4.02), (7.60, 4.10), (10.50, 4.12), (12.80, 4.12),
     ]
-    grip = mk_extrude_z("th_pg_g", pts, -1.42, 1.42, bevel=0.34, bevel_segs=4, mat=m_wal)
-    grip.name = "thompson_pistol_grip"
-    return finish_part(grip, sharp_deg=42.0)
+    bot_pts = [
+        (-12.80, -5.32), (-9.20, -4.40), (-4.50, -3.18), (0.50, -1.92),
+        (4.50, -0.82), (7.60, 0.14), (10.20, 0.68), (12.80, 0.84),
+    ]
+    w_pts = [
+        (-12.80, 1.72), (-8.00, 1.74), (-2.00, 1.70), (3.50, 1.56),
+        (7.50, 1.40), (10.50, 1.44), (12.80, 1.50),
+    ]
+
+    def _samp(pts: list[tuple[float, float]], xv: float) -> float:
+        if xv <= pts[0][0]:
+            return pts[0][1]
+        if xv >= pts[-1][0]:
+            return pts[-1][1]
+        for i in range(len(pts) - 1):
+            x0, y0 = pts[i]
+            x1, y1 = pts[i + 1]
+            if x0 <= xv <= x1:
+                u = (xv - x0) / max(x1 - x0, 1e-6)
+                return y0 + (y1 - y0) * u
+        return pts[-1][1]
+
+    yt = _samp(top_pts, x) + offset_r
+    yb = _samp(bot_pts, x) - offset_r
+    hw = _samp(w_pts, x) + offset_r
+    ym = 0.5 * (yt + yb)
+    hy = max(0.35, 0.5 * (yt - yb))
+    # Narrower sculpted cheek comb crest along buttstock, fuller rounded collar at front steel slide mount
+    top_taper = 0.58 + 0.30 * _smoothstep_f(4.5, 11.5, x)
+    exp_n = 2.12 + 0.45 * _smoothstep_f(6.0, 12.2, x)
+
+    ring: list[tuple[float, float]] = []
+    for k in range(n_ring):
+        th = 2.0 * math.pi * k / n_ring
+        ct, st = math.cos(th), math.sin(th)
+        sz = math.copysign(abs(ct) ** (2.0 / exp_n), ct)
+        sy = math.copysign(abs(st) ** (2.0 / exp_n), st)
+        if sy > 0.0:
+            w_scale = 1.0 - (1.0 - top_taper) * (sy ** 1.40)
+        else:
+            w_scale = 1.0 - 0.18 * (abs(sy) ** 1.75)
+        ring.append((hw * w_scale * sz, ym + hy * sy))
+    return ring
 
 
 def build_thompson_buttstock(mats):
     m_wal, m_st = mats["W_ThompsonWalnut"], mats["W_MountSteel"]
-    pts = [
-        (-12.80, -5.65), (-12.80, 2.25), (8.50, 4.15),
-        (12.80, 4.15), (12.80, 0.85), (6.20, 0.15),
+    xs = [
+        -12.80, -12.55, -11.40, -9.60, -7.50, -5.20, -2.80, -0.40,
+          2.00,   4.20,   6.00,  7.40,  8.80, 10.20, 11.50, 12.60, 12.80,
     ]
-    body = mk_extrude_z("th_bs_b", pts, -1.72, 1.72, bevel=0.32, bevel_segs=4, mat=m_wal)
-    slide = mk_box("th_bs_sl", 4.80, 1.12, 2.65, [("t", 10.60, 4.15, 0.0)], mat=m_st, bevel=0.06)
-    swivel = mk_box("th_bs_sw", 1.85, 0.96, 0.76, [("t", -8.20, -4.65, 0.0)], mat=m_st, bevel=0.04)
-    return finish_part(join_objects([body, slide, swivel], "thompson_buttstock"), sharp_deg=42.0)
+    stations = []
+    for x in xs:
+        inset = -0.05 if (x >= 12.75) else 0.0
+        stations.append((x, _eval_thompson_stock_ring(x, 36, offset_r=inset)))
+    body = mk_loft_x("th_bs_b", stations, mat=m_wal)
+
+    # Contoured blued steel quick-detach dovetail slide mount + knurled release catch button
+    slide = mk_box("th_bs_sl", 4.95, 1.08, 2.58, [("t", 10.45, 4.16, 0.0)], mat=m_st, bevel=0.07, bevel_segs=3)
+    btn = mk_cyl("th_bs_btn", 0.42, 0.42, 0.48, axis="y", segs=22, xform=[("t", 10.90, 4.66, 0.0)], mat=m_st, bevel=0.04)
+
+    # Authentic recessed rear buttstock sling swivel plate + twin wood screws + curved oval wire loop!
+    sw_plate = mk_box("th_bs_swp", 2.18, 0.30, 0.88, [("rz", 0.25), ("t", -8.30, -4.18, 0.0)], mat=m_st, bevel=0.04)
+    sw_ear = mk_box("th_bs_swe", 0.80, 0.48, 0.62, [("rz", 0.25), ("t", -8.30, -4.38, 0.0)], mat=m_st, bevel=0.03)
+    sw_pin = mk_cyl("th_bs_swpn", 0.10, 0.10, 0.90, axis="z", segs=14, xform=[("t", -8.32, -4.48, 0.0)], mat=m_st, bevel=0.012)
+    sw_loop_pts = []
+    for k in range(25):
+        a = -math.pi * 0.5 + math.pi * (k / 24.0)
+        ca, sa = math.cos(a), math.sin(a)
+        px = -8.32 - 0.56 * (ca ** 0.85)
+        py = -4.48 - 0.92 * (ca ** 0.85)
+        pz = 0.44 * sa + 0.14 * sa * ca
+        sw_loop_pts.append(Vector((px, py, pz)))
+    sw_loop = mk_tube_along_pts("th_bs_swl", sw_loop_pts, 0.088, ring_segs=12, closed=False, mat=m_st)
+
+    return finish_part(join_objects([body, slide, btn, sw_plate, sw_ear, sw_pin, sw_loop], "thompson_buttstock"), sharp_deg=44.0)
 
 
 def build_thompson_buttplate(mats):
     m_bl, m_rec = mats["R_ControlBlue"], mats["R_DuLiteBlue"]
-    plate = mk_box("th_bp_p", 0.94, 8.22, 3.52, mat=m_bl, bevel=0.12)
-    trap = mk_box("th_bp_t", 0.28, 2.45, 1.56, [("t", -0.44, 0.20, 0.0)], mat=m_rec, bevel=0.04)
-    return finish_part(join_objects([plate, trap], "thompson_buttplate"), sharp_deg=36.0)
+    # Contoured blued steel buttplate lofted directly from the exact rear walnut buttstock oval (+1.30 local Y shift)!
+    # Seats 100% flush with the rounded comb heel and curved toe — zero boxy brick overhang!
+    y_shift = 1.30  # buttstock Y (-2.85) - buttplate Y (-4.15) = +1.30 cm!
+    base_ring = [(z, y + y_shift) for (z, y) in _eval_thompson_stock_ring(-12.80, 36, offset_r=0.05)]
+    mid_ring = [(z, y + y_shift) for (z, y) in _eval_thompson_stock_ring(-12.80, 36, offset_r=0.03)]
+    rear_ring = [(z * 0.94, y + y_shift) for (z, y) in _eval_thompson_stock_ring(-12.80, 36, offset_r=-0.04)]
+    rim_ring = [(z * 0.84, y + y_shift) for (z, y) in _eval_thompson_stock_ring(-12.80, 36, offset_r=-0.16)]
+    plate = mk_loft_x(
+        "th_bp_p",
+        [(0.44, base_ring), (0.18, mid_ring), (-0.28, rear_ring), (-0.46, rim_ring)],
+        mat=m_bl,
+    )
+    # Beveled oval-ended steel oiler trapdoor + twin recessed buttplate screws on rear face (-X)
+    trap_pts = []
+    for k in range(28):
+        a = 2.0 * math.pi * k / 28
+        ca, sa = math.cos(a), math.sin(a)
+        trap_pts.append((0.76 * math.copysign(abs(ca) ** 0.72, ca), 1.38 * math.copysign(abs(sa) ** 0.72, sa)))
+    # Extrude trapdoor along X by rotating Z-extrusion 90 deg around Y
+    trap = mk_extrude_z(
+        "th_bp_t", trap_pts, -0.52, -0.34, bevel=0.045, bevel_segs=3,
+        xform=[("ry", math.pi * 0.5), ("t", 0.0, 0.15, 0.0)], mat=m_rec,
+    )
+    # Twin blued slotted mounting screws above and below trapdoor
+    scr_t = mk_cyl("th_bp_st", 0.24, 0.24, 0.24, axis="x", segs=18, xform=[("t", -0.44,  2.75, 0.0)], mat=m_rec, bevel=0.025)
+    scr_b = mk_cyl("th_bp_sb", 0.24, 0.24, 0.24, axis="x", segs=18, xform=[("t", -0.44, -2.85, 0.0)], mat=m_rec, bevel=0.025)
+    return finish_part(join_objects([plate, trap, scr_t, scr_b], "thompson_buttplate"), sharp_deg=38.0)
 
 
 def build_thompson_trigger(mats):
     m_bl = mats["R_ControlBlue"]
     head = mk_box("th_tr_h", 2.00, 1.06, 0.65, [("t", 0.0, 0.65, 0.0)], mat=m_bl, bevel=0.04)
-    blade = mk_box("th_tr_b", 0.58, 1.98, 0.52, [("rz", 0.26), ("t", 0.15, -0.68, 0.0)], mat=m_bl, bevel=0.05)
+    # Gracefully curved Thompson crescent trigger blade
+    bl_pts = [(-0.24, 0.28), (0.36, 0.28)]
+    bl_pts.extend(sample_quad_bezier((0.36, 0.28), (0.16, -0.78), (0.64, -1.62), steps=12))
+    bl_pts.extend(sample_quad_bezier((0.64, -1.62), (0.36, -1.82), (0.04, -1.58), steps=6))
+    bl_pts.extend(sample_quad_bezier((0.04, -1.58), (-0.36, -0.76), (-0.24, 0.28), steps=12))
+    blade = mk_extrude_z("th_tr_b", bl_pts, -0.26, 0.26, bevel=0.055, bevel_segs=3, mat=m_bl)
     return finish_part(join_objects([head, blade], "thompson_trigger"), sharp_deg=36.0)
 
 

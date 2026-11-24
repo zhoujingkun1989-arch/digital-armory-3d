@@ -238,12 +238,12 @@ if "--postprocess" in sys.argv:
         albedo *= 1.0 - 0.56 * valley[..., None]
         albedo += (0.095, 0.058, 0.028) * peak[..., None]
         albedo = np.clip(albedo, 0.0, 1.0)
-        _mix(rgh, 0.72, valley * 0.78)
-        _mix(rgh, 0.36, peak * 0.52)
+        _mix(rgh, 0.66, valley * 0.78)
+        _mix(rgh, 0.34, peak * 0.55)
         ao *= 1.0 - 0.42 * valley
 
         nrm_final = _rnm_blend(nrm, _height_to_normal_01(chk_height, strength=6.2))
-        rgh = np.clip(rgh, 0.24, 0.88)
+        rgh = np.clip(rgh, 0.24, 0.84)
         met = np.clip(met, 0.00, 0.96)
         orm = np.stack((ao, rgh, met), axis=-1)
 
@@ -739,9 +739,9 @@ def _build_walnut_mat(name: str = "W_ColtWalnut") -> bpy.types.Material:
     n_fib.inputs["Distortion"].default_value = 0.55
     nt.links.new(map_fib.outputs["Vector"], n_fib.inputs["Vector"])
 
-    c_dark = srgb_to_lin(0.185, 0.092, 0.048)
-    c_mid  = srgb_to_lin(0.365, 0.188, 0.095)
-    c_warm = srgb_to_lin(0.515, 0.285, 0.142)
+    c_dark = srgb_to_lin(0.165, 0.078, 0.038)
+    c_mid  = srgb_to_lin(0.355, 0.180, 0.088)
+    c_warm = srgb_to_lin(0.515, 0.282, 0.138)
 
     mix1 = nt.nodes.new("ShaderNodeMix")
     mix1.data_type = "RGBA"
@@ -751,10 +751,10 @@ def _build_walnut_mat(name: str = "W_ColtWalnut") -> bpy.types.Material:
 
     fib_f = nt.nodes.new("ShaderNodeMapRange")
     fib_f.clamp = True
-    fib_f.inputs["From Min"].default_value = 0.28
+    fib_f.inputs["From Min"].default_value = 0.26
     fib_f.inputs["From Max"].default_value = 0.78
     fib_f.inputs["To Min"].default_value = 0.0
-    fib_f.inputs["To Max"].default_value = 0.54
+    fib_f.inputs["To Max"].default_value = 0.58
     nt.links.new(n_fib.outputs["Fac"], fib_f.inputs["Value"])
 
     mix2 = nt.nodes.new("ShaderNodeMix")
@@ -764,23 +764,24 @@ def _build_walnut_mat(name: str = "W_ColtWalnut") -> bpy.types.Material:
     nt.links.new(mix1.outputs[2], mix2.inputs[6])
     nt.links.new(mix2.outputs[2], bsdf.inputs["Base Color"])
 
+    # Refined satin linseed-oil American walnut roughness (R = 0.34-0.44)
     r_wood = nt.nodes.new("ShaderNodeMapRange")
     r_wood.clamp = True
     r_wood.inputs["From Min"].default_value = 0.20
     r_wood.inputs["From Max"].default_value = 0.80
-    r_wood.inputs["To Min"].default_value = 0.42
-    r_wood.inputs["To Max"].default_value = 0.58
+    r_wood.inputs["To Min"].default_value = 0.34
+    r_wood.inputs["To Max"].default_value = 0.44
     nt.links.new(n_fib.outputs["Fac"], r_wood.inputs["Value"])
     nt.links.new(r_wood.outputs["Result"], bsdf.inputs["Roughness"])
 
     bsdf.inputs["Metallic"].default_value = 0.0
 
     bev = nt.nodes.new("ShaderNodeBevel")
-    bev.samples = 4
-    bev.inputs["Radius"].default_value = 0.022
+    bev.samples = 5
+    bev.inputs["Radius"].default_value = 0.020
     bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.14
-    bump.inputs["Distance"].default_value = 0.015
+    bump.inputs["Strength"].default_value = 0.11
+    bump.inputs["Distance"].default_value = 0.014
     nt.links.new(n_fib.outputs["Fac"], bump.inputs["Height"])
     nt.links.new(bev.outputs["Normal"], bump.inputs["Normal"])
     nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
@@ -792,62 +793,62 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         "W_ColtWalnut": _build_walnut_mat("W_ColtWalnut"),
         "W_BrassScrew": _build_pbr_mat(
             "W_BrassScrew",
-            base_srgb=(0.76, 0.58, 0.26),
-            roughness=0.28,
-            metallic=0.92,
+            base_srgb=(0.79, 0.61, 0.27),
+            roughness=0.25,
+            metallic=0.93,
             bevel_r=0.014,
-            edge_wear=0.25,
+            edge_wear=0.28,
             grain_scale=40.0,
-            grain_bump=0.015,
+            grain_bump=0.014,
         ),
-        # AgX-calibrated WWII U.S. Army Manganese-Phosphate Parkerized Ordnance Steel (zero black crush & uniform flat-face shading!)
+        # AgX-calibrated WWII U.S. Army Manganese-Phosphate Parkerized Ordnance Steel (satin bevel glint, zero crush)
         "S_Parkerized": _build_pbr_mat(
             "S_Parkerized",
-            base_srgb=(0.245, 0.256, 0.270),
-            roughness=0.35,
-            metallic=0.86,
-            bevel_r=0.024,
-            edge_wear=0.0,
-            edge_srgb=(0.76, 0.79, 0.84),
+            base_srgb=(0.252, 0.264, 0.280),
+            roughness=0.33,
+            metallic=0.87,
+            bevel_r=0.026,
+            edge_wear=0.26,
+            edge_srgb=(0.78, 0.81, 0.86),
             grain_scale=52.0,
-            grain_bump=0.030,
-            voronoi_grain=0.42,
+            grain_bump=0.026,
+            voronoi_grain=0.40,
             voronoi_scale=135.0,
-            rough_var=0.036,
+            rough_var=0.032,
         ),
         "S_FrameSteel": _build_pbr_mat(
             "S_FrameSteel",
-            base_srgb=(0.228, 0.240, 0.256),
-            roughness=0.36,
-            metallic=0.87,
-            bevel_r=0.024,
-            edge_wear=0.0,
-            edge_srgb=(0.75, 0.78, 0.83),
+            base_srgb=(0.236, 0.248, 0.266),
+            roughness=0.34,
+            metallic=0.88,
+            bevel_r=0.026,
+            edge_wear=0.28,
+            edge_srgb=(0.76, 0.79, 0.84),
             grain_scale=48.0,
-            grain_bump=0.028,
-            voronoi_grain=0.38,
+            grain_bump=0.024,
+            voronoi_grain=0.36,
             voronoi_scale=125.0,
-            rough_var=0.034,
+            rough_var=0.032,
         ),
         "S_InnerDark": _build_pbr_mat(
             "S_InnerDark",
-            base_srgb=(0.158, 0.168, 0.184),
-            roughness=0.44,
-            metallic=0.78,
+            base_srgb=(0.180, 0.192, 0.210),
+            roughness=0.38,
+            metallic=0.82,
             bevel_r=0.016,
             grain_scale=42.0,
-            grain_bump=0.022,
+            grain_bump=0.020,
         ),
         "M_BluedControl": _build_pbr_mat(
             "M_BluedControl",
-            base_srgb=(0.198, 0.224, 0.278),
-            roughness=0.27,
+            base_srgb=(0.205, 0.232, 0.284),
+            roughness=0.26,
             metallic=0.90,
-            bevel_r=0.020,
-            edge_wear=0.54,
+            bevel_r=0.022,
+            edge_wear=0.52,
             edge_srgb=(0.78, 0.81, 0.86),
             grain_scale=42.0,
-            grain_bump=0.020,
+            grain_bump=0.018,
             aniso_stretch=(0.5, 3.2, 3.2),
         ),
         "M_BarrelBlue": _build_pbr_mat(
@@ -1156,6 +1157,173 @@ def bool_subtract(target: bpy.types.Object, cutters: list[bpy.types.Object], sol
     return target
 
 
+def _smoothstep_f(e0: float, e1: float, x: float) -> float:
+    t = max(0.0, min(1.0, (x - e0) / max(e1 - e0, 1e-6)))
+    return t * t * (3.0 - 2.0 * t)
+
+
+def sample_quad_bezier(
+    p0: tuple[float, float],
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    steps: int = 12,
+    include_start: bool = False,
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = []
+    start = 0 if include_start else 1
+    for i in range(start, steps + 1):
+        t = i / steps
+        mt = 1.0 - t
+        pts.append((
+            mt * mt * p0[0] + 2.0 * mt * t * p1[0] + t * t * p2[0],
+            mt * mt * p0[1] + 2.0 * mt * t * p1[1] + t * t * p2[1],
+        ))
+    return pts
+
+
+def sample_cubic_bezier(
+    p0: tuple[float, float],
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    steps: int = 16,
+    include_start: bool = False,
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = []
+    start = 0 if include_start else 1
+    for i in range(start, steps + 1):
+        t = i / steps
+        mt = 1.0 - t
+        pts.append((
+            mt**3 * p0[0] + 3.0 * mt**2 * t * p1[0] + 3.0 * mt * t**2 * p2[0] + t**3 * p3[0],
+            mt**3 * p0[1] + 3.0 * mt**2 * t * p1[1] + 3.0 * mt * t**2 * p2[1] + t**3 * p3[1],
+        ))
+    return pts
+
+
+def mk_swept_bow(
+    name: str,
+    centerline_xy: list[tuple[float, float]],
+    rx_fn,
+    rz_fn,
+    sec_n: int = 24,
+    super_exp: float = 0.72,
+    xform=None,
+    mat=None,
+) -> bpy.types.Object:
+    """Sweeps a smoothly varying superellipse cross-section along an (x, y) centerline in Three.js space."""
+    bm = bmesh.new()
+    rings = []
+    n_pts = len(centerline_xy)
+    for i, (cx, cy) in enumerate(centerline_xy):
+        t = i / max(1, n_pts - 1)
+        if i == 0:
+            tx, ty = centerline_xy[1][0] - cx, centerline_xy[1][1] - cy
+        elif i == n_pts - 1:
+            tx, ty = cx - centerline_xy[-2][0], cy - centerline_xy[-2][1]
+        else:
+            tx, ty = centerline_xy[i + 1][0] - centerline_xy[i - 1][0], centerline_xy[i + 1][1] - centerline_xy[i - 1][1]
+        tl = max(1e-6, math.hypot(tx, ty))
+        nx, ny = -ty / tl, tx / tl
+        rx = rx_fn(t)
+        rz = rz_fn(t)
+        ring = []
+        for s in range(sec_n):
+            a = (s / sec_n) * 2.0 * math.pi
+            ca, sa = math.cos(a), math.sin(a)
+            px = math.copysign(abs(ca) ** super_exp, ca) * rx
+            pz = math.copysign(abs(sa) ** super_exp, sa) * rz
+            ring.append(bm.verts.new((cx + nx * px, cy + ny * px, pz)))
+        rings.append(ring)
+    for i in range(len(rings) - 1):
+        for s in range(sec_n):
+            sn = (s + 1) % sec_n
+            bm.faces.new((rings[i][s], rings[i][sn], rings[i + 1][sn], rings[i + 1][s]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_loft_x(name: str, stations: list[tuple[float, list[tuple[float, float]]]], xform=None, mat=None):
+    """Lofts closed (z, y) cross-section rings along Three.js X."""
+    bm = bmesh.new()
+    n_ring = len(stations[0][1])
+    rings = [[bm.verts.new((x, y, z)) for (z, y) in zy_ring] for x, zy_ring in stations]
+    for s in range(len(rings) - 1):
+        a, b = rings[s], rings[s + 1]
+        for k in range(n_ring):
+            kn = (k + 1) % n_ring
+            bm.faces.new((a[k], b[k], b[kn], a[kn]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_loft_y(name: str, stations: list[tuple[float, list[tuple[float, float]]]], xform=None, mat=None):
+    """Lofts closed (x, z) cross-section rings along Three.js Y."""
+    bm = bmesh.new()
+    n_ring = len(stations[0][1])
+    rings = [[bm.verts.new((x, y, z)) for (x, z) in xz_ring] for y, xz_ring in stations]
+    for s in range(len(rings) - 1):
+        a, b = rings[s], rings[s + 1]
+        for k in range(n_ring):
+            kn = (k + 1) % n_ring
+            bm.faces.new((a[k], b[k], b[kn], a[kn]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def bool_union(objs: list[bpy.types.Object], name: str, solver: str = "EXACT") -> bpy.types.Object:
+    objs = [o for o in objs if o is not None]
+    assert len(objs) >= 1
+    base = objs[0]
+    rest = objs[1:]
+    for idx, other in enumerate(rest):
+        for m in other.data.materials:
+            if m and m.name not in [tm.name for tm in base.data.materials if tm]:
+                base.data.materials.append(m)
+        backup_mesh = base.data.copy()
+        tried = [solver, "MANIFOLD" if solver == "EXACT" else "EXACT"]
+        ok = False
+        for slv in tried:
+            select_only([base], base)
+            mod = base.modifiers.new(name=f"Union_{idx}", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = slv
+            mod.object = other
+            if slv == "EXACT":
+                mod.use_self = True
+                mod.use_hole_tolerant = True
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+            if _count_non_manifold(base) == 0 and len(base.data.polygons) > 0:
+                ok = True
+                break
+            old_m = base.data
+            base.data = backup_mesh.copy()
+            bpy.data.meshes.remove(old_m)
+        if not ok:
+            select_only([base], base)
+            mod = base.modifiers.new(name=f"UnionF_{idx}", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = "EXACT"
+            mod.use_self = True
+            mod.use_hole_tolerant = True
+            mod.object = other
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.meshes.remove(backup_mesh)
+    delete_objs(rest)
+    base.name = name
+    base.data.name = name
+    return base
+
+
 def finish_part(obj: bpy.types.Object, sharp_deg: float = 36.0, weighted_normals: bool = True) -> bpy.types.Object:
     bm = bmesh.new()
     bm.from_mesh(obj.data)
@@ -1192,37 +1360,80 @@ def finish_part(obj: bpy.types.Object, sharp_deg: float = 36.0, weighted_normals
 # =============================================================================
 def build_m1911_slide(mats):
     m_park, m_dark = mats["S_Parkerized"], mats["S_InnerDark"]
-    # Iconic 1911 profile: flat parallel slab sides + semicircular top arch (r = 1.17 cm)
-    slab = mk_box("s_slab", 19.10, 1.48, 2.34, [("t", 1.75, 1.82, 0.0)], mat=m_park, bevel=0.045)
-    arch = mk_cyl("s_arch", 1.17, 1.17, 19.10, axis="x", segs=40, xform=[("t", 1.75, M1911_BORE_Y, 0.0)], mat=m_park, bevel=0.04)
-    # Front recoil spring tunnel under muzzle
-    tunnel = mk_cyl("s_tun", 0.74, 0.74, 9.20, axis="x", segs=28, xform=[("t", 6.70, 1.30, 0.0)], mat=m_park, bevel=0.03)
-    # Tapered GI front sight blade + dovetailed GI U-notch rear sight
-    fs = mk_extrude_z("s_fs", [(9.75, 3.68), (10.95, 3.68), (10.65, 4.10), (10.05, 3.92)], -0.12, 0.12, bevel=0.015, mat=m_park)
-    rs = mk_box("s_rs", 0.96, 0.50, 1.36, [("t", -6.75, 3.84, 0.0)], mat=m_park, bevel=0.03)
-    rs_cut = mk_box("c_rs", 1.20, 0.42, 0.28, [("t", -6.75, 4.00, 0.0)], mat=m_dark)
+    # Seamless single-piece Colt M1911A1 slide profile: crisp beveled parallel slab flanks flowing
+    # with C1 tangent continuity into a silky 40-segment semicircular top crown (r = 1.17 cm, peak Y = 3.72)!
+    def _slide_ring(inset: float = 0.0) -> list[tuple[float, float]]:
+        r = 1.17 - inset
+        y_bot = 1.08 + inset
+        ch = 0.045
+        ring: list[tuple[float, float]] = [
+            (-r + ch, y_bot),
+            ( r - ch, y_bot),
+            ( r,      y_bot + ch),
+            ( r,      M1911_BORE_Y),
+        ]
+        n_arc = 36
+        for k in range(1, n_arc):
+            a = math.pi * (k / n_arc)  # 0 (+Z) -> pi (-Z) across top crown
+            ring.append((r * math.cos(a), M1911_BORE_Y + r * math.sin(a)))
+        ring.extend([
+            (-r,      M1911_BORE_Y),
+            (-r,      y_bot + ch),
+        ])
+        return ring
+
+    # Loft slide along X in [-7.80, +11.30] with crisp front & rear muzzle/breech bevels!
+    slide_stations = [
+        (-7.80, _slide_ring(0.036)),
+        (-7.75, _slide_ring(0.012)),
+        (-7.70, _slide_ring(0.000)),
+        (11.20, _slide_ring(0.000)),
+        (11.26, _slide_ring(0.014)),
+        (11.30, _slide_ring(0.040)),
+    ]
+    body = mk_loft_x("s_body", slide_stations, mat=m_park)
+
+    # Front recoil-spring dust tunnel under muzzle w/ graceful rear stirrup taper (X in [+2.05, +11.30])
+    tun_pts = [
+        (0.00, 2.05), (0.28, 2.15), (0.64, 2.48), (0.74, 2.75),
+        (0.74, 11.24), (0.68, 11.30), (0.00, 11.30),
+    ]
+    tunnel = mk_lathe_x("s_tun", tun_pts, segs=36, xform=[("t", 0.0, 1.30, 0.0)], mat=m_park)
+
+    # Authentic tapered GI Patridge front sight blade + angled dovetailed GI U-notch rear sight
+    fs_pts = [(9.72, 3.64), (10.96, 3.64), (10.68, 4.10), (10.18, 4.02), (9.88, 3.82)]
+    fs = mk_extrude_z("s_fs", fs_pts, -0.115, 0.115, bevel=0.018, bevel_segs=2, mat=m_park)
+    rs_pts = [(-7.26, 3.60), (-6.28, 3.60), (-6.42, 4.10), (-7.12, 4.10)]
+    rs = mk_extrude_z("s_rs", rs_pts, -0.68, 0.68, bevel=0.032, bevel_segs=2, mat=m_park)
+    rs_cut = mk_box("c_rs", 1.25, 0.44, 0.27, [("t", -6.76, 4.02, 0.0)], mat=m_dark)
     rs = bool_subtract(rs, [rs_cut])
 
-    solid = join_objects([slab, arch, tunnel, fs, rs], "m1911_slide_solid")
+    solid = bool_union([body, tunnel], "m1911_slide_solid")
+    solid = join_objects([solid, fs, rs], "m1911_slide_solid")
 
-    # Internal cutouts + ejection port + rear 14 cocking serrations on both flanks!
+    # Internal cutouts + lowered & beveled ejection port + 14 crisp slightly angled cocking serrations!
     cutters = [
-        mk_cyl("c_bbl", 0.89, 0.89, 13.50, axis="x", segs=28, xform=[("t", 4.80, M1911_BORE_Y, 0.0)], mat=m_dark),
+        mk_cyl("c_bbl", 0.89, 0.89, 13.50, axis="x", segs=32, xform=[("t", 4.80, M1911_BORE_Y, 0.0)], mat=m_dark),
         mk_box("c_rail", 17.80, 1.32, 1.56, [("t", 1.60, 1.50, 0.0)], mat=m_dark),
-        mk_box("c_ejp", 4.05, 1.65, 1.52, [("t", 0.95, 3.06, 0.68)], mat=m_dark),
-        mk_cyl("c_rtun", 0.56, 0.56, 9.80, axis="x", segs=24, xform=[("t", 6.80, 1.30, 0.0)], mat=m_dark),
+        mk_box("c_ejp", 4.08, 1.68, 1.54, [("t", 0.95, 3.04, 0.68)], mat=m_dark, bevel=0.04),
+        mk_cyl("c_rtun", 0.56, 0.56, 9.80, axis="x", segs=28, xform=[("t", 6.80, 1.30, 0.0)], mat=m_dark),
         mk_box("c_fpstop", 0.45, 1.38, 0.86, [("t", -7.72, 2.24, 0.0)], mat=m_dark),
-        # Slide-stop notch & disassembly notch on lower left rail
+        # Slide-stop notch & half-moon disassembly notch on lower left rail
         mk_box("c_ssnotch", 0.72, 0.44, 0.45, [("t", -3.45, 1.18, -1.10)], mat=m_dark),
-        mk_box("c_disnotch", 0.48, 0.34, 0.45, [("t", -5.20, 1.15, -1.10)], mat=m_dark),
+        mk_cyl("c_disnotch", 0.24, 0.24, 0.48, axis="z", segs=18, xform=[("t", -5.20, 1.08, -1.10)], mat=m_dark),
     ]
-    # 12 crisp vertical cocking serrations on left & right rear slide flanks (`X in [-7.15, -4.40]`)
+    # 14 crisp angled (6° canted) V-groove cocking serrations on both rear slide flanks (X in [-7.25, -4.35])
     serr_objs = []
-    for k in range(12):
-        sx = -7.12 + k * 0.24
+    for k in range(14):
+        sx = -7.24 + k * 0.215
         for side in (-1.0, 1.0):
             serr_objs.append(
-                mk_box(f"c_ser_{k}_{int(side)}", 0.11, 1.62, 0.16, [("t", sx, 1.92, side * 1.16)], mat=m_dark)
+                mk_box(
+                    f"c_ser_{k}_{int(side)}",
+                    0.105, 1.56, 0.145,
+                    [("ry", math.radians(45.0)), ("rz", math.radians(-5.0)), ("t", sx, 1.94, side * 1.17)],
+                    mat=m_dark,
+                )
             )
     cutters.append(join_objects(serr_objs, "c_serrations_all"))
 
@@ -1324,25 +1535,107 @@ def build_m1911_extractor(mats):
 
 def build_m1911_frame(mats):
     m_fr, m_dark = mats["S_FrameSteel"], mats["S_InnerDark"]
-    rail = mk_box("f_rail", 16.00, 1.12, 2.18, [("t", -0.60, 0.96, 0.0)], mat=m_fr, bevel=0.045)
-    tang = mk_box("f_tang", 2.20, 0.56, 1.66, [("t", -8.65, 1.12, 0.0)], mat=m_fr, bevel=0.05)
-    grip = mk_box("f_grip", 4.70, 10.60, 2.14, [("rz", M1911_GRIP_ANGLE_RAD), ("t", -4.95, -3.75, 0.0)], mat=m_fr, bevel=0.06)
-    # 100% solid closed trigger guard loop seamlessly merged into frame
-    tg = mk_extrude_z("f_tg", [(-2.75, 0.85), (2.35, 0.85), (2.35, -1.78), (1.85, -2.28), (-2.35, -2.28), (-2.85, -1.55)], -0.59, 0.59, bevel=0.045, mat=m_fr)
-    # Left-side checkered magazine catch button
-    mag_btn = mk_cyl("f_mbtn", 0.34, 0.34, 0.36, axis="z", segs=22, xform=[("t", -2.55, -1.18, -1.16)], mat=m_fr, bevel=0.03)
+    # 1. Main forged upper frame rail & dust cover (preserves crisp flat Hero UV flanks for US Property & G.H.D. stamps)
+    rail = mk_box("f_rail", 16.00, 1.12, 2.18, [("t", -0.60, 0.96, 0.0)], mat=m_fr, bevel=0.045, bevel_segs=3)
+    # Rounded underside front dust-cover chin contour flowing cleanly below slide recoil tunnel
+    dc_chin = mk_cyl(
+        "f_dc_chin", 0.88, 0.88, 5.40, axis="x", segs=32,
+        xform=[("t", 4.65, 1.24, 0.0)], mat=m_fr, bevel=0.04,
+    )
+    # Gracefully curved rear frame tang cradling the beavertail grip safety underside
+    tang_pts = [(-7.40, 0.82), (-9.15, 0.84)]
+    tang_pts.extend(sample_quad_bezier((-9.15, 0.84), (-9.68, 0.96), (-9.62, 1.22), steps=10))
+    tang_pts.extend(sample_quad_bezier((-9.62, 1.22), (-9.52, 1.44), (-8.90, 1.42), steps=8))
+    tang_pts.append((-7.40, 1.42))
+    tang = mk_extrude_z("f_tang", tang_pts, -0.84, 0.84, bevel=0.065, bevel_segs=3, mat=m_fr)
 
-    solid = join_objects([rail, tang, grip, tg, mag_btn], "f_solid")
+    # 2. Ergonomically rounded D-profile forged steel grip frame (flat grip cheeks + true cylindrical rounded frontstrap!)
+    def _grip_xz_ring(inset: float = 0.0) -> list[tuple[float, float]]:
+        hz = 1.07 - inset
+        x_back = -2.35 + inset
+        x_front_tan = 1.82 - inset * 0.4
+        x_front_tip = 2.38 - inset
+        ring: list[tuple[float, float]] = [
+            (x_back, -hz),
+            (x_front_tan, -hz),
+        ]
+        # Silky 16-segment cylindrical-arc frontstrap sweeping from -Z -> +X -> +Z
+        n_fs = 16
+        for k in range(1, n_fs):
+            a = -math.pi * 0.5 + math.pi * (k / n_fs)
+            px = x_front_tan + (x_front_tip - x_front_tan) * (math.cos(a) ** 0.85)
+            pz = hz * math.sin(a)
+            ring.append((px, pz))
+        ring.extend([
+            (x_front_tan, hz),
+            (x_back, hz),
+        ])
+        return ring
+
+    grip_stations = [
+        (-5.32, _grip_xz_ring(0.06)),
+        (-5.24, _grip_xz_ring(0.015)),
+        (-5.14, _grip_xz_ring(0.00)),
+        ( 5.18, _grip_xz_ring(0.00)),
+        ( 5.30, _grip_xz_ring(0.05)),
+    ]
+    grip = mk_loft_y("f_grip", grip_stations, xform=[("rz", M1911_GRIP_ANGLE_RAD), ("t", -4.95, -3.75, 0.0)], mat=m_fr)
+
+    # 3. John Browning's iconic smoothly swept curved M1911A1 trigger-guard bow!
+    #    High-segment cubic Bezier centerline w/ smooth front-radiused loop & forged flares welded watertight into frame!
+    tg_center: list[tuple[float, float]] = []
+    tg_center.extend(
+        sample_cubic_bezier((-2.45, -1.62), (-1.82, -1.96), (-0.98, -2.06), (0.38, -2.06), steps=18, include_start=True)
+    )
+    tg_center.extend(
+        sample_cubic_bezier((0.38, -2.06), (1.76, -2.06), (2.30, -1.52), (2.30, -0.56), steps=18, include_start=False)
+    )
+    tg_center.extend(
+        sample_cubic_bezier((2.30, -0.56), (2.30, 0.06), (2.06, 0.46), (1.96, 0.72), steps=12, include_start=False)
+    )
+
+    def _tg_rx(t: float) -> float:
+        flare_r = 0.16 * ((1.0 - _smoothstep_f(0.0, 0.18, t)) ** 1.5)
+        flare_f = 0.16 * (_smoothstep_f(0.82, 1.0, t) ** 1.5)
+        return 0.215 + flare_r + flare_f
+
+    def _tg_rz(t: float) -> float:
+        flare_r = 0.26 * ((1.0 - _smoothstep_f(0.0, 0.22, t)) ** 1.4)
+        flare_f = 0.24 * (_smoothstep_f(0.78, 1.0, t) ** 1.4)
+        return 0.545 + flare_r + flare_f
+
+    tg_bow = mk_swept_bow("f_tg_bow", tg_center, _tg_rx, _tg_rz, sec_n=24, super_exp=0.70, mat=m_fr)
+
+    # Left-side checkered magazine catch button w/ subtle raised collar boss
+    mag_btn = mk_cyl("f_mbtn", 0.34, 0.36, 0.40, axis="z", segs=24, xform=[("t", -2.55, -1.18, -1.14)], mat=m_fr, bevel=0.035)
+
+    # Watertight boolean UNION so trigger guard, dust cover, rail & rounded grip weld with ZERO seam or floating gap!
+    solid = bool_union([rail, dc_chin, tang, grip, tg_bow, mag_btn], "f_solid")
+
+    # 4. Internal cavities + smooth sculpted 1924 M1911A1 finger-relief scallops behind the trigger bow!
+    #    Build smooth angled dome-tipped scallop cutters so the A1 relief cuts read organically on both flanks
+    #    while staying strictly outside |Z| >= 0.88 (0.14 cm solid frame wall outside |Z| = 0.74 magwell!).
+    scallop_prof = [
+        (0.00, 0.00), (0.36, 0.00), (0.58, 0.07), (0.68, 0.18), (0.72, 0.36), (0.72, 0.65), (0.00, 0.65),
+    ]
+    sc_l = mk_lathe_x(
+        "c_rel_l", scallop_prof, segs=32,
+        xform=[("ry", math.pi * 0.5), ("s", 1.15, 0.92, 1.0), ("t", -2.36, -0.56, -0.88)],
+        mat=m_dark,
+    )
+    sc_r = mk_lathe_x(
+        "c_rel_r", scallop_prof, segs=32,
+        xform=[("ry", -math.pi * 0.5), ("s", 1.15, 0.92, 1.0), ("t", -2.36, -0.56,  0.88)],
+        mat=m_dark,
+    )
 
     cutters = [
-        mk_extrude_z("c_tgh", [(-2.05, 0.42), (1.75, 0.42), (1.75, -1.42), (1.42, -1.76), (-1.82, -1.76), (-2.15, -1.25)], -0.90, 0.90, mat=m_dark),
         mk_box("c_mw", 3.56, 11.40, 1.48, [("rz", M1911_GRIP_ANGLE_RAD), ("t", -4.65, -3.55, 0.0)], mat=m_dark),
-        mk_cyl("c_dc", 0.68, 0.68, 8.20, axis="x", segs=24, xform=[("t", 4.00, 1.38, 0.0)], mat=m_dark),
+        mk_cyl("c_dc", 0.68, 0.68, 8.20, axis="x", segs=28, xform=[("t", 4.00, 1.38, 0.0)], mat=m_dark),
         mk_box("c_msh", 1.45, 6.60, 1.52, [("rz", M1911_GRIP_ANGLE_RAD), ("t", -7.75, -4.65, 0.0)], mat=m_dark),
-        mk_cyl("c_ssp", 0.24, 0.24, 2.80, axis="z", segs=18, xform=[("t", M1911_LINK_PIVOT_X, M1911_LINK_PIVOT_Y, 0.0)], mat=m_dark),
-        # Iconic 1924 M1911A1 finger relief scallop cuts behind trigger guard (both flanks!)
-        mk_cyl("c_rel_l", 0.52, 0.52, 0.40, axis="z", segs=20, xform=[("t", -2.42, -0.58, -1.12)], mat=m_dark),
-        mk_cyl("c_rel_r", 0.52, 0.52, 0.40, axis="z", segs=20, xform=[("t", -2.42, -0.58,  1.12)], mat=m_dark),
+        mk_cyl("c_ssp", 0.24, 0.24, 2.80, axis="z", segs=20, xform=[("t", M1911_LINK_PIVOT_X, M1911_LINK_PIVOT_Y, 0.0)], mat=m_dark),
+        sc_l,
+        sc_r,
     ]
     res = bool_subtract(solid, cutters)
     res.name = "m1911_frame"
@@ -1352,47 +1645,189 @@ def build_m1911_frame(mats):
 
 def build_m1911_slide_stop(mats):
     m_blue = mats["M_BluedControl"]
-    pin = mk_cyl("ss_p", 0.165, 0.165, 2.38, axis="z", segs=22, mat=m_blue, bevel=0.02)
-    arm = mk_extrude_z("ss_a", [(-4.15, -0.32), (0.45, -0.35), (0.48, 0.36), (-3.45, 0.56), (-4.25, 0.28)], -1.40, -1.12, bevel=0.03, mat=m_blue)
-    shelf = mk_box("ss_s", 1.15, 0.38, 0.52, [("t", -3.65, 0.22, -1.42)], mat=m_blue, bevel=0.03)
+    pin = mk_cyl("ss_p", 0.165, 0.165, 2.38, axis="z", segs=24, mat=m_blue, bevel=0.02)
+    arm_pts = [(-4.15, -0.30), (0.42, -0.34), (0.48, 0.34), (-3.45, 0.54)]
+    arm_pts.extend(sample_quad_bezier((-3.45, 0.54), (-4.28, 0.42), (-4.26, 0.02), steps=8))
+    arm = mk_extrude_z("ss_a", arm_pts, -1.40, -1.12, bevel=0.035, bevel_segs=3, mat=m_blue)
+    shelf = mk_box("ss_s", 1.15, 0.38, 0.52, [("t", -3.65, 0.22, -1.42)], mat=m_blue, bevel=0.035, bevel_segs=2)
     return finish_part(join_objects([pin, arm, shelf], "m1911_slide_stop"), sharp_deg=34.0)
 
 
 def build_m1911_thumb_safety(mats):
     m_blue = mats["M_BluedControl"]
-    shaft = mk_cyl("ts_s", 0.18, 0.18, 2.35, axis="z", segs=18, xform=[("t", 0.0, 0.0, 1.15)], mat=m_blue, bevel=0.02)
-    shield = mk_box("ts_sh", 1.95, 1.05, 0.26, [("t", -0.25, 0.15, -0.04)], mat=m_blue, bevel=0.035)
-    paddle = mk_box("ts_p", 1.35, 0.34, 0.62, [("t", -0.62, 0.42, -0.28)], mat=m_blue, bevel=0.035)
+    shaft = mk_cyl("ts_s", 0.18, 0.18, 2.35, axis="z", segs=20, xform=[("t", 0.0, 0.0, 1.15)], mat=m_blue, bevel=0.02)
+    shield_pts = [(-1.20, -0.34), (0.70, -0.34), (0.72, 0.64), (-0.82, 0.68), (-1.22, 0.32)]
+    shield = mk_extrude_z("ts_sh", shield_pts, -0.17, 0.09, bevel=0.04, bevel_segs=3, mat=m_blue)
+    paddle = mk_box("ts_p", 1.38, 0.34, 0.64, [("t", -0.62, 0.42, -0.28)], mat=m_blue, bevel=0.04, bevel_segs=3)
     return finish_part(join_objects([shaft, shield, paddle], "m1911_thumb_safety"), sharp_deg=34.0)
 
 
 def build_m1911_mainspring_housing(mats):
     m_park, m_dark = mats["S_Parkerized"], mats["S_InnerDark"]
-    body = mk_extrude_z(
-        "msh_b",
-        [(-0.52, -3.15), (0.75, -3.15), (0.75, 3.05), (-0.18, 3.05), (-0.98, 0.25), (-0.95, -1.85)],
-        -0.81, 0.81, bevel=0.05, xform=[("rz", M1911_GRIP_ANGLE_RAD)], mat=m_park,
-    )
-    # GI lanyard ring loop at heel
-    ring_pts = [Vector((-0.98 + math.cos(2.0 * math.pi * i / 20) * 0.34, -3.32 + math.sin(2.0 * math.pi * i / 20) * 0.34, 0.0)) for i in range(20)]
-    lanyard = mk_tube_along_pts("msh_ring", ring_pts, 0.09, ring_segs=10, closed=True, mat=m_park)
-    lug = mk_box("msh_lug", 0.56, 0.56, 0.56, [("t", -0.82, -3.05, 0.0)], mat=m_park, bevel=0.04)
-    bore = mk_cyl("c_mshb", 0.36, 0.36, 5.50, axis="y", segs=20, xform=[("rz", M1911_GRIP_ANGLE_RAD), ("t", 0.12, 0.45, 0.0)], mat=m_dark)
-    body = bool_subtract(join_objects([body, lug], "msh_solid"), [bore])
-    return finish_part(join_objects([body, lanyard], "m1911_mainspring_housing"), sharp_deg=34.0)
+    # Authentic 1924 M1911A1 smoothly arched, rounded-backstrap mainspring housing w/ crisp vertical grip serrations!
+    n_st = 28
+    stations = []
+    for i in range(n_st + 1):
+        t = i / n_st  # 0 = bottom heel (y=-3.15), 1 = top mating grip safety (y=+3.05)
+        ly = -3.15 + 6.20 * t
+        # Smooth asymmetric A1 ergonomic palm arch peaking smoothly in lower-mid palm (t ~ 0.40)
+        arch = math.sin(math.pi * (t ** 0.86))
+        x_back = -0.44 * (1.0 - t) - 0.22 * t - 0.66 * (arch ** 1.12)
+        x_front = 0.75
+        hz = 0.80
+        # Slight heel/top edge chamfer
+        end_inset = 0.045 * (1.0 - _smoothstep_f(0.0, 0.035, t) * (1.0 - _smoothstep_f(0.965, 1.0, t)))
+        hz_eff = hz - end_inset
+        xb_eff = x_back + end_inset
+        x_arc_start = min(0.28, xb_eff + 0.56)
+
+        ring: list[tuple[float, float]] = [
+            (x_front, -hz_eff),
+            (x_arc_start, -hz_eff),
+        ]
+        # Silky 20-segment cylindrical rounded arched backstrap w/ 7 crisp vertical A1 serration flutes!
+        n_arc = 28
+        serr_env = _smoothstep_f(0.07, 0.14, t) * (1.0 - _smoothstep_f(0.86, 0.93, t))
+        for k in range(1, n_arc):
+            a = -math.pi * 0.5 + math.pi * (k / n_arc)  # -pi/2 (-Z) -> 0 (center back) -> +pi/2 (+Z)
+            ca = math.cos(a)
+            sa = math.sin(a)
+            # 7 crisp vertical grip serration V-grooves spanning central |a| < 1.15 rad
+            serr = 0.0
+            if abs(a) < 1.12 and serr_env > 0.01:
+                phase = (a / 1.12) * 3.5 + 3.5  # 7 cycles across backstrap arc
+                frac = phase - math.floor(phase)
+                v_groove = 1.0 - abs(frac * 2.0 - 1.0)
+                serr = 0.055 * (1.0 - v_groove) * serr_env * math.cos(a * 0.7)
+            px = x_arc_start - (x_arc_start - xb_eff - serr) * (ca ** 0.86)
+            pz = hz_eff * sa
+            ring.append((px, pz))
+        ring.extend([
+            (x_arc_start, hz_eff),
+            (x_front, hz_eff),
+        ])
+        stations.append((ly, ring))
+
+    body = mk_loft_y("msh_b", stations, xform=[("rz", M1911_GRIP_ANGLE_RAD)], mat=m_park)
+
+    # Rounded GI lanyard loop saddle & smooth forged wire ring at heel
+    ring_pts = [
+        Vector((-0.94 + math.cos(2.0 * math.pi * i / 24) * 0.34, -3.30 + math.sin(2.0 * math.pi * i / 24) * 0.34, 0.0))
+        for i in range(24)
+    ]
+    lanyard = mk_tube_along_pts("msh_ring", ring_pts, 0.088, ring_segs=12, closed=True, mat=m_park)
+    lug = mk_cyl("msh_lug", 0.30, 0.32, 0.56, axis="z", segs=20, xform=[("t", -0.80, -3.02, 0.0)], mat=m_park, bevel=0.04)
+    bore = mk_cyl("c_mshb", 0.36, 0.36, 5.50, axis="y", segs=22, xform=[("rz", M1911_GRIP_ANGLE_RAD), ("t", 0.12, 0.45, 0.0)], mat=m_dark)
+    body = bool_subtract(bool_union([body, lug], "msh_solid"), [bore])
+    return finish_part(join_objects([body, lanyard], "m1911_mainspring_housing"), sharp_deg=38.0)
 
 
 def _build_m1911_grip_panel(name: str, side_sign: int, mats):
     m_wal, m_brass = mats["W_ColtWalnut"], mats["W_BrassScrew"]
-    panel = mk_box(f"{name}_p", 3.68, 9.55, 0.48, [("rz", M1911_GRIP_ANGLE_RAD)], mat=m_wal, bevel=0.07, bevel_segs=3)
-    # Recessed brass/blued slotted grip screws
-    s1 = mk_cyl(f"{name}_s1", 0.26, 0.26, 0.54, axis="z", segs=20, xform=[("t",  1.05,  3.45, side_sign * 0.04)], mat=m_brass, bevel=0.02)
-    s2 = mk_cyl(f"{name}_s2", 0.26, 0.26, 0.54, axis="z", segs=20, xform=[("t", -1.22, -3.55, side_sign * 0.04)], mat=m_brass, bevel=0.02)
-    # Slotted screwdriver kerfs across both screws
-    k1 = mk_box(f"c_{name}_k1", 0.48, 0.07, 0.14, [("rz", 0.42), ("t",  1.05,  3.45, side_sign * 0.28)], mat=m_brass)
-    k2 = mk_box(f"c_{name}_k2", 0.48, 0.07, 0.14, [("rz", -0.35), ("t", -1.22, -3.55, side_sign * 0.28)], mat=m_brass)
-    screws = bool_subtract(join_objects([s1, s2], f"{name}_scr"), [k1, k2])
-    return finish_part(join_objects([panel, screws], name), sharp_deg=38.0)
+    # Organically crowned, perimeter-chamfered Colt M1911A1 double-diamond walnut grip panel (36x52 surface grid)!
+    # Built in unrotated grip coordinates (lx in [-1.84, +1.84], ly in [-4.775, +4.775]) then rotated -18 deg so
+    # counterbores & slotted brass escutcheon screws land dead-bullseye inside the two smooth walnut diamonds!
+    nu, nv = 34, 48
+    hw, hh = 1.84, 4.775
+    r_corner = 0.28
+    z_in_val = -side_sign * 0.22
+
+    bm = bmesh.new()
+    outer_grid: list[list[bmesh.types.BMVert]] = []
+    inner_grid: list[list[bmesh.types.BMVert]] = []
+
+    for iv in range(nv + 1):
+        v = -1.0 + 2.0 * (iv / nv)
+        row_out = []
+        row_in = []
+        for iu in range(nu + 1):
+            u = -1.0 + 2.0 * (iu / nu)
+            # Rounded-rectangle boundary mapping so all 4 corners have smooth ergonomic radius
+            px = u * hw
+            py = v * hh
+            ax, ay = abs(px), abs(py)
+            cx_lim, cy_lim = hw - r_corner, hh - r_corner
+            if ax > cx_lim and ay > cy_lim:
+                dx = ax - cx_lim
+                dy = ay - cy_lim
+                d = math.hypot(dx, dy)
+                if d > 1e-6:
+                    # Smoothly map corner square onto circular arc of radius r_corner
+                    edge_d = max(dx, dy)
+                    scale = (r_corner * (edge_d / r_corner)) / d
+                    px = math.copysign(cx_lim + dx * scale, px)
+                    py = math.copysign(cy_lim + dy * scale, py)
+
+            # Normalized distance to perimeter for silky crowned palm dome & chamfered walnut borders
+            du = min(1.0, abs(px) / hw)
+            dv = min(1.0, abs(py) / hh)
+            arch_u = math.pow(max(0.0, 1.0 - du * du), 0.44)
+            arch_v = math.pow(max(0.0, 1.0 - dv * dv * 0.92), 0.36)
+            crown = arch_u * (0.45 + 0.55 * arch_v)
+            z_out = side_sign * (0.025 + 0.245 * crown)
+            z_in = z_in_val
+
+            row_out.append(bm.verts.new((px, py, z_out)))
+            row_in.append(bm.verts.new((px, py, z_in)))
+        outer_grid.append(row_out)
+        inner_grid.append(row_in)
+
+    for iv in range(nv):
+        for iu in range(nu):
+            if side_sign > 0:
+                bm.faces.new((outer_grid[iv][iu], outer_grid[iv][iu + 1], outer_grid[iv + 1][iu + 1], outer_grid[iv + 1][iu]))
+                bm.faces.new((inner_grid[iv][iu], inner_grid[iv + 1][iu], inner_grid[iv + 1][iu + 1], inner_grid[iv][iu + 1]))
+            else:
+                bm.faces.new((outer_grid[iv][iu], outer_grid[iv + 1][iu], outer_grid[iv + 1][iu + 1], outer_grid[iv][iu + 1]))
+                bm.faces.new((inner_grid[iv][iu], inner_grid[iv][iu + 1], inner_grid[iv + 1][iu + 1], inner_grid[iv + 1][iu]))
+
+    for iu in range(nu):
+        bm.faces.new((inner_grid[0][iu], inner_grid[0][iu + 1], outer_grid[0][iu + 1], outer_grid[0][iu]))
+        bm.faces.new((outer_grid[nv][iu], outer_grid[nv][iu + 1], inner_grid[nv][iu + 1], inner_grid[nv][iu]))
+    for iv in range(nv):
+        bm.faces.new((outer_grid[iv][0], outer_grid[iv + 1][0], inner_grid[iv + 1][0], inner_grid[iv][0]))
+        bm.faces.new((inner_grid[iv][nu], inner_grid[iv + 1][nu], outer_grid[iv + 1][nu], outer_grid[iv][nu]))
+
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, [("rz", M1911_GRIP_ANGLE_RAD)])
+    panel = _bm_to_obj(f"{name}_p", bm, m_wal)
+
+    # Deep beveled counterbores dead-center in the upper (+3.45) & lower (-3.55) walnut diamonds!
+    cb_cutters = []
+    screw_parts = []
+    cb_r_top, cb_r_bot = (0.345, 0.285) if side_sign > 0 else (0.285, 0.345)
+    sc_r_top, sc_r_bot = (0.232, 0.255) if side_sign > 0 else (0.255, 0.232)
+    for idx, (sy, slot_ang) in enumerate(((3.45, 0.42), (-3.55, -0.35))):
+        cb = mk_cyl(
+            f"c_{name}_cb{idx}", cb_r_top, cb_r_bot, 0.34, axis="z", segs=24,
+            xform=[
+                ("t", 0.0, sy, side_sign * 0.22),
+                ("rz", M1911_GRIP_ANGLE_RAD),
+            ],
+            mat=m_wal,
+        )
+        cb_cutters.append(cb)
+        # Recessed brass escutcheon ring + domed slotted grip screw seated cleanly inside counterbore!
+        esc = mk_cyl(
+            f"{name}_esc{idx}", 0.275, 0.275, 0.14, axis="z", segs=24,
+            xform=[("t", 0.0, sy, side_sign * 0.10), ("rz", M1911_GRIP_ANGLE_RAD)],
+            mat=m_brass, bevel=0.018,
+        )
+        scr = mk_cyl(
+            f"{name}_s{idx}", sc_r_top, sc_r_bot, 0.18, axis="z", segs=24,
+            xform=[("t", 0.0, sy, side_sign * 0.19), ("rz", M1911_GRIP_ANGLE_RAD)],
+            mat=m_brass, bevel=0.024,
+        )
+        kerf = mk_box(
+            f"c_{name}_k{idx}", 0.48, 0.068, 0.12,
+            [("rz", slot_ang), ("t", 0.0, sy, side_sign * 0.27), ("rz", M1911_GRIP_ANGLE_RAD)],
+            mat=m_brass,
+        )
+        scr = bool_subtract(scr, [kerf])
+        screw_parts.extend([esc, scr])
+
+    panel = bool_subtract(panel, cb_cutters)
+    return finish_part(join_objects([panel, *screw_parts], name), sharp_deg=44.0)
 
 
 def build_m1911_grip_left(mats):
@@ -1405,18 +1840,24 @@ def build_m1911_grip_right(mats):
 
 def build_m1911_hammer(mats):
     m_blue, m_pol = mats["M_BluedControl"], mats["M_PolishedSteel"]
-    head = mk_extrude_z(
-        "hm_h",
-        [(-0.48, -0.52), (0.48, -0.45), (0.45, 0.85), (-0.55, 1.55), (-1.82, 1.52), (-1.72, 1.05), (-0.78, 0.72)],
-        -0.36, 0.36, bevel=0.03, mat=m_blue,
-    )
+    # Gracefully contoured GI wide-spur Colt M1911A1 hammer profile
+    hm_pts = [(-0.48, -0.52), (0.46, -0.46), (0.48, 0.78)]
+    hm_pts.extend(sample_quad_bezier((0.48, 0.78), (0.28, 1.48), (-0.52, 1.56), steps=10))
+    hm_pts.extend(sample_quad_bezier((-0.52, 1.56), (-1.45, 1.62), (-1.84, 1.48), steps=10))
+    hm_pts.extend(sample_quad_bezier((-1.84, 1.48), (-1.94, 1.24), (-1.68, 1.06), steps=8))
+    hm_pts.extend(sample_quad_bezier((-1.68, 1.06), (-1.08, 0.88), (-0.72, 0.58), steps=8))
+    head = mk_extrude_z("hm_h", hm_pts, -0.36, 0.36, bevel=0.042, bevel_segs=3, mat=m_blue)
     strut = mk_box("hm_st", 0.32, 3.45, 0.24, [("rz", M1911_GRIP_ANGLE_RAD - 0.12), ("t", -0.78, -1.85, 0.0)], mat=m_pol, bevel=0.02)
     return finish_part(join_objects([head, strut], "m1911_hammer"), sharp_deg=34.0)
 
 
 def build_m1911_trigger(mats):
     m_blue, m_ss = mats["M_BluedControl"], mats["M_Stainless"]
-    shoe = mk_box("tr_sh", 1.18, 1.52, 0.72, [("t", 1.55, -0.22, 0.0)], mat=m_blue, bevel=0.05)
+    # Authentic M1911A1 short concave-curved solid milled steel trigger shoe!
+    shoe_pts = [(0.96, -0.96), (2.14, -0.96)]
+    shoe_pts.extend(sample_quad_bezier((2.14, -0.96), (1.84, -0.22), (2.14, 0.52), steps=14))
+    shoe_pts.append((0.96, 0.52))
+    shoe = mk_extrude_z("tr_sh", shoe_pts, -0.36, 0.36, bevel=0.055, bevel_segs=3, mat=m_blue)
     lbar = mk_box("tr_lb", 4.35, 1.18, 0.14, [("t", -1.15, -0.10, -0.82)], mat=m_ss, bevel=0.015)
     rbar = mk_box("tr_rb", 4.35, 1.18, 0.14, [("t", -1.15, -0.10,  0.82)], mat=m_ss, bevel=0.015)
     rear = mk_box("tr_rr", 0.28, 1.18, 1.78, [("t", -3.26, -0.10,  0.00)], mat=m_ss, bevel=0.015)
@@ -1432,12 +1873,21 @@ def build_m1911_sear_disconnector(mats):
 
 def build_m1911_grip_safety(mats):
     m_park = mats["S_Parkerized"]
-    gs = mk_extrude_z(
-        "m1911_grip_safety",
-        [(-0.35, -3.15), (0.68, -2.85), (0.75, 0.85), (1.55, 0.88), (1.55, 0.42), (0.72, 0.35), (-0.92, 0.92), (-1.32, 0.65), (-0.68, -0.22), (-1.12, -2.55)],
-        -0.78, 0.78, bevel=0.045, mat=m_park,
-    )
-    return finish_part(gs, sharp_deg=34.0)
+    # Sculpted flared M1911A1 beavertail grip safety tang w/ smooth hand-web curve & convex palm paddle!
+    gs_pts = [(-0.32, -3.02), (0.64, -2.76), (0.72, 0.84)]
+    # Smoothly flared upper beavertail tang sweeping gently rearward & slightly upward
+    gs_pts.extend(sample_cubic_bezier((0.72, 0.84), (-0.42, 0.94), (-1.18, 1.02), (-1.62, 0.86), steps=14))
+    # Rounded tang tip flowing into concave web pocket for shooter's hand
+    gs_pts.extend(sample_cubic_bezier((-1.62, 0.86), (-1.78, 0.72), (-1.56, 0.46), (-1.12, 0.34), steps=12))
+    gs_pts.extend(sample_cubic_bezier((-1.12, 0.34), (-0.72, 0.16), (-0.64, -0.42), (-0.82, -1.15), steps=12))
+    # Ergonomic convex lower grip-safety palm paddle blending smoothly into arched mainspring housing!
+    gs_pts.extend(sample_cubic_bezier((-0.82, -1.15), (-1.10, -1.85), (-1.12, -2.48), (-0.72, -2.92), steps=12))
+    gs_pts.append((-0.32, -3.02))
+    body = mk_extrude_z("gs_body", gs_pts, -0.78, 0.78, bevel=0.14, bevel_segs=4, mat=m_park)
+    # Internal trigger-blocking safety tang
+    arm = mk_box("gs_arm", 1.05, 0.46, 0.76, [("t", 1.06, 0.62, 0.0)], mat=m_park, bevel=0.03)
+    res = bool_union([body, arm], "m1911_grip_safety")
+    return finish_part(res, sharp_deg=38.0)
 
 
 def build_m1911_leaf_spring(mats):
@@ -1551,9 +2001,9 @@ def unwrap_walnut_atlas(walnut_objs):
             return "BRASS"
         nz = -f.normal.y
         tz = -f.calc_center_median().y
-        if on == "m1911_grip_left" and nz < -0.75 and tz < -0.15:
+        if on == "m1911_grip_left" and nz < -0.52 and tz < -0.02:
             return "HERO_L"
-        if on == "m1911_grip_right" and nz > 0.75 and tz > 0.15:
+        if on == "m1911_grip_right" and nz > 0.52 and tz > 0.02:
             return "HERO_R"
         return "WOOD_REST"
 
