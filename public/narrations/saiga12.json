@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "saiga12",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "Izhmash Saiga-12K Combat Shotgun",
+    "subtitle": "AK Long-Stroke Gas-Piston Semi-Auto 12-Gauge with Detachable Box Magazine",
+    "originCountry": "Russia",
+    "weaponType": "AK-Pattern Box-Fed Semi-Auto Shotgun",
+    "categoryLabel": "Combat Shotgun",
+    "actionMechanism": "AK Long-Stroke Piston Rotating Bolt · Two-Position Gas Regulator · Box Magazine",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Scaling the AK-74M stamped receiver, long-stroke gas piston, and dual-lug rotating bolt up to 12-gauge magnum, the Russian Saiga-12K combines a two-position gas regulator with detachable 8-round box magazines for assault-rifle reload speed.",
+    "highlights": [
+      "True Kalashnikov stamped receiver and reinforced rotating bolt excel in mud and ice",
+      "Two-position front gas regulator balances light target loads and 3-inch magnums",
+      "Detachable box magazines slash reload time compared to single-shell tubular tubes",
+      "Side dovetail optic rail and left-folding polymer stock mirror AK-74M ergonomics"
+    ],
+    "workbenchTitle": "Izhmash Saiga-12K Combat Shotgun 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · AK Long-Stroke Piston Rotating Bolt · Two-Position Gas Regulator · Box Magazine",
+    "cutawayLabel": "Breech & Action Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on Izhmash Saiga-12K Combat Shotgun to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Long-Stroke Unlock",
+    "rateOfFire": "240 RPM (rapid box-fed semi-auto)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Izhmash Saiga-12K Combat Shotgun (1997) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 910 mm (670 mm folded)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Sear",
+        "title": "Phase 1 · Saiga-12K Trigger Release & Ignition Drive",
+        "description": "Pulling the trigger disengages the sear, freeing the spring-driven hammer or striker to impact the 12 Gauge (76mm / 3\" Magnum) primer."
+      },
+      "phase_2": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · 74 MPa Chamber Pressure Rise",
+        "description": "The propellant charge ignites inside the locked chamber, driving peak pressure to 74 MPa while sealing the cartridge case against the breech."
+      },
+      "phase_3": {
+        "shortLabel": "Bore Acceleration",
+        "title": "Phase 3 · 430 mm Barrel Engraving & Acceleration",
+        "description": "The projectile engages the smooth bore and accelerates to 405 m/s (3150 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Long-Stroke Unlock",
+        "title": "Phase 4 · Long-Stroke Unlock & Operating Impulse",
+        "description": "Once chamber pressure decays safely, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt."
+      },
+      "phase_5": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Spent Case Extraction & Ejection",
+        "description": "The extractor pulls the fired brass clear of the chamber and pivots it out the ejection port while the recoil spring compresses."
+      },
+      "phase_6": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Next-Round Stripping & Breech Lockup",
+        "description": "Driven forward by the recoil spring, the breech strips the next round from the 8-round supply and locks solidly into battery."
+      },
+      "phase_7": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Disconnector Handoff & Sear Reset",
+        "description": "Releasing the trigger hands control cleanly back to the primary sear, leaving the Saiga-12K staged for its 240 RPM (rapid box-fed semi-auto) cadence."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪：1997 年机械传奇与工程剖析",
+      "deck": "俄罗斯赛加-12K 将 AK-74M 经典冲压机匣、长行程导气活塞与双突笋回转枪机整体等比放大至 12 号口径，搭配两档旋转导气阀与 8 发可拆卸直弹匣，让近战霰弹枪拥有与突击步枪同等迅捷的换弹速度。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1993–1997",
+          "title": "时代召唤与研发立项：Saiga-12K 的诞生背景",
+          "paragraphs": [
+            "1997 年问世的 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 由俄罗斯伊热夫斯克机械制造厂（Kalashnikov Concern）主导研制，定位为经典的AK 构型弹匣式半自动霰弹枪。赛加-12 系列于 1990 年代末由伊热夫斯克厂研发，其后续警用/竞赛衍生型在 IPSC 实用射击公开组与多国反恐部队中风靡全球。",
+            "俄罗斯赛加-12K 将 AK-74M 经典冲压机匣、长行程导气活塞与双突笋回转枪机整体等比放大至 12 号口径，搭配两档旋转导气阀与 8 发可拆卸直弹匣，让近战霰弹枪拥有与突击步枪同等迅捷的换弹速度。 整件装备总长 910 mm（侧折托 670 mm）、空重 3.5 kg，成为同期霰弹枪领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。1997 年，俄罗斯伊热夫斯克机械制造厂（Kalashnikov Concern）推出了划时代的俄罗斯赛加-12K 卡拉什尼科夫霰弹枪。赛加-12 系列于 1990 年代末由伊热夫斯克厂研发，其后续警用/竞赛衍生型在 IPSC 实用射击公开组与多国反恐部队中风靡全球。 它的核心设计聚焦于血统纯正的 AK 冲压机匣与强化回转闭锁枪机，极寒与泥浆环境高度可靠，奠定了其在霰弹枪发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "saiga12_receiver",
+          "focusPartLabel": "主体机匣与闭锁承力框架"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1997",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的机械灵魂在于其「AK 长行程活塞回转双突笋闭锁 · 两档导气调节阀 · 可拆直弹匣」结构体系。在发射工作循环中，长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用硬质阳极氧化铝合金、氮化钢与高强度聚合物精加工而成。前置两档旋钮式导气调节阀（标准弹 / 3 英寸马格南重弹），在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 采用AK 长行程活塞回转双突笋闭锁 · 两档导气调节阀 · 可拆直弹匣。在每个击发周期中，长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。借助硬质阳极氧化铝合金、氮化钢与高强度聚合物工艺与高强度配合，实现了前置两档旋钮式导气调节阀（标准弹 / 3 英寸马格南重弹）。",
+          "audioUrl": "",
+          "focusPartId": "saiga12_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1997–2000",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 12 Gauge (76mm / 3\" Magnum) 弹药规格与 430 mm（16.9 in 镀铬滑膛身管 · 外螺纹膛口），最高工作膛压约 74 MPa，可赋予弹头 405 m/s 的出膛初速与 3,150 J 动能，有效作用距离达 50 米。",
+            "内膛技术特点方面，18.5 mm 镀铬滑膛身管，支持外接“悖论”膛线喉缩器发射高精度独头弹。同时，可拆卸直弹匣彻底取代逐发塞填管状弹仓，战术换弹耗时缩减 70%，令其在 240 发/分（半自动快速换匣） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 430 毫米身管与 12 Gauge (76mm / 3\" Magnum) 口径，俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 实现了每秒 405 米的初速与 50 米有效射程。18.5 mm 镀铬滑膛身管，支持外接“悖论”膛线喉缩器发射高精度独头弹，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "saiga12_barrel",
+          "focusPartLabel": "430mm 精密内膛枪管总成"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2012–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 8 发容量的8 发可拆式双排弹匣壳体与 34 mm 膛轴设计，俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 将单发后坐冲量控制在 22.6 N·s 水平。机匣左侧燕尾槽直装俄式红点镜，聚合护木配侧折聚合物枪托。",
+            "如今在数字兵器库 3D 百年展厅（BAY-78）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 8 发容量的8 发可拆式双排弹匣壳体与出色的整体工效，机匣左侧燕尾槽直装俄式红点镜，聚合护木配侧折聚合物枪托。欢迎在 BAY-78 展位亲手切开剖面、逐件拆解，感受 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "saiga12_mag_body",
+          "focusPartLabel": "8 发可拆式双排弹匣壳体"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-78",
+          "summary": "AK 长行程活塞回转双突笋闭锁 · 两档导气调节阀 · 可拆直弹匣；血统纯正的 AK 冲压机匣与强化回转闭锁枪机，极寒与泥浆环境高度可靠。",
+          "focusPartId": "saiga12_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "405 m/s",
+          "summary": "430 mm（16.9 in 镀铬滑膛身管 · 外螺纹膛口），18.5 mm 镀铬滑膛身管，支持外接“悖论”膛线喉缩器发射高精度独头弹。",
+          "focusPartId": "saiga12_barrel",
+          "focusPartLabel": "430mm 精密内膛枪管总成"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "8 rds",
+          "summary": "可拆卸直弹匣彻底取代逐发塞填管状弹仓，战术换弹耗时缩减 70%；机匣左侧燕尾槽直装俄式红点镜，聚合护木配侧折聚合物枪托。",
+          "focusPartId": "saiga12_mag_body",
+          "focusPartLabel": "8 发可拆式双排弹匣壳体"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1993",
+          "title": "战术指标与概念构型",
+          "detail": "俄罗斯提出新一代AK 构型弹匣式半自动霰弹枪战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "1997",
+          "title": "Saiga-12K 正式定型投产",
+          "detail": "伊热夫斯克机械制造厂（Kalashnikov Concern）完成 IZHMASH SAIGA-12K 定型，采用AK 长行程活塞回转双突笋闭锁 · 两档导气调节阀 · 可拆直弹匣架构。"
+        },
+        {
+          "year": "2000",
+          "title": "实战部署与工艺演进",
+          "detail": "血统纯正的 AK 冲压机匣与强化回转闭锁枪机，极寒与泥浆环境高度可靠，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "2012",
+          "title": "工程典范与历史传承",
+          "detail": "赛加-12 系列于 1990 年代末由伊热夫斯克厂研发，其后续警用/竞赛衍生型在 IPSC 实用射击公开组与多国反恐部队中风靡全球。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-78）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Izhmash Saiga-12K Combat Shotgun: The 1997 Mechanical Legend",
+      "deck": "Scaling the AK-74M stamped receiver, long-stroke gas piston, and dual-lug rotating bolt up to 12-gauge magnum, the Russian Saiga-12K combines a two-position gas regulator with detachable 8-round box magazines for assault-rifle reload speed. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-78.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1993–1997",
+          "title": "Origins & Operational Mandate of the Saiga-12K",
+          "paragraphs": [
+            "Introduced in 1997 by Izhmash / Kalashnikov Concern in Russia, the Izhmash Saiga-12K Combat Shotgun emerged as a defining AK-Pattern Box-Fed Semi-Auto Shotgun. Developed by Izhmash in the late 1990s, the Saiga-12 family revolutionized both IPSC Open-division competition and law-enforcement tactical breaching worldwide.",
+            "Scaling the AK-74M stamped receiver, long-stroke gas piston, and dual-lug rotating bolt up to 12-gauge magnum, the Russian Saiga-12K combines a two-position gas regulator with detachable 8-round box magazines for assault-rifle reload speed. Measuring 910 mm (670 mm folded) at an unloaded weight of 3.5 kg, it reshaped expectations across the Combat Shotgun class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 1997, Izhmash / Kalashnikov Concern of Russia introduced the Izhmash Saiga-12K Combat Shotgun. Developed by Izhmash in the late 1990s, the Saiga-12 family revolutionized both IPSC Open-division competition and law-enforcement tactical breaching worldwide. Anchored by its hallmark design trait — True Kalashnikov stamped receiver and reinforced rotating bolt excel in mud and ice — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "saiga12_receiver",
+          "focusPartLabel": "Primary Receiver & Lock Housing"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1997",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the Izhmash Saiga-12K Combat Shotgun sits its AK Long-Stroke Piston Rotating Bolt · Two-Position Gas Regulator · Box Magazine. Throughout every firing cycle, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt, containing 74 MPa of operating pressure safely.",
+            "Constructed in hard-coat anodized aluminum, nitrided steel, and reinforced polymer, the assembly achieves durable field tolerances. Notably, Two-position front gas regulator balances light target loads and 3-inch magnums, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The Izhmash Saiga-12K Combat Shotgun relies on AK Long-Stroke Piston Rotating Bolt · Two-Position Gas Regulator · Box Magazine. During each cycle, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt. Machined from hard-coat anodized aluminum, nitrided steel, and reinforced polymer, it delivers standout engineering reliability: Two-position front gas regulator balances light target loads and 3-inch magnums.",
+          "audioUrl": "",
+          "focusPartId": "saiga12_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1997–2000",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 12 Gauge (76mm / 3\" Magnum) with 430 mm (16.9 in Chrome-Lined Smoothbore · Threaded Muzzle), the Izhmash Saiga-12K Combat Shotgun develops 405 m/s muzzle velocity and 3,150 J of kinetic energy for effective engagement out to 50 meters.",
+            "Internally, 18.5 mm chrome-lined smoothbore accepting rifled Paradox chokes for precision slugs. Combined with its 240 RPM (rapid box-fed semi-auto) tempo, Detachable box magazines slash reload time compared to single-shell tubular tubes, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 12 Gauge (76mm / 3\" Magnum) through its 430 millimeter bore, the Izhmash Saiga-12K Combat Shotgun achieves 405 meters per second and 50 meters of effective reach. 18.5 mm chrome-lined smoothbore accepting rifled Paradox chokes for precision slugs.",
+          "audioUrl": "",
+          "focusPartId": "saiga12_barrel",
+          "focusPartLabel": "430mm Precision Rifled Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "2012–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 8-round 8-round detachable magazine body with a 34 mm bore-axis height, the platform manages 22.6 N-s of recoil impulse cleanly. Side dovetail optic rail and left-folding polymer stock mirror AK-74M ergonomics.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-78), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 8-round 8-round detachable magazine body with disciplined recoil geometry, Side dovetail optic rail and left-folding polymer stock mirror AK-74M ergonomics. Explore BAY-78 in live section cut and exploded disassembly to study every working link of the Izhmash Saiga-12K Combat Shotgun.",
+          "audioUrl": "",
+          "focusPartId": "saiga12_mag_body",
+          "focusPartLabel": "8-Round Detachable Magazine Body"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-78",
+          "summary": "AK Long-Stroke Piston Rotating Bolt · Two-Position Gas Regulator · Box Magazine — True Kalashnikov stamped receiver and reinforced rotating bolt excel in mud and ice.",
+          "focusPartId": "saiga12_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "405 m/s",
+          "summary": "430 mm (16.9 in Chrome-Lined Smoothbore · Threaded Muzzle); 18.5 mm chrome-lined smoothbore accepting rifled Paradox chokes for precision slugs.",
+          "focusPartId": "saiga12_barrel",
+          "focusPartLabel": "430mm Precision Rifled Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "8 rds",
+          "summary": "Detachable box magazines slash reload time compared to single-shell tubular tubes; Side dovetail optic rail and left-folding polymer stock mirror AK-74M ergonomics.",
+          "focusPartId": "saiga12_mag_body",
+          "focusPartLabel": "8-Round Detachable Magazine Body"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1993",
+          "title": "Operational Requirement Defined",
+          "detail": "Russia ordnance planners established specifications for a new AK-Pattern Box-Fed Semi-Auto Shotgun class."
+        },
+        {
+          "year": "1997",
+          "title": "Saiga-12K Official Introduction",
+          "detail": "Izhmash / Kalashnikov Concern finalized IZHMASH SAIGA-12K around AK Long-Stroke Piston Rotating Bolt · Two-Position Gas Regulator · Box Magazine."
+        },
+        {
+          "year": "2000",
+          "title": "Field Deployment & Service Validation",
+          "detail": "True Kalashnikov stamped receiver and reinforced rotating bolt excel in mud and ice, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "2012",
+          "title": "Enduring Historical Influence",
+          "detail": "Developed by Izhmash in the late 1990s, the Saiga-12 family revolutionized both IPSC Open-division competition and law-enforcement tactical breaching worldwide."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-78)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "saiga12_receiver": {
+      "partId": "saiga12_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Primary Receiver",
+      "zh": {
+        "roleTag": "核心机构基准与耐压承力",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（U-01）的主体机匣与闭锁承力框架，隶属 20 件套标准装配体系，负责核心机构基准与耐压承力。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：血统纯正的 AK 冲压机匣与强化回转闭锁枪机，极寒与泥浆环境高度可靠。",
+        "audioScript": "U-01，主体机匣与闭锁承力框架。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担核心机构基准与耐压承力职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Core Structural Chassis",
+        "overview": "Primary Receiver & Lock Housing (U-01) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated core structural chassis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: True Kalashnikov stamped receiver and reinforced rotating bolt excel in mud and ice.",
+        "audioScript": "U-01, Primary Receiver & Lock Housing. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles core structural chassis. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_barrel": {
+      "partId": "saiga12_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "430mm Precision Barrel",
+      "zh": {
+        "roleTag": "密闭高压燃气并赋予弹头自旋",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（U-02）的430mm 精密内膛枪管总成，隶属 20 件套标准装配体系，负责密闭高压燃气并赋予弹头自旋。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：前置两档旋钮式导气调节阀（标准弹 / 3 英寸马格南重弹）。",
+        "audioScript": "U-02，430mm 精密内膛枪管总成。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担密闭高压燃气并赋予弹头自旋职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Pressure Vessel & Spin Axis",
+        "overview": "430mm Precision Rifled Barrel (U-02) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated pressure vessel & spin axis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Two-position front gas regulator balances light target loads and 3-inch magnums.",
+        "audioScript": "U-02, 430mm Precision Rifled Barrel. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles pressure vessel & spin axis. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_muzzle": {
+      "partId": "saiga12_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Muzzle Flash Hider",
+      "zh": {
+        "roleTag": "抑制膛口炽热焰辉",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（U-03）的开槽式膛口消焰装置，隶属 20 件套标准装配体系，负责抑制膛口炽热焰辉。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：可拆卸直弹匣彻底取代逐发塞填管状弹仓，战术换弹耗时缩减 70%。",
+        "audioScript": "U-03，开槽式膛口消焰装置。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担抑制膛口炽热焰辉职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Muzzle Flash Suppression",
+        "overview": "Slotted Muzzle Flash Hider (U-03) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated muzzle flash suppression node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Detachable box magazines slash reload time compared to single-shell tubular tubes.",
+        "audioScript": "U-03, Slotted Muzzle Flash Hider. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles muzzle flash suppression. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_bolt_carrier": {
+      "partId": "saiga12_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Bolt Carrier Group",
+      "zh": {
+        "roleTag": "驱动解锁、后坐与复位循环",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（U-04）的枪机框与拉机操作传动组，隶属 20 件套标准装配体系，负责驱动解锁、后坐与复位循环。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：机匣左侧燕尾槽直装俄式红点镜，聚合护木配侧折聚合物枪托。",
+        "audioScript": "U-04，枪机框与拉机操作传动组。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担驱动解锁、后坐与复位循环职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Cycling Actuator",
+        "overview": "Bolt Carrier & Operating Group (U-04) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated primary cycling actuator node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Side dovetail optic rail and left-folding polymer stock mirror AK-74M ergonomics.",
+        "audioScript": "U-04, Bolt Carrier & Operating Group. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles primary cycling actuator. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_bolt": {
+      "partId": "saiga12_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Locking Bolt Head",
+      "zh": {
+        "roleTag": "刚性闭锁膛压并可靠抽壳",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（U-05）的高强度闭锁枪机头与抽壳钩，隶属 20 件套标准装配体系，负责刚性闭锁膛压并可靠抽壳。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：血统纯正的 AK 冲压机匣与强化回转闭锁枪机，极寒与泥浆环境高度可靠。",
+        "audioScript": "U-05，高强度闭锁枪机头与抽壳钩。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担刚性闭锁膛压并可靠抽壳职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Breech Lock & Case Extraction",
+        "overview": "Hardened Locking Bolt & Extractor (U-05) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated breech lock & case extraction node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: True Kalashnikov stamped receiver and reinforced rotating bolt excel in mud and ice.",
+        "audioScript": "U-05, Hardened Locking Bolt & Extractor. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles breech lock & case extraction. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_recoil_spring": {
+      "partId": "saiga12_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Helical Recoil Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（U-06）的主复进螺旋弹簧总成，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动快速换匣） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：前置两档旋钮式导气调节阀（标准弹 / 3 英寸马格南重弹）。",
+        "audioScript": "U-06，主复进螺旋弹簧总成。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动快速换匣） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main Helical Recoil Spring (U-06) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (rapid box-fed semi-auto) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Two-position front gas regulator balances light target loads and 3-inch magnums.",
+        "audioScript": "U-06, Main Helical Recoil Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Izhmash Saiga-12K Combat Shotgun, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (rapid box-fed semi-auto) timing.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_handguard": {
+      "partId": "saiga12_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Tactical Handguard",
+      "zh": {
+        "roleTag": "隔绝枪管高温并提供稳定握持",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（F-01）的散热隔热战术前护木，隶属 20 件套标准装配体系，负责隔绝枪管高温并提供稳定握持。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：可拆卸直弹匣彻底取代逐发塞填管状弹仓，战术换弹耗时缩减 70%。",
+        "audioScript": "F-01，散热隔热战术前护木。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担隔绝枪管高温并提供稳定握持职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Thermal Shield & Support Hand",
+        "overview": "Ventilated Tactical Handguard (F-01) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated thermal shield & support hand node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Detachable box magazines slash reload time compared to single-shell tubular tubes.",
+        "audioScript": "F-01, Ventilated Tactical Handguard. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles thermal shield & support hand. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_stock": {
+      "partId": "saiga12_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Tactical Buttstock",
+      "zh": {
+        "roleTag": "直线传导后坐并支撑贴腮瞄准",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（F-02）的高刚度战术抵肩枪托，隶属 20 件套标准装配体系，负责直线传导后坐并支撑贴腮瞄准。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：机匣左侧燕尾槽直装俄式红点镜，聚合护木配侧折聚合物枪托。",
+        "audioScript": "F-02，高刚度战术抵肩枪托。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担直线传导后坐并支撑贴腮瞄准职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Transfer & Cheek Weld",
+        "overview": "Tactical Ergonomic Buttstock (F-02) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated recoil transfer & cheek weld node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Side dovetail optic rail and left-folding polymer stock mirror AK-74M ergonomics.",
+        "audioScript": "F-02, Tactical Ergonomic Buttstock. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles recoil transfer & cheek weld. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_grip": {
+      "partId": "saiga12_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ergonomic Main Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（F-03）的人体工学防滑主握把，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：血统纯正的 AK 冲压机匣与强化回转闭锁枪机，极寒与泥浆环境高度可靠。",
+        "audioScript": "F-03，人体工学防滑主握把。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担锁定手腕角度优化扳机控枪职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Ergonomic Textured Main Grip (F-03) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: True Kalashnikov stamped receiver and reinforced rotating bolt excel in mud and ice.",
+        "audioScript": "F-03, Ergonomic Textured Main Grip. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles wrist alignment & control. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_optic": {
+      "partId": "saiga12_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Adjustable Iron Sights",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（F-04）的可调机械准星照门组，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：前置两档旋钮式导气调节阀（标准弹 / 3 英寸马格南重弹）。",
+        "audioScript": "F-04，可调机械准星照门组。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担建立精准弹道瞄准基线职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Adjustable Iron Sight Assembly (F-04) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Two-position front gas regulator balances light target loads and 3-inch magnums.",
+        "audioScript": "F-04, Adjustable Iron Sight Assembly. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles ballistic sightline datum. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_gas_system": {
+      "partId": "saiga12_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Gas & Recoil System",
+      "zh": {
+        "roleTag": "定量调控自动循环能量平衡",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（F-05）的导气活塞/缓冲传动调节组件，隶属 20 件套标准装配体系，负责定量调控自动循环能量平衡。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：可拆卸直弹匣彻底取代逐发塞填管状弹仓，战术换弹耗时缩减 70%。",
+        "audioScript": "F-05，导气活塞/缓冲传动调节组件。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担定量调控自动循环能量平衡职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Operating Energy Regulation",
+        "overview": "Gas Drive / Recoil Buffer System (F-05) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated operating energy regulation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Detachable box magazines slash reload time compared to single-shell tubular tubes.",
+        "audioScript": "F-05, Gas Drive / Recoil Buffer System. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles operating energy regulation. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_mount_rail": {
+      "partId": "saiga12_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：机匣左侧燕尾槽直装俄式红点镜，聚合护木配侧折聚合物枪托。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担提供稳固依托与模块化拓展职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Side dovetail optic rail and left-folding polymer stock mirror AK-74M ergonomics.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles modular support & optics base. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_trigger": {
+      "partId": "saiga12_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：血统纯正的 AK 冲压机匣与强化回转闭锁枪机，极寒与泥浆环境高度可靠。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担清晰干脆释放阻铁启动击发职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: True Kalashnikov stamped receiver and reinforced rotating bolt excel in mud and ice.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles crisp firing release input. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_hammer": {
+      "partId": "saiga12_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Hammer / Striker Unit",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（T-02）的硬化击锤/平移击针击发组件，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：前置两档旋钮式导气调节阀（标准弹 / 3 英寸马格南重弹）。",
+        "audioScript": "T-02，硬化击锤/平移击针击发组件。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担高速释放储能精确击发底火/弓弦职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Hardened Hammer / Striker Unit (T-02) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Two-position front gas regulator balances light target loads and 3-inch magnums.",
+        "audioScript": "T-02, Hardened Hammer / Striker Unit. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles high-speed ignition impactor. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_hammer_spring": {
+      "partId": "saiga12_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动快速换匣） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：可拆卸直弹匣彻底取代逐发塞填管状弹仓，战术换弹耗时缩减 70%。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动快速换匣） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (rapid box-fed semi-auto) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Detachable box magazines slash reload time compared to single-shell tubular tubes.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Izhmash Saiga-12K Combat Shotgun, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (rapid box-fed semi-auto) timing.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_selector": {
+      "partId": "saiga12_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：机匣左侧燕尾槽直装俄式红点镜，聚合护木配侧折聚合物枪托。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担可靠锁止扳机阻铁并切换射态职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Side dovetail optic rail and left-folding polymer stock mirror AK-74M ergonomics.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles safety interlock & mode control. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_mag_body": {
+      "partId": "saiga12_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "8-Rd Magazine Body",
+      "zh": {
+        "roleTag": "高速快换供弹核心",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（M-01）的8 发可拆式双排弹匣壳体，隶属 20 件套标准装配体系，负责高速快换供弹核心。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：血统纯正的 AK 冲压机匣与强化回转闭锁枪机，极寒与泥浆环境高度可靠。",
+        "audioScript": "M-01，8 发可拆式双排弹匣壳体。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担高速快换供弹核心职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Detachable Ammunition Feed",
+        "overview": "8-Round Detachable Magazine Body (M-01) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated detachable ammunition feed node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: True Kalashnikov stamped receiver and reinforced rotating bolt excel in mud and ice.",
+        "audioScript": "M-01, 8-Round Detachable Magazine Body. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles detachable ammunition feed. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_follower": {
+      "partId": "saiga12_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Follower",
+      "zh": {
+        "roleTag": "保持供弹仰角与空仓挂机触发",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（M-02）的防倾倒高对比度托弹板，隶属 20 件套标准装配体系，负责保持供弹仰角与空仓挂机触发。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：前置两档旋钮式导气调节阀（标准弹 / 3 英寸马格南重弹）。",
+        "audioScript": "M-02，防倾倒高对比度托弹板。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担保持供弹仰角与空仓挂机触发职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Angle & Hold-Open",
+        "overview": "Anti-Tilt High-Vis Follower (M-02) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated feed angle & hold-open node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Two-position front gas regulator balances light target loads and 3-inch magnums.",
+        "audioScript": "M-02, Anti-Tilt High-Vis Follower. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles feed angle & hold-open. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_mag_spring": {
+      "partId": "saiga12_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Magazine Lift Spring",
+      "zh": {
+        "roleTag": "高射速下可靠托举下一发弹",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（M-03）的高弹性不锈钢托弹弹簧，隶属 20 件套标准装配体系，负责高射速下可靠托举下一发弹。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动快速换匣） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：可拆卸直弹匣彻底取代逐发塞填管状弹仓，战术换弹耗时缩减 70%。",
+        "audioScript": "M-03，高弹性不锈钢托弹弹簧。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担高射速下可靠托举下一发弹职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动快速换匣） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Rapid-Cycle Feed Tension",
+        "overview": "Stainless Magazine Lift Spring (M-03) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated rapid-cycle feed tension node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (rapid box-fed semi-auto) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Detachable box magazines slash reload time compared to single-shell tubular tubes.",
+        "audioScript": "M-03, Stainless Magazine Lift Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Izhmash Saiga-12K Combat Shotgun, this component handles rapid-cycle feed tension. Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (rapid box-fed semi-auto) timing.",
+        "audioUrl": ""
+      }
+    },
+    "saiga12_mag_base": {
+      "partId": "saiga12_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Magazine Floorplate",
+      "zh": {
+        "roleTag": "底盖防跌落缓冲与快速拆洗",
+        "overview": "俄罗斯赛加-12K 卡拉什尼科夫霰弹枪（M-04）的防震快拆弹匣底板与锁片，隶属 20 件套标准装配体系，负责底盖防跌落缓冲与快速拆洗。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1997年代伊热夫斯克机械制造厂（Kalashnikov Concern）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：机匣左侧燕尾槽直装俄式红点镜，聚合护木配侧折聚合物枪托。",
+        "audioScript": "M-04，防震快拆弹匣底板与锁片。作为 俄罗斯赛加-12K 卡拉什尼科夫霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担底盖防跌落缓冲与快速拆洗职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (76mm / 3\" Magnum) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Impact-Resistant Baseplate",
+        "overview": "Reinforced Magazine Floorplate (M-04) of the Izhmash Saiga-12K Combat Shotgun, serving as the dedicated impact-resistant baseplate node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Izhmash / Kalashnikov Concern service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Side dovetail optic rail and left-folding polymer stock mirror AK-74M ergonomics.",
+        "audioScript": "M-04, Reinforced Magazine Floorplate. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Izhmash Saiga-12K Combat Shotgun, this component handles impact-resistant baseplate. Maintains datum alignment with adjacent Saiga-12K assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

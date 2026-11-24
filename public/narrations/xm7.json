@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "xm7",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "SIG Sauer XM7 (MCX Spear)",
+    "subtitle": "80,000 PSI Hybrid-Case 6.8×51mm (.277 FURY) NGSW Rifle & SLX Suppressor",
+    "originCountry": "United States",
+    "weaponType": "Next-Generation Squad Rifle",
+    "categoryLabel": "Assault & Battle Rifle",
+    "actionMechanism": "Dual-Spring Short-Stroke Gas Piston (Bufferless Folder) · 80,000 PSI Hybrid-Case Lockup",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Winner of the U.S. Army’s 2022 NGSW program, the SIG XM7 ushers small arms into the 80,000 psi era—combining bi-metallic 6.8×51mm hybrid cases, a bufferless twin-spring short-stroke piston, and a standard 3D-printed flow-through suppressor.",
+    "highlights": [
+      "Bi-metallic steel-base hybrid cartridge survives 552 MPa (80,000 psi) peak chamber pressure",
+      "Dual upper recoil springs eliminate the AR buffer tube for a folding telescoping stock",
+      "Redundant rear T-handle and left-side non-reciprocating folding charging handle",
+      "Issued standard with a 3D-printed flow-through SLX suppressor and XM157 ballistic fire-control optic"
+    ],
+    "workbenchTitle": "SIG Sauer XM7 (MCX Spear) 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Dual-Spring Short-Stroke Gas Piston (Bufferless Folder) · 80,000 PSI Hybrid-Case Lockup",
+    "cutawayLabel": "Breech & Action Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on SIG Sauer XM7 (MCX Spear) to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Short-Stroke Pulse",
+    "rateOfFire": "800 RPM cyclic · standard flow-through suppressor",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "SIG Sauer XM7 (MCX Spear) (2022) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 914 mm (With SLX Flow-Through Suppressor)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Sear",
+        "title": "Phase 1 · SIG XM7 Trigger Release & Ignition Drive",
+        "description": "Pulling the trigger disengages the sear, freeing the spring-driven hammer or striker to impact the 6.8×51mm (.277 FURY) primer."
+      },
+      "phase_2": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · 552 MPa Chamber Pressure Rise",
+        "description": "The propellant charge ignites inside the locked chamber, driving peak pressure to 552 MPa while sealing the cartridge case against the breech."
+      },
+      "phase_3": {
+        "shortLabel": "Bore Acceleration",
+        "title": "Phase 3 · 330 mm Barrel Engraving & Acceleration",
+        "description": "The projectile engages the 6-groove bore and accelerates to 915 m/s (3670 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Short-Stroke Pulse",
+        "title": "Phase 4 · Short-Stroke Pulse & Operating Impulse",
+        "description": "Once chamber pressure decays safely, independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver."
+      },
+      "phase_5": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Spent Case Extraction & Ejection",
+        "description": "The extractor pulls the fired brass clear of the chamber and pivots it out the ejection port while the recoil spring compresses."
+      },
+      "phase_6": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Next-Round Stripping & Breech Lockup",
+        "description": "Driven forward by the recoil spring, the breech strips the next round from the 20-round supply and locks solidly into battery."
+      },
+      "phase_7": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Disconnector Handoff & Sear Reset",
+        "description": "Releasing the trigger hands control cleanly back to the primary sear, leaving the SIG XM7 staged for its 800 RPM cyclic · standard flow-through suppressor cadence."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪：2022 年机械传奇与工程剖析",
+      "deck": "2022 年中标美军「下一代班组武器」（NGSW）的 SIG XM7 标志着轻武器内弹道迈入 80,000 psi 超高膛压时代：依靠钢底铜身双金属复合 6.8×51mm 弹药、双复进簧无尾管短行程活塞与标配 3D 打印低回压消音器，仅凭 13 英寸短枪管即可在 600 米击穿现代重型防弹插板。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "2018–2022",
+          "title": "时代召唤与研发立项：SIG XM7 的诞生背景",
+          "paragraphs": [
+            "2022 年问世的 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 由美国西格绍尔美国公司（SIG Sauer）主导研制，定位为经典的次世代高膛压突击步枪。XM7 是美军自 1960 年代换装 5.56mm M16 以来首次跨越口径体系的系统级步枪换代，旨在应对现代 IV 级陶瓷复合防弹衣的远距侵彻挑战。",
+            "2022 年中标美军「下一代班组武器」（NGSW）的 SIG XM7 标志着轻武器内弹道迈入 80,000 psi 超高膛压时代：依靠钢底铜身双金属复合 6.8×51mm 弹药、双复进簧无尾管短行程活塞与标配 3D 打印低回压消音器，仅凭 13 英寸短枪管即可在 600 米击穿现代重型防弹插板。 整件装备总长 914 mm（含 SLX 消音器 · 折叠托）、空重 3.8 kg，成为同期模块化步枪领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。2022 年，美国西格绍尔美国公司（SIG Sauer）推出了划时代的SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪。XM7 是美军自 1960 年代换装 5.56mm M16 以来首次跨越口径体系的系统级步枪换代，旨在应对现代 IV 级陶瓷复合防弹衣的远距侵彻挑战。 它的核心设计聚焦于钢底+黄铜身双金属复合弹壳突破传统黄铜屈服极限，允许 552 MPa 超高膛压，奠定了其在模块化步枪发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "xm7_receiver",
+          "focusPartLabel": "主体机匣与闭锁承力框架"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2022",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的机械灵魂在于其「双导杆上置短行程活塞（无缓冲管折叠托）· 80,000 psi 超高膛压闭锁」结构体系。在发射工作循环中，独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用沙色陶瓷涂层航空铝合金与氮化钢精加工而成。枪机框上方双复进簧取消 AR 尾部缓冲管，实现全功能侧折伸缩枪托，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 采用双导杆上置短行程活塞（无缓冲管折叠托）· 80,000 psi 超高膛压闭锁。在每个击发周期中，独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。借助沙色陶瓷涂层航空铝合金与氮化钢工艺与高强度配合，实现了枪机框上方双复进簧取消 AR 尾部缓冲管，实现全功能侧折伸缩枪托。",
+          "audioUrl": "",
+          "focusPartId": "xm7_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2022–2025",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 6.8×51mm (.277 FURY) 弹药规格与 330 mm（13 in）超高强合金钢枪管（6 条右旋 · 178 mm / 1:7 缠距），最高工作膛压约 552 MPa，可赋予弹头 915 m/s 的出膛初速与 3,670 J 动能，有效作用距离达 600 米。",
+            "内膛技术特点方面，钢底铜身复合弹壳承受 552 MPa（80,000 psi）极限膛压，13 in 短管打出远超 7.62 NATO 20 in 枪管动能。同时，首创 T 形后拉机柄与左侧非随动折叠拉机柄双套独立上膛操控，令其在 800 发/分（全自动）· 标配低回压消音器 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 330 毫米身管与 6.8×51mm (.277 FURY) 口径，SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 实现了每秒 915 米的初速与 600 米有效射程。钢底铜身复合弹壳承受 552 MPa（80,000 psi）极限膛压，13 in 短管打出远超 7.62 NATO 20 in 枪管动能，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "xm7_barrel",
+          "focusPartLabel": "330mm 精密内膛枪管总成"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2026–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 20 发容量的20 发可拆式双排弹匣壳体与 33 mm 膛轴设计，SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 将单发后坐冲量控制在 9.6 N·s 水平。出厂标配 SLX 3D 打印低回压消音器与 XM157 智能激光弹道火控瞄具。",
+            "如今在数字兵器库 3D 百年展厅（BAY-49）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 20 发容量的20 发可拆式双排弹匣壳体与出色的整体工效，出厂标配 SLX 3D 打印低回压消音器与 XM157 智能激光弹道火控瞄具。欢迎在 BAY-49 展位亲手切开剖面、逐件拆解，感受 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "xm7_mag_body",
+          "focusPartLabel": "20 发可拆式双排弹匣壳体"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-49",
+          "summary": "双导杆上置短行程活塞（无缓冲管折叠托）· 80,000 psi 超高膛压闭锁；钢底+黄铜身双金属复合弹壳突破传统黄铜屈服极限，允许 552 MPa 超高膛压。",
+          "focusPartId": "xm7_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "915 m/s",
+          "summary": "330 mm（13 in）超高强合金钢枪管（6 条右旋 · 178 mm / 1:7 缠距），钢底铜身复合弹壳承受 552 MPa（80,000 psi）极限膛压，13 in 短管打出远超 7.62 NATO 20 in 枪管动能。",
+          "focusPartId": "xm7_barrel",
+          "focusPartLabel": "330mm 精密内膛枪管总成"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "20 rds",
+          "summary": "首创 T 形后拉机柄与左侧非随动折叠拉机柄双套独立上膛操控；出厂标配 SLX 3D 打印低回压消音器与 XM157 智能激光弹道火控瞄具。",
+          "focusPartId": "xm7_mag_body",
+          "focusPartLabel": "20 发可拆式双排弹匣壳体"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2018",
+          "title": "战术指标与概念构型",
+          "detail": "美国提出新一代次世代高膛压突击步枪战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "2022",
+          "title": "SIG XM7 正式定型投产",
+          "detail": "西格绍尔美国公司（SIG Sauer）完成 SIG SAUER XM7 (MCX SPEAR) 定型，采用双导杆上置短行程活塞（无缓冲管折叠托）· 80,000 psi 超高膛压闭锁架构。"
+        },
+        {
+          "year": "2025",
+          "title": "实战部署与工艺演进",
+          "detail": "钢底+黄铜身双金属复合弹壳突破传统黄铜屈服极限，允许 552 MPa 超高膛压，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "2026",
+          "title": "工程典范与历史传承",
+          "detail": "XM7 是美军自 1960 年代换装 5.56mm M16 以来首次跨越口径体系的系统级步枪换代，旨在应对现代 IV 级陶瓷复合防弹衣的远距侵彻挑战。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-49）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "SIG Sauer XM7 (MCX Spear): The 2022 Mechanical Legend",
+      "deck": "Winner of the U.S. Army’s 2022 NGSW program, the SIG XM7 ushers small arms into the 80,000 psi era—combining bi-metallic 6.8×51mm hybrid cases, a bufferless twin-spring short-stroke piston, and a standard 3D-printed flow-through suppressor. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-49.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "2018–2022",
+          "title": "Origins & Operational Mandate of the SIG XM7",
+          "paragraphs": [
+            "Introduced in 2022 by SIG Sauer Inc. in United States, the SIG Sauer XM7 (MCX Spear) emerged as a defining Next-Generation Squad Rifle. Selected in April 2022, the XM7 represents the U.S. Army’s first full-caliber rifle transition since adopting 5.56mm in the 1960s, engineered specifically to defeat modern ceramic body armor at range.",
+            "Winner of the U.S. Army’s 2022 NGSW program, the SIG XM7 ushers small arms into the 80,000 psi era—combining bi-metallic 6.8×51mm hybrid cases, a bufferless twin-spring short-stroke piston, and a standard 3D-printed flow-through suppressor. Measuring 914 mm (With SLX Flow-Through Suppressor) at an unloaded weight of 3.8 kg, it reshaped expectations across the Assault & Battle Rifle class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 2022, SIG Sauer Inc. of United States introduced the SIG Sauer XM7 (MCX Spear). Selected in April 2022, the XM7 represents the U.S. Army’s first full-caliber rifle transition since adopting 5.56mm in the 1960s, engineered specifically to defeat modern ceramic body armor at range. Anchored by its hallmark design trait — Bi-metallic steel-base hybrid cartridge survives 552 MPa (80,000 psi) peak chamber pressure — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "xm7_receiver",
+          "focusPartLabel": "Primary Receiver & Lock Housing"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "2022",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the SIG Sauer XM7 (MCX Spear) sits its Dual-Spring Short-Stroke Gas Piston (Bufferless Folder) · 80,000 PSI Hybrid-Case Lockup. Throughout every firing cycle, independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver, containing 552 MPa of operating pressure safely.",
+            "Constructed in Flat Dark Earth Cerakote 7075 aluminum and nitrided steel, the assembly achieves durable field tolerances. Notably, Dual upper recoil springs eliminate the AR buffer tube for a folding telescoping stock, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The SIG Sauer XM7 (MCX Spear) relies on Dual-Spring Short-Stroke Gas Piston (Bufferless Folder) · 80,000 PSI Hybrid-Case Lockup. During each cycle, independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver. Machined from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel, it delivers standout engineering reliability: Dual upper recoil springs eliminate the AR buffer tube for a folding telescoping stock.",
+          "audioUrl": "",
+          "focusPartId": "xm7_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "2022–2025",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 6.8×51mm (.277 FURY) with 330 mm (13 in) High-Strength Alloy Barrel (6-Groove RH · 1:7\" Twist), the SIG Sauer XM7 (MCX Spear) develops 915 m/s muzzle velocity and 3,670 J of kinetic energy for effective engagement out to 600 meters.",
+            "Internally, Bi-metallic steel-base hybrid cases sustain 552 MPa (80,000 psi), extracting 3,670 J from a 13-inch barrel. Combined with its 800 RPM cyclic · standard flow-through suppressor tempo, Redundant rear T-handle and left-side non-reciprocating folding charging handle, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 6.8×51mm (.277 FURY) through its 330 millimeter bore, the SIG Sauer XM7 (MCX Spear) achieves 915 meters per second and 600 meters of effective reach. Bi-metallic steel-base hybrid cases sustain 552 MPa (80,000 psi), extracting 3,670 J from a 13-inch barrel.",
+          "audioUrl": "",
+          "focusPartId": "xm7_barrel",
+          "focusPartLabel": "330mm Precision Rifled Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "2026–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 20-round 20-round detachable magazine body with a 33 mm bore-axis height, the platform manages 9.6 N-s of recoil impulse cleanly. Issued standard with a 3D-printed flow-through SLX suppressor and XM157 ballistic fire-control optic.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-49), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 20-round 20-round detachable magazine body with disciplined recoil geometry, Issued standard with a 3D-printed flow-through SLX suppressor and XM157 ballistic fire-control optic. Explore BAY-49 in live section cut and exploded disassembly to study every working link of the SIG Sauer XM7 (MCX Spear).",
+          "audioUrl": "",
+          "focusPartId": "xm7_mag_body",
+          "focusPartLabel": "20-Round Detachable Magazine Body"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-49",
+          "summary": "Dual-Spring Short-Stroke Gas Piston (Bufferless Folder) · 80,000 PSI Hybrid-Case Lockup — Bi-metallic steel-base hybrid cartridge survives 552 MPa (80,000 psi) peak chamber pressure.",
+          "focusPartId": "xm7_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "915 m/s",
+          "summary": "330 mm (13 in) High-Strength Alloy Barrel (6-Groove RH · 1:7\" Twist); Bi-metallic steel-base hybrid cases sustain 552 MPa (80,000 psi), extracting 3,670 J from a 13-inch barrel.",
+          "focusPartId": "xm7_barrel",
+          "focusPartLabel": "330mm Precision Rifled Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "20 rds",
+          "summary": "Redundant rear T-handle and left-side non-reciprocating folding charging handle; Issued standard with a 3D-printed flow-through SLX suppressor and XM157 ballistic fire-control optic.",
+          "focusPartId": "xm7_mag_body",
+          "focusPartLabel": "20-Round Detachable Magazine Body"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2018",
+          "title": "Operational Requirement Defined",
+          "detail": "United States ordnance planners established specifications for a new Next-Generation Squad Rifle class."
+        },
+        {
+          "year": "2022",
+          "title": "SIG XM7 Official Introduction",
+          "detail": "SIG Sauer Inc. finalized SIG SAUER XM7 (MCX SPEAR) around Dual-Spring Short-Stroke Gas Piston (Bufferless Folder) · 80,000 PSI Hybrid-Case Lockup."
+        },
+        {
+          "year": "2025",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Bi-metallic steel-base hybrid cartridge survives 552 MPa (80,000 psi) peak chamber pressure, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "2026",
+          "title": "Enduring Historical Influence",
+          "detail": "Selected in April 2022, the XM7 represents the U.S. Army’s first full-caliber rifle transition since adopting 5.56mm in the 1960s, engineered specifically to defeat modern ceramic body armor at range."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-49)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "xm7_receiver": {
+      "partId": "xm7_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Primary Receiver",
+      "zh": {
+        "roleTag": "核心机构基准与耐压承力",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（U-01）的主体机匣与闭锁承力框架，隶属 20 件套标准装配体系，负责核心机构基准与耐压承力。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：钢底+黄铜身双金属复合弹壳突破传统黄铜屈服极限，允许 552 MPa 超高膛压。",
+        "audioScript": "U-01，主体机匣与闭锁承力框架。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担核心机构基准与耐压承力职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Core Structural Chassis",
+        "overview": "Primary Receiver & Lock Housing (U-01) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated core structural chassis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Bi-metallic steel-base hybrid cartridge survives 552 MPa (80,000 psi) peak chamber pressure.",
+        "audioScript": "U-01, Primary Receiver & Lock Housing. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles core structural chassis. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_barrel": {
+      "partId": "xm7_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "330mm Precision Barrel",
+      "zh": {
+        "roleTag": "密闭高压燃气并赋予弹头自旋",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（U-02）的330mm 精密内膛枪管总成，隶属 20 件套标准装配体系，负责密闭高压燃气并赋予弹头自旋。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪机框上方双复进簧取消 AR 尾部缓冲管，实现全功能侧折伸缩枪托。",
+        "audioScript": "U-02，330mm 精密内膛枪管总成。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担密闭高压燃气并赋予弹头自旋职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Pressure Vessel & Spin Axis",
+        "overview": "330mm Precision Rifled Barrel (U-02) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated pressure vessel & spin axis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Dual upper recoil springs eliminate the AR buffer tube for a folding telescoping stock.",
+        "audioScript": "U-02, 330mm Precision Rifled Barrel. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles pressure vessel & spin axis. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_muzzle": {
+      "partId": "xm7_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Acoustic Suppressor",
+      "zh": {
+        "roleTag": "火药燃气降噪消焰",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（U-03）的多室消音器与膛口耦合节，隶属 20 件套标准装配体系，负责火药燃气降噪消焰。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：首创 T 形后拉机柄与左侧非随动折叠拉机柄双套独立上膛操控。",
+        "audioScript": "U-03，多室消音器与膛口耦合节。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担火药燃气降噪消焰职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Acoustic & Flash Attenuation",
+        "overview": "Multi-Baffle Acoustic Suppressor (U-03) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated acoustic & flash attenuation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Redundant rear T-handle and left-side non-reciprocating folding charging handle.",
+        "audioScript": "U-03, Multi-Baffle Acoustic Suppressor. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles acoustic & flash attenuation. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_bolt_carrier": {
+      "partId": "xm7_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Bolt Carrier Group",
+      "zh": {
+        "roleTag": "驱动解锁、后坐与复位循环",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（U-04）的枪机框与拉机操作传动组，隶属 20 件套标准装配体系，负责驱动解锁、后坐与复位循环。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "designHighlight": "工程亮点呼应整枪特征：出厂标配 SLX 3D 打印低回压消音器与 XM157 智能激光弹道火控瞄具。",
+        "audioScript": "U-04，枪机框与拉机操作传动组。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担驱动解锁、后坐与复位循环职能。在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Cycling Actuator",
+        "overview": "Bolt Carrier & Operating Group (U-04) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated primary cycling actuator node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Issued standard with a 3D-printed flow-through SLX suppressor and XM157 ballistic fire-control optic.",
+        "audioScript": "U-04, Bolt Carrier & Operating Group. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles primary cycling actuator. Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_bolt": {
+      "partId": "xm7_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Locking Bolt Head",
+      "zh": {
+        "roleTag": "刚性闭锁膛压并可靠抽壳",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（U-05）的高强度闭锁枪机头与抽壳钩，隶属 20 件套标准装配体系，负责刚性闭锁膛压并可靠抽壳。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "designHighlight": "工程亮点呼应整枪特征：钢底+黄铜身双金属复合弹壳突破传统黄铜屈服极限，允许 552 MPa 超高膛压。",
+        "audioScript": "U-05，高强度闭锁枪机头与抽壳钩。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担刚性闭锁膛压并可靠抽壳职能。在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Breech Lock & Case Extraction",
+        "overview": "Hardened Locking Bolt & Extractor (U-05) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated breech lock & case extraction node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Bi-metallic steel-base hybrid cartridge survives 552 MPa (80,000 psi) peak chamber pressure.",
+        "audioScript": "U-05, Hardened Locking Bolt & Extractor. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles breech lock & case extraction. Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_recoil_spring": {
+      "partId": "xm7_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Helical Recoil Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（U-06）的主复进螺旋弹簧总成，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 800 发/分（全自动）· 标配低回压消音器 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：枪机框上方双复进簧取消 AR 尾部缓冲管，实现全功能侧折伸缩枪托。",
+        "audioScript": "U-06，主复进螺旋弹簧总成。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 800 发/分（全自动）· 标配低回压消音器 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main Helical Recoil Spring (U-06) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 800 RPM cyclic · standard flow-through suppressor timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Dual upper recoil springs eliminate the AR buffer tube for a folding telescoping stock.",
+        "audioScript": "U-06, Main Helical Recoil Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the SIG Sauer XM7 (MCX Spear), this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 800 RPM cyclic · standard flow-through suppressor timing.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_handguard": {
+      "partId": "xm7_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Tactical Handguard",
+      "zh": {
+        "roleTag": "隔绝枪管高温并提供稳定握持",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（F-01）的散热隔热战术前护木，隶属 20 件套标准装配体系，负责隔绝枪管高温并提供稳定握持。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：首创 T 形后拉机柄与左侧非随动折叠拉机柄双套独立上膛操控。",
+        "audioScript": "F-01，散热隔热战术前护木。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担隔绝枪管高温并提供稳定握持职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Thermal Shield & Support Hand",
+        "overview": "Ventilated Tactical Handguard (F-01) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated thermal shield & support hand node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Redundant rear T-handle and left-side non-reciprocating folding charging handle.",
+        "audioScript": "F-01, Ventilated Tactical Handguard. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles thermal shield & support hand. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_stock": {
+      "partId": "xm7_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Tactical Buttstock",
+      "zh": {
+        "roleTag": "直线传导后坐并支撑贴腮瞄准",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（F-02）的高刚度战术抵肩枪托，隶属 20 件套标准装配体系，负责直线传导后坐并支撑贴腮瞄准。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：出厂标配 SLX 3D 打印低回压消音器与 XM157 智能激光弹道火控瞄具。",
+        "audioScript": "F-02，高刚度战术抵肩枪托。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担直线传导后坐并支撑贴腮瞄准职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Transfer & Cheek Weld",
+        "overview": "Tactical Ergonomic Buttstock (F-02) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated recoil transfer & cheek weld node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Issued standard with a 3D-printed flow-through SLX suppressor and XM157 ballistic fire-control optic.",
+        "audioScript": "F-02, Tactical Ergonomic Buttstock. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles recoil transfer & cheek weld. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_grip": {
+      "partId": "xm7_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ergonomic Main Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（F-03）的人体工学防滑主握把，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：钢底+黄铜身双金属复合弹壳突破传统黄铜屈服极限，允许 552 MPa 超高膛压。",
+        "audioScript": "F-03，人体工学防滑主握把。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担锁定手腕角度优化扳机控枪职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Ergonomic Textured Main Grip (F-03) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Bi-metallic steel-base hybrid cartridge survives 552 MPa (80,000 psi) peak chamber pressure.",
+        "audioScript": "F-03, Ergonomic Textured Main Grip. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles wrist alignment & control. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_optic": {
+      "partId": "xm7_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Precision Optical Sight",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（F-04）的精密光学瞄准镜与高刚度镜座，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪机框上方双复进簧取消 AR 尾部缓冲管，实现全功能侧折伸缩枪托。",
+        "audioScript": "F-04，精密光学瞄准镜与高刚度镜座。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担建立精准弹道瞄准基线职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Precision Optical Sight & Mount (F-04) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Dual upper recoil springs eliminate the AR buffer tube for a folding telescoping stock.",
+        "audioScript": "F-04, Precision Optical Sight & Mount. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles ballistic sightline datum. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_gas_system": {
+      "partId": "xm7_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Gas & Recoil System",
+      "zh": {
+        "roleTag": "定量调控自动循环能量平衡",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（F-05）的导气活塞/缓冲传动调节组件，隶属 20 件套标准装配体系，负责定量调控自动循环能量平衡。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "designHighlight": "工程亮点呼应整枪特征：首创 T 形后拉机柄与左侧非随动折叠拉机柄双套独立上膛操控。",
+        "audioScript": "F-05，导气活塞/缓冲传动调节组件。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担定量调控自动循环能量平衡职能。在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Operating Energy Regulation",
+        "overview": "Gas Drive / Recoil Buffer System (F-05) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated operating energy regulation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Redundant rear T-handle and left-side non-reciprocating folding charging handle.",
+        "audioScript": "F-05, Gas Drive / Recoil Buffer System. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles operating energy regulation. Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_mount_rail": {
+      "partId": "xm7_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：出厂标配 SLX 3D 打印低回压消音器与 XM157 智能激光弹道火控瞄具。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担提供稳固依托与模块化拓展职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Issued standard with a 3D-printed flow-through SLX suppressor and XM157 ballistic fire-control optic.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles modular support & optics base. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_trigger": {
+      "partId": "xm7_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：钢底+黄铜身双金属复合弹壳突破传统黄铜屈服极限，允许 552 MPa 超高膛压。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担清晰干脆释放阻铁启动击发职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Bi-metallic steel-base hybrid cartridge survives 552 MPa (80,000 psi) peak chamber pressure.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles crisp firing release input. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_hammer": {
+      "partId": "xm7_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Hammer / Striker Unit",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（T-02）的硬化击锤/平移击针击发组件，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪机框上方双复进簧取消 AR 尾部缓冲管，实现全功能侧折伸缩枪托。",
+        "audioScript": "T-02，硬化击锤/平移击针击发组件。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担高速释放储能精确击发底火/弓弦职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Hardened Hammer / Striker Unit (T-02) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Dual upper recoil springs eliminate the AR buffer tube for a folding telescoping stock.",
+        "audioScript": "T-02, Hardened Hammer / Striker Unit. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles high-speed ignition impactor. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_hammer_spring": {
+      "partId": "xm7_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 800 发/分（全自动）· 标配低回压消音器 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：首创 T 形后拉机柄与左侧非随动折叠拉机柄双套独立上膛操控。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 800 发/分（全自动）· 标配低回压消音器 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 800 RPM cyclic · standard flow-through suppressor timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Redundant rear T-handle and left-side non-reciprocating folding charging handle.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the SIG Sauer XM7 (MCX Spear), this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 800 RPM cyclic · standard flow-through suppressor timing.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_selector": {
+      "partId": "xm7_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：出厂标配 SLX 3D 打印低回压消音器与 XM157 智能激光弹道火控瞄具。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担可靠锁止扳机阻铁并切换射态职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Issued standard with a 3D-printed flow-through SLX suppressor and XM157 ballistic fire-control optic.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles safety interlock & mode control. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_mag_body": {
+      "partId": "xm7_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "20-Rd Magazine Body",
+      "zh": {
+        "roleTag": "高速快换供弹核心",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（M-01）的20 发可拆式双排弹匣壳体，隶属 20 件套标准装配体系，负责高速快换供弹核心。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：钢底+黄铜身双金属复合弹壳突破传统黄铜屈服极限，允许 552 MPa 超高膛压。",
+        "audioScript": "M-01，20 发可拆式双排弹匣壳体。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担高速快换供弹核心职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Detachable Ammunition Feed",
+        "overview": "20-Round Detachable Magazine Body (M-01) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated detachable ammunition feed node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Bi-metallic steel-base hybrid cartridge survives 552 MPa (80,000 psi) peak chamber pressure.",
+        "audioScript": "M-01, 20-Round Detachable Magazine Body. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles detachable ammunition feed. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_follower": {
+      "partId": "xm7_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Follower",
+      "zh": {
+        "roleTag": "保持供弹仰角与空仓挂机触发",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（M-02）的防倾倒高对比度托弹板，隶属 20 件套标准装配体系，负责保持供弹仰角与空仓挂机触发。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪机框上方双复进簧取消 AR 尾部缓冲管，实现全功能侧折伸缩枪托。",
+        "audioScript": "M-02，防倾倒高对比度托弹板。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担保持供弹仰角与空仓挂机触发职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Angle & Hold-Open",
+        "overview": "Anti-Tilt High-Vis Follower (M-02) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated feed angle & hold-open node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Dual upper recoil springs eliminate the AR buffer tube for a folding telescoping stock.",
+        "audioScript": "M-02, Anti-Tilt High-Vis Follower. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles feed angle & hold-open. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_mag_spring": {
+      "partId": "xm7_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Magazine Lift Spring",
+      "zh": {
+        "roleTag": "高射速下可靠托举下一发弹",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（M-03）的高弹性不锈钢托弹弹簧，隶属 20 件套标准装配体系，负责高射速下可靠托举下一发弹。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 800 发/分（全自动）· 标配低回压消音器 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：首创 T 形后拉机柄与左侧非随动折叠拉机柄双套独立上膛操控。",
+        "audioScript": "M-03，高弹性不锈钢托弹弹簧。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担高射速下可靠托举下一发弹职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 800 发/分（全自动）· 标配低回压消音器 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Rapid-Cycle Feed Tension",
+        "overview": "Stainless Magazine Lift Spring (M-03) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated rapid-cycle feed tension node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 800 RPM cyclic · standard flow-through suppressor timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Redundant rear T-handle and left-side non-reciprocating folding charging handle.",
+        "audioScript": "M-03, Stainless Magazine Lift Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the SIG Sauer XM7 (MCX Spear), this component handles rapid-cycle feed tension. Stores and returns cyclic elastic energy via live coil compression to maintain 800 RPM cyclic · standard flow-through suppressor timing.",
+        "audioUrl": ""
+      }
+    },
+    "xm7_mag_base": {
+      "partId": "xm7_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Magazine Floorplate",
+      "zh": {
+        "roleTag": "底盖防跌落缓冲与快速拆洗",
+        "overview": "SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪（M-04）的防震快拆弹匣底板与锁片，隶属 20 件套标准装配体系，负责底盖防跌落缓冲与快速拆洗。",
+        "craftAndMaterial": "采用沙色陶瓷涂层航空铝合金与氮化钢制造，表面按2022年代西格绍尔美国公司（SIG Sauer）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：出厂标配 SLX 3D 打印低回压消音器与 XM157 智能激光弹道火控瞄具。",
+        "audioScript": "M-04，防震快拆弹匣底板与锁片。作为 SIG Sauer XM7（NGSW）6.8mm 新一代班组步枪 的关键构件，它采用沙色陶瓷涂层航空铝合金与氮化钢制造，主要承担底盖防跌落缓冲与快速拆洗职能。与相邻模块保持精密基准配合，协同支撑 6.8×51mm (.277 FURY) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Impact-Resistant Baseplate",
+        "overview": "Reinforced Magazine Floorplate (M-04) of the SIG Sauer XM7 (MCX Spear), serving as the dedicated impact-resistant baseplate node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel to SIG Sauer Inc. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Issued standard with a 3D-printed flow-through SLX suppressor and XM157 ballistic fire-control optic.",
+        "audioScript": "M-04, Reinforced Magazine Floorplate. Crafted from Flat Dark Earth Cerakote 7075 aluminum and nitrided steel for the SIG Sauer XM7 (MCX Spear), this component handles impact-resistant baseplate. Maintains datum alignment with adjacent SIG XM7 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

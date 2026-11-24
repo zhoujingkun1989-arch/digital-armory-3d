@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "bar1918",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "Browning M1918A2 BAR",
+    "subtitle": "Walking-Fire .30-06 Squad Automatic with Dual-Rate Mechanical Reducer",
+    "originCountry": "United States",
+    "weaponType": "Squad Automatic Rifle",
+    "categoryLabel": "Machine Gun",
+    "actionMechanism": "Under-Barrel Long-Stroke Gas Piston · Rising Hinged Locking Link & Dual-Rate Escapement",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Designed by John Browning to break WWI trench stalemates via “walking fire,” the WWII M1918A2 BAR pairs a milled receiver and rising-link gas action with an ingenious buttstock inertia rate reducer toggling between 350 and 550 RPM.",
+    "highlights": [
+      "Rising hinged locking bolt inspired the inverted locking architecture of the postwar FN MAG/M240B",
+      "Buttstock inertia rate-reducer mechanism selects between 350 RPM slow-auto and 550 RPM fast-auto",
+      "3-position gas regulator and 8.8 kg milled-steel mass steady full-power .30-06 bursts",
+      "A2 upgrade introduced dual-rate automatic fire, muzzle bipod, and clip-on carrying handle"
+    ],
+    "workbenchTitle": "Browning M1918A2 BAR 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Under-Barrel Long-Stroke Gas Piston · Rising Hinged Locking Link & Dual-Rate Escapement",
+    "cutawayLabel": "Breech & Action Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on Browning M1918A2 BAR to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Long-Stroke Unlock",
+    "rateOfFire": "350 RPM (slow) / 550 RPM (fast) dual-rate",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Browning M1918A2 BAR (1918) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 1,215 mm (Milled Steel Receiver · Walnut Stock)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Sear",
+        "title": "Phase 1 · M1918A2 BAR Trigger Release & Ignition Drive",
+        "description": "Pulling the trigger disengages the sear, freeing the spring-driven hammer or striker to impact the .30-06 Springfield primer."
+      },
+      "phase_2": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · 405 MPa Chamber Pressure Rise",
+        "description": "The propellant charge ignites inside the locked chamber, driving peak pressure to 405 MPa while sealing the cartridge case against the breech."
+      },
+      "phase_3": {
+        "shortLabel": "Bore Acceleration",
+        "title": "Phase 3 · 610 mm Barrel Engraving & Acceleration",
+        "description": "The projectile engages the 4-groove bore and accelerates to 853 m/s (3820 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Long-Stroke Unlock",
+        "title": "Phase 4 · Long-Stroke Unlock & Operating Impulse",
+        "description": "Once chamber pressure decays safely, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt."
+      },
+      "phase_5": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Spent Case Extraction & Ejection",
+        "description": "The extractor pulls the fired brass clear of the chamber and pivots it out the ejection port while the recoil spring compresses."
+      },
+      "phase_6": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Next-Round Stripping & Breech Lockup",
+        "description": "Driven forward by the recoil spring, the breech strips the next round from the 20-round supply and locks solidly into battery."
+      },
+      "phase_7": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Disconnector Handoff & Sear Reset",
+        "description": "Releasing the trigger hands control cleanly back to the primary sear, leaving the M1918A2 BAR staged for its 350 RPM (slow) / 550 RPM (fast) dual-rate cadence."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "勃朗宁 M1918A2 BAR 自动步枪：1918 年机械传奇与工程剖析",
+      "deck": "约翰·勃朗宁在 1917 年为打破一战堑壕僵局设计的 M1918 BAR 开创了「行进间抵腰压制火力」先河；二战定型的 M1918A2 型采用全钢铣削机匣、上倾闭锁连杆与独创枪托内置机械惯性降速器，提供 350 / 550 发/分双档连发射速。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1914–1918",
+          "title": "时代召唤与研发立项：M1918A2 BAR 的诞生背景",
+          "paragraphs": [
+            "1918 年问世的 勃朗宁 M1918A2 BAR 自动步枪 由美国约翰·勃朗宁 / 柯尔特 / 温彻斯特主导研制，定位为经典的班用自动步枪。M1918 BAR 跨越一战默兹-阿贡攻势、二战诺曼底与太平洋岛屿战以及朝鲜战争，不仅是美军步兵班的火力中坚，其闭锁原理更通过 FN MAG 延续至今。",
+            "约翰·勃朗宁在 1917 年为打破一战堑壕僵局设计的 M1918 BAR 开创了「行进间抵腰压制火力」先河；二战定型的 M1918A2 型采用全钢铣削机匣、上倾闭锁连杆与独创枪托内置机械惯性降速器，提供 350 / 550 发/分双档连发射速。 整件装备总长 1,215 mm（全钢铣削机匣 · 胡桃木托）、空重 8.8 kg，成为同期轻机枪领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。1918 年，美国约翰·勃朗宁 / 柯尔特 / 温彻斯特推出了划时代的勃朗宁 M1918A2 BAR 自动步枪。M1918 BAR 跨越一战默兹-阿贡攻势、二战诺曼底与太平洋岛屿战以及朝鲜战争，不仅是美军步兵班的火力中坚，其闭锁原理更通过 FN MAG 延续至今。 它的核心设计聚焦于上倾铰接闭锁楔块卡入机匣顶部闭锁凹槽，后来倒置演变为传奇的 FN MAG/M240B 闭锁机，奠定了其在轻机枪发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "bar1918_receiver",
+          "focusPartLabel": "主体机匣与闭锁承力框架"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1918",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "勃朗宁 M1918A2 BAR 自动步枪 的机械灵魂在于其「下置长行程导气活塞 · 上倾铰接闭锁楔块 + 双档机械降速器」结构体系。在发射工作循环中，长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用发蓝锻钢与油润精选胡桃木/桦木托精加工而成。枪托内置惯性摆锤式机械降速器实现 350 发/分精准慢速连发与 550 发/分快速压制切换，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。勃朗宁 M1918A2 BAR 自动步枪 采用下置长行程导气活塞 · 上倾铰接闭锁楔块 + 双档机械降速器。在每个击发周期中，长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。借助发蓝锻钢与油润精选胡桃木/桦木托工艺与高强度配合，实现了枪托内置惯性摆锤式机械降速器实现 350 发/分精准慢速连发与 550 发/分快速压制切换。",
+          "audioUrl": "",
+          "focusPartId": "bar1918_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1918–1921",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 .30-06 Springfield 弹药规格与 610 mm（24 in）重型枪管（4 条右旋膛线 · 254 mm / 1:10 缠距），最高工作膛压约 405 MPa，可赋予弹头 853 m/s 的出膛初速与 3,820 J 动能，有效作用距离达 550 米。",
+            "内膛技术特点方面，24 英寸长管充分发挥 .30-06 M2 全威力穿甲/普通弹 3,820 J 贯穿威力。同时，3 档外置气体调节缸配合 8.8 kg 沉稳全钢质量有效抑制 .30-06 全威力弹连发跳动，令其在 350 发/分（慢档）/ 550 发/分（快档）双射速 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 610 毫米身管与 .30-06 Springfield 口径，勃朗宁 M1918A2 BAR 自动步枪 实现了每秒 853 米的初速与 550 米有效射程。24 英寸长管充分发挥 .30-06 M2 全威力穿甲/普通弹 3,820 J 贯穿威力，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "bar1918_barrel",
+          "focusPartLabel": "610mm 精密内膛枪管总成"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1933–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 20 发容量的20 发可拆式双排弹匣壳体与 45 mm 膛轴设计，勃朗宁 M1918A2 BAR 自动步枪 将单发后坐冲量控制在 12.1 N·s 水平。A2 型取消单发档改为双档全自动，并加装膛口折叠两脚架与折叠提把。",
+            "如今在数字兵器库 3D 百年展厅（BAY-55）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 20 发容量的20 发可拆式双排弹匣壳体与出色的整体工效，A2 型取消单发档改为双档全自动，并加装膛口折叠两脚架与折叠提把。欢迎在 BAY-55 展位亲手切开剖面、逐件拆解，感受 勃朗宁 M1918A2 BAR 自动步枪 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "bar1918_mag_body",
+          "focusPartLabel": "20 发可拆式双排弹匣壳体"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-55",
+          "summary": "下置长行程导气活塞 · 上倾铰接闭锁楔块 + 双档机械降速器；上倾铰接闭锁楔块卡入机匣顶部闭锁凹槽，后来倒置演变为传奇的 FN MAG/M240B 闭锁机。",
+          "focusPartId": "bar1918_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "853 m/s",
+          "summary": "610 mm（24 in）重型枪管（4 条右旋膛线 · 254 mm / 1:10 缠距），24 英寸长管充分发挥 .30-06 M2 全威力穿甲/普通弹 3,820 J 贯穿威力。",
+          "focusPartId": "bar1918_barrel",
+          "focusPartLabel": "610mm 精密内膛枪管总成"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "20 rds",
+          "summary": "3 档外置气体调节缸配合 8.8 kg 沉稳全钢质量有效抑制 .30-06 全威力弹连发跳动；A2 型取消单发档改为双档全自动，并加装膛口折叠两脚架与折叠提把。",
+          "focusPartId": "bar1918_mag_body",
+          "focusPartLabel": "20 发可拆式双排弹匣壳体"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1914",
+          "title": "战术指标与概念构型",
+          "detail": "美国提出新一代班用自动步枪战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "1918",
+          "title": "M1918A2 BAR 正式定型投产",
+          "detail": "约翰·勃朗宁 / 柯尔特 / 温彻斯特完成 BROWNING M1918A2 BAR 定型，采用下置长行程导气活塞 · 上倾铰接闭锁楔块 + 双档机械降速器架构。"
+        },
+        {
+          "year": "1921",
+          "title": "实战部署与工艺演进",
+          "detail": "上倾铰接闭锁楔块卡入机匣顶部闭锁凹槽，后来倒置演变为传奇的 FN MAG/M240B 闭锁机，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "1933",
+          "title": "工程典范与历史传承",
+          "detail": "M1918 BAR 跨越一战默兹-阿贡攻势、二战诺曼底与太平洋岛屿战以及朝鲜战争，不仅是美军步兵班的火力中坚，其闭锁原理更通过 FN MAG 延续至今。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-55）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Browning M1918A2 BAR: The 1918 Mechanical Legend",
+      "deck": "Designed by John Browning to break WWI trench stalemates via “walking fire,” the WWII M1918A2 BAR pairs a milled receiver and rising-link gas action with an ingenious buttstock inertia rate reducer toggling between 350 and 550 RPM. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-55.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1914–1918",
+          "title": "Origins & Operational Mandate of the M1918A2 BAR",
+          "paragraphs": [
+            "Introduced in 1918 by John M. Browning / Colt / Winchester in United States, the Browning M1918A2 BAR emerged as a defining Squad Automatic Rifle. Carried from the 1918 Meuse-Argonne offensive through WWII and Korea, the BAR anchored U.S. infantry squads while bequeathing its locking geometry to modern NATO machine guns.",
+            "Designed by John Browning to break WWI trench stalemates via “walking fire,” the WWII M1918A2 BAR pairs a milled receiver and rising-link gas action with an ingenious buttstock inertia rate reducer toggling between 350 and 550 RPM. Measuring 1,215 mm (Milled Steel Receiver · Walnut Stock) at an unloaded weight of 8.8 kg, it reshaped expectations across the Machine Gun class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 1918, John M. Browning / Colt / Winchester of United States introduced the Browning M1918A2 BAR. Carried from the 1918 Meuse-Argonne offensive through WWII and Korea, the BAR anchored U.S. infantry squads while bequeathing its locking geometry to modern NATO machine guns. Anchored by its hallmark design trait — Rising hinged locking bolt inspired the inverted locking architecture of the postwar FN MAG/M240B — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "bar1918_receiver",
+          "focusPartLabel": "Primary Receiver & Lock Housing"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1918",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the Browning M1918A2 BAR sits its Under-Barrel Long-Stroke Gas Piston · Rising Hinged Locking Link & Dual-Rate Escapement. Throughout every firing cycle, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt, containing 405 MPa of operating pressure safely.",
+            "Constructed in blued forged ordnance steel paired with oil-finished walnut, the assembly achieves durable field tolerances. Notably, Buttstock inertia rate-reducer mechanism selects between 350 RPM slow-auto and 550 RPM fast-auto, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The Browning M1918A2 BAR relies on Under-Barrel Long-Stroke Gas Piston · Rising Hinged Locking Link & Dual-Rate Escapement. During each cycle, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt. Machined from blued forged ordnance steel paired with oil-finished walnut, it delivers standout engineering reliability: Buttstock inertia rate-reducer mechanism selects between 350 RPM slow-auto and 550 RPM fast-auto.",
+          "audioUrl": "",
+          "focusPartId": "bar1918_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1918–1921",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for .30-06 Springfield with 610 mm (24 in) Heavy Barrel (4-Groove RH · 1:10\" Twist), the Browning M1918A2 BAR develops 853 m/s muzzle velocity and 3,820 J of kinetic energy for effective engagement out to 550 meters.",
+            "Internally, 24-inch barrel extracts the full 3,820 J punch of .30-06 Springfield M2 Ball and AP ammunition. Combined with its 350 RPM (slow) / 550 RPM (fast) dual-rate tempo, 3-position gas regulator and 8.8 kg milled-steel mass steady full-power .30-06 bursts, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving .30-06 Springfield through its 610 millimeter bore, the Browning M1918A2 BAR achieves 853 meters per second and 550 meters of effective reach. 24-inch barrel extracts the full 3,820 J punch of .30-06 Springfield M2 Ball and AP ammunition.",
+          "audioUrl": "",
+          "focusPartId": "bar1918_barrel",
+          "focusPartLabel": "610mm Precision Rifled Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "1933–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 20-round 20-round detachable magazine body with a 45 mm bore-axis height, the platform manages 12.1 N-s of recoil impulse cleanly. A2 upgrade introduced dual-rate automatic fire, muzzle bipod, and clip-on carrying handle.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-55), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 20-round 20-round detachable magazine body with disciplined recoil geometry, A2 upgrade introduced dual-rate automatic fire, muzzle bipod, and clip-on carrying handle. Explore BAY-55 in live section cut and exploded disassembly to study every working link of the Browning M1918A2 BAR.",
+          "audioUrl": "",
+          "focusPartId": "bar1918_mag_body",
+          "focusPartLabel": "20-Round Detachable Magazine Body"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-55",
+          "summary": "Under-Barrel Long-Stroke Gas Piston · Rising Hinged Locking Link & Dual-Rate Escapement — Rising hinged locking bolt inspired the inverted locking architecture of the postwar FN MAG/M240B.",
+          "focusPartId": "bar1918_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "853 m/s",
+          "summary": "610 mm (24 in) Heavy Barrel (4-Groove RH · 1:10\" Twist); 24-inch barrel extracts the full 3,820 J punch of .30-06 Springfield M2 Ball and AP ammunition.",
+          "focusPartId": "bar1918_barrel",
+          "focusPartLabel": "610mm Precision Rifled Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "20 rds",
+          "summary": "3-position gas regulator and 8.8 kg milled-steel mass steady full-power .30-06 bursts; A2 upgrade introduced dual-rate automatic fire, muzzle bipod, and clip-on carrying handle.",
+          "focusPartId": "bar1918_mag_body",
+          "focusPartLabel": "20-Round Detachable Magazine Body"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1914",
+          "title": "Operational Requirement Defined",
+          "detail": "United States ordnance planners established specifications for a new Squad Automatic Rifle class."
+        },
+        {
+          "year": "1918",
+          "title": "M1918A2 BAR Official Introduction",
+          "detail": "John M. Browning / Colt / Winchester finalized BROWNING M1918A2 BAR around Under-Barrel Long-Stroke Gas Piston · Rising Hinged Locking Link & Dual-Rate Escapement."
+        },
+        {
+          "year": "1921",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Rising hinged locking bolt inspired the inverted locking architecture of the postwar FN MAG/M240B, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "1933",
+          "title": "Enduring Historical Influence",
+          "detail": "Carried from the 1918 Meuse-Argonne offensive through WWII and Korea, the BAR anchored U.S. infantry squads while bequeathing its locking geometry to modern NATO machine guns."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-55)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "bar1918_receiver": {
+      "partId": "bar1918_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Primary Receiver",
+      "zh": {
+        "roleTag": "核心机构基准与耐压承力",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（U-01）的主体机匣与闭锁承力框架，隶属 20 件套标准装配体系，负责核心机构基准与耐压承力。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：上倾铰接闭锁楔块卡入机匣顶部闭锁凹槽，后来倒置演变为传奇的 FN MAG/M240B 闭锁机。",
+        "audioScript": "U-01，主体机匣与闭锁承力框架。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担核心机构基准与耐压承力职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Core Structural Chassis",
+        "overview": "Primary Receiver & Lock Housing (U-01) of the Browning M1918A2 BAR, serving as the dedicated core structural chassis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Rising hinged locking bolt inspired the inverted locking architecture of the postwar FN MAG/M240B.",
+        "audioScript": "U-01, Primary Receiver & Lock Housing. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles core structural chassis. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_barrel": {
+      "partId": "bar1918_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "610mm Precision Barrel",
+      "zh": {
+        "roleTag": "密闭高压燃气并赋予弹头自旋",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（U-02）的610mm 精密内膛枪管总成，隶属 20 件套标准装配体系，负责密闭高压燃气并赋予弹头自旋。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪托内置惯性摆锤式机械降速器实现 350 发/分精准慢速连发与 550 发/分快速压制切换。",
+        "audioScript": "U-02，610mm 精密内膛枪管总成。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担密闭高压燃气并赋予弹头自旋职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Pressure Vessel & Spin Axis",
+        "overview": "610mm Precision Rifled Barrel (U-02) of the Browning M1918A2 BAR, serving as the dedicated pressure vessel & spin axis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Buttstock inertia rate-reducer mechanism selects between 350 RPM slow-auto and 550 RPM fast-auto.",
+        "audioScript": "U-02, 610mm Precision Rifled Barrel. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles pressure vessel & spin axis. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_muzzle": {
+      "partId": "bar1918_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Muzzle Flash Hider",
+      "zh": {
+        "roleTag": "抑制膛口炽热焰辉",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（U-03）的开槽式膛口消焰装置，隶属 20 件套标准装配体系，负责抑制膛口炽热焰辉。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：3 档外置气体调节缸配合 8.8 kg 沉稳全钢质量有效抑制 .30-06 全威力弹连发跳动。",
+        "audioScript": "U-03，开槽式膛口消焰装置。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担抑制膛口炽热焰辉职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Muzzle Flash Suppression",
+        "overview": "Slotted Muzzle Flash Hider (U-03) of the Browning M1918A2 BAR, serving as the dedicated muzzle flash suppression node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 3-position gas regulator and 8.8 kg milled-steel mass steady full-power .30-06 bursts.",
+        "audioScript": "U-03, Slotted Muzzle Flash Hider. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles muzzle flash suppression. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_bolt_carrier": {
+      "partId": "bar1918_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Bolt Carrier Group",
+      "zh": {
+        "roleTag": "驱动解锁、后坐与复位循环",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（U-04）的枪机框与拉机操作传动组，隶属 20 件套标准装配体系，负责驱动解锁、后坐与复位循环。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：A2 型取消单发档改为双档全自动，并加装膛口折叠两脚架与折叠提把。",
+        "audioScript": "U-04，枪机框与拉机操作传动组。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担驱动解锁、后坐与复位循环职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Cycling Actuator",
+        "overview": "Bolt Carrier & Operating Group (U-04) of the Browning M1918A2 BAR, serving as the dedicated primary cycling actuator node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: A2 upgrade introduced dual-rate automatic fire, muzzle bipod, and clip-on carrying handle.",
+        "audioScript": "U-04, Bolt Carrier & Operating Group. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles primary cycling actuator. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_bolt": {
+      "partId": "bar1918_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Locking Bolt Head",
+      "zh": {
+        "roleTag": "刚性闭锁膛压并可靠抽壳",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（U-05）的高强度闭锁枪机头与抽壳钩，隶属 20 件套标准装配体系，负责刚性闭锁膛压并可靠抽壳。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：上倾铰接闭锁楔块卡入机匣顶部闭锁凹槽，后来倒置演变为传奇的 FN MAG/M240B 闭锁机。",
+        "audioScript": "U-05，高强度闭锁枪机头与抽壳钩。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担刚性闭锁膛压并可靠抽壳职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Breech Lock & Case Extraction",
+        "overview": "Hardened Locking Bolt & Extractor (U-05) of the Browning M1918A2 BAR, serving as the dedicated breech lock & case extraction node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Rising hinged locking bolt inspired the inverted locking architecture of the postwar FN MAG/M240B.",
+        "audioScript": "U-05, Hardened Locking Bolt & Extractor. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles breech lock & case extraction. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_recoil_spring": {
+      "partId": "bar1918_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Helical Recoil Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（U-06）的主复进螺旋弹簧总成，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 350 发/分（慢档）/ 550 发/分（快档）双射速 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：枪托内置惯性摆锤式机械降速器实现 350 发/分精准慢速连发与 550 发/分快速压制切换。",
+        "audioScript": "U-06，主复进螺旋弹簧总成。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 350 发/分（慢档）/ 550 发/分（快档）双射速 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main Helical Recoil Spring (U-06) of the Browning M1918A2 BAR, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 350 RPM (slow) / 550 RPM (fast) dual-rate timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Buttstock inertia rate-reducer mechanism selects between 350 RPM slow-auto and 550 RPM fast-auto.",
+        "audioScript": "U-06, Main Helical Recoil Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Browning M1918A2 BAR, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 350 RPM (slow) / 550 RPM (fast) dual-rate timing.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_handguard": {
+      "partId": "bar1918_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Walnut Forend",
+      "zh": {
+        "roleTag": "隔绝枪管高温并提供稳定握持",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（F-01）的油润实木前护木组件，隶属 20 件套标准装配体系，负责隔绝枪管高温并提供稳定握持。",
+        "craftAndMaterial": "采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：3 档外置气体调节缸配合 8.8 kg 沉稳全钢质量有效抑制 .30-06 全威力弹连发跳动。",
+        "audioScript": "F-01，油润实木前护木组件。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，主要承担隔绝枪管高温并提供稳定握持职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Thermal Shield & Support Hand",
+        "overview": "Oil-Finished Walnut Forend (F-01) of the Browning M1918A2 BAR, serving as the dedicated thermal shield & support hand node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from oil-finished selected hardwood paired with steel reinforcement ferrules to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 3-position gas regulator and 8.8 kg milled-steel mass steady full-power .30-06 bursts.",
+        "audioScript": "F-01, Oil-Finished Walnut Forend. Crafted from oil-finished selected hardwood paired with steel reinforcement ferrules for the Browning M1918A2 BAR, this component handles thermal shield & support hand. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_stock": {
+      "partId": "bar1918_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Hardwood Buttstock",
+      "zh": {
+        "roleTag": "直线传导后坐并支撑贴腮瞄准",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（F-02）的经典实木抵肩枪托，隶属 20 件套标准装配体系，负责直线传导后坐并支撑贴腮瞄准。",
+        "craftAndMaterial": "采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：A2 型取消单发档改为双档全自动，并加装膛口折叠两脚架与折叠提把。",
+        "audioScript": "F-02，经典实木抵肩枪托。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，主要承担直线传导后坐并支撑贴腮瞄准职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Transfer & Cheek Weld",
+        "overview": "Classic Hardwood Buttstock (F-02) of the Browning M1918A2 BAR, serving as the dedicated recoil transfer & cheek weld node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from oil-finished selected hardwood paired with steel reinforcement ferrules to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: A2 upgrade introduced dual-rate automatic fire, muzzle bipod, and clip-on carrying handle.",
+        "audioScript": "F-02, Classic Hardwood Buttstock. Crafted from oil-finished selected hardwood paired with steel reinforcement ferrules for the Browning M1918A2 BAR, this component handles recoil transfer & cheek weld. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_grip": {
+      "partId": "bar1918_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Checkered Wood Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（F-03）的刻纹实木握把组件，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：上倾铰接闭锁楔块卡入机匣顶部闭锁凹槽，后来倒置演变为传奇的 FN MAG/M240B 闭锁机。",
+        "audioScript": "F-03，刻纹实木握把组件。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，主要承担锁定手腕角度优化扳机控枪职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Checkered Hardwood Pistol Grip (F-03) of the Browning M1918A2 BAR, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from oil-finished selected hardwood paired with steel reinforcement ferrules to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Rising hinged locking bolt inspired the inverted locking architecture of the postwar FN MAG/M240B.",
+        "audioScript": "F-03, Checkered Hardwood Pistol Grip. Crafted from oil-finished selected hardwood paired with steel reinforcement ferrules for the Browning M1918A2 BAR, this component handles wrist alignment & control. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_optic": {
+      "partId": "bar1918_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Adjustable Iron Sights",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（F-04）的可调机械准星照门组，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪托内置惯性摆锤式机械降速器实现 350 发/分精准慢速连发与 550 发/分快速压制切换。",
+        "audioScript": "F-04，可调机械准星照门组。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担建立精准弹道瞄准基线职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Adjustable Iron Sight Assembly (F-04) of the Browning M1918A2 BAR, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Buttstock inertia rate-reducer mechanism selects between 350 RPM slow-auto and 550 RPM fast-auto.",
+        "audioScript": "F-04, Adjustable Iron Sight Assembly. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles ballistic sightline datum. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_gas_system": {
+      "partId": "bar1918_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Gas & Recoil System",
+      "zh": {
+        "roleTag": "定量调控自动循环能量平衡",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（F-05）的导气活塞/缓冲传动调节组件，隶属 20 件套标准装配体系，负责定量调控自动循环能量平衡。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：3 档外置气体调节缸配合 8.8 kg 沉稳全钢质量有效抑制 .30-06 全威力弹连发跳动。",
+        "audioScript": "F-05，导气活塞/缓冲传动调节组件。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担定量调控自动循环能量平衡职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Operating Energy Regulation",
+        "overview": "Gas Drive / Recoil Buffer System (F-05) of the Browning M1918A2 BAR, serving as the dedicated operating energy regulation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 3-position gas regulator and 8.8 kg milled-steel mass steady full-power .30-06 bursts.",
+        "audioScript": "F-05, Gas Drive / Recoil Buffer System. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles operating energy regulation. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_mount_rail": {
+      "partId": "bar1918_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Folding Bipod & Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（F-06）的折叠精密两脚架与战术导轨座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：A2 型取消单发档改为双档全自动，并加装膛口折叠两脚架与折叠提把。",
+        "audioScript": "F-06，折叠精密两脚架与战术导轨座。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担提供稳固依托与模块化拓展职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Folding Bipod & Accessory Rail (F-06) of the Browning M1918A2 BAR, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: A2 upgrade introduced dual-rate automatic fire, muzzle bipod, and clip-on carrying handle.",
+        "audioScript": "F-06, Folding Bipod & Accessory Rail. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles modular support & optics base. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_trigger": {
+      "partId": "bar1918_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：上倾铰接闭锁楔块卡入机匣顶部闭锁凹槽，后来倒置演变为传奇的 FN MAG/M240B 闭锁机。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担清晰干脆释放阻铁启动击发职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the Browning M1918A2 BAR, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Rising hinged locking bolt inspired the inverted locking architecture of the postwar FN MAG/M240B.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles crisp firing release input. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_hammer": {
+      "partId": "bar1918_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Hammer / Striker Unit",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（T-02）的硬化击锤/平移击针击发组件，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪托内置惯性摆锤式机械降速器实现 350 发/分精准慢速连发与 550 发/分快速压制切换。",
+        "audioScript": "T-02，硬化击锤/平移击针击发组件。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担高速释放储能精确击发底火/弓弦职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Hardened Hammer / Striker Unit (T-02) of the Browning M1918A2 BAR, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Buttstock inertia rate-reducer mechanism selects between 350 RPM slow-auto and 550 RPM fast-auto.",
+        "audioScript": "T-02, Hardened Hammer / Striker Unit. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles high-speed ignition impactor. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_hammer_spring": {
+      "partId": "bar1918_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 350 发/分（慢档）/ 550 发/分（快档）双射速 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：3 档外置气体调节缸配合 8.8 kg 沉稳全钢质量有效抑制 .30-06 全威力弹连发跳动。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 350 发/分（慢档）/ 550 发/分（快档）双射速 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the Browning M1918A2 BAR, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 350 RPM (slow) / 550 RPM (fast) dual-rate timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 3-position gas regulator and 8.8 kg milled-steel mass steady full-power .30-06 bursts.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Browning M1918A2 BAR, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 350 RPM (slow) / 550 RPM (fast) dual-rate timing.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_selector": {
+      "partId": "bar1918_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：A2 型取消单发档改为双档全自动，并加装膛口折叠两脚架与折叠提把。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担可靠锁止扳机阻铁并切换射态职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the Browning M1918A2 BAR, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: A2 upgrade introduced dual-rate automatic fire, muzzle bipod, and clip-on carrying handle.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles safety interlock & mode control. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_mag_body": {
+      "partId": "bar1918_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "20-Rd Magazine Body",
+      "zh": {
+        "roleTag": "高速快换供弹核心",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（M-01）的20 发可拆式双排弹匣壳体，隶属 20 件套标准装配体系，负责高速快换供弹核心。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：上倾铰接闭锁楔块卡入机匣顶部闭锁凹槽，后来倒置演变为传奇的 FN MAG/M240B 闭锁机。",
+        "audioScript": "M-01，20 发可拆式双排弹匣壳体。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担高速快换供弹核心职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Detachable Ammunition Feed",
+        "overview": "20-Round Detachable Magazine Body (M-01) of the Browning M1918A2 BAR, serving as the dedicated detachable ammunition feed node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Rising hinged locking bolt inspired the inverted locking architecture of the postwar FN MAG/M240B.",
+        "audioScript": "M-01, 20-Round Detachable Magazine Body. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles detachable ammunition feed. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_follower": {
+      "partId": "bar1918_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Follower",
+      "zh": {
+        "roleTag": "保持供弹仰角与空仓挂机触发",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（M-02）的防倾倒高对比度托弹板，隶属 20 件套标准装配体系，负责保持供弹仰角与空仓挂机触发。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪托内置惯性摆锤式机械降速器实现 350 发/分精准慢速连发与 550 发/分快速压制切换。",
+        "audioScript": "M-02，防倾倒高对比度托弹板。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担保持供弹仰角与空仓挂机触发职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Angle & Hold-Open",
+        "overview": "Anti-Tilt High-Vis Follower (M-02) of the Browning M1918A2 BAR, serving as the dedicated feed angle & hold-open node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Buttstock inertia rate-reducer mechanism selects between 350 RPM slow-auto and 550 RPM fast-auto.",
+        "audioScript": "M-02, Anti-Tilt High-Vis Follower. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles feed angle & hold-open. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_mag_spring": {
+      "partId": "bar1918_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Magazine Lift Spring",
+      "zh": {
+        "roleTag": "高射速下可靠托举下一发弹",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（M-03）的高弹性不锈钢托弹弹簧，隶属 20 件套标准装配体系，负责高射速下可靠托举下一发弹。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 350 发/分（慢档）/ 550 发/分（快档）双射速 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：3 档外置气体调节缸配合 8.8 kg 沉稳全钢质量有效抑制 .30-06 全威力弹连发跳动。",
+        "audioScript": "M-03，高弹性不锈钢托弹弹簧。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担高射速下可靠托举下一发弹职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 350 发/分（慢档）/ 550 发/分（快档）双射速 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Rapid-Cycle Feed Tension",
+        "overview": "Stainless Magazine Lift Spring (M-03) of the Browning M1918A2 BAR, serving as the dedicated rapid-cycle feed tension node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 350 RPM (slow) / 550 RPM (fast) dual-rate timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 3-position gas regulator and 8.8 kg milled-steel mass steady full-power .30-06 bursts.",
+        "audioScript": "M-03, Stainless Magazine Lift Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Browning M1918A2 BAR, this component handles rapid-cycle feed tension. Stores and returns cyclic elastic energy via live coil compression to maintain 350 RPM (slow) / 550 RPM (fast) dual-rate timing.",
+        "audioUrl": ""
+      }
+    },
+    "bar1918_mag_base": {
+      "partId": "bar1918_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Magazine Floorplate",
+      "zh": {
+        "roleTag": "底盖防跌落缓冲与快速拆洗",
+        "overview": "勃朗宁 M1918A2 BAR 自动步枪（M-04）的防震快拆弹匣底板与锁片，隶属 20 件套标准装配体系，负责底盖防跌落缓冲与快速拆洗。",
+        "craftAndMaterial": "采用发蓝锻钢与油润精选胡桃木/桦木托制造，表面按1918年代约翰·勃朗宁 / 柯尔特 / 温彻斯特军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：A2 型取消单发档改为双档全自动，并加装膛口折叠两脚架与折叠提把。",
+        "audioScript": "M-04，防震快拆弹匣底板与锁片。作为 勃朗宁 M1918A2 BAR 自动步枪 的关键构件，它采用发蓝锻钢与油润精选胡桃木/桦木托制造，主要承担底盖防跌落缓冲与快速拆洗职能。与相邻模块保持精密基准配合，协同支撑 .30-06 Springfield 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Impact-Resistant Baseplate",
+        "overview": "Reinforced Magazine Floorplate (M-04) of the Browning M1918A2 BAR, serving as the dedicated impact-resistant baseplate node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from blued forged ordnance steel paired with oil-finished walnut to John M. Browning / Colt / Winchester service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: A2 upgrade introduced dual-rate automatic fire, muzzle bipod, and clip-on carrying handle.",
+        "audioScript": "M-04, Reinforced Magazine Floorplate. Crafted from blued forged ordnance steel paired with oil-finished walnut for the Browning M1918A2 BAR, this component handles impact-resistant baseplate. Maintains datum alignment with adjacent M1918A2 BAR assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    }
+  }
+}
