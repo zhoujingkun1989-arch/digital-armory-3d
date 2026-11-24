@@ -493,9 +493,289 @@
   font-size: 12.5px;
 }
 
+/* ==================== Radial SVG Mastery Ring & Next-Drill Banner ==================== */
+.passport-mastery-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.1) 0%,
+    rgba(15, 23, 42, 0.72) 55%,
+    rgba(14, 165, 233, 0.08) 100%
+  );
+}
+
+:is([data-theme='light'], .theme-light) .passport-mastery-banner {
+  background: linear-gradient(135deg, #fffbeb 0%, #f8fafc 58%, #f0f9ff 100%);
+  border-color: rgba(217, 119, 6, 0.34);
+}
+
+.passport-ring-cluster {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1 1 280px;
+}
+
+.passport-ring-wrap {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  flex-shrink: 0;
+}
+
+.passport-mastery-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.passport-ring-track {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.22);
+  stroke-width: 7;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-track {
+  stroke: rgba(15, 23, 42, 0.12);
+}
+
+.passport-ring-arc {
+  fill: none;
+  stroke: #fbbf24;
+  stroke-width: 7;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.passport-ring-arc.tier-S {
+  stroke: #fbbf24;
+}
+
+.passport-ring-arc.tier-A {
+  stroke: #38bdf8;
+}
+
+.passport-ring-arc.tier-B {
+  stroke: #34d399;
+}
+
+.passport-ring-arc.tier-C,
+.passport-ring-arc.tier-NONE {
+  stroke: #94a3b8;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-arc.tier-S {
+  stroke: #d97706;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-arc.tier-A {
+  stroke: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-arc.tier-B {
+  stroke: #059669;
+}
+
+.passport-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.1;
+}
+
+.passport-ring-center strong {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 900;
+  color: #f8fafc;
+}
+
+.passport-ring-center span {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-center strong {
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-center span {
+  color: #475569;
+}
+
+.passport-ring-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.passport-ring-tier-chip {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2.5px 9px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: rgba(148, 163, 184, 0.18);
+  border: 1px solid rgba(148, 163, 184, 0.36);
+  color: #e2e8f0;
+}
+
+.passport-ring-tier-chip.tier-S {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(251, 191, 36, 0.52);
+  color: #fde68a;
+}
+
+.passport-ring-tier-chip.tier-A {
+  background: rgba(14, 165, 233, 0.2);
+  border-color: rgba(56, 189, 248, 0.52);
+  color: #bae6fd;
+}
+
+.passport-ring-tier-chip.tier-B {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(52, 211, 153, 0.5);
+  color: #a7f3d0;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-tier-chip {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-tier-chip.tier-S {
+  background: #fef3c7;
+  border-color: rgba(217, 119, 6, 0.45);
+  color: #92400e;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-tier-chip.tier-A {
+  background: #e0f2fe;
+  border-color: rgba(2, 132, 199, 0.42);
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-tier-chip.tier-B {
+  background: #d1fae5;
+  border-color: rgba(5, 150, 105, 0.42);
+  color: #065f46;
+}
+
+.passport-ring-desc {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #cbd5e1;
+}
+
+:is([data-theme='light'], .theme-light) .passport-ring-desc {
+  color: #334155;
+}
+
+.passport-next-drill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  border: 1px solid rgba(251, 191, 36, 0.62);
+  background: linear-gradient(135deg, #d97706, #b45309);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.3);
+  transition:
+    filter 0.15s ease,
+    transform 0.15s ease;
+}
+
+.passport-next-drill-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-0.5px);
+}
+
+.passport-next-drill-btn:focus-visible,
+.passport-action-btn:focus-visible,
+.passport-close-btn:focus-visible,
+.passport-filter-pill:focus-visible,
+.passport-hall-card:focus-visible,
+.passport-train-btn:focus-visible {
+  outline: 2px solid var(--color-accent-cyan, #38bdf8);
+  outline-offset: 2px;
+}
+
+.passport-all-clear-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(52, 211, 153, 0.55);
+  background: rgba(16, 185, 129, 0.18);
+  color: #a7f3d0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+:is([data-theme='light'], .theme-light) .passport-all-clear-pill {
+  background: #ecfdf5;
+  border-color: rgba(5, 150, 105, 0.45);
+  color: #065f46;
+}
+
 @media (max-width: 768px) {
-  /* WCAG 2.1 AA Mobile Touch-Target Parity (>= 32px min dimension on 390x844) */
-  .passport-filter-pill {
+  /* WCAG 2.1 AA Mobile Touch-Target Parity (>= 34px min dimension on 390x844) */
+  .passport-shell,
+  .passport-body,
+  .passport-mastery-banner {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: clip;
+  }
+
+  .passport-mastery-banner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 12px;
+  }
+
+  .passport-next-drill-btn {
+    width: 100%;
+    min-height: 36px;
+    min-width: 36px;
+    white-space: normal;
+    text-align: center;
+  }
+
+  .passport-filter-pill,
+  .passport-action-btn,
+  .passport-close-btn,
+  .passport-train-btn {
     min-height: 34px;
     min-width: 34px;
     display: inline-flex;
@@ -508,7 +788,9 @@
   .passport-train-btn,
   .passport-filter-pill,
   .passport-hall-card,
-  .passport-hall-fill {
+  .passport-hall-fill,
+  .passport-ring-arc,
+  .passport-next-drill-btn {
     transition: none !important;
   }
 }

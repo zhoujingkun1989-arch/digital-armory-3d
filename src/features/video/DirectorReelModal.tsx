@@ -14,13 +14,17 @@ import {
   getRecordingAudioStream,
   playWorkbenchFoley,
 } from '../../engine/audio/mechanicalSoundEngine';
+import { WEAPON_RIFLING_SPECS } from '../../engine/ballistics/riflingSpecs';
+import { getGlossaryTermsForWeapon } from '../../engine/encyclopedia/engineeringGlossary';
 import { formatExamDuration } from '../../engine/exam/armorerExamStore';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
 import { getNarrationAudioSnapshot } from '../../narration/audioPlayer';
 import { useWeaponNarration } from '../../narration/narrationService';
 import { useActiveDirectorBeat } from '../../narration/storyDirector';
+import type { LanguageCode } from '../../narration/types';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
+import type { WeaponId } from '../../weapons/types';
 import {
   buildReelFilename,
   buildReelLowerThirdMeta,
@@ -31,6 +35,57 @@ import {
 } from './directorReelRecorder';
 import { DIRECTOR_REEL_STRINGS } from './directorReelStrings';
 import '../../styles/director-reel.css';
+
+/**
+ * Pure broadcast lower-third metrology ticker pairing an exhibit's authoritative
+ * Bore & Rifling (or Compound/Helical Cam) spec from `WEAPON_RIFLING_SPECS` with
+ * its flagship mechanical engineering principle from the 28-term encyclopedia.
+ * Guaranteed 0 CJK in EN and 0 internal sprint IDs.
+ */
+export function buildReelBroadcastMetrologyLine(
+  weaponId: WeaponId,
+  lang: LanguageCode
+): string {
+  const spec = WEAPON_RIFLING_SPECS[weaponId];
+  const isZh = lang === 'zh';
+  const topPrinciple = getGlossaryTermsForWeapon(weaponId)[0];
+  const principleLabel = topPrinciple
+    ? isZh
+      ? topPrinciple.termZh
+      : topPrinciple.termEn
+    : '';
+
+  let boreSegment: string;
+  if (spec.kind === 'none') {
+    if (weaponId === 'lift33') {
+      boreSegment = isZh
+        ? '复合弓滑轮 · SwitchWeight-X'
+        : 'COMPOUND CAM · SWITCHWEIGHT-X';
+    } else if (weaponId === 'r500') {
+      boreSegment = isZh
+        ? '螺旋凸轮复合弩 · Versa-Drive'
+        : 'HELICAL CAM · VERSA-DRIVE';
+    } else {
+      boreSegment = isZh ? spec.labelZh : spec.labelEn;
+    }
+  } else if (spec.kind === 'smoothbore') {
+    boreSegment = isZh
+      ? `内膛 Ø${spec.boreDiameterMm}mm 滑膛${spec.chromeLined ? '镀铬' : ''}`
+      : `BORE Ø${spec.boreDiameterMm}mm SMOOTHBORE${spec.chromeLined ? ' CHROME' : ''}`;
+  } else if (spec.kind === 'polygonal') {
+    const dirZh = spec.direction === 'LH' ? '左旋' : '右旋';
+    boreSegment = isZh
+      ? `内膛 Ø${spec.boreDiameterMm}mm · ${spec.grooves}边多边形膛线 1:${spec.twistInches}" ${dirZh}`
+      : `BORE Ø${spec.boreDiameterMm}mm · ${spec.grooves}-POLYGONAL 1:${spec.twistInches}" ${spec.direction}`;
+  } else {
+    const dirZh = spec.direction === 'LH' ? '左旋' : '右旋';
+    boreSegment = isZh
+      ? `内膛 Ø${spec.boreDiameterMm}mm · ${spec.grooves}条${dirZh}膛线 1:${spec.twistInches}"${spec.chromeLined ? ' 镀铬' : ''}`
+      : `BORE Ø${spec.boreDiameterMm}mm · ${spec.grooves}G 1:${spec.twistInches}" ${spec.direction}${spec.chromeLined ? ' CHROME' : ''}`;
+  }
+
+  return principleLabel ? `${boreSegment} · ${principleLabel}` : boreSegment;
+}
 
 export interface DirectorReelModalProps {
   onClose: () => void;
@@ -93,6 +148,11 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
       xrayShells,
       activeBeatStageBadge,
     ]
+  );
+
+  const broadcastMetrologyLine = useMemo(
+    () => buildReelBroadcastMetrologyLine(activeWeaponId, lang),
+    [activeWeaponId, lang]
   );
 
   const recorderSupported =
@@ -172,6 +232,10 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
             activeStageBadge: activeBeatBadgeRef.current,
           });
           const snap = getNarrationAudioSnapshot();
+          const metrologyLine = buildReelBroadcastMetrologyLine(
+            st.activeWeaponId,
+            st.lang
+          );
           out.weaponTitle = lt.weaponTitle;
           out.weaponMetaLine = lt.caliberYearLine;
           out.bayBadge = lt.bayBadge;
@@ -179,7 +243,7 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
           out.watermarkText = lt.watermarkText;
           out.showLowerThird = showLowerThird;
           out.captionText = snap.activeLabel ?? '';
-          out.telemetryLine = presetTelemetryLabel;
+          out.telemetryLine = `${metrologyLine} · ${presetTelemetryLabel}`;
         },
         onTick: (ms) => {
           setElapsedMs(Math.round(ms));
@@ -309,6 +373,12 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
                         <span className="director-reel-lt-meta">
                           {lowerThirdPreview.caliberYearLine}
                         </span>
+                        <span
+                          className="director-reel-lt-meta"
+                          data-testid="director-reel-metrology-ticker"
+                        >
+                          {broadcastMetrologyLine}
+                        </span>
                       </div>
                       <span className="director-reel-lt-phase">
                         {lowerThirdPreview.phaseTag}
@@ -322,7 +392,11 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
 
           <div className="director-reel-section">
             <h3>{ui.presetHeading}</h3>
-            <div className="director-reel-preset-grid">
+            <div
+              className="director-reel-preset-grid"
+              role="group"
+              aria-label={ui.presetHeading}
+            >
               {REEL_PRESET_IDS.map((pid) => {
                 const p = REEL_PRESETS[pid];
                 const active = presetId === pid;
@@ -331,6 +405,7 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
                     key={pid}
                     type="button"
                     disabled={recording}
+                    aria-pressed={active}
                     className={`director-reel-preset-card ${
                       active ? 'is-active' : ''
                     }`}
@@ -388,6 +463,8 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
             className={`director-reel-status-bar ${
               recording ? 'is-recording' : ''
             }`}
+            role="status"
+            aria-live="polite"
           >
             <span>
               {recording
