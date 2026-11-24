@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "t34_85",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "Soviet T-34-85 (Model 1944) Medium Tank",
+    "subtitle": "60-Degree Sloped Armor, 85mm ZiS-S-53 Gun & Christie Coil Suspension",
+    "originCountry": "Soviet Union",
+    "weaponType": "WWII Legendary Medium Tank (1:1 Scale)",
+    "categoryLabel": "1:1 Main Battle Tank",
+    "actionMechanism": "Semi-Automatic Vertical Sliding-Wedge Breech · Three-Man Cast Turret Manual Load",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Combining a 60-degree sloped 45 mm glacis, the all-aluminum V-2-34 V12 diesel, and wide-track Christie coil suspension with a widened 1,600 mm three-man cast turret and 85mm ZiS-S-53 gun, the T-34-85 defined balanced medium-tank engineering.",
+    "highlights": [
+      "60-degree sloped 45 mm welded glacis doubles effective LOS armor and induces ricochets",
+      "Expanded 1,600 mm three-man cast turret separates commander observation from gunnery",
+      "All-aluminum 500 hp V-2-34 V12 diesel lowers fire risk and extends range",
+      "Wide 500 mm tracks and five large Christie road wheels conquer mud and deep snow"
+    ],
+    "workbenchTitle": "Soviet T-34-85 (Model 1944) Medium Tank 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Semi-Automatic Vertical Sliding-Wedge Breech · Three-Man Cast Turret Manual Load",
+    "cutawayLabel": "Turret Breech & Autoloader Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on Soviet T-34-85 (Model 1944) Medium Tank to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Breech Lock & Recoil",
+    "rateOfFire": "6–8 RPM (three-man turret load)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Soviet T-34-85 (Model 1944) Medium Tank (1944) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 8,100 mm (gun forward · 6,100 mm hull)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "FCS Fire Solenoid",
+        "title": "Phase 1 · T-34-85 Firing Solenoid & Primer Ignition",
+        "description": "Closing the crew firing circuit energizes the breech firing pin, igniting the primary propellant charge inside the sealed 85×629mmR ZiS-S-53 (BR-365A APHEBC) chamber."
+      },
+      "phase_2": {
+        "shortLabel": "Peak Pressure",
+        "title": "Phase 2 · 295 MPa Chamber Deflagration",
+        "description": "Rapid propellant burn drives chamber pressure to 295 MPa against the heavy locked breechblock while accelerating the heavy projectile."
+      },
+      "phase_3": {
+        "shortLabel": "In-Bore Travel",
+        "title": "Phase 3 · 4645 mm Ordnance Acceleration",
+        "description": "Expanding gases accelerate the 85×629mmR ZiS-S-53 (BR-365A APHEBC) round along the 4645 mm barrel up to 792 m/s (2,890,000 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Muzzle Exit",
+        "title": "Phase 4 · Bore Clearance & Muzzle Blast",
+        "description": "The projectile clears the muzzle crown cleanly for engagements out to 1500 m while bore gases evacuate safely away from the crew."
+      },
+      "phase_5": {
+        "shortLabel": "Recoil Stroke",
+        "title": "Phase 5 · Hydropneumatic Recoil Absorption",
+        "description": "Recoil cylinders absorb 9800 N-s of impulse smoothly across the cradle while transferring residual load into the chassis."
+      },
+      "phase_6": {
+        "shortLabel": "Breech Ejection",
+        "title": "Phase 6 · Breech Opening & Stub Extraction",
+        "description": "During battery runout, hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech, ejecting the spent base stub cleanly into the deflector bin."
+      },
+      "phase_7": {
+        "shortLabel": "Reload & Ready",
+        "title": "Phase 7 · Munition Ramming & Battery Lock",
+        "description": "The next 85×629mmR ZiS-S-53 (BR-365A APHEBC) round seats into the chamber and locks the breechblock back into firing readiness."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "苏联 T-34-85（1944 型）1:1 中型坦克：1944 年机械传奇与工程剖析",
+      "deck": "T-34-85 将 45mm 60° 倾角避弹车体、V-2-34 全铝 V12 柴油机与宽履带克里斯蒂螺旋弹簧悬挂融为一体，并换装 1,600 mm 宽座圈三人铸造炮塔与 85mm ZiS-S-53 火炮，一举扭转了东线装甲力量天平。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1940–1944",
+          "title": "时代召唤与研发立项：T-34-85 的诞生背景",
+          "paragraphs": [
+            "1944 年问世的 苏联 T-34-85（1944 型）1:1 中型坦克 由苏联第 183 厂 / 第 112 厂（红色索尔莫沃）主导研制，定位为经典的二战传奇中型坦克（1:1 真实尺度）。1944 至 1946 年间苏联及战后盟国累计生产逾 48,000 辆 T-34-85，其倾斜装甲与柴油动力布局直接奠定了此后半个世纪主战坦克的设计蓝图。",
+            "T-34-85 将 45mm 60° 倾角避弹车体、V-2-34 全铝 V12 柴油机与宽履带克里斯蒂螺旋弹簧悬挂融为一体，并换装 1,600 mm 宽座圈三人铸造炮塔与 85mm ZiS-S-53 火炮，一举扭转了东线装甲力量天平。 整件装备总长 8,100 mm（含炮管向前 · 车体 6,100 mm）、空重 32200 kg，成为同期重装坦克领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。1944 年，苏联第 183 厂 / 第 112 厂（红色索尔莫沃）推出了划时代的苏联 T-34-85（1944 型）1:1 中型坦克。1944 至 1946 年间苏联及战后盟国累计生产逾 48,000 辆 T-34-85，其倾斜装甲与柴油动力布局直接奠定了此后半个世纪主战坦克的设计蓝图。 它的核心设计聚焦于45mm 60° 大倾角焊接首上装甲等效 90mm 且极易诱发穿甲弹跳弹，奠定了其在重装坦克发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "t34_85_receiver",
+          "focusPartLabel": "主战坦克复合装甲炮塔壳体"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1944",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "苏联 T-34-85（1944 型）1:1 中型坦克 的机械灵魂在于其「半自动立楔炮闩 · 三人铸造大炮塔人工定装弹装填」结构体系。在发射工作循环中，主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢精加工而成。1,600 mm 加大座圈三人铸造炮塔彻底解放车长指挥与瞄准分工，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。苏联 T-34-85（1944 型）1:1 中型坦克 采用半自动立楔炮闩 · 三人铸造大炮塔人工定装弹装填。在每个击发周期中，主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。借助战时 4BO 橄榄绿轧制焊接与铸造装甲钢工艺与高强度配合，实现了1,600 mm 加大座圈三人铸造炮塔彻底解放车长指挥与瞄准分工。",
+          "audioUrl": "",
+          "focusPartId": "t34_85_bolt",
+          "focusPartLabel": "重型立楔/螺式主炮炮闩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1944–1947",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 85×629mmR ZiS-S-53 (BR-365A APHEBC) 弹药规格与 4,645 mm（85mm L/54.6 24 条右旋线膛炮 · 1:25 倍径），最高工作膛压约 295 MPa，可赋予弹头 792 m/s 的出膛初速与 2,890,000 J 动能，有效作用距离达 1500 米。",
+            "内膛技术特点方面，85mm ZiS-S-53 24 条深膛线炮管，发射 BR-365A 被帽风帽穿甲榴弹有效击穿虎式装甲。同时，V-2-34 全铝合金 500 马力 V12 柴油机大幅降低燃油起火风险，令其在 6–8 发/分（三人炮塔人工装填） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 4645 毫米身管与 85×629mmR ZiS-S-53 (BR-365A APHEBC) 口径，苏联 T-34-85（1944 型）1:1 中型坦克 实现了每秒 792 米的初速与 1500 米有效射程。85mm ZiS-S-53 24 条深膛线炮管，发射 BR-365A 被帽风帽穿甲榴弹有效击穿虎式装甲，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "t34_85_barrel",
+          "focusPartLabel": "4645mm 主炮高膛压身管"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1959–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 56 发容量的尾舱隔爆泄压主炮弹药架与 2040 mm 膛轴设计，苏联 T-34-85（1944 型）1:1 中型坦克 将单发后坐冲量控制在 9800 N·s 水平。500 mm 宽履带配五对克里斯蒂大负重轮驰骋东线泥泞与雪原。",
+            "如今在数字兵器库 3D 百年展厅（BAY-97）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 56 发容量的尾舱隔爆泄压主炮弹药架与出色的整体工效，500 mm 宽履带配五对克里斯蒂大负重轮驰骋东线泥泞与雪原。欢迎在 BAY-97 展位亲手切开剖面、逐件拆解，感受 苏联 T-34-85（1944 型）1:1 中型坦克 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "t34_85_mag_body",
+          "focusPartLabel": "尾舱隔爆泄压主炮弹药架"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-97",
+          "summary": "半自动立楔炮闩 · 三人铸造大炮塔人工定装弹装填；45mm 60° 大倾角焊接首上装甲等效 90mm 且极易诱发穿甲弹跳弹。",
+          "focusPartId": "t34_85_bolt",
+          "focusPartLabel": "重型立楔/螺式主炮炮闩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "792 m/s",
+          "summary": "4,645 mm（85mm L/54.6 24 条右旋线膛炮 · 1:25 倍径），85mm ZiS-S-53 24 条深膛线炮管，发射 BR-365A 被帽风帽穿甲榴弹有效击穿虎式装甲。",
+          "focusPartId": "t34_85_barrel",
+          "focusPartLabel": "4645mm 主炮高膛压身管"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "56 rds",
+          "summary": "V-2-34 全铝合金 500 马力 V12 柴油机大幅降低燃油起火风险；500 mm 宽履带配五对克里斯蒂大负重轮驰骋东线泥泞与雪原。",
+          "focusPartId": "t34_85_mag_body",
+          "focusPartLabel": "尾舱隔爆泄压主炮弹药架"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1940",
+          "title": "战术指标与概念构型",
+          "detail": "苏联提出新一代二战传奇中型坦克（1:1 真实尺度）战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "1944",
+          "title": "T-34-85 正式定型投产",
+          "detail": "第 183 厂 / 第 112 厂（红色索尔莫沃）完成 T-34-85 MODEL 1944 定型，采用半自动立楔炮闩 · 三人铸造大炮塔人工定装弹装填架构。"
+        },
+        {
+          "year": "1947",
+          "title": "实战部署与工艺演进",
+          "detail": "45mm 60° 大倾角焊接首上装甲等效 90mm 且极易诱发穿甲弹跳弹，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "1959",
+          "title": "工程典范与历史传承",
+          "detail": "1944 至 1946 年间苏联及战后盟国累计生产逾 48,000 辆 T-34-85，其倾斜装甲与柴油动力布局直接奠定了此后半个世纪主战坦克的设计蓝图。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-97）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Soviet T-34-85 (Model 1944) Medium Tank: The 1944 Mechanical Legend",
+      "deck": "Combining a 60-degree sloped 45 mm glacis, the all-aluminum V-2-34 V12 diesel, and wide-track Christie coil suspension with a widened 1,600 mm three-man cast turret and 85mm ZiS-S-53 gun, the T-34-85 defined balanced medium-tank engineering. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-97.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1940–1944",
+          "title": "Origins & Operational Mandate of the T-34-85",
+          "paragraphs": [
+            "Introduced in 1944 by Factory No. 183 / Krasnoye Sormovo No. 112 in Soviet Union, the Soviet T-34-85 (Model 1944) Medium Tank emerged as a defining WWII Legendary Medium Tank (1:1 Scale). Over 48,000 T-34-85 tanks were built from 1944 onward; its fusion of sharply sloped armor, wide-track mobility, and diesel propulsion became the blueprint for postwar tank design.",
+            "Combining a 60-degree sloped 45 mm glacis, the all-aluminum V-2-34 V12 diesel, and wide-track Christie coil suspension with a widened 1,600 mm three-man cast turret and 85mm ZiS-S-53 gun, the T-34-85 defined balanced medium-tank engineering. Measuring 8,100 mm (gun forward · 6,100 mm hull) at an unloaded weight of 32200 kg, it reshaped expectations across the 1:1 Main Battle Tank class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 1944, Factory No. 183 / Krasnoye Sormovo No. 112 of Soviet Union introduced the Soviet T-34-85 (Model 1944) Medium Tank. Over 48,000 T-34-85 tanks were built from 1944 onward; its fusion of sharply sloped armor, wide-track mobility, and diesel propulsion became the blueprint for postwar tank design. Anchored by its hallmark design trait — 60-degree sloped 45 mm welded glacis doubles effective LOS armor and induces ricochets — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "t34_85_receiver",
+          "focusPartLabel": "Composite Armored Turret Shell"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1944",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the Soviet T-34-85 (Model 1944) Medium Tank sits its Semi-Automatic Vertical Sliding-Wedge Breech · Three-Man Cast Turret Manual Load. Throughout every firing cycle, hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech, containing 295 MPa of operating pressure safely.",
+            "Constructed in wartime 4BO olive-green rolled and cast armor steel, the assembly achieves durable field tolerances. Notably, Expanded 1,600 mm three-man cast turret separates commander observation from gunnery, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The Soviet T-34-85 (Model 1944) Medium Tank relies on Semi-Automatic Vertical Sliding-Wedge Breech · Three-Man Cast Turret Manual Load. During each cycle, hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech. Machined from wartime 4BO olive-green rolled and cast armor steel, it delivers standout engineering reliability: Expanded 1,600 mm three-man cast turret separates commander observation from gunnery.",
+          "audioUrl": "",
+          "focusPartId": "t34_85_bolt",
+          "focusPartLabel": "Heavy Sliding-Wedge / Screw Breech"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1944–1947",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 85×629mmR ZiS-S-53 (BR-365A APHEBC) with 4,645 mm (85mm L/54.6 24-Groove RH Rifled · 1:25 Calibers), the Soviet T-34-85 (Model 1944) Medium Tank develops 792 m/s muzzle velocity and 2,890,000 J of kinetic energy for effective engagement out to 1500 meters.",
+            "Internally, 85mm ZiS-S-53 24-groove rifled gun firing BR-365A APHEBC rounds capable of defeating Tiger I armor. Combined with its 6–8 RPM (three-man turret load) tempo, All-aluminum 500 hp V-2-34 V12 diesel lowers fire risk and extends range, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 85×629mmR ZiS-S-53 (BR-365A APHEBC) through its 4645 millimeter bore, the Soviet T-34-85 (Model 1944) Medium Tank achieves 792 meters per second and 1500 meters of effective reach. 85mm ZiS-S-53 24-groove rifled gun firing BR-365A APHEBC rounds capable of defeating Tiger I armor.",
+          "audioUrl": "",
+          "focusPartId": "t34_85_barrel",
+          "focusPartLabel": "4645mm High-Pressure Main Gun Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "1959–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 56-round bustle blow-off ammunition rack with a 2040 mm bore-axis height, the platform manages 9800 N-s of recoil impulse cleanly. Wide 500 mm tracks and five large Christie road wheels conquer mud and deep snow.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-97), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 56-round bustle blow-off ammunition rack with disciplined recoil geometry, Wide 500 mm tracks and five large Christie road wheels conquer mud and deep snow. Explore BAY-97 in live section cut and exploded disassembly to study every working link of the Soviet T-34-85 (Model 1944) Medium Tank.",
+          "audioUrl": "",
+          "focusPartId": "t34_85_mag_body",
+          "focusPartLabel": "Bustle Blow-Off Ammunition Rack"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-97",
+          "summary": "Semi-Automatic Vertical Sliding-Wedge Breech · Three-Man Cast Turret Manual Load — 60-degree sloped 45 mm welded glacis doubles effective LOS armor and induces ricochets.",
+          "focusPartId": "t34_85_bolt",
+          "focusPartLabel": "Heavy Sliding-Wedge / Screw Breech"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "792 m/s",
+          "summary": "4,645 mm (85mm L/54.6 24-Groove RH Rifled · 1:25 Calibers); 85mm ZiS-S-53 24-groove rifled gun firing BR-365A APHEBC rounds capable of defeating Tiger I armor.",
+          "focusPartId": "t34_85_barrel",
+          "focusPartLabel": "4645mm High-Pressure Main Gun Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "56 rds",
+          "summary": "All-aluminum 500 hp V-2-34 V12 diesel lowers fire risk and extends range; Wide 500 mm tracks and five large Christie road wheels conquer mud and deep snow.",
+          "focusPartId": "t34_85_mag_body",
+          "focusPartLabel": "Bustle Blow-Off Ammunition Rack"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1940",
+          "title": "Operational Requirement Defined",
+          "detail": "Soviet Union ordnance planners established specifications for a new WWII Legendary Medium Tank (1:1 Scale) class."
+        },
+        {
+          "year": "1944",
+          "title": "T-34-85 Official Introduction",
+          "detail": "Factory No. 183 / Krasnoye Sormovo No. 112 finalized T-34-85 MODEL 1944 around Semi-Automatic Vertical Sliding-Wedge Breech · Three-Man Cast Turret Manual Load."
+        },
+        {
+          "year": "1947",
+          "title": "Field Deployment & Service Validation",
+          "detail": "60-degree sloped 45 mm welded glacis doubles effective LOS armor and induces ricochets, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "1959",
+          "title": "Enduring Historical Influence",
+          "detail": "Over 48,000 T-34-85 tanks were built from 1944 onward; its fusion of sharply sloped armor, wide-track mobility, and diesel propulsion became the blueprint for postwar tank design."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-97)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "t34_85_receiver": {
+      "partId": "t34_85_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Armored Turret Shell",
+      "zh": {
+        "roleTag": "主炮与乘员核心装甲防护",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（U-01）的主战坦克复合装甲炮塔壳体，隶属 20 件套标准装配体系，负责主炮与乘员核心装甲防护。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：45mm 60° 大倾角焊接首上装甲等效 90mm 且极易诱发穿甲弹跳弹。",
+        "audioScript": "U-01，主战坦克复合装甲炮塔壳体。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担主炮与乘员核心装甲防护职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Turret Armor",
+        "overview": "Composite Armored Turret Shell (U-01) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated primary turret armor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 60-degree sloped 45 mm welded glacis doubles effective LOS armor and induces ricochets.",
+        "audioScript": "U-01, Composite Armored Turret Shell. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles primary turret armor. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_barrel": {
+      "partId": "t34_85_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "Main Gun Cannon Barrel",
+      "zh": {
+        "roleTag": "穿甲弹超高速加速通道",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（U-02）的4645mm 主炮高膛压身管，隶属 20 件套标准装配体系，负责穿甲弹超高速加速通道。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：1,600 mm 加大座圈三人铸造炮塔彻底解放车长指挥与瞄准分工。",
+        "audioScript": "U-02，4645mm 主炮高膛压身管。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担穿甲弹超高速加速通道职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Velocity Ordnance Bore",
+        "overview": "4645mm High-Pressure Main Gun Barrel (U-02) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated high-velocity ordnance bore node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Expanded 1,600 mm three-man cast turret separates commander observation from gunnery.",
+        "audioScript": "U-02, 4645mm High-Pressure Main Gun Barrel. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles high-velocity ordnance bore. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_muzzle": {
+      "partId": "t34_85_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Bore Evacuator & MRS",
+      "zh": {
+        "roleTag": "炮膛排烟与热弯校准",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（U-03）的抽烟装置与炮口基准镜，隶属 20 件套标准装配体系，负责炮膛排烟与热弯校准。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：V-2-34 全铝合金 500 马力 V12 柴油机大幅降低燃油起火风险。",
+        "audioScript": "U-03，抽烟装置与炮口基准镜。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担炮膛排烟与热弯校准职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Fume Extractor & Alignment",
+        "overview": "Bore Evacuator & Muzzle Reference (U-03) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated fume extractor & alignment node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: All-aluminum 500 hp V-2-34 V12 diesel lowers fire risk and extends range.",
+        "audioScript": "U-03, Bore Evacuator & Muzzle Reference. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles fume extractor & alignment. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_bolt_carrier": {
+      "partId": "t34_85_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Gun Mantlet & Buffer",
+      "zh": {
+        "roleTag": "主炮俯仰装甲防护与制退",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（U-04）的主炮炮尾防盾与液气驻退机框，隶属 20 件套标准装配体系，负责主炮俯仰装甲防护与制退。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "designHighlight": "工程亮点呼应整枪特征：500 mm 宽履带配五对克里斯蒂大负重轮驰骋东线泥泞与雪原。",
+        "audioScript": "U-04，主炮炮尾防盾与液气驻退机框。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担主炮俯仰装甲防护与制退职能。在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Mantlet & Recoil Damping",
+        "overview": "Gun Mantlet & Recoil Buffer Cradle (U-04) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated mantlet & recoil damping node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Wide 500 mm tracks and five large Christie road wheels conquer mud and deep snow.",
+        "audioScript": "U-04, Gun Mantlet & Recoil Buffer Cradle. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles mantlet & recoil damping. Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_bolt": {
+      "partId": "t34_85_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Heavy Cannon Breech",
+      "zh": {
+        "roleTag": "密闭数百兆帕高压炮膛",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（U-05）的重型立楔/螺式主炮炮闩，隶属 20 件套标准装配体系，负责密闭数百兆帕高压炮膛。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "designHighlight": "工程亮点呼应整枪特征：45mm 60° 大倾角焊接首上装甲等效 90mm 且极易诱发穿甲弹跳弹。",
+        "audioScript": "U-05，重型立楔/螺式主炮炮闩。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担密闭数百兆帕高压炮膛职能。在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Pressure Breech Seal",
+        "overview": "Heavy Sliding-Wedge / Screw Breech (U-05) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated high-pressure breech seal node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 60-degree sloped 45 mm welded glacis doubles effective LOS armor and induces ricochets.",
+        "audioScript": "U-05, Heavy Sliding-Wedge / Screw Breech. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles high-pressure breech seal. Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_recoil_spring": {
+      "partId": "t34_85_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Recuperator Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（U-06）的主炮重型复进弹簧组，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6–8 发/分（三人炮塔人工装填） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：1,600 mm 加大座圈三人铸造炮塔彻底解放车长指挥与瞄准分工。",
+        "audioScript": "U-06，主炮重型复进弹簧组。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6–8 发/分（三人炮塔人工装填） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main-Gun Recuperator Spring (U-06) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 6–8 RPM (three-man turret load) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Expanded 1,600 mm three-man cast turret separates commander observation from gunnery.",
+        "audioScript": "U-06, Main-Gun Recuperator Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 6–8 RPM (three-man turret load) timing.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_handguard": {
+      "partId": "t34_85_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Sloped Glacis Hull",
+      "zh": {
+        "roleTag": "正面抗穿甲弹主防护盾",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（F-01）的倾斜首上复合装甲车体前部，隶属 20 件套标准装配体系，负责正面抗穿甲弹主防护盾。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：V-2-34 全铝合金 500 马力 V12 柴油机大幅降低燃油起火风险。",
+        "audioScript": "F-01，倾斜首上复合装甲车体前部。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担正面抗穿甲弹主防护盾职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Frontal Kinetic Armor",
+        "overview": "Sloped Glacis Composite Hull Front (F-01) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated frontal kinetic armor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: All-aluminum 500 hp V-2-34 V12 diesel lowers fire risk and extends range.",
+        "audioScript": "F-01, Sloped Glacis Composite Hull Front. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles frontal kinetic armor. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_stock": {
+      "partId": "t34_85_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Armored Hull & Engine",
+      "zh": {
+        "roleTag": "整车动力与全向装甲承重体",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（F-02）的坦克主装甲下车体与动力舱，隶属 20 件套标准装配体系，负责整车动力与全向装甲承重体。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：500 mm 宽履带配五对克里斯蒂大负重轮驰骋东线泥泞与雪原。",
+        "audioScript": "F-02，坦克主装甲下车体与动力舱。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担整车动力与全向装甲承重体职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Hull Chassis & Powerpack",
+        "overview": "Armored Lower Hull & Engine Deck (F-02) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated hull chassis & powerpack node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Wide 500 mm tracks and five large Christie road wheels conquer mud and deep snow.",
+        "audioScript": "F-02, Armored Lower Hull & Engine Deck. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles hull chassis & powerpack. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_grip": {
+      "partId": "t34_85_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Turret Crew Controls",
+      "zh": {
+        "roleTag": "火控解算与双轴稳定操控",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（F-03）的车长/炮长操纵台与吊篮座椅，隶属 20 件套标准装配体系，负责火控解算与双轴稳定操控。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：45mm 60° 大倾角焊接首上装甲等效 90mm 且极易诱发穿甲弹跳弹。",
+        "audioScript": "F-03，车长/炮长操纵台与吊篮座椅。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担火控解算与双轴稳定操控职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "FCS Crew Interface",
+        "overview": "Turret Basket & Crew Controls (F-03) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated fcs crew interface node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 60-degree sloped 45 mm welded glacis doubles effective LOS armor and induces ricochets.",
+        "audioScript": "F-03, Turret Basket & Crew Controls. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles fcs crew interface. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_optic": {
+      "partId": "t34_85_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Thermal FCS Optic Suite",
+      "zh": {
+        "roleTag": "昼夜猎歼瞄准与激光测距",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（F-04）的车长周视热成像与炮长稳像瞄准镜，隶属 20 件套标准装配体系，负责昼夜猎歼瞄准与激光测距。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：1,600 mm 加大座圈三人铸造炮塔彻底解放车长指挥与瞄准分工。",
+        "audioScript": "F-04，车长周视热成像与炮长稳像瞄准镜。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担昼夜猎歼瞄准与激光测距职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Hunter-Killer Targeting",
+        "overview": "Hunter-Killer Thermal Sight Suite (F-04) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated hunter-killer targeting node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Expanded 1,600 mm three-man cast turret separates commander observation from gunnery.",
+        "audioScript": "F-04, Hunter-Killer Thermal Sight Suite. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles hunter-killer targeting. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_gas_system": {
+      "partId": "t34_85_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Suspension & Track Run",
+      "zh": {
+        "roleTag": "全地形高速越野与射击平台稳定",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（F-05）的双侧负重轮扭杆/液气悬挂履带组，隶属 20 件套标准装配体系，负责全地形高速越野与射击平台稳定。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "designHighlight": "工程亮点呼应整枪特征：V-2-34 全铝合金 500 马力 V12 柴油机大幅降低燃油起火风险。",
+        "audioScript": "F-05，双侧负重轮扭杆/液气悬挂履带组。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担全地形高速越野与射击平台稳定职能。在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "All-Terrain Mobility Train",
+        "overview": "Roadwheel Suspension & Track Run (F-05) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated all-terrain mobility train node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "designHighlight": "Integrated directly with the platform's defining strength: All-aluminum 500 hp V-2-34 V12 diesel lowers fire risk and extends range.",
+        "audioScript": "F-05, Roadwheel Suspension & Track Run. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles all-terrain mobility train. Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_mount_rail": {
+      "partId": "t34_85_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Side ERA Armor Array",
+      "zh": {
+        "roleTag": "偏折破甲射流与杆式穿甲弹",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（F-06）的侧裙爆炸反应装甲与格栅组件，隶属 20 件套标准装配体系，负责偏折破甲射流与杆式穿甲弹。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：500 mm 宽履带配五对克里斯蒂大负重轮驰骋东线泥泞与雪原。",
+        "audioScript": "F-06，侧裙爆炸反应装甲与格栅组件。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担偏折破甲射流与杆式穿甲弹职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Reactive Side Protection",
+        "overview": "Side ERA Skirt & Armor Array (F-06) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated reactive side protection node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Wide 500 mm tracks and five large Christie road wheels conquer mud and deep snow.",
+        "audioScript": "F-06, Side ERA Skirt & Armor Array. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles reactive side protection. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_trigger": {
+      "partId": "t34_85_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Firing Switch Solenoid",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（T-01）的电控击发扳机与火控开关，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：45mm 60° 大倾角焊接首上装甲等效 90mm 且极易诱发穿甲弹跳弹。",
+        "audioScript": "T-01，电控击发扳机与火控开关。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担清晰干脆释放阻铁启动击发职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Electric Firing Switch & Solenoid (T-01) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 60-degree sloped 45 mm welded glacis doubles effective LOS armor and induces ricochets.",
+        "audioScript": "T-01, Electric Firing Switch & Solenoid. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles crisp firing release input. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_hammer": {
+      "partId": "t34_85_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Cannon Firing Pin",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（T-02）的电/机械双模式主炮击针组，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：1,600 mm 加大座圈三人铸造炮塔彻底解放车长指挥与瞄准分工。",
+        "audioScript": "T-02，电/机械双模式主炮击针组。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担高速释放储能精确击发底火/弓弦职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Dual-Mode Cannon Firing Pin (T-02) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Expanded 1,600 mm three-man cast turret separates commander observation from gunnery.",
+        "audioScript": "T-02, Dual-Mode Cannon Firing Pin. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles high-speed ignition impactor. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_hammer_spring": {
+      "partId": "t34_85_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6–8 发/分（三人炮塔人工装填） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：V-2-34 全铝合金 500 马力 V12 柴油机大幅降低燃油起火风险。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6–8 发/分（三人炮塔人工装填） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 6–8 RPM (three-man turret load) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: All-aluminum 500 hp V-2-34 V12 diesel lowers fire risk and extends range.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 6–8 RPM (three-man turret load) timing.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_selector": {
+      "partId": "t34_85_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "FCS Mode & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（T-04）的火控安全联锁与击发模式开关，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：500 mm 宽履带配五对克里斯蒂大负重轮驰骋东线泥泞与雪原。",
+        "audioScript": "T-04，火控安全联锁与击发模式开关。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担可靠锁止扳机阻铁并切换射态职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "FCS Interlock & Firing Mode Switch (T-04) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Wide 500 mm tracks and five large Christie road wheels conquer mud and deep snow.",
+        "audioScript": "T-04, FCS Interlock & Firing Mode Switch. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles safety interlock & mode control. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_mag_body": {
+      "partId": "t34_85_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Bustle Ammo Rack",
+      "zh": {
+        "roleTag": "主炮重型弹药储供",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（M-01）的尾舱隔爆泄压主炮弹药架，隶属 20 件套标准装配体系，负责主炮重型弹药储供。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：45mm 60° 大倾角焊接首上装甲等效 90mm 且极易诱发穿甲弹跳弹。",
+        "audioScript": "M-01，尾舱隔爆泄压主炮弹药架。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担主炮重型弹药储供职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Main-Gun Munition Storage",
+        "overview": "Bustle Blow-Off Ammunition Rack (M-01) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated main-gun munition storage node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 60-degree sloped 45 mm welded glacis doubles effective LOS armor and induces ricochets.",
+        "audioScript": "M-01, Bustle Blow-Off Ammunition Rack. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles main-gun munition storage. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_follower": {
+      "partId": "t34_85_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Blast Door & Tray",
+      "zh": {
+        "roleTag": "炮弹定向输送入膛",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（M-02）的装填手托弹导槽与防爆门，隶属 20 件套标准装配体系，负责炮弹定向输送入膛。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：1,600 mm 加大座圈三人铸造炮塔彻底解放车长指挥与瞄准分工。",
+        "audioScript": "M-02，装填手托弹导槽与防爆门。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担炮弹定向输送入膛职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Projectile Feed Alignment",
+        "overview": "Blast Door & Loading Tray (M-02) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated projectile feed alignment node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Expanded 1,600 mm three-man cast turret separates commander observation from gunnery.",
+        "audioScript": "M-02, Blast Door & Loading Tray. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles projectile feed alignment. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_mag_spring": {
+      "partId": "t34_85_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Loader Buffer Spring",
+      "zh": {
+        "roleTag": "推弹定位柔性缓冲",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（M-03）的装弹缓冲储能弹簧组，隶属 20 件套标准装配体系，负责推弹定位柔性缓冲。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6–8 发/分（三人炮塔人工装填） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：V-2-34 全铝合金 500 马力 V12 柴油机大幅降低燃油起火风险。",
+        "audioScript": "M-03，装弹缓冲储能弹簧组。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担推弹定位柔性缓冲职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6–8 发/分（三人炮塔人工装填） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Cycle Tensioning",
+        "overview": "Loader Buffer Return Spring (M-03) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated feed cycle tensioning node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 6–8 RPM (three-man turret load) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: All-aluminum 500 hp V-2-34 V12 diesel lowers fire risk and extends range.",
+        "audioScript": "M-03, Loader Buffer Return Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles feed cycle tensioning. Stores and returns cyclic elastic energy via live coil compression to maintain 6–8 RPM (three-man turret load) timing.",
+        "audioUrl": ""
+      }
+    },
+    "t34_85_mag_base": {
+      "partId": "t34_85_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Blow-Off Roof Panel",
+      "zh": {
+        "roleTag": "二次殉爆防护屏障",
+        "overview": "苏联 T-34-85（1944 型）1:1 中型坦克（M-04）的泄压装甲舱盖总成，隶属 20 件套标准装配体系，负责二次殉爆防护屏障。",
+        "craftAndMaterial": "采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，表面按1944年代第 183 厂 / 第 112 厂（红色索尔莫沃）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：500 mm 宽履带配五对克里斯蒂大负重轮驰骋东线泥泞与雪原。",
+        "audioScript": "M-04，泄压装甲舱盖总成。作为 苏联 T-34-85（1944 型）1:1 中型坦克 的关键构件，它采用战时 4BO 橄榄绿轧制焊接与铸造装甲钢制造，主要承担二次殉爆防护屏障职能。与 苏联 T-34-85（1944 型）1:1 中型坦克 重装结构刚性耦合，承受 295 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crew Survivability Shield",
+        "overview": "Blow-Off Roof Panel Assembly (M-04) of the Soviet T-34-85 (Model 1944) Medium Tank, serving as the dedicated crew survivability shield node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from wartime 4BO olive-green rolled and cast armor steel to Factory No. 183 / Krasnoye Sormovo No. 112 service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Wide 500 mm tracks and five large Christie road wheels conquer mud and deep snow.",
+        "audioScript": "M-04, Blow-Off Roof Panel Assembly. Crafted from wartime 4BO olive-green rolled and cast armor steel for the Soviet T-34-85 (Model 1944) Medium Tank, this component handles crew survivability shield. Anchors rigidly within the Soviet T-34-85 (Model 1944) Medium Tank heavy assembly to withstand 295 MPa firing loads.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

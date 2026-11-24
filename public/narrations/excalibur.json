@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "excalibur",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "Excalibur Assassin Extreme",
+    "subtitle": "High-Output Recurve Crossbow with Integrated Silent Charger Crank",
+    "originCountry": "Canada",
+    "weaponType": "High-Energy Recurve Crossbow",
+    "categoryLabel": "Archery & Crossbow",
+    "actionMechanism": "Pure High-Tension Recurve Limbs · Integrated Silent Charger Ratchet Crank",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Eliminating cams and auxiliary cables entirely, the Excalibur Assassin Extreme drives 400-grain bolts to 400 fps using ultra-durable high-output recurve limbs and an integrated silent ratchet crank, allowing tool-free field string changes.",
+    "highlights": [
+      "Zero-cam, zero-cable pure recurve limb geometry maximizes field reliability",
+      "Integrated Charger crank reduces 290 lbf draw load to ~12 lbf cranking effort",
+      "Pro-Shot two-stage match trigger paired with CeaseFire anti-dry-fire interlock",
+      "Adjustable stock and cheekpiece with rubberized string suppressors"
+    ],
+    "workbenchTitle": "Excalibur Assassin Extreme 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Pure High-Tension Recurve Limbs · Integrated Silent Charger Ratchet Crank",
+    "cutawayLabel": "Riser & Launch Rail Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on Excalibur Assassin Extreme to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Power-Stroke Launch",
+    "rateOfFire": "4 bolts/min (integrated crank)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Excalibur Assassin Extreme (2022) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 813 mm (32 in Overall Length)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Draw & Load",
+        "title": "Phase 1 · Excalibur Energy Draw & Nocking",
+        "description": "Drawing the bowstring stores elastic potential energy across the 381 mm power stroke of the Excalibur Assassin Extreme limbs."
+      },
+      "phase_2": {
+        "shortLabel": "Full Anchor",
+        "title": "Phase 2 · Peak Tension & Mechanical Anchor",
+        "description": "At full draw, high-tension recurve limbs discharge stored elastic energy down the machined rail upon trigger break, holding the 18\" 400 gr Carbon Crossbow Bolt projectile aligned on the launch datum."
+      },
+      "phase_3": {
+        "shortLabel": "Sear Release",
+        "title": "Phase 3 · Crisp Trigger / Finger Release",
+        "description": "Disengaging the latch frees the taut bowstring cleanly without lateral torque, initiating forward energy transfer."
+      },
+      "phase_4": {
+        "shortLabel": "Limb Unwind",
+        "title": "Phase 4 · Elastic Limb Recovery & Acceleration",
+        "description": "Stored strain energy unwinds rapidly along the rail, accelerating the projectile toward 122 m/s."
+      },
+      "phase_5": {
+        "shortLabel": "Launch Exit",
+        "title": "Phase 5 · Rest Clearance & Fletching Spin",
+        "description": "The shaft clears the launcher with 193 J of kinetic energy as helical fletching initiates aerodynamic stabilization."
+      },
+      "phase_6": {
+        "shortLabel": "String Damping",
+        "title": "Phase 6 · Brace-Height Stop & Vibration Decay",
+        "description": "String stops and riser dampeners absorb residual oscillation cleanly to preserve quiet acoustic discipline."
+      },
+      "phase_7": {
+        "shortLabel": "Reset & Nock",
+        "title": "Phase 7 · Safety Engagement & Next-Shot Prep",
+        "description": "The release assembly resets automatically, preparing the Excalibur for the next precision launch out to 100 m."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "神剑 Assassin Extreme 高能反曲弩：2022 年机械传奇与工程剖析",
+      "deck": "神剑 Assassin Extreme 摒弃一切复杂偏心滑轮与辅助缆绳，凭借高模量反曲复合弩片与内置静音曲柄棘轮机构输出 400 fps 箭速，可在野外免专用弓床直接徒手换弦。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "2018–2022",
+          "title": "时代召唤与研发立项：Excalibur 的诞生背景",
+          "paragraphs": [
+            "2022 年问世的 神剑 Assassin Extreme 高能反曲弩 由加拿大神剑弩业（Excalibur Crossbow）主导研制，定位为经典的反曲机械曲柄重弩。加拿大神剑公司坚持反曲弩路线逾四十年，通过极限压缩反曲弩片前倾角使传统反曲结构突破了 400 fps 现代超高速门槛。",
+            "神剑 Assassin Extreme 摒弃一切复杂偏心滑轮与辅助缆绳，凭借高模量反曲复合弩片与内置静音曲柄棘轮机构输出 400 fps 箭速，可在野外免专用弓床直接徒手换弦。 整件装备总长 813 mm（32 in 总长）、空重 3.36 kg，成为同期冷兵弓弩领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。2022 年，加拿大神剑弩业（Excalibur Crossbow）推出了划时代的神剑 Assassin Extreme 高能反曲弩。加拿大神剑公司坚持反曲弩路线逾四十年，通过极限压缩反曲弩片前倾角使传统反曲结构突破了 400 fps 现代超高速门槛。 它的核心设计聚焦于零凸轮、零副缆纯反曲几何，极端寒湿环境机械可靠性极高，奠定了其在冷兵弓弩发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "excalibur_receiver",
+          "focusPartLabel": "CNC 铝合金箭道主机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2022",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "神剑 Assassin Extreme 高能反曲弩 的机械灵魂在于其「纯反曲玻纤高张力弩片 · 集成静音棘轮上弦曲柄」结构体系。在发射工作循环中，反曲高张力弩片在扳机释放瞬间沿箭道爆发弹性势能加速碳纤弩箭，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用硬质阳极氧化铝合金、氮化钢与高强度聚合物精加工而成。内置 Charger 静音曲柄将 290 lbf 拉力降为约 12 lbf 省力摇动，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。神剑 Assassin Extreme 高能反曲弩 采用纯反曲玻纤高张力弩片 · 集成静音棘轮上弦曲柄。在每个击发周期中，反曲高张力弩片在扳机释放瞬间沿箭道爆发弹性势能加速碳纤弩箭。借助硬质阳极氧化铝合金、氮化钢与高强度聚合物工艺与高强度配合，实现了内置 Charger 静音曲柄将 290 lbf 拉力降为约 12 lbf 省力摇动。",
+          "audioUrl": "",
+          "focusPartId": "excalibur_bolt",
+          "focusPartLabel": "主弓弦与同步分弦缆绳"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2022–2025",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 18\" 400 gr Carbon Crossbow Bolt 弹药规格与 381 mm 驱动行程（15 in Power Stroke · 290 lbf 拉力），最高工作膛压约 0.9 MPa，可赋予弹头 122 m/s 的出膛初速与 193 J 动能，有效作用距离达 100 米。",
+            "内膛技术特点方面，CNC 铝合金阳极氧化箭道配合防空放棘爪与两段式精密扳机。同时，Pro-Shot 竞赛级两段式扳机搭配 CeaseFire 防空放保险机构，令其在 4 箭/分（曲柄棘轮上弦） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 381 毫米身管与 18\" 400 gr Carbon Crossbow Bolt 口径，神剑 Assassin Extreme 高能反曲弩 实现了每秒 122 米的初速与 100 米有效射程。CNC 铝合金阳极氧化箭道配合防空放棘爪与两段式精密扳机，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "excalibur_barrel",
+          "focusPartLabel": "高储能复合/反曲弹性弓片组"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2026–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 4 发容量的箭壶本体与碳纤箭矢组与 42 mm 膛轴设计，神剑 Assassin Extreme 高能反曲弩 将单发后坐冲量控制在 3.2 N·s 水平。Tru-Fit 可调伸缩托与贴腮板配合分体式消音阻弦器。",
+            "如今在数字兵器库 3D 百年展厅（BAY-92）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 4 发容量的箭壶本体与碳纤箭矢组与出色的整体工效，Tru-Fit 可调伸缩托与贴腮板配合分体式消音阻弦器。欢迎在 BAY-92 展位亲手切开剖面、逐件拆解，感受 神剑 Assassin Extreme 高能反曲弩 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "excalibur_mag_body",
+          "focusPartLabel": "箭壶本体与碳纤箭矢组"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-92",
+          "summary": "纯反曲玻纤高张力弩片 · 集成静音棘轮上弦曲柄；零凸轮、零副缆纯反曲几何，极端寒湿环境机械可靠性极高。",
+          "focusPartId": "excalibur_bolt",
+          "focusPartLabel": "主弓弦与同步分弦缆绳"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "122 m/s",
+          "summary": "381 mm 驱动行程（15 in Power Stroke · 290 lbf 拉力），CNC 铝合金阳极氧化箭道配合防空放棘爪与两段式精密扳机。",
+          "focusPartId": "excalibur_barrel",
+          "focusPartLabel": "高储能复合/反曲弹性弓片组"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "4 rds",
+          "summary": "Pro-Shot 竞赛级两段式扳机搭配 CeaseFire 防空放保险机构；Tru-Fit 可调伸缩托与贴腮板配合分体式消音阻弦器。",
+          "focusPartId": "excalibur_mag_body",
+          "focusPartLabel": "箭壶本体与碳纤箭矢组"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2018",
+          "title": "战术指标与概念构型",
+          "detail": "加拿大提出新一代反曲机械曲柄重弩战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "2022",
+          "title": "Excalibur 正式定型投产",
+          "detail": "神剑弩业（Excalibur Crossbow）完成 EXCALIBUR ASSASSIN EXTREME 定型，采用纯反曲玻纤高张力弩片 · 集成静音棘轮上弦曲柄架构。"
+        },
+        {
+          "year": "2025",
+          "title": "实战部署与工艺演进",
+          "detail": "零凸轮、零副缆纯反曲几何，极端寒湿环境机械可靠性极高，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "2026",
+          "title": "工程典范与历史传承",
+          "detail": "加拿大神剑公司坚持反曲弩路线逾四十年，通过极限压缩反曲弩片前倾角使传统反曲结构突破了 400 fps 现代超高速门槛。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-92）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Excalibur Assassin Extreme: The 2022 Mechanical Legend",
+      "deck": "Eliminating cams and auxiliary cables entirely, the Excalibur Assassin Extreme drives 400-grain bolts to 400 fps using ultra-durable high-output recurve limbs and an integrated silent ratchet crank, allowing tool-free field string changes. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-92.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "2018–2022",
+          "title": "Origins & Operational Mandate of the Excalibur",
+          "paragraphs": [
+            "Introduced in 2022 by Excalibur Crossbow in Canada, the Excalibur Assassin Extreme emerged as a defining High-Energy Recurve Crossbow. For over four decades Excalibur championed camless recurve crossbows, proving through steep high-modulus limb angles that traditional recurve geometry could surpass the 400 fps barrier.",
+            "Eliminating cams and auxiliary cables entirely, the Excalibur Assassin Extreme drives 400-grain bolts to 400 fps using ultra-durable high-output recurve limbs and an integrated silent ratchet crank, allowing tool-free field string changes. Measuring 813 mm (32 in Overall Length) at an unloaded weight of 3.36 kg, it reshaped expectations across the Archery & Crossbow class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 2022, Excalibur Crossbow of Canada introduced the Excalibur Assassin Extreme. For over four decades Excalibur championed camless recurve crossbows, proving through steep high-modulus limb angles that traditional recurve geometry could surpass the 400 fps barrier. Anchored by its hallmark design trait — Zero-cam, zero-cable pure recurve limb geometry maximizes field reliability — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "excalibur_receiver",
+          "focusPartLabel": "CNC Aluminum Crossbow Rail"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "2022",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the Excalibur Assassin Extreme sits its Pure High-Tension Recurve Limbs · Integrated Silent Charger Ratchet Crank. Throughout every firing cycle, high-tension recurve limbs discharge stored elastic energy down the machined rail upon trigger break, containing 0.9 MPa of operating pressure safely.",
+            "Constructed in hard-coat anodized aluminum, nitrided steel, and reinforced polymer, the assembly achieves durable field tolerances. Notably, Integrated Charger crank reduces 290 lbf draw load to ~12 lbf cranking effort, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The Excalibur Assassin Extreme relies on Pure High-Tension Recurve Limbs · Integrated Silent Charger Ratchet Crank. During each cycle, high-tension recurve limbs discharge stored elastic energy down the machined rail upon trigger break. Machined from hard-coat anodized aluminum, nitrided steel, and reinforced polymer, it delivers standout engineering reliability: Integrated Charger crank reduces 290 lbf draw load to ~12 lbf cranking effort.",
+          "audioUrl": "",
+          "focusPartId": "excalibur_bolt",
+          "focusPartLabel": "Main Bowstring & Power Cables"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "2022–2025",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 18\" 400 gr Carbon Crossbow Bolt with 381 mm Power Stroke (15 in · 290 lbf Draw Weight), the Excalibur Assassin Extreme develops 122 m/s muzzle velocity and 193 J of kinetic energy for effective engagement out to 100 meters.",
+            "Internally, CNC anodized aluminum flight rail with anti-dry-fire latch and two-stage match trigger. Combined with its 4 bolts/min (integrated crank) tempo, Pro-Shot two-stage match trigger paired with CeaseFire anti-dry-fire interlock, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 18\" 400 gr Carbon Crossbow Bolt through its 381 millimeter bore, the Excalibur Assassin Extreme achieves 122 meters per second and 100 meters of effective reach. CNC anodized aluminum flight rail with anti-dry-fire latch and two-stage match trigger.",
+          "audioUrl": "",
+          "focusPartId": "excalibur_barrel",
+          "focusPartLabel": "High-Energy Split Elastic Limbs"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "2026–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 4-round quiver body & arrow assembly with a 42 mm bore-axis height, the platform manages 3.2 N-s of recoil impulse cleanly. Adjustable stock and cheekpiece with rubberized string suppressors.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-92), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 4-round quiver body & arrow assembly with disciplined recoil geometry, Adjustable stock and cheekpiece with rubberized string suppressors. Explore BAY-92 in live section cut and exploded disassembly to study every working link of the Excalibur Assassin Extreme.",
+          "audioUrl": "",
+          "focusPartId": "excalibur_mag_body",
+          "focusPartLabel": "Quiver Body & Arrow Assembly"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-92",
+          "summary": "Pure High-Tension Recurve Limbs · Integrated Silent Charger Ratchet Crank — Zero-cam, zero-cable pure recurve limb geometry maximizes field reliability.",
+          "focusPartId": "excalibur_bolt",
+          "focusPartLabel": "Main Bowstring & Power Cables"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "122 m/s",
+          "summary": "381 mm Power Stroke (15 in · 290 lbf Draw Weight); CNC anodized aluminum flight rail with anti-dry-fire latch and two-stage match trigger.",
+          "focusPartId": "excalibur_barrel",
+          "focusPartLabel": "High-Energy Split Elastic Limbs"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "4 rds",
+          "summary": "Pro-Shot two-stage match trigger paired with CeaseFire anti-dry-fire interlock; Adjustable stock and cheekpiece with rubberized string suppressors.",
+          "focusPartId": "excalibur_mag_body",
+          "focusPartLabel": "Quiver Body & Arrow Assembly"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2018",
+          "title": "Operational Requirement Defined",
+          "detail": "Canada ordnance planners established specifications for a new High-Energy Recurve Crossbow class."
+        },
+        {
+          "year": "2022",
+          "title": "Excalibur Official Introduction",
+          "detail": "Excalibur Crossbow finalized EXCALIBUR ASSASSIN EXTREME around Pure High-Tension Recurve Limbs · Integrated Silent Charger Ratchet Crank."
+        },
+        {
+          "year": "2025",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Zero-cam, zero-cable pure recurve limb geometry maximizes field reliability, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "2026",
+          "title": "Enduring Historical Influence",
+          "detail": "For over four decades Excalibur championed camless recurve crossbows, proving through steep high-modulus limb angles that traditional recurve geometry could surpass the 400 fps barrier."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-92)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "excalibur_receiver": {
+      "partId": "excalibur_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "CNC Flight Rail",
+      "zh": {
+        "roleTag": "拉距载荷承力主骨架",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（U-01）的CNC 铝合金箭道主机匣，隶属 20 件套标准装配体系，负责拉距载荷承力主骨架。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：零凸轮、零副缆纯反曲几何，极端寒湿环境机械可靠性极高。",
+        "audioScript": "U-01，CNC 铝合金箭道主机匣。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担拉距载荷承力主骨架职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Structural Backbone",
+        "overview": "CNC Aluminum Crossbow Rail (U-01) of the Excalibur Assassin Extreme, serving as the dedicated primary structural backbone node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Zero-cam, zero-cable pure recurve limb geometry maximizes field reliability.",
+        "audioScript": "U-01, CNC Aluminum Crossbow Rail. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles primary structural backbone. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_barrel": {
+      "partId": "excalibur_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "High-Energy Bow Limbs",
+      "zh": {
+        "roleTag": "弹性势能储存与瞬时释放",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（U-02）的高储能复合/反曲弹性弓片组，隶属 20 件套标准装配体系，负责弹性势能储存与瞬时释放。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：内置 Charger 静音曲柄将 290 lbf 拉力降为约 12 lbf 省力摇动。",
+        "audioScript": "U-02，高储能复合/反曲弹性弓片组。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担弹性势能储存与瞬时释放职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Elastic Potential Energy Store",
+        "overview": "High-Energy Split Elastic Limbs (U-02) of the Excalibur Assassin Extreme, serving as the dedicated elastic potential energy store node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Integrated Charger crank reduces 290 lbf draw load to ~12 lbf cranking effort.",
+        "audioScript": "U-02, High-Energy Split Elastic Limbs. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles elastic potential energy store. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_muzzle": {
+      "partId": "excalibur_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Front Rest & Stirrup",
+      "zh": {
+        "roleTag": "弦梢定位与撒放导向",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（U-03）的前端减震与脚蹬/箭台组件，隶属 20 件套标准装配体系，负责弦梢定位与撒放导向。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：Pro-Shot 竞赛级两段式扳机搭配 CeaseFire 防空放保险机构。",
+        "audioScript": "U-03，前端减震与脚蹬/箭台组件。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担弦梢定位与撒放导向职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Launch Alignment Interface",
+        "overview": "Front Stirrup & Arrow Launcher (U-03) of the Excalibur Assassin Extreme, serving as the dedicated launch alignment interface node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pro-Shot two-stage match trigger paired with CeaseFire anti-dry-fire interlock.",
+        "audioScript": "U-03, Front Stirrup & Arrow Launcher. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles launch alignment interface. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_bolt_carrier": {
+      "partId": "excalibur_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Cocking Carriage Sled",
+      "zh": {
+        "roleTag": "拉距力学转换与能量加速",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（U-04）的静音棘轮拉弦滑车组件，隶属 20 件套标准装配体系，负责拉距力学转换与能量加速。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：反曲高张力弩片在扳机释放瞬间沿箭道爆发弹性势能加速碳纤弩箭。",
+        "designHighlight": "工程亮点呼应整枪特征：Tru-Fit 可调伸缩托与贴腮板配合分体式消音阻弦器。",
+        "audioScript": "U-04，静音棘轮拉弦滑车组件。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担拉距力学转换与能量加速职能。在击发循环中承担核心联动：反曲高张力弩片在扳机释放瞬间沿箭道爆发弹性势能加速碳纤弩箭。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Mechanical Advantage Drive",
+        "overview": "Silent Ratchet Cocking Sled (U-04) of the Excalibur Assassin Extreme, serving as the dedicated mechanical advantage drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: high-tension recurve limbs discharge stored elastic energy down the machined rail upon trigger break.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Adjustable stock and cheekpiece with rubberized string suppressors.",
+        "audioScript": "U-04, Silent Ratchet Cocking Sled. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles mechanical advantage drive. Drives the core operating sequence: high-tension recurve limbs discharge stored elastic energy down the machined rail upon trigger break.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_bolt": {
+      "partId": "excalibur_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Bowstring & Cables",
+      "zh": {
+        "roleTag": "传递弓片张力直推箭尾",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（U-05）的主弓弦与同步分弦缆绳，隶属 20 件套标准装配体系，负责传递弓片张力直推箭尾。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：反曲高张力弩片在扳机释放瞬间沿箭道爆发弹性势能加速碳纤弩箭。",
+        "designHighlight": "工程亮点呼应整枪特征：零凸轮、零副缆纯反曲几何，极端寒湿环境机械可靠性极高。",
+        "audioScript": "U-05，主弓弦与同步分弦缆绳。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担传递弓片张力直推箭尾职能。在击发循环中承担核心联动：反曲高张力弩片在扳机释放瞬间沿箭道爆发弹性势能加速碳纤弩箭。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Direct Launch Drive String",
+        "overview": "Main Bowstring & Power Cables (U-05) of the Excalibur Assassin Extreme, serving as the dedicated direct launch drive string node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: high-tension recurve limbs discharge stored elastic energy down the machined rail upon trigger break.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Zero-cam, zero-cable pure recurve limb geometry maximizes field reliability.",
+        "audioScript": "U-05, Main Bowstring & Power Cables. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles direct launch drive string. Drives the core operating sequence: high-tension recurve limbs discharge stored elastic energy down the machined rail upon trigger break.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_recoil_spring": {
+      "partId": "excalibur_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "String Tension Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（U-06）的弓弦储能张力缓冲单元，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 4 箭/分（曲柄棘轮上弦） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：内置 Charger 静音曲柄将 290 lbf 拉力降为约 12 lbf 省力摇动。",
+        "audioScript": "U-06，弓弦储能张力缓冲单元。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 4 箭/分（曲柄棘轮上弦） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "String Tension Return Assembly (U-06) of the Excalibur Assassin Extreme, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 4 bolts/min (integrated crank) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Integrated Charger crank reduces 290 lbf draw load to ~12 lbf cranking effort.",
+        "audioScript": "U-06, String Tension Return Assembly. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Excalibur Assassin Extreme, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 4 bolts/min (integrated crank) timing.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_handguard": {
+      "partId": "excalibur_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Limb Pocket & Forend",
+      "zh": {
+        "roleTag": "稳定弓片夹角并防护握持手",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（F-01）的箭道护手板与弓片减震支座，隶属 20 件套标准装配体系，负责稳定弓片夹角并防护握持手。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：Pro-Shot 竞赛级两段式扳机搭配 CeaseFire 防空放保险机构。",
+        "audioScript": "F-01，箭道护手板与弓片减震支座。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担稳定弓片夹角并防护握持手职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Limb Alignment & Guard",
+        "overview": "Limb Pocket & Forend Guard (F-01) of the Excalibur Assassin Extreme, serving as the dedicated limb alignment & guard node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pro-Shot two-stage match trigger paired with CeaseFire anti-dry-fire interlock.",
+        "audioScript": "F-01, Limb Pocket & Forend Guard. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles limb alignment & guard. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_stock": {
+      "partId": "excalibur_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Tactical Buttstock",
+      "zh": {
+        "roleTag": "直线传导后坐并支撑贴腮瞄准",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（F-02）的高刚度战术抵肩枪托，隶属 20 件套标准装配体系，负责直线传导后坐并支撑贴腮瞄准。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：Tru-Fit 可调伸缩托与贴腮板配合分体式消音阻弦器。",
+        "audioScript": "F-02，高刚度战术抵肩枪托。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担直线传导后坐并支撑贴腮瞄准职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Transfer & Cheek Weld",
+        "overview": "Tactical Ergonomic Buttstock (F-02) of the Excalibur Assassin Extreme, serving as the dedicated recoil transfer & cheek weld node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Adjustable stock and cheekpiece with rubberized string suppressors.",
+        "audioScript": "F-02, Tactical Ergonomic Buttstock. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles recoil transfer & cheek weld. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_grip": {
+      "partId": "excalibur_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ergonomic Main Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（F-03）的人体工学防滑主握把，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：零凸轮、零副缆纯反曲几何，极端寒湿环境机械可靠性极高。",
+        "audioScript": "F-03，人体工学防滑主握把。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担锁定手腕角度优化扳机控枪职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Ergonomic Textured Main Grip (F-03) of the Excalibur Assassin Extreme, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Zero-cam, zero-cable pure recurve limb geometry maximizes field reliability.",
+        "audioScript": "F-03, Ergonomic Textured Main Grip. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles wrist alignment & control. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_optic": {
+      "partId": "excalibur_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Precision Optical Sight",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（F-04）的精密光学瞄准镜与高刚度镜座，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：内置 Charger 静音曲柄将 290 lbf 拉力降为约 12 lbf 省力摇动。",
+        "audioScript": "F-04，精密光学瞄准镜与高刚度镜座。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担建立精准弹道瞄准基线职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Precision Optical Sight & Mount (F-04) of the Excalibur Assassin Extreme, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Integrated Charger crank reduces 290 lbf draw load to ~12 lbf cranking effort.",
+        "audioScript": "F-04, Precision Optical Sight & Mount. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles ballistic sightline datum. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_gas_system": {
+      "partId": "excalibur_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Cable Guard & Tiller",
+      "zh": {
+        "roleTag": "隔离箭羽干涉并精调拉力曲线",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（F-05）的分弦滑杆与弓片张力调节座，隶属 20 件套标准装配体系，负责隔离箭羽干涉并精调拉力曲线。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：反曲高张力弩片在扳机释放瞬间沿箭道爆发弹性势能加速碳纤弩箭。",
+        "designHighlight": "工程亮点呼应整枪特征：Pro-Shot 竞赛级两段式扳机搭配 CeaseFire 防空放保险机构。",
+        "audioScript": "F-05，分弦滑杆与弓片张力调节座。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担隔离箭羽干涉并精调拉力曲线职能。在击发循环中承担核心联动：反曲高张力弩片在扳机释放瞬间沿箭道爆发弹性势能加速碳纤弩箭。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Fletching Clearance & Tune",
+        "overview": "Cable Guard & Draw-Weight Tiller (F-05) of the Excalibur Assassin Extreme, serving as the dedicated fletching clearance & tune node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: high-tension recurve limbs discharge stored elastic energy down the machined rail upon trigger break.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pro-Shot two-stage match trigger paired with CeaseFire anti-dry-fire interlock.",
+        "audioScript": "F-05, Cable Guard & Draw-Weight Tiller. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles fletching clearance & tune. Drives the core operating sequence: high-tension recurve limbs discharge stored elastic energy down the machined rail upon trigger break.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_mount_rail": {
+      "partId": "excalibur_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：Tru-Fit 可调伸缩托与贴腮板配合分体式消音阻弦器。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担提供稳固依托与模块化拓展职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the Excalibur Assassin Extreme, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Adjustable stock and cheekpiece with rubberized string suppressors.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles modular support & optics base. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_trigger": {
+      "partId": "excalibur_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：零凸轮、零副缆纯反曲几何，极端寒湿环境机械可靠性极高。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担清晰干脆释放阻铁启动击发职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the Excalibur Assassin Extreme, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Zero-cam, zero-cable pure recurve limb geometry maximizes field reliability.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles crisp firing release input. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_hammer": {
+      "partId": "excalibur_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Release Sear Jaw",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（T-02）的防空放撒放钳口棘爪，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：内置 Charger 静音曲柄将 290 lbf 拉力降为约 12 lbf 省力摇动。",
+        "audioScript": "T-02，防空放撒放钳口棘爪。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担高速释放储能精确击发底火/弓弦职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Anti-Dry-Fire Release Sear Jaw (T-02) of the Excalibur Assassin Extreme, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Integrated Charger crank reduces 290 lbf draw load to ~12 lbf cranking effort.",
+        "audioScript": "T-02, Anti-Dry-Fire Release Sear Jaw. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles high-speed ignition impactor. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_hammer_spring": {
+      "partId": "excalibur_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 4 箭/分（曲柄棘轮上弦） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：Pro-Shot 竞赛级两段式扳机搭配 CeaseFire 防空放保险机构。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 4 箭/分（曲柄棘轮上弦） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the Excalibur Assassin Extreme, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 4 bolts/min (integrated crank) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pro-Shot two-stage match trigger paired with CeaseFire anti-dry-fire interlock.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Excalibur Assassin Extreme, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 4 bolts/min (integrated crank) timing.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_selector": {
+      "partId": "excalibur_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：Tru-Fit 可调伸缩托与贴腮板配合分体式消音阻弦器。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担可靠锁止扳机阻铁并切换射态职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the Excalibur Assassin Extreme, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Adjustable stock and cheekpiece with rubberized string suppressors.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles safety interlock & mode control. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_mag_body": {
+      "partId": "excalibur_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Quiver & Arrow Set",
+      "zh": {
+        "roleTag": "箭矢随身携带储槽",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（M-01）的箭壶本体与碳纤箭矢组，隶属 20 件套标准装配体系，负责箭矢随身携带储槽。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：零凸轮、零副缆纯反曲几何，极端寒湿环境机械可靠性极高。",
+        "audioScript": "M-01，箭壶本体与碳纤箭矢组。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担箭矢随身携带储槽职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Arrow Carry & Indexing",
+        "overview": "Quiver Body & Arrow Assembly (M-01) of the Excalibur Assassin Extreme, serving as the dedicated arrow carry & indexing node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Zero-cam, zero-cable pure recurve limb geometry maximizes field reliability.",
+        "audioScript": "M-01, Quiver Body & Arrow Assembly. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles arrow carry & indexing. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_follower": {
+      "partId": "excalibur_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Arrow Retention Clip",
+      "zh": {
+        "roleTag": "静音防松动夹持箭杆",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（M-02）的减震卡箭夹与箭尾定位卡，隶属 20 件套标准装配体系，负责静音防松动夹持箭杆。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：内置 Charger 静音曲柄将 290 lbf 拉力降为约 12 lbf 省力摇动。",
+        "audioScript": "M-02，减震卡箭夹与箭尾定位卡。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担静音防松动夹持箭杆职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Silent Shaft Retention",
+        "overview": "Vibration-Damped Arrow Gripper (M-02) of the Excalibur Assassin Extreme, serving as the dedicated silent shaft retention node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Integrated Charger crank reduces 290 lbf draw load to ~12 lbf cranking effort.",
+        "audioScript": "M-02, Vibration-Damped Arrow Gripper. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles silent shaft retention. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_mag_spring": {
+      "partId": "excalibur_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Quiver Lock Spring",
+      "zh": {
+        "roleTag": "箭壶防脱弹性锁定",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（M-03）的快拆箭壶弹性卡紧簧，隶属 20 件套标准装配体系，负责箭壶防脱弹性锁定。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 4 箭/分（曲柄棘轮上弦） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：Pro-Shot 竞赛级两段式扳机搭配 CeaseFire 防空放保险机构。",
+        "audioScript": "M-03，快拆箭壶弹性卡紧簧。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担箭壶防脱弹性锁定职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 4 箭/分（曲柄棘轮上弦） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Quick-Detach Tension",
+        "overview": "Quiver Quick-Lock Spring (M-03) of the Excalibur Assassin Extreme, serving as the dedicated quick-detach tension node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 4 bolts/min (integrated crank) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pro-Shot two-stage match trigger paired with CeaseFire anti-dry-fire interlock.",
+        "audioScript": "M-03, Quiver Quick-Lock Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Excalibur Assassin Extreme, this component handles quick-detach tension. Stores and returns cyclic elastic energy via live coil compression to maintain 4 bolts/min (integrated crank) timing.",
+        "audioUrl": ""
+      }
+    },
+    "excalibur_mag_base": {
+      "partId": "excalibur_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Broadhead Hood",
+      "zh": {
+        "roleTag": "锋利猎箭头安全包覆",
+        "overview": "神剑 Assassin Extreme 高能反曲弩（M-04）的防护箭头罩与配重底盖，隶属 20 件套标准装配体系，负责锋利猎箭头安全包覆。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按2022年代神剑弩业（Excalibur Crossbow）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：Tru-Fit 可调伸缩托与贴腮板配合分体式消音阻弦器。",
+        "audioScript": "M-04，防护箭头罩与配重底盖。作为 神剑 Assassin Extreme 高能反曲弩 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担锋利猎箭头安全包覆职能。在 381 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Broadhead Tip Guard",
+        "overview": "Broadhead Shield Hood (M-04) of the Excalibur Assassin Extreme, serving as the dedicated broadhead tip guard node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Excalibur Crossbow service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Adjustable stock and cheekpiece with rubberized string suppressors.",
+        "audioScript": "M-04, Broadhead Shield Hood. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Excalibur Assassin Extreme, this component handles broadhead tip guard. Preserves geometric alignment across the 381 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

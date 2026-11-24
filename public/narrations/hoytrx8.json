@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "hoytrx8",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "Hoyt Carbon RX-8 Ultra",
+    "subtitle": "Hollow Carbon-Tube Riser & HBX Xact Dual-Cam Compound Bow",
+    "originCountry": "United States",
+    "weaponType": "Carbon-Tube Compound Bow",
+    "categoryLabel": "Archery & Crossbow",
+    "actionMechanism": "HBX Xact Binary Eccentric Cam System · 80% Let-Off Hollow Carbon Riser",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "The Hoyt Carbon RX-8 Ultra pairs a hand-laid hollow dual-tube carbon truss riser with HBX Xact binary cams offering 1/4-inch draw-length micro-indexing, 80% let-off, and dead-in-hand vibration damping at 1.99 kg.",
+    "highlights": [
+      "Hollow dual-tube carbon truss riser delivers high torsional stiffness at 1.99 kg",
+      "HBX Xact synchronized binary cams enable 1/4-inch draw indexing and 80% let-off",
+      "Pre-stretched cable buss and split-limb geometry neutralize lateral cam lean",
+      "Integrated dovetail sight mount and low-CG stabilizer quell post-shot oscillation"
+    ],
+    "workbenchTitle": "Hoyt Carbon RX-8 Ultra 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · HBX Xact Binary Eccentric Cam System · 80% Let-Off Hollow Carbon Riser",
+    "cutawayLabel": "Riser & Launch Rail Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on Hoyt Carbon RX-8 Ultra to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Cam Peak & Let-Off",
+    "rateOfFire": "10 arrows/min (manual nock)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Hoyt Carbon RX-8 Ultra (2024) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 965 mm (34 in / 864 mm Axle-to-Axle)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Draw & Load",
+        "title": "Phase 1 · Hoyt RX-8 Energy Draw & Nocking",
+        "description": "Drawing the bowstring stores elastic potential energy across the 749 mm power stroke of the Hoyt Carbon RX-8 Ultra limbs."
+      },
+      "phase_2": {
+        "shortLabel": "Full Anchor",
+        "title": "Phase 2 · Peak Tension & Mechanical Anchor",
+        "description": "At full draw, eccentric cams load elastic limb energy and roll over into a high-let-off valley before release, holding the 400 gr Carbon Arrow (340 Spine) projectile aligned on the launch datum."
+      },
+      "phase_3": {
+        "shortLabel": "Sear Release",
+        "title": "Phase 3 · Crisp Trigger / Finger Release",
+        "description": "Disengaging the latch frees the taut bowstring cleanly without lateral torque, initiating forward energy transfer."
+      },
+      "phase_4": {
+        "shortLabel": "Limb Unwind",
+        "title": "Phase 4 · Elastic Limb Recovery & Acceleration",
+        "description": "Stored strain energy unwinds rapidly along the rail, accelerating the projectile toward 104 m/s."
+      },
+      "phase_5": {
+        "shortLabel": "Launch Exit",
+        "title": "Phase 5 · Rest Clearance & Fletching Spin",
+        "description": "The shaft clears the launcher with 140 J of kinetic energy as helical fletching initiates aerodynamic stabilization."
+      },
+      "phase_6": {
+        "shortLabel": "String Damping",
+        "title": "Phase 6 · Brace-Height Stop & Vibration Decay",
+        "description": "String stops and riser dampeners absorb residual oscillation cleanly to preserve quiet acoustic discipline."
+      },
+      "phase_7": {
+        "shortLabel": "Reset & Nock",
+        "title": "Phase 7 · Safety Engagement & Next-Shot Prep",
+        "description": "The release assembly resets automatically, preparing the Hoyt RX-8 for the next precision launch out to 90 m."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓：2024 年机械传奇与工程剖析",
+      "deck": "霍伊特 Carbon RX-8 Ultra 采用 50 束高模量单向碳纤维铺层制成的中空双管桁架弓把，在 1.99 kg 轻量质量下实现极高抗扭刚度；HBX Xact 双凸轮提供 1/4 英寸微调拉距与 80% 省力谷底。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "2020–2024",
+          "title": "时代召唤与研发立项：Hoyt RX-8 的诞生背景",
+          "paragraphs": [
+            "2024 年问世的 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 由美国霍伊特弓箭公司（Hoyt Archery）主导研制，定位为经典的中空碳纤维复合弓。霍伊特自 2010 年推出首款 Carbon Matrix 中空碳管弓把以来，RX 系列连续十余年成为现代高精度碳纤复合弓的工业标杆。",
+            "霍伊特 Carbon RX-8 Ultra 采用 50 束高模量单向碳纤维铺层制成的中空双管桁架弓把，在 1.99 kg 轻量质量下实现极高抗扭刚度；HBX Xact 双凸轮提供 1/4 英寸微调拉距与 80% 省力谷底。 整件装备总长 965 mm（轴距 34 in / 864 mm）、空重 1.99 kg，成为同期冷兵弓弩领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。2024 年，美国霍伊特弓箭公司（Hoyt Archery）推出了划时代的霍伊特 Carbon RX-8 Ultra 碳纤维复合弓。霍伊特自 2010 年推出首款 Carbon Matrix 中空碳管弓把以来，RX 系列连续十余年成为现代高精度碳纤复合弓的工业标杆。 它的核心设计聚焦于中空碳纤维管状桁架弓把，低温手持温暖且抗扭刚度卓越，奠定了其在冷兵弓弩发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "hoytrx8_receiver",
+          "focusPartLabel": "高刚度中空桁架主弓把"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2024",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的机械灵魂在于其「HBX Xact 双偏心凸轮滑轮组 · 80% 省力比碳管弓把」结构体系。在发射工作循环中，偏心双凸轮滑轮组储存弯片弹性势能，满拉后进入低拉力省力谷底等待撒放，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金精加工而成。HBX Xact 双同步凸轮组支持 1/4 in 精密拉距微调与 80% 省力比，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 采用HBX Xact 双偏心凸轮滑轮组 · 80% 省力比碳管弓把。在每个击发周期中，偏心双凸轮滑轮组储存弯片弹性势能，满拉后进入低拉力省力谷底等待撒放。借助高模量单向碳纤维铺层与 CNC 阳极氧化铝合金工艺与高强度配合，实现了HBX Xact 双同步凸轮组支持 1/4 in 精密拉距微调与 80% 省力比。",
+          "audioUrl": "",
+          "focusPartId": "hoytrx8_bolt",
+          "focusPartLabel": "主弓弦与同步分弦缆绳"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2024–2025",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 400 gr Carbon Arrow (340 Spine) 弹药规格与 749 mm（29.5 in 拉距 · 6.75 in 弓档），最高工作膛压约 0.5 MPa，可赋予弹头 104 m/s 的出膛初速与 140 J 动能，有效作用距离达 90 米。",
+            "内膛技术特点方面，跌落式箭台导向，依靠三片螺旋羽片产生气动自旋稳定。同时，WireWRX 预拉伸弓弦与分叉式分弦滑杆消除凸轮侧倾力矩，令其在 10 箭/分（单发手工搭箭） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 749 毫米身管与 400 gr Carbon Arrow (340 Spine) 口径，霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 实现了每秒 104 米的初速与 90 米有效射程。跌落式箭台导向，依靠三片螺旋羽片产生气动自旋稳定，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "hoytrx8_barrel",
+          "focusPartLabel": "高储能复合/反曲弹性弓片组"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2026–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 5 发容量的箭壶本体与碳纤箭矢组与 171 mm 膛轴设计，霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 将单发后坐冲量控制在 2.7 N·s 水平。集成燕尾槽瞄具接口与底置重心减震器抑制撒放余震。",
+            "如今在数字兵器库 3D 百年展厅（BAY-91）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 5 发容量的箭壶本体与碳纤箭矢组与出色的整体工效，集成燕尾槽瞄具接口与底置重心减震器抑制撒放余震。欢迎在 BAY-91 展位亲手切开剖面、逐件拆解，感受 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "hoytrx8_mag_body",
+          "focusPartLabel": "箭壶本体与碳纤箭矢组"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-91",
+          "summary": "HBX Xact 双偏心凸轮滑轮组 · 80% 省力比碳管弓把；中空碳纤维管状桁架弓把，低温手持温暖且抗扭刚度卓越。",
+          "focusPartId": "hoytrx8_bolt",
+          "focusPartLabel": "主弓弦与同步分弦缆绳"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "104 m/s",
+          "summary": "749 mm（29.5 in 拉距 · 6.75 in 弓档），跌落式箭台导向，依靠三片螺旋羽片产生气动自旋稳定。",
+          "focusPartId": "hoytrx8_barrel",
+          "focusPartLabel": "高储能复合/反曲弹性弓片组"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "5 rds",
+          "summary": "WireWRX 预拉伸弓弦与分叉式分弦滑杆消除凸轮侧倾力矩；集成燕尾槽瞄具接口与底置重心减震器抑制撒放余震。",
+          "focusPartId": "hoytrx8_mag_body",
+          "focusPartLabel": "箭壶本体与碳纤箭矢组"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2020",
+          "title": "战术指标与概念构型",
+          "detail": "美国提出新一代中空碳纤维复合弓战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "2024",
+          "title": "Hoyt RX-8 正式定型投产",
+          "detail": "霍伊特弓箭公司（Hoyt Archery）完成 HOYT CARBON RX-8 ULTRA 定型，采用HBX Xact 双偏心凸轮滑轮组 · 80% 省力比碳管弓把架构。"
+        },
+        {
+          "year": "2025",
+          "title": "实战部署与工艺演进",
+          "detail": "中空碳纤维管状桁架弓把，低温手持温暖且抗扭刚度卓越，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "2026",
+          "title": "工程典范与历史传承",
+          "detail": "霍伊特自 2010 年推出首款 Carbon Matrix 中空碳管弓把以来，RX 系列连续十余年成为现代高精度碳纤复合弓的工业标杆。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-91）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Hoyt Carbon RX-8 Ultra: The 2024 Mechanical Legend",
+      "deck": "The Hoyt Carbon RX-8 Ultra pairs a hand-laid hollow dual-tube carbon truss riser with HBX Xact binary cams offering 1/4-inch draw-length micro-indexing, 80% let-off, and dead-in-hand vibration damping at 1.99 kg. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-91.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "2020–2024",
+          "title": "Origins & Operational Mandate of the Hoyt RX-8",
+          "paragraphs": [
+            "Introduced in 2024 by Hoyt Archery in United States, the Hoyt Carbon RX-8 Ultra emerged as a defining Carbon-Tube Compound Bow. Building on Hoyt’s pioneering 2010 Carbon Matrix hollow-tube architecture, the RX series established carbon-truss risers as a benchmark in modern compound bow engineering.",
+            "The Hoyt Carbon RX-8 Ultra pairs a hand-laid hollow dual-tube carbon truss riser with HBX Xact binary cams offering 1/4-inch draw-length micro-indexing, 80% let-off, and dead-in-hand vibration damping at 1.99 kg. Measuring 965 mm (34 in / 864 mm Axle-to-Axle) at an unloaded weight of 1.99 kg, it reshaped expectations across the Archery & Crossbow class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 2024, Hoyt Archery of United States introduced the Hoyt Carbon RX-8 Ultra. Building on Hoyt’s pioneering 2010 Carbon Matrix hollow-tube architecture, the RX series established carbon-truss risers as a benchmark in modern compound bow engineering. Anchored by its hallmark design trait — Hollow dual-tube carbon truss riser delivers high torsional stiffness at 1.99 kg — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "hoytrx8_receiver",
+          "focusPartLabel": "Hollow Truss Compound Riser"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "2024",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the Hoyt Carbon RX-8 Ultra sits its HBX Xact Binary Eccentric Cam System · 80% Let-Off Hollow Carbon Riser. Throughout every firing cycle, eccentric cams load elastic limb energy and roll over into a high-let-off valley before release, containing 0.5 MPa of operating pressure safely.",
+            "Constructed in high-modulus unidirectional carbon fiber and CNC anodized aluminum, the assembly achieves durable field tolerances. Notably, HBX Xact synchronized binary cams enable 1/4-inch draw indexing and 80% let-off, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The Hoyt Carbon RX-8 Ultra relies on HBX Xact Binary Eccentric Cam System · 80% Let-Off Hollow Carbon Riser. During each cycle, eccentric cams load elastic limb energy and roll over into a high-let-off valley before release. Machined from high-modulus unidirectional carbon fiber and CNC anodized aluminum, it delivers standout engineering reliability: HBX Xact synchronized binary cams enable 1/4-inch draw indexing and 80% let-off.",
+          "audioUrl": "",
+          "focusPartId": "hoytrx8_bolt",
+          "focusPartLabel": "Main Bowstring & Power Cables"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "2024–2025",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 400 gr Carbon Arrow (340 Spine) with 749 mm (29.5 in Draw Length · 6.75 in Brace Height), the Hoyt Carbon RX-8 Ultra develops 104 m/s muzzle velocity and 140 J of kinetic energy for effective engagement out to 90 meters.",
+            "Internally, Drop-away launcher guidance; helical fletching induces aerodynamic arrow spin stabilization. Combined with its 10 arrows/min (manual nock) tempo, Pre-stretched cable buss and split-limb geometry neutralize lateral cam lean, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 400 gr Carbon Arrow (340 Spine) through its 749 millimeter bore, the Hoyt Carbon RX-8 Ultra achieves 104 meters per second and 90 meters of effective reach. Drop-away launcher guidance; helical fletching induces aerodynamic arrow spin stabilization.",
+          "audioUrl": "",
+          "focusPartId": "hoytrx8_barrel",
+          "focusPartLabel": "High-Energy Split Elastic Limbs"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "2026–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 5-round quiver body & arrow assembly with a 171 mm bore-axis height, the platform manages 2.7 N-s of recoil impulse cleanly. Integrated dovetail sight mount and low-CG stabilizer quell post-shot oscillation.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-91), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 5-round quiver body & arrow assembly with disciplined recoil geometry, Integrated dovetail sight mount and low-CG stabilizer quell post-shot oscillation. Explore BAY-91 in live section cut and exploded disassembly to study every working link of the Hoyt Carbon RX-8 Ultra.",
+          "audioUrl": "",
+          "focusPartId": "hoytrx8_mag_body",
+          "focusPartLabel": "Quiver Body & Arrow Assembly"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-91",
+          "summary": "HBX Xact Binary Eccentric Cam System · 80% Let-Off Hollow Carbon Riser — Hollow dual-tube carbon truss riser delivers high torsional stiffness at 1.99 kg.",
+          "focusPartId": "hoytrx8_bolt",
+          "focusPartLabel": "Main Bowstring & Power Cables"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "104 m/s",
+          "summary": "749 mm (29.5 in Draw Length · 6.75 in Brace Height); Drop-away launcher guidance; helical fletching induces aerodynamic arrow spin stabilization.",
+          "focusPartId": "hoytrx8_barrel",
+          "focusPartLabel": "High-Energy Split Elastic Limbs"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "5 rds",
+          "summary": "Pre-stretched cable buss and split-limb geometry neutralize lateral cam lean; Integrated dovetail sight mount and low-CG stabilizer quell post-shot oscillation.",
+          "focusPartId": "hoytrx8_mag_body",
+          "focusPartLabel": "Quiver Body & Arrow Assembly"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2020",
+          "title": "Operational Requirement Defined",
+          "detail": "United States ordnance planners established specifications for a new Carbon-Tube Compound Bow class."
+        },
+        {
+          "year": "2024",
+          "title": "Hoyt RX-8 Official Introduction",
+          "detail": "Hoyt Archery finalized HOYT CARBON RX-8 ULTRA around HBX Xact Binary Eccentric Cam System · 80% Let-Off Hollow Carbon Riser."
+        },
+        {
+          "year": "2025",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Hollow dual-tube carbon truss riser delivers high torsional stiffness at 1.99 kg, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "2026",
+          "title": "Enduring Historical Influence",
+          "detail": "Building on Hoyt’s pioneering 2010 Carbon Matrix hollow-tube architecture, the RX series established carbon-truss risers as a benchmark in modern compound bow engineering."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-91)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "hoytrx8_receiver": {
+      "partId": "hoytrx8_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Compound Bow Riser",
+      "zh": {
+        "roleTag": "拉距载荷承力主骨架",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（U-01）的高刚度中空桁架主弓把，隶属 20 件套标准装配体系，负责拉距载荷承力主骨架。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：中空碳纤维管状桁架弓把，低温手持温暖且抗扭刚度卓越。",
+        "audioScript": "U-01，高刚度中空桁架主弓把。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担拉距载荷承力主骨架职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Structural Backbone",
+        "overview": "Hollow Truss Compound Riser (U-01) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated primary structural backbone node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Hollow dual-tube carbon truss riser delivers high torsional stiffness at 1.99 kg.",
+        "audioScript": "U-01, Hollow Truss Compound Riser. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles primary structural backbone. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_barrel": {
+      "partId": "hoytrx8_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "High-Energy Bow Limbs",
+      "zh": {
+        "roleTag": "弹性势能储存与瞬时释放",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（U-02）的高储能复合/反曲弹性弓片组，隶属 20 件套标准装配体系，负责弹性势能储存与瞬时释放。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：HBX Xact 双同步凸轮组支持 1/4 in 精密拉距微调与 80% 省力比。",
+        "audioScript": "U-02，高储能复合/反曲弹性弓片组。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担弹性势能储存与瞬时释放职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Elastic Potential Energy Store",
+        "overview": "High-Energy Split Elastic Limbs (U-02) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated elastic potential energy store node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: HBX Xact synchronized binary cams enable 1/4-inch draw indexing and 80% let-off.",
+        "audioScript": "U-02, High-Energy Split Elastic Limbs. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles elastic potential energy store. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_muzzle": {
+      "partId": "hoytrx8_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Front Rest & Stirrup",
+      "zh": {
+        "roleTag": "弦梢定位与撒放导向",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（U-03）的前端减震与脚蹬/箭台组件，隶属 20 件套标准装配体系，负责弦梢定位与撒放导向。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：WireWRX 预拉伸弓弦与分叉式分弦滑杆消除凸轮侧倾力矩。",
+        "audioScript": "U-03，前端减震与脚蹬/箭台组件。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担弦梢定位与撒放导向职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Launch Alignment Interface",
+        "overview": "Front Stirrup & Arrow Launcher (U-03) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated launch alignment interface node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pre-stretched cable buss and split-limb geometry neutralize lateral cam lean.",
+        "audioScript": "U-03, Front Stirrup & Arrow Launcher. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles launch alignment interface. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_bolt_carrier": {
+      "partId": "hoytrx8_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Eccentric Cam System",
+      "zh": {
+        "roleTag": "拉距力学转换与能量加速",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（U-04）的双同步偏心凸轮滑轮组，隶属 20 件套标准装配体系，负责拉距力学转换与能量加速。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：偏心双凸轮滑轮组储存弯片弹性势能，满拉后进入低拉力省力谷底等待撒放。",
+        "designHighlight": "工程亮点呼应整枪特征：集成燕尾槽瞄具接口与底置重心减震器抑制撒放余震。",
+        "audioScript": "U-04，双同步偏心凸轮滑轮组。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担拉距力学转换与能量加速职能。在击发循环中承担核心联动：偏心双凸轮滑轮组储存弯片弹性势能，满拉后进入低拉力省力谷底等待撒放。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Mechanical Advantage Drive",
+        "overview": "Synchronized Eccentric Cam Pair (U-04) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated mechanical advantage drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: eccentric cams load elastic limb energy and roll over into a high-let-off valley before release.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Integrated dovetail sight mount and low-CG stabilizer quell post-shot oscillation.",
+        "audioScript": "U-04, Synchronized Eccentric Cam Pair. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles mechanical advantage drive. Drives the core operating sequence: eccentric cams load elastic limb energy and roll over into a high-let-off valley before release.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_bolt": {
+      "partId": "hoytrx8_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Bowstring & Cables",
+      "zh": {
+        "roleTag": "传递弓片张力直推箭尾",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（U-05）的主弓弦与同步分弦缆绳，隶属 20 件套标准装配体系，负责传递弓片张力直推箭尾。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：偏心双凸轮滑轮组储存弯片弹性势能，满拉后进入低拉力省力谷底等待撒放。",
+        "designHighlight": "工程亮点呼应整枪特征：中空碳纤维管状桁架弓把，低温手持温暖且抗扭刚度卓越。",
+        "audioScript": "U-05，主弓弦与同步分弦缆绳。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担传递弓片张力直推箭尾职能。在击发循环中承担核心联动：偏心双凸轮滑轮组储存弯片弹性势能，满拉后进入低拉力省力谷底等待撒放。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Direct Launch Drive String",
+        "overview": "Main Bowstring & Power Cables (U-05) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated direct launch drive string node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: eccentric cams load elastic limb energy and roll over into a high-let-off valley before release.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Hollow dual-tube carbon truss riser delivers high torsional stiffness at 1.99 kg.",
+        "audioScript": "U-05, Main Bowstring & Power Cables. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles direct launch drive string. Drives the core operating sequence: eccentric cams load elastic limb energy and roll over into a high-let-off valley before release.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_recoil_spring": {
+      "partId": "hoytrx8_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "String Tension Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（U-06）的弓弦储能张力缓冲单元，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10 箭/分（单发手工搭箭） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：HBX Xact 双同步凸轮组支持 1/4 in 精密拉距微调与 80% 省力比。",
+        "audioScript": "U-06，弓弦储能张力缓冲单元。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10 箭/分（单发手工搭箭） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "String Tension Return Assembly (U-06) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 10 arrows/min (manual nock) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: HBX Xact synchronized binary cams enable 1/4-inch draw indexing and 80% let-off.",
+        "audioScript": "U-06, String Tension Return Assembly. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Hoyt Carbon RX-8 Ultra, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 10 arrows/min (manual nock) timing.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_handguard": {
+      "partId": "hoytrx8_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Limb Pocket & Forend",
+      "zh": {
+        "roleTag": "稳定弓片夹角并防护握持手",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（F-01）的箭道护手板与弓片减震支座，隶属 20 件套标准装配体系，负责稳定弓片夹角并防护握持手。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：WireWRX 预拉伸弓弦与分叉式分弦滑杆消除凸轮侧倾力矩。",
+        "audioScript": "F-01，箭道护手板与弓片减震支座。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担稳定弓片夹角并防护握持手职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Limb Alignment & Guard",
+        "overview": "Limb Pocket & Forend Guard (F-01) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated limb alignment & guard node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pre-stretched cable buss and split-limb geometry neutralize lateral cam lean.",
+        "audioScript": "F-01, Limb Pocket & Forend Guard. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles limb alignment & guard. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_stock": {
+      "partId": "hoytrx8_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Tactical Buttstock",
+      "zh": {
+        "roleTag": "直线传导后坐并支撑贴腮瞄准",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（F-02）的高刚度战术抵肩枪托，隶属 20 件套标准装配体系，负责直线传导后坐并支撑贴腮瞄准。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：集成燕尾槽瞄具接口与底置重心减震器抑制撒放余震。",
+        "audioScript": "F-02，高刚度战术抵肩枪托。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担直线传导后坐并支撑贴腮瞄准职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Transfer & Cheek Weld",
+        "overview": "Tactical Ergonomic Buttstock (F-02) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated recoil transfer & cheek weld node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Integrated dovetail sight mount and low-CG stabilizer quell post-shot oscillation.",
+        "audioScript": "F-02, Tactical Ergonomic Buttstock. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles recoil transfer & cheek weld. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_grip": {
+      "partId": "hoytrx8_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ergonomic Main Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（F-03）的人体工学防滑主握把，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：中空碳纤维管状桁架弓把，低温手持温暖且抗扭刚度卓越。",
+        "audioScript": "F-03，人体工学防滑主握把。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担锁定手腕角度优化扳机控枪职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Ergonomic Textured Main Grip (F-03) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Hollow dual-tube carbon truss riser delivers high torsional stiffness at 1.99 kg.",
+        "audioScript": "F-03, Ergonomic Textured Main Grip. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles wrist alignment & control. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_optic": {
+      "partId": "hoytrx8_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Precision Optical Sight",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（F-04）的精密光学瞄准镜与高刚度镜座，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：HBX Xact 双同步凸轮组支持 1/4 in 精密拉距微调与 80% 省力比。",
+        "audioScript": "F-04，精密光学瞄准镜与高刚度镜座。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担建立精准弹道瞄准基线职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Precision Optical Sight & Mount (F-04) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: HBX Xact synchronized binary cams enable 1/4-inch draw indexing and 80% let-off.",
+        "audioScript": "F-04, Precision Optical Sight & Mount. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles ballistic sightline datum. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_gas_system": {
+      "partId": "hoytrx8_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Cable Guard & Tiller",
+      "zh": {
+        "roleTag": "隔离箭羽干涉并精调拉力曲线",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（F-05）的分弦滑杆与弓片张力调节座，隶属 20 件套标准装配体系，负责隔离箭羽干涉并精调拉力曲线。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：偏心双凸轮滑轮组储存弯片弹性势能，满拉后进入低拉力省力谷底等待撒放。",
+        "designHighlight": "工程亮点呼应整枪特征：WireWRX 预拉伸弓弦与分叉式分弦滑杆消除凸轮侧倾力矩。",
+        "audioScript": "F-05，分弦滑杆与弓片张力调节座。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担隔离箭羽干涉并精调拉力曲线职能。在击发循环中承担核心联动：偏心双凸轮滑轮组储存弯片弹性势能，满拉后进入低拉力省力谷底等待撒放。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Fletching Clearance & Tune",
+        "overview": "Cable Guard & Draw-Weight Tiller (F-05) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated fletching clearance & tune node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: eccentric cams load elastic limb energy and roll over into a high-let-off valley before release.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pre-stretched cable buss and split-limb geometry neutralize lateral cam lean.",
+        "audioScript": "F-05, Cable Guard & Draw-Weight Tiller. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles fletching clearance & tune. Drives the core operating sequence: eccentric cams load elastic limb energy and roll over into a high-let-off valley before release.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_mount_rail": {
+      "partId": "hoytrx8_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：集成燕尾槽瞄具接口与底置重心减震器抑制撒放余震。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担提供稳固依托与模块化拓展职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Integrated dovetail sight mount and low-CG stabilizer quell post-shot oscillation.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles modular support & optics base. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_trigger": {
+      "partId": "hoytrx8_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：中空碳纤维管状桁架弓把，低温手持温暖且抗扭刚度卓越。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担清晰干脆释放阻铁启动击发职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Hollow dual-tube carbon truss riser delivers high torsional stiffness at 1.99 kg.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles crisp firing release input. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_hammer": {
+      "partId": "hoytrx8_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Release Sear Jaw",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（T-02）的防空放撒放钳口棘爪，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：HBX Xact 双同步凸轮组支持 1/4 in 精密拉距微调与 80% 省力比。",
+        "audioScript": "T-02，防空放撒放钳口棘爪。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担高速释放储能精确击发底火/弓弦职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Anti-Dry-Fire Release Sear Jaw (T-02) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: HBX Xact synchronized binary cams enable 1/4-inch draw indexing and 80% let-off.",
+        "audioScript": "T-02, Anti-Dry-Fire Release Sear Jaw. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles high-speed ignition impactor. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_hammer_spring": {
+      "partId": "hoytrx8_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10 箭/分（单发手工搭箭） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：WireWRX 预拉伸弓弦与分叉式分弦滑杆消除凸轮侧倾力矩。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10 箭/分（单发手工搭箭） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 10 arrows/min (manual nock) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pre-stretched cable buss and split-limb geometry neutralize lateral cam lean.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Hoyt Carbon RX-8 Ultra, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 10 arrows/min (manual nock) timing.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_selector": {
+      "partId": "hoytrx8_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：集成燕尾槽瞄具接口与底置重心减震器抑制撒放余震。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担可靠锁止扳机阻铁并切换射态职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Integrated dovetail sight mount and low-CG stabilizer quell post-shot oscillation.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles safety interlock & mode control. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_mag_body": {
+      "partId": "hoytrx8_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Quiver & Arrow Set",
+      "zh": {
+        "roleTag": "箭矢随身携带储槽",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（M-01）的箭壶本体与碳纤箭矢组，隶属 20 件套标准装配体系，负责箭矢随身携带储槽。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：中空碳纤维管状桁架弓把，低温手持温暖且抗扭刚度卓越。",
+        "audioScript": "M-01，箭壶本体与碳纤箭矢组。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担箭矢随身携带储槽职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Arrow Carry & Indexing",
+        "overview": "Quiver Body & Arrow Assembly (M-01) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated arrow carry & indexing node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Hollow dual-tube carbon truss riser delivers high torsional stiffness at 1.99 kg.",
+        "audioScript": "M-01, Quiver Body & Arrow Assembly. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles arrow carry & indexing. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_follower": {
+      "partId": "hoytrx8_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Arrow Retention Clip",
+      "zh": {
+        "roleTag": "静音防松动夹持箭杆",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（M-02）的减震卡箭夹与箭尾定位卡，隶属 20 件套标准装配体系，负责静音防松动夹持箭杆。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：HBX Xact 双同步凸轮组支持 1/4 in 精密拉距微调与 80% 省力比。",
+        "audioScript": "M-02，减震卡箭夹与箭尾定位卡。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担静音防松动夹持箭杆职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Silent Shaft Retention",
+        "overview": "Vibration-Damped Arrow Gripper (M-02) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated silent shaft retention node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: HBX Xact synchronized binary cams enable 1/4-inch draw indexing and 80% let-off.",
+        "audioScript": "M-02, Vibration-Damped Arrow Gripper. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles silent shaft retention. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_mag_spring": {
+      "partId": "hoytrx8_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Quiver Lock Spring",
+      "zh": {
+        "roleTag": "箭壶防脱弹性锁定",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（M-03）的快拆箭壶弹性卡紧簧，隶属 20 件套标准装配体系，负责箭壶防脱弹性锁定。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10 箭/分（单发手工搭箭） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：WireWRX 预拉伸弓弦与分叉式分弦滑杆消除凸轮侧倾力矩。",
+        "audioScript": "M-03，快拆箭壶弹性卡紧簧。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担箭壶防脱弹性锁定职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10 箭/分（单发手工搭箭） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Quick-Detach Tension",
+        "overview": "Quiver Quick-Lock Spring (M-03) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated quick-detach tension node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 10 arrows/min (manual nock) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pre-stretched cable buss and split-limb geometry neutralize lateral cam lean.",
+        "audioScript": "M-03, Quiver Quick-Lock Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Hoyt Carbon RX-8 Ultra, this component handles quick-detach tension. Stores and returns cyclic elastic energy via live coil compression to maintain 10 arrows/min (manual nock) timing.",
+        "audioUrl": ""
+      }
+    },
+    "hoytrx8_mag_base": {
+      "partId": "hoytrx8_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Broadhead Hood",
+      "zh": {
+        "roleTag": "锋利猎箭头安全包覆",
+        "overview": "霍伊特 Carbon RX-8 Ultra 碳纤维复合弓（M-04）的防护箭头罩与配重底盖，隶属 20 件套标准装配体系，负责锋利猎箭头安全包覆。",
+        "craftAndMaterial": "采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，表面按2024年代霍伊特弓箭公司（Hoyt Archery）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：集成燕尾槽瞄具接口与底置重心减震器抑制撒放余震。",
+        "audioScript": "M-04，防护箭头罩与配重底盖。作为 霍伊特 Carbon RX-8 Ultra 碳纤维复合弓 的关键构件，它采用高模量单向碳纤维铺层与 CNC 阳极氧化铝合金制造，主要承担锋利猎箭头安全包覆职能。在 749 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Broadhead Tip Guard",
+        "overview": "Broadhead Shield Hood (M-04) of the Hoyt Carbon RX-8 Ultra, serving as the dedicated broadhead tip guard node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from high-modulus unidirectional carbon fiber and CNC anodized aluminum to Hoyt Archery service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Integrated dovetail sight mount and low-CG stabilizer quell post-shot oscillation.",
+        "audioScript": "M-04, Broadhead Shield Hood. Crafted from high-modulus unidirectional carbon fiber and CNC anodized aluminum for the Hoyt Carbon RX-8 Ultra, this component handles broadhead tip guard. Preserves geometric alignment across the 749 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

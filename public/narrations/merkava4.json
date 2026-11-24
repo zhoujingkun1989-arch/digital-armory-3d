@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "merkava4",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "Merkava Mk 4M Windbreaker MBT",
+    "subtitle": "Front-Engine Survivability Layout, 120mm MG253 Smoothbore & Trophy APS",
+    "originCountry": "Israel",
+    "weaponType": "Front-Engine Main Battle Tank (1:1 Scale)",
+    "categoryLabel": "1:1 Main Battle Tank",
+    "actionMechanism": "10-Round Electric Revolving Ready-Rack + Vertical Sliding-Wedge Breech · Front Powerpack",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Designed around crew survivability first, the Merkava Mk 4M mounts its 1,500 hp V12 powerpack up front as an extra ballistic buffer, opening a rear hull hatch while pairing razor-sloped modular turret armor with the Trophy hard-kill active protection system.",
+    "highlights": [
+      "Front-mounted GD883 1,500 hp V12 diesel acts as an extra frontal crew shield",
+      "Rear armored hull doors permit protected crew egress, resupply, or medevac",
+      "10-round fireproof electric revolving ready-drum feeds the MG253 120mm breech",
+      "Combat-proven Trophy radar-guided hard-kill active protection system"
+    ],
+    "workbenchTitle": "Merkava Mk 4M Windbreaker MBT 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · 10-Round Electric Revolving Ready-Rack + Vertical Sliding-Wedge Breech · Front Powerpack",
+    "cutawayLabel": "Turret Breech & Autoloader Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on Merkava Mk 4M Windbreaker MBT to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Breech Lock & Recoil",
+    "rateOfFire": "8 RPM (electric ready-drum assist)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Merkava Mk 4M Windbreaker MBT (2004) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 9,040 mm (gun forward · 7,600 mm hull)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "FCS Fire Solenoid",
+        "title": "Phase 1 · Merkava 4M Firing Solenoid & Primer Ignition",
+        "description": "Closing the crew firing circuit energizes the breech firing pin, igniting the primary propellant charge inside the sealed 120mm MG253 L/44 Smoothbore (M338 APFSDS) chamber."
+      },
+      "phase_2": {
+        "shortLabel": "Peak Pressure",
+        "title": "Phase 2 · 680 MPa Chamber Deflagration",
+        "description": "Rapid propellant burn drives chamber pressure to 680 MPa against the heavy locked breechblock while accelerating the heavy projectile."
+      },
+      "phase_3": {
+        "shortLabel": "In-Bore Travel",
+        "title": "Phase 3 · 5280 mm Ordnance Acceleration",
+        "description": "Expanding gases accelerate the 120mm MG253 L/44 Smoothbore (M338 APFSDS) round along the 5280 mm barrel up to 1680 m/s (12,100,000 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Muzzle Exit",
+        "title": "Phase 4 · Bore Clearance & Muzzle Blast",
+        "description": "The projectile clears the muzzle crown cleanly for engagements out to 4000 m while bore gases evacuate safely away from the crew."
+      },
+      "phase_5": {
+        "shortLabel": "Recoil Stroke",
+        "title": "Phase 5 · Hydropneumatic Recoil Absorption",
+        "description": "Recoil cylinders absorb 28900 N-s of impulse smoothly across the cradle while transferring residual load into the chassis."
+      },
+      "phase_6": {
+        "shortLabel": "Breech Ejection",
+        "title": "Phase 6 · Breech Opening & Stub Extraction",
+        "description": "During battery runout, hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech, ejecting the spent base stub cleanly into the deflector bin."
+      },
+      "phase_7": {
+        "shortLabel": "Reload & Ready",
+        "title": "Phase 7 · Munition Ramming & Battery Lock",
+        "description": "The next 120mm MG253 L/44 Smoothbore (M338 APFSDS) round seats into the chamber and locks the breechblock back into firing readiness."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克：2004 年机械传奇与工程剖析",
+      "deck": "以色列梅卡瓦 Mk 4M 将 1,500 马力 V12 动力包前置在车体首下之后作为额外装甲护盾，留出车尾宽大双开逃生舱门；楔形模块化顶甲与“战利品”（Trophy）主动防护雷达拦截弹共同构成纵深生存体系。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "2000–2004",
+          "title": "时代召唤与研发立项：Merkava 4M 的诞生背景",
+          "paragraphs": [
+            "2004 年问世的 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 由以色列以色列坦克管理局（MANTAK）主导研制，定位为经典的前置动力乘员防护主战坦克（1:1 真实尺度）。梅卡瓦（希伯来语意为“战车”）由以色列装甲兵之父塔尔将军主导研发，2011 年 Mk 4M 搭载的 Trophy 主动防御系统完成了现代坦克史上首次实战硬杀伤拦截。",
+            "以色列梅卡瓦 Mk 4M 将 1,500 马力 V12 动力包前置在车体首下之后作为额外装甲护盾，留出车尾宽大双开逃生舱门；楔形模块化顶甲与“战利品”（Trophy）主动防护雷达拦截弹共同构成纵深生存体系。 整件装备总长 9,040 mm（含炮管向前 · 车体 7,600 mm）、空重 65000 kg，成为同期重装坦克领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。2004 年，以色列以色列坦克管理局（MANTAK）推出了划时代的以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克。梅卡瓦（希伯来语意为“战车”）由以色列装甲兵之父塔尔将军主导研发，2011 年 Mk 4M 搭载的 Trophy 主动防御系统完成了现代坦克史上首次实战硬杀伤拦截。 它的核心设计聚焦于标志性前置 GD883 1,500 马力柴油动力舱，化动力总成为首前附加护盾，奠定了其在重装坦克发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "merkava4_receiver",
+          "focusPartLabel": "主战坦克复合装甲炮塔壳体"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2004",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的机械灵魂在于其「10 发电动转鼓待发弹仓 + 半自动立楔炮闩 · 前置动力舱布局」结构体系。在发射工作循环中，主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用沙漠 CARC 抗化学涂层复合装甲钢精加工而成。后置双开装甲舱门可供乘员安全撤离、补弹或搭载担架伤员，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 采用10 发电动转鼓待发弹仓 + 半自动立楔炮闩 · 前置动力舱布局。在每个击发周期中，主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。借助沙漠 CARC 抗化学涂层复合装甲钢工艺与高强度配合，实现了后置双开装甲舱门可供乘员安全撤离、补弹或搭载担架伤员。",
+          "audioUrl": "",
+          "focusPartId": "merkava4_bolt",
+          "focusPartLabel": "重型立楔/螺式主炮炮闩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2004–2007",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 120mm MG253 L/44 Smoothbore (M338 APFSDS) 弹药规格与 5,280 mm（120mm L/44 高压镀铬滑膛炮 · 耐高压热护套），最高工作膛压约 680 MPa，可赋予弹头 1680 m/s 的出膛初速与 12,100,000 J 动能，有效作用距离达 4000 米。",
+            "内膛技术特点方面，MG253 120mm L/44 高压滑膛身管，支持发射 M338 穿甲弹与拉哈特炮射导弹。同时，10 发电动防火旋转待发弹鼓配合半自动立楔炮闩自动选弹，令其在 8 发/分（电动选弹鼓辅助） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 5280 毫米身管与 120mm MG253 L/44 Smoothbore (M338 APFSDS) 口径，以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 实现了每秒 1680 米的初速与 4000 米有效射程。MG253 120mm L/44 高压滑膛身管，支持发射 M338 穿甲弹与拉哈特炮射导弹，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "merkava4_barrel",
+          "focusPartLabel": "5280mm 主炮高膛压身管"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2019–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 48 发容量的尾舱隔爆泄压主炮弹药架与 1920 mm 膛轴设计，以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 将单发后坐冲量控制在 28900 N·s 水平。全球首个实战拦截反坦克导弹的“战利品”Trophy 主动防护系统。",
+            "如今在数字兵器库 3D 百年展厅（BAY-96）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 48 发容量的尾舱隔爆泄压主炮弹药架与出色的整体工效，全球首个实战拦截反坦克导弹的“战利品”Trophy 主动防护系统。欢迎在 BAY-96 展位亲手切开剖面、逐件拆解，感受 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "merkava4_mag_body",
+          "focusPartLabel": "尾舱隔爆泄压主炮弹药架"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-96",
+          "summary": "10 发电动转鼓待发弹仓 + 半自动立楔炮闩 · 前置动力舱布局；标志性前置 GD883 1,500 马力柴油动力舱，化动力总成为首前附加护盾。",
+          "focusPartId": "merkava4_bolt",
+          "focusPartLabel": "重型立楔/螺式主炮炮闩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "1680 m/s",
+          "summary": "5,280 mm（120mm L/44 高压镀铬滑膛炮 · 耐高压热护套），MG253 120mm L/44 高压滑膛身管，支持发射 M338 穿甲弹与拉哈特炮射导弹。",
+          "focusPartId": "merkava4_barrel",
+          "focusPartLabel": "5280mm 主炮高膛压身管"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "48 rds",
+          "summary": "10 发电动防火旋转待发弹鼓配合半自动立楔炮闩自动选弹；全球首个实战拦截反坦克导弹的“战利品”Trophy 主动防护系统。",
+          "focusPartId": "merkava4_mag_body",
+          "focusPartLabel": "尾舱隔爆泄压主炮弹药架"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2000",
+          "title": "战术指标与概念构型",
+          "detail": "以色列提出新一代前置动力乘员防护主战坦克（1:1 真实尺度）战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "2004",
+          "title": "Merkava 4M 正式定型投产",
+          "detail": "以色列坦克管理局（MANTAK）完成 MERKAVA MK 4M WINDBREAKER 定型，采用10 发电动转鼓待发弹仓 + 半自动立楔炮闩 · 前置动力舱布局架构。"
+        },
+        {
+          "year": "2007",
+          "title": "实战部署与工艺演进",
+          "detail": "标志性前置 GD883 1,500 马力柴油动力舱，化动力总成为首前附加护盾，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "2019",
+          "title": "工程典范与历史传承",
+          "detail": "梅卡瓦（希伯来语意为“战车”）由以色列装甲兵之父塔尔将军主导研发，2011 年 Mk 4M 搭载的 Trophy 主动防御系统完成了现代坦克史上首次实战硬杀伤拦截。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-96）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Merkava Mk 4M Windbreaker MBT: The 2004 Mechanical Legend",
+      "deck": "Designed around crew survivability first, the Merkava Mk 4M mounts its 1,500 hp V12 powerpack up front as an extra ballistic buffer, opening a rear hull hatch while pairing razor-sloped modular turret armor with the Trophy hard-kill active protection system. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-96.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "2000–2004",
+          "title": "Origins & Operational Mandate of the Merkava 4M",
+          "paragraphs": [
+            "Introduced in 2004 by MANTAK (Israeli Tank Administration) in Israel, the Merkava Mk 4M Windbreaker MBT emerged as a defining Front-Engine Main Battle Tank (1:1 Scale). Conceived by Major General Israel Tal with crew survival above all else, the Mk 4M Windbreaker achieved modern armor history’s first combat hard-kill missile interception with Trophy in 2011.",
+            "Designed around crew survivability first, the Merkava Mk 4M mounts its 1,500 hp V12 powerpack up front as an extra ballistic buffer, opening a rear hull hatch while pairing razor-sloped modular turret armor with the Trophy hard-kill active protection system. Measuring 9,040 mm (gun forward · 7,600 mm hull) at an unloaded weight of 65000 kg, it reshaped expectations across the 1:1 Main Battle Tank class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 2004, MANTAK (Israeli Tank Administration) of Israel introduced the Merkava Mk 4M Windbreaker MBT. Conceived by Major General Israel Tal with crew survival above all else, the Mk 4M Windbreaker achieved modern armor history’s first combat hard-kill missile interception with Trophy in 2011. Anchored by its hallmark design trait — Front-mounted GD883 1,500 hp V12 diesel acts as an extra frontal crew shield — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "merkava4_receiver",
+          "focusPartLabel": "Composite Armored Turret Shell"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "2004",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the Merkava Mk 4M Windbreaker MBT sits its 10-Round Electric Revolving Ready-Rack + Vertical Sliding-Wedge Breech · Front Powerpack. Throughout every firing cycle, hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech, containing 680 MPa of operating pressure safely.",
+            "Constructed in desert CARC chemical-resistant composite armor steel, the assembly achieves durable field tolerances. Notably, Rear armored hull doors permit protected crew egress, resupply, or medevac, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The Merkava Mk 4M Windbreaker MBT relies on 10-Round Electric Revolving Ready-Rack + Vertical Sliding-Wedge Breech · Front Powerpack. During each cycle, hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech. Machined from desert CARC chemical-resistant composite armor steel, it delivers standout engineering reliability: Rear armored hull doors permit protected crew egress, resupply, or medevac.",
+          "audioUrl": "",
+          "focusPartId": "merkava4_bolt",
+          "focusPartLabel": "Heavy Sliding-Wedge / Screw Breech"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "2004–2007",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 120mm MG253 L/44 Smoothbore (M338 APFSDS) with 5,280 mm (120mm L/44 High-Pressure Chrome Smoothbore), the Merkava Mk 4M Windbreaker MBT develops 1680 m/s muzzle velocity and 12,100,000 J of kinetic energy for effective engagement out to 4000 meters.",
+            "Internally, MG253 120mm L/44 high-pressure smoothbore firing M338 APFSDS and LAHAT gun-launched missiles. Combined with its 8 RPM (electric ready-drum assist) tempo, 10-round fireproof electric revolving ready-drum feeds the MG253 120mm breech, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 120mm MG253 L/44 Smoothbore (M338 APFSDS) through its 5280 millimeter bore, the Merkava Mk 4M Windbreaker MBT achieves 1680 meters per second and 4000 meters of effective reach. MG253 120mm L/44 high-pressure smoothbore firing M338 APFSDS and LAHAT gun-launched missiles.",
+          "audioUrl": "",
+          "focusPartId": "merkava4_barrel",
+          "focusPartLabel": "5280mm High-Pressure Main Gun Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "2019–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 48-round bustle blow-off ammunition rack with a 1920 mm bore-axis height, the platform manages 28900 N-s of recoil impulse cleanly. Combat-proven Trophy radar-guided hard-kill active protection system.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-96), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 48-round bustle blow-off ammunition rack with disciplined recoil geometry, Combat-proven Trophy radar-guided hard-kill active protection system. Explore BAY-96 in live section cut and exploded disassembly to study every working link of the Merkava Mk 4M Windbreaker MBT.",
+          "audioUrl": "",
+          "focusPartId": "merkava4_mag_body",
+          "focusPartLabel": "Bustle Blow-Off Ammunition Rack"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-96",
+          "summary": "10-Round Electric Revolving Ready-Rack + Vertical Sliding-Wedge Breech · Front Powerpack — Front-mounted GD883 1,500 hp V12 diesel acts as an extra frontal crew shield.",
+          "focusPartId": "merkava4_bolt",
+          "focusPartLabel": "Heavy Sliding-Wedge / Screw Breech"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "1680 m/s",
+          "summary": "5,280 mm (120mm L/44 High-Pressure Chrome Smoothbore); MG253 120mm L/44 high-pressure smoothbore firing M338 APFSDS and LAHAT gun-launched missiles.",
+          "focusPartId": "merkava4_barrel",
+          "focusPartLabel": "5280mm High-Pressure Main Gun Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "48 rds",
+          "summary": "10-round fireproof electric revolving ready-drum feeds the MG253 120mm breech; Combat-proven Trophy radar-guided hard-kill active protection system.",
+          "focusPartId": "merkava4_mag_body",
+          "focusPartLabel": "Bustle Blow-Off Ammunition Rack"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2000",
+          "title": "Operational Requirement Defined",
+          "detail": "Israel ordnance planners established specifications for a new Front-Engine Main Battle Tank (1:1 Scale) class."
+        },
+        {
+          "year": "2004",
+          "title": "Merkava 4M Official Introduction",
+          "detail": "MANTAK (Israeli Tank Administration) finalized MERKAVA MK 4M WINDBREAKER around 10-Round Electric Revolving Ready-Rack + Vertical Sliding-Wedge Breech · Front Powerpack."
+        },
+        {
+          "year": "2007",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Front-mounted GD883 1,500 hp V12 diesel acts as an extra frontal crew shield, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "2019",
+          "title": "Enduring Historical Influence",
+          "detail": "Conceived by Major General Israel Tal with crew survival above all else, the Mk 4M Windbreaker achieved modern armor history’s first combat hard-kill missile interception with Trophy in 2011."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-96)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "merkava4_receiver": {
+      "partId": "merkava4_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Armored Turret Shell",
+      "zh": {
+        "roleTag": "主炮与乘员核心装甲防护",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（U-01）的主战坦克复合装甲炮塔壳体，隶属 20 件套标准装配体系，负责主炮与乘员核心装甲防护。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性前置 GD883 1,500 马力柴油动力舱，化动力总成为首前附加护盾。",
+        "audioScript": "U-01，主战坦克复合装甲炮塔壳体。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担主炮与乘员核心装甲防护职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Turret Armor",
+        "overview": "Composite Armored Turret Shell (U-01) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated primary turret armor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Front-mounted GD883 1,500 hp V12 diesel acts as an extra frontal crew shield.",
+        "audioScript": "U-01, Composite Armored Turret Shell. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles primary turret armor. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_barrel": {
+      "partId": "merkava4_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "Main Gun Cannon Barrel",
+      "zh": {
+        "roleTag": "穿甲弹超高速加速通道",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（U-02）的5280mm 主炮高膛压身管，隶属 20 件套标准装配体系，负责穿甲弹超高速加速通道。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：后置双开装甲舱门可供乘员安全撤离、补弹或搭载担架伤员。",
+        "audioScript": "U-02，5280mm 主炮高膛压身管。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担穿甲弹超高速加速通道职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Velocity Ordnance Bore",
+        "overview": "5280mm High-Pressure Main Gun Barrel (U-02) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated high-velocity ordnance bore node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Rear armored hull doors permit protected crew egress, resupply, or medevac.",
+        "audioScript": "U-02, 5280mm High-Pressure Main Gun Barrel. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles high-velocity ordnance bore. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_muzzle": {
+      "partId": "merkava4_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Bore Evacuator & MRS",
+      "zh": {
+        "roleTag": "炮膛排烟与热弯校准",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（U-03）的抽烟装置与炮口基准镜，隶属 20 件套标准装配体系，负责炮膛排烟与热弯校准。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：10 发电动防火旋转待发弹鼓配合半自动立楔炮闩自动选弹。",
+        "audioScript": "U-03，抽烟装置与炮口基准镜。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担炮膛排烟与热弯校准职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Fume Extractor & Alignment",
+        "overview": "Bore Evacuator & Muzzle Reference (U-03) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated fume extractor & alignment node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 10-round fireproof electric revolving ready-drum feeds the MG253 120mm breech.",
+        "audioScript": "U-03, Bore Evacuator & Muzzle Reference. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles fume extractor & alignment. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_bolt_carrier": {
+      "partId": "merkava4_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Gun Mantlet & Buffer",
+      "zh": {
+        "roleTag": "主炮俯仰装甲防护与制退",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（U-04）的主炮炮尾防盾与液气驻退机框，隶属 20 件套标准装配体系，负责主炮俯仰装甲防护与制退。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "designHighlight": "工程亮点呼应整枪特征：全球首个实战拦截反坦克导弹的“战利品”Trophy 主动防护系统。",
+        "audioScript": "U-04，主炮炮尾防盾与液气驻退机框。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担主炮俯仰装甲防护与制退职能。在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Mantlet & Recoil Damping",
+        "overview": "Gun Mantlet & Recoil Buffer Cradle (U-04) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated mantlet & recoil damping node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Combat-proven Trophy radar-guided hard-kill active protection system.",
+        "audioScript": "U-04, Gun Mantlet & Recoil Buffer Cradle. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles mantlet & recoil damping. Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_bolt": {
+      "partId": "merkava4_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Heavy Cannon Breech",
+      "zh": {
+        "roleTag": "密闭数百兆帕高压炮膛",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（U-05）的重型立楔/螺式主炮炮闩，隶属 20 件套标准装配体系，负责密闭数百兆帕高压炮膛。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性前置 GD883 1,500 马力柴油动力舱，化动力总成为首前附加护盾。",
+        "audioScript": "U-05，重型立楔/螺式主炮炮闩。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担密闭数百兆帕高压炮膛职能。在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Pressure Breech Seal",
+        "overview": "Heavy Sliding-Wedge / Screw Breech (U-05) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated high-pressure breech seal node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Front-mounted GD883 1,500 hp V12 diesel acts as an extra frontal crew shield.",
+        "audioScript": "U-05, Heavy Sliding-Wedge / Screw Breech. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles high-pressure breech seal. Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_recoil_spring": {
+      "partId": "merkava4_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Recuperator Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（U-06）的主炮重型复进弹簧组，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 8 发/分（电动选弹鼓辅助） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：后置双开装甲舱门可供乘员安全撤离、补弹或搭载担架伤员。",
+        "audioScript": "U-06，主炮重型复进弹簧组。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 8 发/分（电动选弹鼓辅助） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main-Gun Recuperator Spring (U-06) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 8 RPM (electric ready-drum assist) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Rear armored hull doors permit protected crew egress, resupply, or medevac.",
+        "audioScript": "U-06, Main-Gun Recuperator Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Merkava Mk 4M Windbreaker MBT, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 8 RPM (electric ready-drum assist) timing.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_handguard": {
+      "partId": "merkava4_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Sloped Glacis Hull",
+      "zh": {
+        "roleTag": "正面抗穿甲弹主防护盾",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（F-01）的倾斜首上复合装甲车体前部，隶属 20 件套标准装配体系，负责正面抗穿甲弹主防护盾。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：10 发电动防火旋转待发弹鼓配合半自动立楔炮闩自动选弹。",
+        "audioScript": "F-01，倾斜首上复合装甲车体前部。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担正面抗穿甲弹主防护盾职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Frontal Kinetic Armor",
+        "overview": "Sloped Glacis Composite Hull Front (F-01) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated frontal kinetic armor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 10-round fireproof electric revolving ready-drum feeds the MG253 120mm breech.",
+        "audioScript": "F-01, Sloped Glacis Composite Hull Front. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles frontal kinetic armor. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_stock": {
+      "partId": "merkava4_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Armored Hull & Engine",
+      "zh": {
+        "roleTag": "整车动力与全向装甲承重体",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（F-02）的坦克主装甲下车体与动力舱，隶属 20 件套标准装配体系，负责整车动力与全向装甲承重体。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：全球首个实战拦截反坦克导弹的“战利品”Trophy 主动防护系统。",
+        "audioScript": "F-02，坦克主装甲下车体与动力舱。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担整车动力与全向装甲承重体职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Hull Chassis & Powerpack",
+        "overview": "Armored Lower Hull & Engine Deck (F-02) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated hull chassis & powerpack node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Combat-proven Trophy radar-guided hard-kill active protection system.",
+        "audioScript": "F-02, Armored Lower Hull & Engine Deck. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles hull chassis & powerpack. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_grip": {
+      "partId": "merkava4_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Turret Crew Controls",
+      "zh": {
+        "roleTag": "火控解算与双轴稳定操控",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（F-03）的车长/炮长操纵台与吊篮座椅，隶属 20 件套标准装配体系，负责火控解算与双轴稳定操控。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性前置 GD883 1,500 马力柴油动力舱，化动力总成为首前附加护盾。",
+        "audioScript": "F-03，车长/炮长操纵台与吊篮座椅。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担火控解算与双轴稳定操控职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "FCS Crew Interface",
+        "overview": "Turret Basket & Crew Controls (F-03) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated fcs crew interface node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Front-mounted GD883 1,500 hp V12 diesel acts as an extra frontal crew shield.",
+        "audioScript": "F-03, Turret Basket & Crew Controls. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles fcs crew interface. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_optic": {
+      "partId": "merkava4_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Thermal FCS Optic Suite",
+      "zh": {
+        "roleTag": "昼夜猎歼瞄准与激光测距",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（F-04）的车长周视热成像与炮长稳像瞄准镜，隶属 20 件套标准装配体系，负责昼夜猎歼瞄准与激光测距。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：后置双开装甲舱门可供乘员安全撤离、补弹或搭载担架伤员。",
+        "audioScript": "F-04，车长周视热成像与炮长稳像瞄准镜。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担昼夜猎歼瞄准与激光测距职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Hunter-Killer Targeting",
+        "overview": "Hunter-Killer Thermal Sight Suite (F-04) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated hunter-killer targeting node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Rear armored hull doors permit protected crew egress, resupply, or medevac.",
+        "audioScript": "F-04, Hunter-Killer Thermal Sight Suite. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles hunter-killer targeting. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_gas_system": {
+      "partId": "merkava4_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Suspension & Track Run",
+      "zh": {
+        "roleTag": "全地形高速越野与射击平台稳定",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（F-05）的双侧负重轮扭杆/液气悬挂履带组，隶属 20 件套标准装配体系，负责全地形高速越野与射击平台稳定。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "designHighlight": "工程亮点呼应整枪特征：10 发电动防火旋转待发弹鼓配合半自动立楔炮闩自动选弹。",
+        "audioScript": "F-05，双侧负重轮扭杆/液气悬挂履带组。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担全地形高速越野与射击平台稳定职能。在击发循环中承担核心联动：主炮发射后液压驻退复进机吸收巨额炮膛后坐并自动开闩抛壳待装。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "All-Terrain Mobility Train",
+        "overview": "Roadwheel Suspension & Track Run (F-05) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated all-terrain mobility train node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 10-round fireproof electric revolving ready-drum feeds the MG253 120mm breech.",
+        "audioScript": "F-05, Roadwheel Suspension & Track Run. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles all-terrain mobility train. Drives the core operating sequence: hydropneumatic recoil cylinders damp main-gun impulse and semi-automatically open the sliding breech.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_mount_rail": {
+      "partId": "merkava4_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Side ERA Armor Array",
+      "zh": {
+        "roleTag": "偏折破甲射流与杆式穿甲弹",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（F-06）的侧裙爆炸反应装甲与格栅组件，隶属 20 件套标准装配体系，负责偏折破甲射流与杆式穿甲弹。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：全球首个实战拦截反坦克导弹的“战利品”Trophy 主动防护系统。",
+        "audioScript": "F-06，侧裙爆炸反应装甲与格栅组件。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担偏折破甲射流与杆式穿甲弹职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Reactive Side Protection",
+        "overview": "Side ERA Skirt & Armor Array (F-06) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated reactive side protection node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Combat-proven Trophy radar-guided hard-kill active protection system.",
+        "audioScript": "F-06, Side ERA Skirt & Armor Array. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles reactive side protection. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_trigger": {
+      "partId": "merkava4_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Firing Switch Solenoid",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（T-01）的电控击发扳机与火控开关，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性前置 GD883 1,500 马力柴油动力舱，化动力总成为首前附加护盾。",
+        "audioScript": "T-01，电控击发扳机与火控开关。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担清晰干脆释放阻铁启动击发职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Electric Firing Switch & Solenoid (T-01) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Front-mounted GD883 1,500 hp V12 diesel acts as an extra frontal crew shield.",
+        "audioScript": "T-01, Electric Firing Switch & Solenoid. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles crisp firing release input. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_hammer": {
+      "partId": "merkava4_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Cannon Firing Pin",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（T-02）的电/机械双模式主炮击针组，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：后置双开装甲舱门可供乘员安全撤离、补弹或搭载担架伤员。",
+        "audioScript": "T-02，电/机械双模式主炮击针组。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担高速释放储能精确击发底火/弓弦职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Dual-Mode Cannon Firing Pin (T-02) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Rear armored hull doors permit protected crew egress, resupply, or medevac.",
+        "audioScript": "T-02, Dual-Mode Cannon Firing Pin. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles high-speed ignition impactor. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_hammer_spring": {
+      "partId": "merkava4_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 8 发/分（电动选弹鼓辅助） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：10 发电动防火旋转待发弹鼓配合半自动立楔炮闩自动选弹。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 8 发/分（电动选弹鼓辅助） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 8 RPM (electric ready-drum assist) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 10-round fireproof electric revolving ready-drum feeds the MG253 120mm breech.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Merkava Mk 4M Windbreaker MBT, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 8 RPM (electric ready-drum assist) timing.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_selector": {
+      "partId": "merkava4_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "FCS Mode & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（T-04）的火控安全联锁与击发模式开关，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：全球首个实战拦截反坦克导弹的“战利品”Trophy 主动防护系统。",
+        "audioScript": "T-04，火控安全联锁与击发模式开关。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担可靠锁止扳机阻铁并切换射态职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "FCS Interlock & Firing Mode Switch (T-04) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Combat-proven Trophy radar-guided hard-kill active protection system.",
+        "audioScript": "T-04, FCS Interlock & Firing Mode Switch. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles safety interlock & mode control. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_mag_body": {
+      "partId": "merkava4_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Bustle Ammo Rack",
+      "zh": {
+        "roleTag": "主炮重型弹药储供",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（M-01）的尾舱隔爆泄压主炮弹药架，隶属 20 件套标准装配体系，负责主炮重型弹药储供。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性前置 GD883 1,500 马力柴油动力舱，化动力总成为首前附加护盾。",
+        "audioScript": "M-01，尾舱隔爆泄压主炮弹药架。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担主炮重型弹药储供职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Main-Gun Munition Storage",
+        "overview": "Bustle Blow-Off Ammunition Rack (M-01) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated main-gun munition storage node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Front-mounted GD883 1,500 hp V12 diesel acts as an extra frontal crew shield.",
+        "audioScript": "M-01, Bustle Blow-Off Ammunition Rack. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles main-gun munition storage. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_follower": {
+      "partId": "merkava4_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Blast Door & Tray",
+      "zh": {
+        "roleTag": "炮弹定向输送入膛",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（M-02）的装填手托弹导槽与防爆门，隶属 20 件套标准装配体系，负责炮弹定向输送入膛。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：后置双开装甲舱门可供乘员安全撤离、补弹或搭载担架伤员。",
+        "audioScript": "M-02，装填手托弹导槽与防爆门。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担炮弹定向输送入膛职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Projectile Feed Alignment",
+        "overview": "Blast Door & Loading Tray (M-02) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated projectile feed alignment node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Rear armored hull doors permit protected crew egress, resupply, or medevac.",
+        "audioScript": "M-02, Blast Door & Loading Tray. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles projectile feed alignment. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_mag_spring": {
+      "partId": "merkava4_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Loader Buffer Spring",
+      "zh": {
+        "roleTag": "推弹定位柔性缓冲",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（M-03）的装弹缓冲储能弹簧组，隶属 20 件套标准装配体系，负责推弹定位柔性缓冲。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 8 发/分（电动选弹鼓辅助） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：10 发电动防火旋转待发弹鼓配合半自动立楔炮闩自动选弹。",
+        "audioScript": "M-03，装弹缓冲储能弹簧组。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担推弹定位柔性缓冲职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 8 发/分（电动选弹鼓辅助） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Cycle Tensioning",
+        "overview": "Loader Buffer Return Spring (M-03) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated feed cycle tensioning node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 8 RPM (electric ready-drum assist) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 10-round fireproof electric revolving ready-drum feeds the MG253 120mm breech.",
+        "audioScript": "M-03, Loader Buffer Return Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Merkava Mk 4M Windbreaker MBT, this component handles feed cycle tensioning. Stores and returns cyclic elastic energy via live coil compression to maintain 8 RPM (electric ready-drum assist) timing.",
+        "audioUrl": ""
+      }
+    },
+    "merkava4_mag_base": {
+      "partId": "merkava4_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Blow-Off Roof Panel",
+      "zh": {
+        "roleTag": "二次殉爆防护屏障",
+        "overview": "以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克（M-04）的泄压装甲舱盖总成，隶属 20 件套标准装配体系，负责二次殉爆防护屏障。",
+        "craftAndMaterial": "采用沙漠 CARC 抗化学涂层复合装甲钢制造，表面按2004年代以色列坦克管理局（MANTAK）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：全球首个实战拦截反坦克导弹的“战利品”Trophy 主动防护系统。",
+        "audioScript": "M-04，泄压装甲舱盖总成。作为 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 的关键构件，它采用沙漠 CARC 抗化学涂层复合装甲钢制造，主要承担二次殉爆防护屏障职能。与 以色列梅卡瓦 Mk 4M “风衣” 1:1 主战坦克 重装结构刚性耦合，承受 680 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crew Survivability Shield",
+        "overview": "Blow-Off Roof Panel Assembly (M-04) of the Merkava Mk 4M Windbreaker MBT, serving as the dedicated crew survivability shield node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from desert CARC chemical-resistant composite armor steel to MANTAK (Israeli Tank Administration) service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Combat-proven Trophy radar-guided hard-kill active protection system.",
+        "audioScript": "M-04, Blow-Off Roof Panel Assembly. Crafted from desert CARC chemical-resistant composite armor steel for the Merkava Mk 4M Windbreaker MBT, this component handles crew survivability shield. Anchors rigidly within the Merkava Mk 4M Windbreaker MBT heavy assembly to withstand 680 MPa firing loads.",
+        "audioUrl": ""
+      }
+    }
+  }
+}
