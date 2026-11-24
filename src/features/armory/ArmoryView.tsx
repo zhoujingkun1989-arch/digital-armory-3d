@@ -187,6 +187,90 @@ export function resolveArmoryPlaqueStrings(
 
 export const ARMORY_HOVER_PRELOAD_DEBOUNCE_MS = 180;
 
+/**
+ * Resolves the next exhibit index in the active filtered/sorted Armory rack
+ * when stepping with `ArrowLeft` (`-1`) or `ArrowRight` (`1`). Wraps cleanly
+ * across `[0 .. total - 1]` and returns `-1` for empty/invalid lists.
+ */
+export function resolveNextArmoryExhibitIndex(
+  currentIndex: number,
+  total: number,
+  direction: -1 | 1
+): number {
+  if (!Number.isFinite(total) || total <= 0) return -1;
+  const safeTotal = Math.floor(total);
+  if (safeTotal <= 0) return -1;
+  if (safeTotal === 1) return 0;
+  const safeCurrent =
+    Number.isFinite(currentIndex) &&
+    currentIndex >= 0 &&
+    currentIndex < safeTotal
+      ? Math.floor(currentIndex)
+      : direction > 0
+        ? -1
+        : 0;
+  return (safeCurrent + direction + safeTotal) % safeTotal;
+}
+
+export interface ArmoryArrowKeyGuardInput {
+  key: string;
+  ctrlKey?: boolean;
+  metaKey?: boolean;
+  altKey?: boolean;
+  targetTagName?: string | null;
+  targetIsContentEditable?: boolean;
+  targetRole?: string | null;
+  hasOpenDialog?: boolean;
+}
+
+const ARROW_BLOCKED_ROLES = new Set([
+  'slider',
+  'spinbutton',
+  'textbox',
+  'combobox',
+  'listbox',
+]);
+
+/**
+ * Guards Armory `ArrowLeft` / `ArrowRight` navigation so keyboard gliding
+ * never hijacks modals, drawers, text inputs, selects, contenteditable areas,
+ * ARIA sliders, or modified shortcuts.
+ */
+export function shouldIgnoreArmoryArrowKeyEvent(
+  input: ArmoryArrowKeyGuardInput
+): boolean {
+  if (input.key !== 'ArrowLeft' && input.key !== 'ArrowRight') return true;
+  if (input.ctrlKey || input.metaKey || input.altKey) return true;
+  if (input.hasOpenDialog) return true;
+  if (input.targetIsContentEditable) return true;
+  const tag = (input.targetTagName ?? '').toUpperCase();
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
+  const role = (input.targetRole ?? '').toLowerCase();
+  if (role && ARROW_BLOCKED_ROLES.has(role)) return true;
+  return false;
+}
+
+export function formatArmoryExhibitAnnouncement(
+  indexZeroBased: number,
+  total: number,
+  exhibitName: string,
+  lang: LanguageCode
+): string {
+  if (
+    !Number.isFinite(indexZeroBased) ||
+    !Number.isFinite(total) ||
+    indexZeroBased < 0 ||
+    total <= 0
+  ) {
+    return '';
+  }
+  const oneBased = Math.floor(indexZeroBased) + 1;
+  const safeTotal = Math.floor(total);
+  return lang === 'en'
+    ? `Bay ${oneBased} of ${safeTotal} · ${exhibitName}`
+    : `第 ${oneBased} / ${safeTotal} 号展位 · ${exhibitName}`;
+}
+
 interface ArmoryRackBayCardProps {
   item: ArmoryWeaponItem;
   isOnTurntable: boolean;
@@ -238,6 +322,7 @@ export const ArmoryRackBayCard = React.memo<ArmoryRackBayCardProps>(
       <div
         role="button"
         tabIndex={0}
+        data-weapon-id={item.id}
         className={`armory-weapon-card bay-card ${
           item.available ? 'is-ready' : 'is-planned'
         } ${item.category === 'armor' || item.category === 'ordnance' ? 'is-armor-card' : ''} ${
@@ -389,6 +474,7 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
   );
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false);
   const [canScrollHallsRight, setCanScrollHallsRight] = useState<boolean>(true);
+  const [keyboardAnnouncement, setKeyboardAnnouncement] = useState<string>('');
 
   const rackScrollRef = useRef<HTMLDivElement>(null);
   const hallsScrollRef = useRef<HTMLDivElement>(null);
@@ -609,6 +695,117 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
     );
     return sortAndFilterArmoryWeapons(byCategory, sortKey, mechFilter);
   }, [category, sortKey, mechFilter]);
+
+  // Smooth `← / →` keyboard bay gliding across the active filtered & sorted rack
+  useEffect(() => {
+    const onArrowKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const s = useAppStore.getState();
+      const anyModalOpen =
+        showdownRequest !== null ||
+        activePopover !== null ||
+        isMobileDrawerOpen ||
+        (s.storyOpen && !s.storyMinimized) ||
+        s.textureModalOpen ||
+        s.monographModalOpen ||
+        s.posterShareModalOpen ||
+        s.causalitySandboxOpen ||
+        s.armorPenetrationModalOpen ||
+        s.directorReelModalOpen ||
+        s.passportModalOpen ||
+        s.timelineModalOpen ||
+        s.offlineModalOpen ||
+        s.scaleWallModalOpen ||
+        s.recoilLabOpen ||
+        s.commandPaletteOpen ||
+        (typeof document !== 'undefined' &&
+          Boolean(document.querySelector('[role="dialog"], dialog[open]')));
+
+      if (s.screen !== 'armory' || s.hudHidden || anyModalOpen) {
+        return;
+      }
+
+      const targetEl = e.target instanceof HTMLElement ? e.target : null;
+      const effectiveRole =
+        targetEl
+          ?.closest?.(
+            '[role="slider"], [role="spinbutton"], [role="textbox"], [role="combobox"], [role="listbox"]'
+          )
+          ?.getAttribute('role') ??
+        targetEl?.getAttribute('role') ??
+        null;
+      if (
+        shouldIgnoreArmoryArrowKeyEvent({
+          key: e.key,
+          ctrlKey: e.ctrlKey,
+          metaKey: e.metaKey,
+          altKey: e.altKey,
+          targetTagName: targetEl?.tagName ?? null,
+          targetIsContentEditable: targetEl?.isContentEditable ?? false,
+          targetRole: effectiveRole,
+          hasOpenDialog: anyModalOpen,
+        })
+      ) {
+        return;
+      }
+
+      const total = filteredWeapons.length;
+      if (total <= 0) return;
+
+      const currentIndex = filteredWeapons.findIndex(
+        (w) => w.id === s.activeWeaponId
+      );
+      const direction: -1 | 1 = e.key === 'ArrowRight' ? 1 : -1;
+      const nextIndex = resolveNextArmoryExhibitIndex(
+        currentIndex,
+        total,
+        direction
+      );
+      if (nextIndex < 0) return;
+
+      const nextItem = filteredWeapons[nextIndex];
+      e.preventDefault();
+      selectArmoryWeapon(nextItem.id);
+      if (!s.sfxMuted) {
+        playWorkbenchFoley('part_select');
+      }
+
+      const prefersReducedMotion =
+        typeof window !== 'undefined' &&
+        Boolean(
+          window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+        );
+      const cardEl = rackScrollRef.current?.querySelector<HTMLElement>(
+        `[data-weapon-id="${nextItem.id}"]`
+      );
+      if (typeof cardEl?.scrollIntoView === 'function') {
+        cardEl.scrollIntoView({
+          behavior: prefersReducedMotion ? 'auto' : 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }
+
+      const nextMeta = resolveWeaponDisplayMeta(
+        nextItem.id,
+        lang,
+        getLoadedNarrationBundle(nextItem.id)
+      );
+      setKeyboardAnnouncement(
+        formatArmoryExhibitAnnouncement(nextIndex, total, nextMeta.name, lang)
+      );
+    };
+
+    window.addEventListener('keydown', onArrowKeyDown);
+    return () => window.removeEventListener('keydown', onArrowKeyDown);
+  }, [
+    activePopover,
+    filteredWeapons,
+    isMobileDrawerOpen,
+    lang,
+    selectArmoryWeapon,
+    showdownRequest,
+  ]);
 
   const hasActiveSortOrMech =
     sortKey !== 'curatorial' || mechFilter !== 'all';
@@ -1800,24 +1997,46 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
               <button
                 type="button"
                 className="rack-scroll-btn"
+                data-testid="armory-rack-prev-btn"
                 onClick={() => scrollRackBy(-1)}
-                aria-label={ui.scrollLeft}
-                title={ui.scrollLeft}
+                aria-label={`${ui.scrollLeft} (←)`}
+                title={`${ui.scrollLeft} (←)`}
               >
-                <ChevronLeft size={14} />
+                <ChevronLeft size={14} aria-hidden="true" />
               </button>
               <button
                 type="button"
                 className="rack-scroll-btn"
+                data-testid="armory-rack-next-btn"
                 onClick={() => scrollRackBy(1)}
-                aria-label={ui.scrollRight}
-                title={ui.scrollRight}
+                aria-label={`${ui.scrollRight} (→)`}
+                title={`${ui.scrollRight} (→)`}
               >
-                <ChevronRight size={14} />
+                <ChevronRight size={14} aria-hidden="true" />
               </button>
             </div>
           </div>
         </div>
+
+        <span
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-testid="armory-exhibit-announcer"
+          style={{
+            position: 'absolute',
+            width: 1,
+            height: 1,
+            padding: 0,
+            margin: -1,
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
+          {keyboardAnnouncement}
+        </span>
 
         <div ref={rackScrollRef} className="armory-cards-grid">
           {filteredWeapons.length === 0 ? (

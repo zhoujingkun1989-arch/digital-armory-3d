@@ -47,6 +47,7 @@ const REAL_SINGLE_KEY_BINDINGS = new Set([
   'U',
   '⌘ / Ctrl',
   '?',
+  '← / →',
   'Esc',
 ]);
 
