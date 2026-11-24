@@ -33,8 +33,6 @@ import {
   Sparkles,
   Tag,
   Video,
-  Volume2,
-  VolumeX,
   Wrench,
   X,
 } from 'lucide-react';
@@ -62,6 +60,7 @@ import {
 } from '../../weapons/museumMetrics';
 import type { CameraPresetType } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
+import { AcousticDeckPopover } from './AcousticDeckPopover';
 import { launchMechanismShowdownFromPalette } from './commandPaletteEngine';
 import { StudioEnvironmentBar } from './StudioEnvironmentBar';
 
@@ -91,7 +90,6 @@ export const WorkbenchHeader: React.FC = () => {
   );
   const showEdges = useAppStore((s) => s.showEdges);
   const showLabels = useAppStore((s) => s.showLabels);
-  const sfxMuted = useAppStore((s) => s.sfxMuted);
   const hudHidden = useAppStore((s) => s.hudHidden);
   const gpuTelemetryOpen = useAppStore((s) => s.gpuTelemetryOpen);
   const workbenchAutoOrbit = useAppStore((s) => s.workbenchAutoOrbit);
@@ -132,7 +130,6 @@ export const WorkbenchHeader: React.FC = () => {
   const isTank = isTankWeapon(activeWeaponId);
   const toggleShowEdges = useAppStore((s) => s.toggleShowEdges);
   const toggleShowLabels = useAppStore((s) => s.toggleShowLabels);
-  const toggleSfxMuted = useAppStore((s) => s.toggleSfxMuted);
   const toggleGpuTelemetry = useAppStore((s) => s.toggleGpuTelemetry);
   const toggleWorkbenchAutoOrbit = useAppStore(
     (s) => s.toggleWorkbenchAutoOrbit
@@ -141,6 +138,7 @@ export const WorkbenchHeader: React.FC = () => {
   const resetAll = useAppStore((s) => s.resetAll);
 
   const [toolsMenuOpen, setToolsMenuOpen] = useState(false);
+  const [acousticCloseSignal, setAcousticCloseSignal] = useState(0);
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
   const [copyLinkToastVisible, setCopyLinkToastVisible] = useState(false);
   const toolsPopoverRef = useRef<HTMLDivElement>(null);
@@ -405,7 +403,11 @@ export const WorkbenchHeader: React.FC = () => {
             title={menuUi.toolsBtnTitle}
             onClick={() => {
               playWorkbenchFoley('toggle_switch');
-              setToolsMenuOpen((prev) => !prev);
+              setToolsMenuOpen((prev) => {
+                const next = !prev;
+                if (next) setAcousticCloseSignal((n) => n + 1);
+                return next;
+              });
             }}
           >
             <Layers size={13} aria-hidden="true" />
@@ -882,22 +884,12 @@ export const WorkbenchHeader: React.FC = () => {
           <span>{monoUi.entryChip}</span>
         </button>
 
-        <button
-          type="button"
-          className={`toggle-chip wb-ghost-chip ${
-            sfxMuted ? 'is-sfx-muted' : ''
-          }`}
-          aria-pressed={!sfxMuted}
-          onClick={toggleSfxMuted}
-          title={ui.sfxChipTitle(sfxMuted)}
-        >
-          {sfxMuted ? (
-            <VolumeX size={13} aria-hidden="true" />
-          ) : (
-            <Volume2 size={13} aria-hidden="true" />
-          )}
-          <span>{ui.sfxChip}</span>
-        </button>
+        <AcousticDeckPopover
+          closeSignal={acousticCloseSignal + (hudHidden ? 1000 : 0)}
+          onOpenChange={(open) => {
+            if (open) setToolsMenuOpen(false);
+          }}
+        />
 
         <button
           type="button"

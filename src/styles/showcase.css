@@ -1950,6 +1950,25 @@
   gap: 14px;
 }
 
+.labs-bento-grid.labs-bento-grid-duo {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 18px;
+}
+
+.labs-bento-grid.labs-bento-grid-duo .lab-bento-card:hover {
+  border-color: rgba(56, 189, 248, 0.72);
+  box-shadow:
+    0 20px 44px rgba(2, 6, 23, 0.54),
+    0 0 0 1px rgba(56, 189, 248, 0.16) inset;
+}
+
+.labs-bento-grid.labs-bento-grid-duo .lab-bento-card.lab-accent-amber:hover {
+  border-color: rgba(251, 191, 36, 0.72);
+  box-shadow:
+    0 20px 44px rgba(2, 6, 23, 0.54),
+    0 0 0 1px rgba(245, 158, 11, 0.16) inset;
+}
+
 .lab-bento-card {
   display: flex;
   flex-direction: column;
@@ -2126,7 +2145,8 @@
     display: inline;
   }
 
-  .labs-bento-grid {
+  .labs-bento-grid,
+  .labs-bento-grid.labs-bento-grid-duo {
     grid-template-columns: 1fr;
   }
 

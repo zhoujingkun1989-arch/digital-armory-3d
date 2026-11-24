@@ -3333,3 +3333,504 @@
   font-weight: 700;
   line-height: 1;
 }
+
+/* ==================== Cycle 8F: Acoustic Studio & Foley Audition Deck ==================== */
+.acoustic-deck-wrap {
+  position: relative;
+}
+
+.acoustic-deck-trigger {
+  gap: 5px;
+}
+
+.acoustic-bespoke-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #f59e0b;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.72);
+  flex-shrink: 0;
+}
+
+.acoustic-deck-popover {
+  width: min(358px, calc(100vw - 24px));
+  gap: 10px;
+}
+
+.acoustic-deck-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.acoustic-deck-title-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.acoustic-mute-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.36);
+  background: rgba(14, 165, 233, 0.14);
+  color: #7dd3fc;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease,
+    color 0.14s ease;
+}
+
+.acoustic-mute-pill:hover {
+  border-color: rgba(56, 189, 248, 0.65);
+  background: rgba(14, 165, 233, 0.24);
+}
+
+.acoustic-mute-pill.is-muted {
+  border-color: rgba(248, 113, 113, 0.42);
+  background: rgba(239, 68, 68, 0.14);
+  color: #fca5a5;
+}
+
+.acoustic-muted-banner {
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  color: #fde68a;
+  font-size: 10.5px;
+  line-height: 1.4;
+}
+
+.acoustic-section-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.acoustic-auto-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-pill);
+  color: var(--color-text-secondary);
+  font-size: 9.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    border-color 0.14s ease,
+    color 0.14s ease;
+}
+
+.acoustic-auto-reset-btn:hover {
+  border-color: var(--color-accent-cyan);
+  color: var(--color-text-primary);
+}
+
+.acoustic-room-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.acoustic-room-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 7px 7.5px;
+  border-radius: 8px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-subtle);
+  color: var(--color-text-secondary);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.14s ease,
+    background 0.14s ease,
+    color 0.14s ease;
+}
+
+.acoustic-room-btn:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  color: var(--color-text-primary);
+}
+
+.acoustic-room-btn.is-active {
+  border-color: rgba(56, 189, 248, 0.72);
+  background: linear-gradient(
+    135deg,
+    rgba(2, 132, 199, 0.28),
+    rgba(14, 165, 233, 0.14)
+  );
+  color: #f8fafc;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.22);
+}
+
+.acoustic-room-name {
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.acoustic-room-rt60 {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  opacity: 0.78;
+}
+
+.acoustic-room-desc {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.acoustic-signature-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-subtle);
+}
+
+.acoustic-signature-card.is-bespoke {
+  border-color: rgba(245, 158, 11, 0.42);
+  background: linear-gradient(
+    155deg,
+    rgba(245, 158, 11, 0.12),
+    rgba(15, 23, 42, 0.45)
+  );
+}
+
+.acoustic-sig-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.acoustic-sig-weapon {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.acoustic-bespoke-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  background: rgba(245, 158, 11, 0.18);
+  color: #fde68a;
+  font-size: 9.5px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.acoustic-style-pill {
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-pill);
+  color: var(--color-text-secondary);
+  font-size: 9.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.acoustic-sig-caliber {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-accent-cyan-text);
+}
+
+.acoustic-sig-desc {
+  margin: 0;
+  font-size: 10.5px;
+  line-height: 1.42;
+  color: var(--color-text-secondary);
+}
+
+.acoustic-partials-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.acoustic-partial-chip {
+  padding: 1.5px 6px;
+  border-radius: 5px;
+  border: 1px solid rgba(245, 158, 11, 0.34);
+  background: rgba(245, 158, 11, 0.12);
+  color: #fcd34d;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+}
+
+.acoustic-metrics-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: 5px;
+  border-top: 1px solid var(--border-divider);
+  font-family: var(--font-mono);
+  font-size: 9.8px;
+  color: var(--color-text-muted);
+}
+
+.acoustic-metrics-strip strong {
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+.acoustic-last-cue {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--color-accent-cyan-text);
+}
+
+.acoustic-foley-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.acoustic-foley-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 7px 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: rgba(14, 165, 233, 0.1);
+  color: var(--color-text-primary);
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.14s ease,
+    background 0.14s ease,
+    transform 0.14s ease;
+}
+
+.acoustic-foley-btn:hover:not(:disabled) {
+  border-color: var(--color-accent-cyan);
+  background: rgba(14, 165, 233, 0.22);
+  transform: translateY(-1px);
+}
+
+.acoustic-foley-btn.is-disabled,
+.acoustic-foley-btn:disabled {
+  opacity: 0.54;
+  border-color: var(--border-subtle);
+  background: var(--surface-subtle);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.acoustic-foley-label {
+  line-height: 1.25;
+}
+
+/* ==================== Cycle 8F: Inspector Bespoke Acoustics Badge & Recoil Lab Link ==================== */
+.inspector-acoustics-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  margin-bottom: 7px;
+  border-radius: 7px;
+  border: 1px solid rgba(245, 158, 11, 0.34);
+  background: rgba(245, 158, 11, 0.1);
+  color: #fde68a;
+  font-size: 10px;
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.inspector-acoustics-badge svg {
+  flex-shrink: 0;
+  color: #fbbf24;
+}
+
+.inspector-acoustics-kicker {
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.inspector-acoustics-summary {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.inspector-lab-links {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.inspector-lab-links .inspector-split-cta {
+  flex: 1 1 auto;
+  width: auto;
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+.inspector-recoil-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6.5px 9px;
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.38);
+  background: rgba(245, 158, 11, 0.12);
+  color: #fde68a;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.inspector-recoil-cta:hover {
+  border-color: #fbbf24;
+  background: rgba(245, 158, 11, 0.22);
+  transform: translateY(-1px);
+}
+
+/* Blueprint Daylight ([data-theme='light']) Overrides for Acoustic Deck & Inspector Links */
+:is([data-theme='light'], .theme-light) .acoustic-mute-pill {
+  background: #e0f2fe;
+  border-color: rgba(2, 132, 199, 0.38);
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .acoustic-mute-pill.is-muted {
+  background: #fef2f2;
+  border-color: rgba(220, 38, 38, 0.36);
+  color: #b91c1c;
+}
+
+:is([data-theme='light'], .theme-light) .acoustic-muted-banner {
+  background: #fffbeb;
+  border-color: rgba(217, 119, 6, 0.34);
+  color: #92400e;
+}
+
+:is([data-theme='light'], .theme-light) .acoustic-room-btn {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.13);
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .acoustic-room-btn.is-active {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border-color: #0369a1;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.24);
+}
+
+:is([data-theme='light'], .theme-light) .acoustic-signature-card {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+:is([data-theme='light'], .theme-light) .acoustic-signature-card.is-bespoke {
+  background: linear-gradient(155deg, #fffbeb, #f8fafc);
+  border-color: rgba(217, 119, 6, 0.36);
+}
+
+:is([data-theme='light'], .theme-light) .acoustic-bespoke-badge {
+  background: #fef3c7;
+  border-color: rgba(217, 119, 6, 0.42);
+  color: #92400e;
+}
+
+:is([data-theme='light'], .theme-light) .acoustic-partial-chip {
+  background: #fef3c7;
+  border-color: rgba(217, 119, 6, 0.34);
+  color: #92400e;
+}
+
+:is([data-theme='light'], .theme-light) .acoustic-foley-btn {
+  background: #f0f9ff;
+  border-color: rgba(2, 132, 199, 0.3);
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .acoustic-foley-btn:hover:not(:disabled) {
+  background: #e0f2fe;
+  border-color: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .inspector-acoustics-badge {
+  background: #fffbeb;
+  border-color: rgba(217, 119, 6, 0.36);
+  color: #92400e;
+}
+
+:is([data-theme='light'], .theme-light) .inspector-acoustics-badge svg {
+  color: #b45309;
+}
+
+:is([data-theme='light'], .theme-light) .inspector-acoustics-summary {
+  color: #475569;
+}
+
+:is([data-theme='light'], .theme-light) .inspector-recoil-cta {
+  background: #fffbeb;
+  border-color: rgba(217, 119, 6, 0.42);
+  color: #92400e;
+}
+
+:is([data-theme='light'], .theme-light) .inspector-recoil-cta:hover {
+  background: #fef3c7;
+  border-color: #b45309;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acoustic-mute-pill,
+  .acoustic-auto-reset-btn,
+  .acoustic-room-btn,
+  .acoustic-foley-btn,
+  .inspector-recoil-cta {
+    transition: none;
+  }
+}
