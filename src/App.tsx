@@ -78,6 +78,9 @@ const LazyScaleWallModal = lazy(
 const LazyRecoilLabModal = lazy(
   () => import('./features/recoillab/RecoilLabModal')
 );
+const LazyCuratorTrailBar = lazy(
+  () => import('./features/workbench/CuratorTrailBar')
+);
 const LazyKeyboardShortcutsModal = lazy(
   () => import('./features/workbench/KeyboardShortcutsModal')
 );
@@ -123,6 +126,7 @@ export const App: React.FC = () => {
   const closeScaleWallModal = useAppStore((s) => s.closeScaleWallModal);
   const recoilLabOpen = useAppStore((s) => s.recoilLabOpen);
   const closeRecoilLab = useAppStore((s) => s.closeRecoilLab);
+  const activeTourId = useAppStore((s) => s.activeTourId);
   const keyboardShortcutsOpen = useKeyboardShortcutsModalOpen();
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const tankCrewActive = useTankCrewStore((s) => s.active);
@@ -217,6 +221,11 @@ export const App: React.FC = () => {
         ) : (
           <>
             <WorkbenchHeader />
+            {activeTourId && (
+              <Suspense fallback={null}>
+                <LazyCuratorTrailBar />
+              </Suspense>
+            )}
             <BomTreeSidebar />
             {(showLiveTelemetry ||
               engineeringTint ||

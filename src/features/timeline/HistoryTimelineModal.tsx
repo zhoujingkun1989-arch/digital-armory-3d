@@ -7,6 +7,7 @@ import {
   GitCompareArrows,
   History,
   Layers,
+  Play,
   Sparkles,
   X,
 } from 'lucide-react';
@@ -56,6 +57,10 @@ export const TIMELINE_STRINGS = {
     tourPrev: '上一站',
     tourNext: '下一站',
     tourLaunch3d: '在 3D 工作台检视本站',
+    startLiveTour: '开启 3D 策展导览',
+    startLiveTourCompact: '3D 导览',
+    startLiveTourTitle:
+      '关闭时间轴，在 3D 工作台按站点顺序沉浸式导览本策展全路线',
     ancestorsLabel: '机械源流追溯',
     noAncestors: '原始独立开山专利结构',
     inspect3d: '进入 3D 拆解台',
@@ -74,6 +79,10 @@ export const TIMELINE_STRINGS = {
     tourPrev: 'Prev',
     tourNext: 'Next',
     tourLaunch3d: 'Inspect in 3D Workbench',
+    startLiveTour: 'Start Live 3D Tour',
+    startLiveTourCompact: 'Live 3D',
+    startLiveTourTitle:
+      'Close timeline and launch this guided multi-exhibit tour inside the 3D Workbench',
     ancestorsLabel: 'Mechanical Ancestors',
     noAncestors: 'Foundational Patent Architecture',
     inspect3d: 'Inspect in 3D',
@@ -111,6 +120,7 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
   const lang = useAppStore((s) => s.lang);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
+  const startCuratorTour = useAppStore((s) => s.startCuratorTour);
   const setSectionCut = useAppStore((s) => s.setSectionCut);
   const openSplitShowdown = useAppStore((s) => s.openSplitShowdown);
 
@@ -233,6 +243,21 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
       enterWorkbench(selectedNode.weaponId, 'explode');
       setSectionCut(true);
     }
+  };
+
+  const launchLiveTourInWorkbench = (
+    tour: (typeof HISTORY_TIMELINE_TOURS)[number],
+    preferredWeaponId?: string
+  ) => {
+    playWorkbenchFoley('preset_detent');
+    onClose();
+    const targetWeaponId =
+      preferredWeaponId && isWeaponId(preferredWeaponId)
+        ? preferredWeaponId
+        : isWeaponId(tour.weaponIds[0])
+          ? tour.weaponIds[0]
+          : undefined;
+    startCuratorTour(tour.id, targetWeaponId);
   };
 
   return (
@@ -375,28 +400,50 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
               <span>{ui.toursHeading}:</span>
             </span>
             {HISTORY_TIMELINE_TOURS.map((tour) => (
-              <button
+              <div
                 key={tour.id}
-                type="button"
-                className={`timeline-tour-pill ${
-                  activeTourId === tour.id ? 'is-active' : ''
-                }`}
-                aria-pressed={activeTourId === tour.id}
-                onClick={() => {
-                  playWorkbenchFoley('preset_detent');
-                  if (activeTourId === tour.id) {
-                    setActiveTourId(null);
-                  } else {
-                    setActiveTourId(tour.id);
-                    setSelectedEra('all');
-                    setSelectedLineage('all');
-                    setSelectedWeaponId(tour.weaponIds[0]);
-                  }
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 4,
                 }}
               >
-                <Sparkles size={11} aria-hidden="true" />
-                <span>{isZh ? tour.titleZh : tour.titleEn}</span>
-              </button>
+                <button
+                  type="button"
+                  className={`timeline-tour-pill ${
+                    activeTourId === tour.id ? 'is-active' : ''
+                  }`}
+                  aria-pressed={activeTourId === tour.id}
+                  onClick={() => {
+                    playWorkbenchFoley('preset_detent');
+                    if (activeTourId === tour.id) {
+                      setActiveTourId(null);
+                    } else {
+                      setActiveTourId(tour.id);
+                      setSelectedEra('all');
+                      setSelectedLineage('all');
+                      setSelectedWeaponId(tour.weaponIds[0]);
+                    }
+                  }}
+                >
+                  <Sparkles size={11} aria-hidden="true" />
+                  <span>{isZh ? tour.titleZh : tour.titleEn}</span>
+                </button>
+                <button
+                  type="button"
+                  className="timeline-step-launch-btn"
+                  data-testid={`timeline-start-tour-${tour.id}`}
+                  style={{ padding: '4px 8px', fontSize: 10.5 }}
+                  title={ui.startLiveTourTitle}
+                  aria-label={`${ui.startLiveTour}: ${
+                    isZh ? tour.titleZh : tour.titleEn
+                  }`}
+                  onClick={() => launchLiveTourInWorkbench(tour)}
+                >
+                  <Play size={10} aria-hidden="true" />
+                  <span>{ui.startLiveTourCompact}</span>
+                </button>
+              </div>
             ))}
           </div>
 
@@ -484,6 +531,18 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                 <button
                   type="button"
                   className="timeline-step-launch-btn"
+                  data-testid="timeline-stepper-start-live-tour"
+                  onClick={() =>
+                    launchLiveTourInWorkbench(activeTour, selectedNode.weaponId)
+                  }
+                  title={ui.startLiveTourTitle}
+                >
+                  <Compass size={13} aria-hidden="true" />
+                  <span>{ui.startLiveTour}</span>
+                </button>
+                <button
+                  type="button"
+                  className="timeline-step-nav-btn"
                   onClick={launchSelectedInWorkbench}
                 >
                   <Layers size={13} aria-hidden="true" />

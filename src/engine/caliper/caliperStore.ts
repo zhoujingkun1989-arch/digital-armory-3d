@@ -14,6 +14,41 @@ import { playWorkbenchFoley } from '../audio/mechanicalSoundEngine';
  */
 
 export const WORLD_UNIT_TO_MM = 10;
+export const MM_PER_INCH = 25.4;
+
+export type CaliperUnitSystem = 'mm' | 'in';
+
+export function convertMmToInches(mm: number): number {
+  return mm / MM_PER_INCH;
+}
+
+export function formatCaliperDistance(
+  mm: number,
+  unit: CaliperUnitSystem,
+  options?: { compact?: boolean }
+): string {
+  const compact = Boolean(options?.compact);
+  if (unit === 'in') {
+    return `${convertMmToInches(mm).toFixed(compact ? 1 : 2)} in`;
+  }
+  return `${mm.toFixed(compact ? 0 : 1)} mm`;
+}
+
+export function formatCaliperSignedDelta(
+  deltaMm: number,
+  unit: CaliperUnitSystem
+): string {
+  const sign = deltaMm >= 0 ? '+' : '-';
+  const absMm = Math.abs(deltaMm);
+  if (unit === 'in') {
+    return `${sign}${convertMmToInches(absMm).toFixed(2)} in`;
+  }
+  return `${sign}${absMm.toFixed(1)} mm`;
+}
+
+export function formatCaliperPlaceholder(unit: CaliperUnitSystem): string {
+  return unit === 'in' ? '--.-- in' : '---.- mm';
+}
 
 export type CaliperBenchmarkKind =
   | 'overall_envelope'
@@ -34,8 +69,328 @@ export interface CaliperBenchmarkPresetNote {
 }
 
 export const CALIPER_V2_BENCHMARK_NOTES: Readonly<
-  Partial<Record<WeaponId, readonly CaliperBenchmarkPresetNote[]>>
+  Record<WeaponId, readonly CaliperBenchmarkPresetNote[]>
 > = {
+  ak15: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'AK-15M1 展开折叠托全枪总长（托底至制退器）',
+      labelEn: 'AK-15M1 Stock-Extended Overall Length (Buttpad to Brake)',
+      nominalMm: 940,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '415 mm 7.62×39mm 冷锻镀铬浮置枪管实长',
+      labelEn: '415 mm Cold Hammer-Forged Chrome 7.62x39mm Barrel Length',
+      nominalMm: 415,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '卡拉什尼科夫双大突笋回转枪机轴向跨度',
+      labelEn: 'Kalashnikov Twin-Lug Rotating Bolt Axial Span',
+      nominalMm: 78,
+    },
+  ],
+  m4a1: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'M4A1 卡宾枪伸缩托全展包络总长',
+      labelEn: 'M4A1 Carbine Stock-Extended Overall Envelope Length',
+      nominalMm: 838,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '14.5" (368 mm) SOCOM 镀铬 5.56 NATO 枪管实长',
+      labelEn: '14.5" (368 mm) SOCOM Chrome-Lined 5.56 NATO Barrel Length',
+      nominalMm: 368,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '斯通纳 7 闭锁突笋回转枪机轴向跨度',
+      labelEn: 'Stoner 7-Lug Rotating Bolt Axial Span',
+      nominalMm: 72,
+    },
+  ],
+  mp5: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'H&K MP5A3 伸缩金属托展开全枪总长',
+      labelEn: 'H&K MP5A3 Retractable-Stock Extended Overall Length',
+      nominalMm: 700,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '8.9" (225 mm) 12 槽浮膛多边形冷锻枪管实长',
+      labelEn: '8.9" (225 mm) Fluted-Chamber Polygonal CHF Barrel Length',
+      nominalMm: 225,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '对称双滚柱延迟闭锁机头跨度',
+      labelEn: 'Twin-Roller Delayed Locking Bolt Head Span',
+      nominalMm: 52,
+    },
+  ],
+  g17: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '格洛克 17 Gen5 全枪水平包络长度',
+      labelEn: 'Glock 17 Gen5 Overall Horizontal Envelope Length',
+      nominalMm: 202,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '4.49" (114 mm) Marksman 六边形膛线枪管实长',
+      labelEn: '4.49" (114 mm) Marksman Hexagonal Polygonal Barrel Length',
+      nominalMm: 114,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '改良勃朗宁矩形抛壳窗套筒闭锁跨度',
+      labelEn: 'Modified Browning Ejection-Port Slide Lockup Span',
+      nominalMm: 186,
+    },
+  ],
+  m82a1: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '巴雷特 M82A1 .50 BMG 含箭头制退器全长',
+      labelEn: 'Barrett M82A1 .50 BMG Overall Length (w/ Arrowhead Brake)',
+      nominalMm: 1448,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '29" (737 mm) 纵向开槽短后坐重型枪管实长',
+      labelEn: '29" (737 mm) Fluted Short-Recoil Heavy Barrel Length',
+      nominalMm: 737,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '三对称大闭锁突笋旋转枪机轴向跨度',
+      labelEn: '3-Lug Heavy Rotating Breech Bolt Axial Span',
+      nominalMm: 158,
+    },
+  ],
+  awm: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '精密国际 AWM .338 展开枪托全枪总长',
+      labelEn: 'Accuracy International AWM .338 Stock-Extended Overall Length',
+      nominalMm: 1230,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '27" (686 mm) 不锈钢凹槽比赛级浮置枪管实长',
+      labelEn: '27" (686 mm) Fluted Stainless Match-Grade Barrel Length',
+      nominalMm: 686,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '双排 6 突笋 60° 短抬角手动旋转枪机跨度',
+      labelEn: '6-Lug 60-Degree Short-Throw Rotating Bolt Body Span',
+      nominalMm: 162,
+    },
+  ],
+  scar: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'FN SCAR-L CQC 展开折叠托全枪包络总长',
+      labelEn: 'FN SCAR-L CQC Stock-Extended Overall Envelope Length',
+      nominalMm: 889,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '14" (355 mm) 六螺栓快换冷锻镀铬枪管实长',
+      labelEn: '14" (355 mm) Quick-Change Chrome CHF Barrel Length',
+      nominalMm: 355,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '短行程活塞驱动多突笋回转枪机跨度',
+      labelEn: 'Short-Stroke Piston Multi-Lug Rotating Bolt Span',
+      nominalMm: 86,
+    },
+  ],
+  deagle: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '沙漠之鹰 Mark XIX .50 AE 全枪水平包络长度',
+      labelEn: 'Desert Eagle Mark XIX .50 AE Overall Envelope Length',
+      nominalMm: 273,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '6" (152 mm) 固定式多边形重型枪管实长',
+      labelEn: '6" (152 mm) Fixed Polygonal Heavy Barrel Length',
+      nominalMm: 152,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '导气式步枪级 7 突笋回转枪机头跨度',
+      labelEn: 'Gas-Operated Rifle-Style 7-Lug Rotating Bolt Span',
+      nominalMm: 68,
+    },
+  ],
+  aug: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '斯泰尔 AUG A1 无托步枪全枪包络总长',
+      labelEn: 'Steyr AUG A1 Bullpup Rifle Overall Envelope Length',
+      nominalMm: 790,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '20" (508 mm) 旋扣快拆冷锻镀铬枪管实长',
+      labelEn: '20" (508 mm) Quick-Detach Chrome CHF Barrel Length',
+      nominalMm: 508,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '双导杆机框与 7 闭锁突笋回转枪机跨度',
+      labelEn: 'Twin-Guide-Rod Carrier & 7-Lug Rotating Bolt Span',
+      nominalMm: 82,
+    },
+  ],
+  p320: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '西格绍尔 P320 M17 全尺寸手枪包络总长',
+      labelEn: 'SIG Sauer P320 M17 Full-Size Overall Envelope Length',
+      nominalMm: 203,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '4.7" (119 mm) 碳钢 9×19mm 枪管实长',
+      labelEn: '4.7" (119 mm) Carbon-Steel 9x19mm Barrel Length',
+      nominalMm: 119,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '不锈钢套筒闭锁窗与模块化火控底座跨度',
+      labelEn: 'Stainless Slide Lockup Hood & Modular FCU Span',
+      nominalMm: 182,
+    },
+  ],
+  p90: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'FN P90 无托单兵自卫武器全枪总长',
+      labelEn: 'FN P90 Bullpup PDW Overall Envelope Length',
+      nominalMm: 504,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '10.4" (264 mm) 5.7×28mm 八膛线冷锻枪管实长',
+      labelEn: '10.4" (264 mm) 8-Groove 5.7x28mm CHF Barrel Length',
+      nominalMm: 264,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '闭膛自由枪机配重块与双复进簧跨度',
+      labelEn: 'Closed-Bolt Straight-Blowback Breechblock Span',
+      nominalMm: 126,
+    },
+  ],
+  python: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '柯尔特蟒蛇 6" 经典皇家烤蓝转轮手枪全长',
+      labelEn: 'Colt Python 6" Royal Blue Revolver Overall Length',
+      nominalMm: 292,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '6" (152.4 mm) 散热肋条全长下配重锥度枪管实长',
+      labelEn: '6" (152.4 mm) Ventilated-Rib Full-Underlug Barrel Length',
+      nominalMm: 152.4,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '手工研配六发 .357 马格南摆出式弹巢跨度',
+      labelEn: 'Hand-Fitted 6-Chamber .357 Magnum Swing-Out Cylinder Span',
+      nominalMm: 41,
+    },
+  ],
+  benellim4: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '伯奈利 M4 (M1014) 伸缩托展开全枪总长',
+      labelEn: 'Benelli M4 (M1014) Collapsible-Stock Extended Length',
+      nominalMm: 1010,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '18.5" (470 mm) 12 号硬铬战术滑膛枪管实长',
+      labelEn: '18.5" (470 mm) 12-Gauge Chrome Smoothbore Barrel Length',
+      nominalMm: 470,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: 'ARGO 双活塞驱动双突笋回转枪机头跨度',
+      labelEn: 'Dual-Piston ARGO Twin-Lug Rotating Bolt Head Span',
+      nominalMm: 68,
+    },
+  ],
+  garand: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '美国 M1 加兰德 .30-06 全枪包络总长',
+      labelEn: 'U.S. Rifle M1 Garand .30-06 Overall Envelope Length',
+      nominalMm: 1105,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '24" (610 mm) 四右旋军用步枪管实长',
+      labelEn: '24" (610 mm) 4-Groove Military Rifle Barrel Length',
+      nominalMm: 610,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '长行程操作杆驱动双突笋回转枪机跨度',
+      labelEn: 'Long-Stroke Op-Rod Twin-Lug Rotating Bolt Span',
+      nominalMm: 94,
+    },
+  ],
+  lift33: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'Mathews LIFT 33 轮轴距 ATA（33" 标称）',
+      labelEn: 'Mathews LIFT 33 Axle-to-Axle Span (33" ATA Nominal)',
+      nominalMm: 838,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '29" 拉距有效做功加速行程（571.5 mm）',
+      labelEn: '29" Draw Effective Arrow Power-Stroke Span (571.5 mm)',
+      nominalMm: 571.5,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '6.5" (165.1 mm) 弓弦至握把喉点弓档跨度',
+      labelEn: '6.5" (165.1 mm) String-to-Grip Throat Brace Height',
+      nominalMm: 165.1,
+    },
+  ],
+  r500: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'Ravin R500 无托螺旋凸轮弩全长（28" 标称）',
+      labelEn: 'Ravin R500 Bullpup Crossbow Overall Length (28" Nominal)',
+      nominalMm: 711,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '15" (381 mm) 无导轨浮空箭道做功行程',
+      labelEn: '15" (381 mm) Frictionless Flight-Track Power Stroke',
+      nominalMm: 381,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '7.6" (193 mm) 未上弦双螺旋凸轮轴距宽度',
+      labelEn: '7.6" (193 mm) Uncocked HexCoil Axle-to-Axle Cam Width',
+      nominalMm: 193,
+    },
+  ],
   m249: [
     {
       kind: 'overall_envelope',
@@ -422,8 +777,17 @@ export interface WeaponEnvelopeMetrics {
   widthMm: number;
 }
 
+export function getCaliperBenchmarkNote(
+  weaponId: WeaponId,
+  kind: CaliperBenchmarkKind
+): CaliperBenchmarkPresetNote {
+  const list = CALIPER_V2_BENCHMARK_NOTES[weaponId];
+  return list.find((n) => n.kind === kind) ?? list[0];
+}
+
 export interface CaliperSnapshot {
   weaponId: WeaponId;
+  unitSystem: CaliperUnitSystem;
   pointA: CaliperSurfacePoint | null;
   pointB: CaliperSurfacePoint | null;
   measurement: CaliperMeasurement | null;
@@ -629,6 +993,7 @@ function findBenchmarkTargetPart(
 
 class CaliperRuntimeController {
   private weaponId: WeaponId = 'ak15';
+  private unitSystem: CaliperUnitSystem = 'mm';
   private pointA: CaliperSurfacePoint | null = null;
   private pointB: CaliperSurfacePoint | null = null;
   private activeBenchmark: CaliperBenchmarkKind | null = null;
@@ -676,12 +1041,28 @@ class CaliperRuntimeController {
         : null;
     return {
       weaponId: this.weaponId,
+      unitSystem: this.unitSystem,
       pointA: this.pointA,
       pointB: this.pointB,
       measurement,
       activeBenchmark: this.activeBenchmark,
       seq: this.seq,
     };
+  }
+
+  public getUnitSystem(): CaliperUnitSystem {
+    return this.unitSystem;
+  }
+
+  public setUnitSystem(unit: CaliperUnitSystem): void {
+    if (this.unitSystem === unit) return;
+    this.unitSystem = unit;
+    playWorkbenchFoley('toggle_switch');
+    this.emit();
+  }
+
+  public toggleUnitSystem(): void {
+    this.setUnitSystem(this.unitSystem === 'mm' ? 'in' : 'mm');
   }
 
   public syncWeapon(weaponId: WeaponId, clearOnSwitch = true): void {

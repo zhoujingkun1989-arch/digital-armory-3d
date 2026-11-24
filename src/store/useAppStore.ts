@@ -281,6 +281,7 @@ export interface AppState {
   offlineModalOpen: boolean;
   scaleWallModalOpen: boolean;
   recoilLabOpen: boolean;
+  activeTourId: string | null;
   commandPaletteOpen: boolean;
   xrayShells: boolean;
   sectionCut: boolean;
@@ -440,6 +441,8 @@ export interface AppState {
   openRecoilLab: () => void;
   closeRecoilLab: () => void;
   toggleRecoilLab: () => void;
+  startCuratorTour: (tourId: string, startWeaponId?: WeaponId) => void;
+  exitCuratorTour: () => void;
   setCommandPaletteOpen: (open: boolean) => void;
   openCommandPalette: () => void;
   closeCommandPalette: () => void;
@@ -536,6 +539,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   offlineModalOpen: false,
   scaleWallModalOpen: false,
   recoilLabOpen: false,
+  activeTourId: null,
   commandPaletteOpen: false,
   xrayShells: false,
   sectionCut: false,
@@ -815,6 +819,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       posterShareOptions: null,
       scaleWallModalOpen: false,
       recoilLabOpen: false,
+      activeTourId: null,
       xrayShells: false,
       sectionCut: false,
       sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
@@ -872,6 +877,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       posterShareOptions: null,
       scaleWallModalOpen: false,
       recoilLabOpen: false,
+      activeTourId: null,
       commandPaletteOpen: false,
       sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
       sectionCutFlip: false,
@@ -942,6 +948,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       posterShareOptions: null,
       scaleWallModalOpen: false,
       recoilLabOpen: false,
+      activeTourId: null,
       commandPaletteOpen: false,
       sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
       sectionCutFlip: false,
@@ -996,6 +1003,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       posterShareOptions: null,
       scaleWallModalOpen: false,
       recoilLabOpen: false,
+      activeTourId: null,
       commandPaletteOpen: false,
       xrayShells: false,
       sectionCut: false,
@@ -1177,6 +1185,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       posterShareOptions: null,
       scaleWallModalOpen: false,
       recoilLabOpen: false,
+      activeTourId: null,
       xrayShells: false,
       sectionCut: false,
       sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
@@ -1681,6 +1690,22 @@ export const useAppStore = create<AppState>((set, get) => ({
   openRecoilLab: () => get().setRecoilLabOpen(true),
   closeRecoilLab: () => get().setRecoilLabOpen(false),
   toggleRecoilLab: () => get().setRecoilLabOpen(!get().recoilLabOpen),
+  startCuratorTour: (tourId, startWeaponId) => {
+    const trimmed = tourId.trim();
+    if (!trimmed) return;
+    set({
+      activeTourId: trimmed,
+      timelineModalOpen: false,
+      commandPaletteOpen: false,
+      hudHidden: false,
+    });
+    const targetWeaponId =
+      startWeaponId && isWeaponId(startWeaponId)
+        ? startWeaponId
+        : get().activeWeaponId;
+    get().enterWorkbench(targetWeaponId, 'explode');
+  },
+  exitCuratorTour: () => set({ activeTourId: null }),
   setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
   openCommandPalette: () => set({ commandPaletteOpen: true }),
   closeCommandPalette: () => set({ commandPaletteOpen: false }),
@@ -2072,6 +2097,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       offlineModalOpen: false,
       scaleWallModalOpen: false,
       recoilLabOpen: false,
+      activeTourId: null,
       commandPaletteOpen: false,
       acousticEnvironment: resolveAcousticEnvironmentForState(
         s.environmentPreset,
