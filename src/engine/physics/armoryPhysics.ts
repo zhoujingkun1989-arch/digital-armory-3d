@@ -1509,13 +1509,31 @@ type BrassImpactListener = (
   impactSpeedCmS: number
 ) => void;
 
-let brassImpactListener: BrassImpactListener | null = null;
+export type CasingBounceListener = (
+  caliber: CaliberProfile,
+  impactSpeedCmS: number,
+  bounceIndex: 1 | 2
+) => void;
 
-/** Registers the (single) spent-brass floor-impact audio hook (pass null to clear). */
+let brassImpactListener: BrassImpactListener | null = null;
+let casingBounceListener: CasingBounceListener | null = null;
+
+/** Registers the legacy 2-arg spent-brass floor-impact audio hook (pass null to clear). */
 export function setBrassFloorImpactListener(
   cb: BrassImpactListener | null
 ): void {
   brassImpactListener = cb;
+}
+
+/**
+ * Registers the zero-allocation 3-arg spent-brass floor-bounce audio hook fired ONLY
+ * on the 1st and 2nd floor impacts (`bounceIndex` = 1 | 2), cleanly skipping caseless,
+ * archery, revolver, and closed-loop linkless ordnance. Pass null to clear.
+ */
+export function setCasingBounceListener(
+  cb: CasingBounceListener | null
+): void {
+  casingBounceListener = cb;
 }
 
 export function getArmoryPhysicsState(): Readonly<ArmoryPhysicsState> {
@@ -1621,80 +1639,83 @@ function firstPeakRatio(zeta: number): number {
 const RECOIL_PEAK_RATIO = firstPeakRatio(RECOIL_ZETA);
 const PITCH_PEAK_RATIO = firstPeakRatio(PITCH_ZETA);
 
+export interface WeaponRecoilAttenuation {
+  readonly kickMult: number;
+  readonly riseMult: number;
+  readonly climbMult: number;
+}
+
+const DEFAULT_RECOIL_ATTENUATION: WeaponRecoilAttenuation = Object.freeze({
+  kickMult: 1,
+  riseMult: 1,
+  climbMult: 1,
+});
+
+const PLATFORM_RECOIL_ATTENUATION: Readonly<
+  Partial<Record<WeaponId, WeaponRecoilAttenuation>>
+> = {
+  // 1,828 kg A-10 airframe-mounted hydraulic 30mm rotary cannon: strong steady axial thrust, minimal pitch climb
+  gau8: Object.freeze({ kickMult: 0.58, riseMult: 0.22, climbMult: 0.16 }),
+  // 18.8 kg pintle-mounted 7.62mm rotary gun: disperses recoil into steady axial thrust
+  m134: Object.freeze({ kickMult: 0.45, riseMult: 0.3, climbMult: 0.25 }),
+  // 11.6 kg inline-stock bipod 7.92×57mm GPMG: moderate axial kick, strongly restrained climb vs K98k
+  mg42: Object.freeze({ kickMult: 0.62, riseMult: 0.54, climbMult: 0.48 }),
+  // 4.9 kg all-steel shoulder-stocked .45 ACP SMG + Cutts compensator: softer kick & much lower climb than M1911
+  thompson: Object.freeze({ kickMult: 0.72, riseMult: 0.74, climbMult: 0.72 }),
+  // 1.1 kg forged-steel single-stack .45 ACP pistol (wrist pivot, bare muzzle): authentic crisp muzzle flip
+  m1911: Object.freeze({ kickMult: 1.24, riseMult: 1.85, climbMult: 3.1 }),
+  // 3.9–4.1 kg full-length Mauser bolt rifle in 7.92×57mm: authentic full-power service rifle kick
+  k98k: Object.freeze({ kickMult: 1.0, riseMult: 1.0, climbMult: 1.0 }),
+  // KRISS Vector Super V -65° off-axis tungsten slider + low bore axis slashes vertical rise & climb
+  vector: Object.freeze({ kickMult: 0.82, riseMult: 0.36, climbMult: 0.32 }),
+  // FN M249 SAW 7.5 kg mass + PIP hydraulic stock buffer attenuates linear kick & climb
+  m249: Object.freeze({ kickMult: 0.68, riseMult: 0.64, climbMult: 0.6 }),
+  // H&K G11 K2 & Nikonov AN-94 floating barreled-action delayed-impulse carriages attenuate burst climb
+  g11: Object.freeze({ kickMult: 0.65, riseMult: 0.45, climbMult: 0.4 }),
+  an94: Object.freeze({ kickMult: 0.7, riseMult: 0.48, climbMult: 0.42 }),
+  // VSS Vintorez integral 6-stage baffle suppressor moderates subsonic 9×39mm impulse
+  vss: Object.freeze({ kickMult: 0.78, riseMult: 0.65, climbMult: 0.6 }),
+};
+
+/**
+ * Returns pre-allocated platform-specific mechanical recoil attenuation factors
+ * (zero heap allocations per shot).
+ */
+export function getWeaponRecoilAttenuation(
+  weaponId: WeaponId | null | undefined
+): WeaponRecoilAttenuation {
+  if (!weaponId) return DEFAULT_RECOIL_ATTENUATION;
+  return PLATFORM_RECOIL_ATTENUATION[weaponId] ?? DEFAULT_RECOIL_ATTENUATION;
+}
+
 /**
  * Applies a single discharge to the micro-physics state: recoil impulse,
  * muzzle-climb torque, barrel-whip excitation, heat and fouling.
  */
 export function applyArmoryShot(
   caliber: CaliberProfile,
-  recoilMultiplier = 1.0
+  recoilMultiplier = 1.0,
+  weaponId?: WeaponId | null
 ): void {
   const spec = getCaliberBallisticsSpec(caliber);
   const s = physicsState;
+  if (weaponId !== undefined) {
+    s.weaponId = weaponId;
+  }
   s.caliber = spec.caliber;
   const modRecoil =
     Number.isFinite(recoilMultiplier) && recoilMultiplier > 0
       ? Math.max(0.25, Math.min(2.0, recoilMultiplier))
       : 1.0;
-  // Platform-specific mechanical recoil mitigation:
-  // - KRISS Vector Super V -65° off-axis tungsten slider + low bore axis slashes vertical rise & climb
-  // - FN M249 SAW 7.5 kg mass + PIP hydraulic stock buffer attenuates linear kick & climb
-  // - GE M134D 18.8 kg pintle-mounted rotary gun disperses recoil into steady axial thrust
-  // - H&K G11 K2 & Nikonov AN-94 42mm floating barreled-action delayed-impulse carriages attenuate felt burst climb
-  // - VSS Vintorez integral 6-stage baffle suppressor moderates subsonic 9×39mm impulse
-  const isVector = s.weaponId === 'vector';
-  const isM249 = s.weaponId === 'm249';
-  const isM134 = s.weaponId === 'm134';
-  const isG11 = s.weaponId === 'g11';
-  const isAn94 = s.weaponId === 'an94';
-  const isVss = s.weaponId === 'vss';
-  const kickMult = isM134
-    ? 0.45
-    : isG11
-      ? 0.65
-      : isM249
-        ? 0.68
-        : isAn94
-          ? 0.7
-          : isVss
-            ? 0.78
-            : isVector
-              ? 0.82
-              : 1;
-  const riseMult = isM134
-    ? 0.3
-    : isVector
-      ? 0.36
-      : isG11
-        ? 0.45
-        : isAn94
-          ? 0.48
-          : isM249
-            ? 0.64
-            : isVss
-              ? 0.65
-              : 1;
-  const climbMult = isM134
-    ? 0.25
-    : isVector
-      ? 0.32
-      : isG11
-        ? 0.4
-        : isAn94
-          ? 0.42
-          : isM249
-            ? 0.6
-            : isVss
-              ? 0.6
-              : 1;
+  const att = getWeaponRecoilAttenuation(s.weaponId);
   s.recoilVelX -=
-    ((spec.recoilKickCm * kickMult * modRecoil) * RECOIL_OMEGA) /
+    ((spec.recoilKickCm * att.kickMult * modRecoil) * RECOIL_OMEGA) /
     RECOIL_PEAK_RATIO;
   s.recoilVelY +=
-    ((spec.recoilRiseCm * riseMult * modRecoil) * RECOIL_OMEGA) /
+    ((spec.recoilRiseCm * att.riseMult * modRecoil) * RECOIL_OMEGA) /
     RECOIL_PEAK_RATIO;
   s.recoilPitchVel +=
-    ((spec.muzzleClimbRad * climbMult * modRecoil) * PITCH_OMEGA) /
+    ((spec.muzzleClimbRad * att.climbMult * modRecoil) * PITCH_OMEGA) /
     PITCH_PEAK_RATIO;
   s.whipAmpCm = spec.barrelWhipCm;
   s.whipAgeSec = 0;
@@ -1952,14 +1973,23 @@ function integrateCasing(
     c.py = floorTop;
     if (c.vy < 0) {
       const impactSpeed = -c.vy;
-      if (
-        impactSpeed > BRASS_AUDIBLE_IMPACT_CMS &&
-        c.bounces < BRASS_MAX_AUDIBLE_BOUNCES &&
-        brassImpactListener
-      ) {
-        brassImpactListener(c.caliber, impactSpeed);
-      }
       c.bounces += 1;
+      const audibleBrassCaliber =
+        !isArcheryCaliber(c.caliber) &&
+        c.caliber !== '473_caseless' &&
+        c.caliber !== '30x173_gau8';
+      if (audibleBrassCaliber && impactSpeed > BRASS_AUDIBLE_IMPACT_CMS) {
+        if (casingBounceListener) {
+          if (c.bounces === 1 || c.bounces === 2) {
+            casingBounceListener(c.caliber, impactSpeed, c.bounces);
+          }
+        } else if (
+          brassImpactListener &&
+          c.bounces <= BRASS_MAX_AUDIBLE_BOUNCES
+        ) {
+          brassImpactListener(c.caliber, impactSpeed);
+        }
+      }
 
       // Normal restitution
       c.vy = impactSpeed * BRASS_RESTITUTION;
@@ -2057,7 +2087,7 @@ export function stepArmoryPhysics(
   if (s.hasLastFire && input.firing) {
     const prev = s.lastFireProgress;
     if (crossedForward(prev, f, t.ignitionF)) {
-      applyArmoryShot(input.caliber, input.recoilMultiplier ?? 1.0);
+      applyArmoryShot(input.caliber, input.recoilMultiplier ?? 1.0, input.weaponId);
     }
     if (!isArchery) {
       if (crossedForward(prev, f, t.muzzleExitF)) {
@@ -2070,7 +2100,9 @@ export function stepArmoryPhysics(
         if (
           input.weaponId !== 'python' &&
           input.weaponId !== 'g11' &&
+          input.weaponId !== 'gau8' &&
           input.caliber !== '473_caseless' &&
+          input.caliber !== '30x173_gau8' &&
           !isTankWeapon(input.weaponId) &&
           !isTankCaliber(input.caliber)
         ) {

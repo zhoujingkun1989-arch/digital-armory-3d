@@ -67,7 +67,11 @@ export type MechanismAcousticStyle =
   | 'lever_action_rifle'
   | 'pump_action_shotgun'
   | 'browning_single_link'
-  | 'mauser_crf_bolt';
+  | 'mauser_crf_bolt'
+  | 'mg42_roller_buzzsaw'
+  | 'thompson_blish_drum'
+  | 'hk_roller_delayed'
+  | 'hydraulic_rotary_cannon';
 
 export interface CaliberAcousticProfile {
   caliber: CaliberProfile;
@@ -391,7 +395,7 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
     peakGain: 1.0,
     brakeRoarGain: 0.72,
     casingRingHz: 1460,
-    mechanismStyle: 'electric_gatling',
+    mechanismStyle: 'hydraulic_rotary_cannon',
   },
 };
 
@@ -416,6 +420,70 @@ export const M1911_MAG_LATCH_PARTIALS_HZ = [2180, 3940, 5620] as const;
 export const K98K_STRIPPER_CLIP_PING_PARTIALS_HZ = [
   2420, 4180, 6140, 7920,
 ] as const;
+
+/**
+ * Stamped sheet-metal receiver & symmetric twin-roller locking-snap modal
+ * partials (Hz) for the 1,200 RPM MG 42 general-purpose machine gun & 50-rd Gurttrommel.
+ */
+export const MG42_ROLLER_SNAP_PARTIALS_HZ = [1680, 3290, 5140] as const;
+
+/**
+ * Machined steel open-bolt, 45° bronze Blish H-block lock & 50-rd L-drum clockwork
+ * spring modal partials (Hz) for the Thompson M1928A1 submachine gun.
+ */
+export const THOMPSON_BLISH_DRUM_PARTIALS_HZ = [1420, 2680, 4120] as const;
+
+/**
+ * Closed-bolt H&K roller-delayed lockup, fluted-chamber snap & tubular cocking-channel
+ * steel "HK Slap" modal partials (Hz) for the H&K MP5A3.
+ */
+export const MP5_HK_SLAP_PARTIALS_HZ = [1940, 3620, 5480] as const;
+
+/**
+ * Dual-hydraulic 3,000 PSI spool whine, 3,900 RPM (65 Hz) "BRRRT!" fundamental &
+ * 1,150-rd linkless aluminum-case conveyor clatter partials (Hz) for the GAU-8/A Avenger.
+ */
+export const GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ = [65, 130, 820, 2480] as const;
+
+export const MASTER_SOFT_LIMITER_CONFIG = {
+  thresholdDb: -6,
+  kneeDb: 12,
+  ratio: 12,
+  attackSec: 0.0015,
+  releaseSec: 0.11,
+} as const;
+
+export const BRASS_BOUNCE_MIN_INTERVAL_MS = 28;
+export const BRASS_BOUNCE_WINDOW_MS = 200;
+export const BRASS_BOUNCE_MAX_PER_WINDOW = 6;
+
+export interface BrassBounceDampingSpec {
+  gainScale: number;
+  decayScale: number;
+  pitchScale: number;
+}
+
+/**
+ * Computes velocity- and bounce-index-damped C26000 brass shell clink scaling
+ * so bounce 1 rings crisply while bounce 2 decays softly with subtle rim shift.
+ */
+export function computeBrassBounceDamping(
+  impactSpeedCmS: number,
+  bounceIndex = 1
+): BrassBounceDampingSpec {
+  const vel01 = Math.max(0.06, Math.min(1.0, (impactSpeedCmS - 6) / 240));
+  const bounceGain =
+    bounceIndex <= 1 ? 1.0 : bounceIndex === 2 ? 0.58 : 0.34;
+  const decayScale =
+    bounceIndex <= 1 ? 1.0 : bounceIndex === 2 ? 0.72 : 0.5;
+  const pitchScale =
+    bounceIndex <= 1 ? 1.0 : bounceIndex === 2 ? 1.018 : 1.032;
+  return {
+    gainScale: vel01 * bounceGain,
+    decayScale,
+    pitchScale,
+  };
+}
 
 export interface WeaponBespokeAcousticSignature {
   weaponId: WeaponId;
@@ -467,12 +535,89 @@ export const BESPOKE_WEAPON_ACOUSTIC_SIGNATURES: Readonly<
     ],
     modalPartialsHz: K98K_STRIPPER_CLIP_PING_PARTIALS_HZ,
   },
+  mg42: {
+    weaponId: 'mg42',
+    mechanismStyle: 'mg42_roller_buzzsaw',
+    labelEn:
+      'MG 42 Twin-Roller Short-Recoil Snap, Stamped Sheet-Metal Receiver Resonance, 1,200 RPM Buzzsaw & 50-Rd Gurttrommel Rattle',
+    labelZh:
+      'MG 42 对称双滚柱短后坐闭锁咔哒、冲压钢板机匣共鸣、1,200 RPM 撕布机连射与 50 发弹链圆鼓金属颤音',
+    customizedEvents: [
+      'sear_release',
+      'primer_ignition',
+      'gas_or_recoil',
+      'cam_unlock',
+      'extract_eject',
+      'spring_feed',
+      'battery_lockup',
+      'sear_reset',
+    ],
+    modalPartialsHz: MG42_ROLLER_SNAP_PARTIALS_HZ,
+  },
+  thompson: {
+    weaponId: 'thompson',
+    mechanismStyle: 'thompson_blish_drum',
+    labelEn:
+      'Thompson M1928A1 Heavy Milled Open-Bolt Slam, 45° Blish Bronze Friction Rasp, 50-Rd L-Drum Clockwork & Cutts Compensator Bark',
+    labelZh:
+      '汤姆逊 M1928A1 切削钢重型开膛撞击、45° 青铜布利什延迟摩擦、50 发 L 型发条弹鼓齿轮颤音与卡茨防跳器爆鸣',
+    customizedEvents: [
+      'sear_release',
+      'primer_ignition',
+      'gas_or_recoil',
+      'cam_unlock',
+      'extract_eject',
+      'spring_feed',
+      'battery_lockup',
+      'sear_reset',
+    ],
+    modalPartialsHz: THOMPSON_BLISH_DRUM_PARTIALS_HZ,
+  },
+  mp5: {
+    weaponId: 'mp5',
+    mechanismStyle: 'hk_roller_delayed',
+    labelEn:
+      'H&K MP5A3 Closed-Bolt Roller-Delayed Lockup, 12-Flute Chamber Snap & Steel Charging-Handle "HK Slap" Harmonics',
+    labelZh:
+      'H&K MP5A3 闭膛滚柱延迟闭锁、12 槽浮膛泄压清脆爆音与管状拉机柄经典“HK 拍柄”金属谐振',
+    customizedEvents: [
+      'sear_release',
+      'primer_ignition',
+      'gas_or_recoil',
+      'cam_unlock',
+      'extract_eject',
+      'spring_feed',
+      'battery_lockup',
+      'sear_reset',
+    ],
+    modalPartialsHz: MP5_HK_SLAP_PARTIALS_HZ,
+  },
+  gau8: {
+    weaponId: 'gau8',
+    mechanismStyle: 'hydraulic_rotary_cannon',
+    labelEn:
+      'GE GAU-8/A Dual 3,000 PSI Hydraulic Spool Whine, 3,900 RPM 65 Hz "BRRRT!" Fundamental & 1,150-Rd Linkless Aluminum-Case Return Clatter',
+    labelZh:
+      'GE GAU-8/A 双路 3,000 PSI 液压马达啸叫、3,900 RPM 65 Hz 撕裂低频咆哮与 1,150 发无链螺旋弹鼓铝壳回传金属音',
+    customizedEvents: [
+      'sear_release',
+      'primer_ignition',
+      'gas_or_recoil',
+      'cam_unlock',
+      'extract_eject',
+      'spring_feed',
+      'battery_lockup',
+      'sear_reset',
+    ],
+    modalPartialsHz: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ,
+  },
 };
 
 /**
  * Resolves the effective weapon-level mechanical acoustic style, allowing exhibits
- * sharing a caliber (e.g., M1911A1 vs KRISS Vector in `.45 ACP`, or K98k vs MG 42
- * in `7.92×57mm`) to use distinct mechanical synthesis paths.
+ * sharing a caliber (e.g., M1911A1 vs Thompson vs KRISS Vector in `.45 ACP`,
+ * MP5 vs Glock 17 in `9×19mm`, K98k vs MG 42 in `7.92×57mm`, or GAU-8/A vs M134D)
+ * to use completely distinct mechanical synthesis paths.
  */
 export function resolveWeaponMechanismAcousticStyle(
   weaponId: WeaponId
@@ -482,7 +627,7 @@ export function resolveWeaponMechanismAcousticStyle(
     return bespoke.mechanismStyle;
   }
   if (weaponId === 'p08') return 'toggle_lock_pistol';
-  if (weaponId === 'm249' || weaponId === 'mg42') return 'open_bolt_lmg';
+  if (weaponId === 'm249') return 'open_bolt_lmg';
   if (weaponId === 'rem870') return 'pump_action_shotgun';
   const manifest = getWeaponManifest(weaponId);
   return CALIBER_ACOUSTIC_PROFILES[manifest.caliberProfile].mechanismStyle;
@@ -774,6 +919,7 @@ type RoutingBus = 'mechanical' | 'ballistic' | 'dry_only';
 class ProceduralGunsmithSoundEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
+  private softLimiter: DynamicsCompressorNode | null = null;
   private mediaDest: MediaStreamAudioDestinationNode | null = null;
   private duckingGain: GainNode | null = null;
   private dryBus: GainNode | null = null;
@@ -784,8 +930,40 @@ class ProceduralGunsmithSoundEngine {
   private noiseBuffer: AudioBuffer | null = null;
   private saturatorCurve: Float32Array | null = null;
   private lastScrubSoundMs = 0;
+  private lastBrassBounceMs = -Infinity;
+  private readonly brassBounceStampRing = new Float64Array(
+    BRASS_BOUNCE_MAX_PER_WINDOW
+  );
+  private brassBounceRingCursor = 0;
   private environmentPreset: AcousticEnvironmentPreset = 'tactical_hall';
   private activeSpeedMultiplier: 0.25 | 0.5 | 1.0 = 1.0;
+
+  public reset(): void {
+    this.ctx = null;
+    this.masterGain = null;
+    this.softLimiter = null;
+    this.mediaDest = null;
+    this.duckingGain = null;
+    this.dryBus = null;
+    this.mechanicalWetSend = null;
+    this.ballisticWetSend = null;
+    this.convolver = null;
+    this.wetReturnGain = null;
+    this.noiseBuffer = null;
+    this.saturatorCurve = null;
+    this.lastScrubSoundMs = 0;
+    this.lastBrassBounceMs = -Infinity;
+    this.brassBounceStampRing.fill(-Infinity);
+    this.brassBounceRingCursor = 0;
+  }
+
+  public hasSoftCeilingLimiter(): boolean {
+    return this.softLimiter !== null;
+  }
+
+  constructor() {
+    this.brassBounceStampRing.fill(-Infinity);
+  }
 
   private getAudioContextConstructor(): typeof AudioContext | null {
     if (typeof window === 'undefined') return null;
@@ -848,13 +1026,6 @@ class ProceduralGunsmithSoundEngine {
     if (!this.ctx) {
       try {
         const ctx = new Ctor();
-        const compressor = ctx.createDynamicsCompressor();
-        compressor.threshold.value = -10;
-        compressor.knee.value = 14;
-        compressor.ratio.value = 6;
-        compressor.attack.value = 0.002;
-        compressor.release.value = 0.14;
-
         const duckingGain = ctx.createGain();
         duckingGain.gain.value = computeNarrationDuckingGain(
           getNarrationAudioSnapshot().isPlaying
@@ -863,38 +1034,73 @@ class ProceduralGunsmithSoundEngine {
         const masterGain = ctx.createGain();
         masterGain.gain.value = useAppStore.getState().sfxMuted ? 0 : 0.88;
 
+        // Soft-ceiling DynamicsCompressorNode right before ctx.destination prevents
+        // digital clipping during rapid-fire GAU-8/A, MG 42, M134D & 125mm MBT bursts.
+        // Guarded cleanly for headless/mock AudioContexts omitting createDynamicsCompressor.
+        let softLimiter: DynamicsCompressorNode | null = null;
+        if (typeof ctx.createDynamicsCompressor === 'function') {
+          try {
+            const limiter = ctx.createDynamicsCompressor();
+            limiter.threshold.value = MASTER_SOFT_LIMITER_CONFIG.thresholdDb;
+            limiter.knee.value = MASTER_SOFT_LIMITER_CONFIG.kneeDb;
+            limiter.ratio.value = MASTER_SOFT_LIMITER_CONFIG.ratio;
+            limiter.attack.value = MASTER_SOFT_LIMITER_CONFIG.attackSec;
+            limiter.release.value = MASTER_SOFT_LIMITER_CONFIG.releaseSec;
+            softLimiter = limiter;
+          } catch {
+            softLimiter = null;
+          }
+        }
+
         // Dry + Stereo ConvolverNode Wet Send Bus Architecture
         const dryBus = ctx.createGain();
         dryBus.gain.value = 1.0;
 
-        const mechanicalWetSend = ctx.createGain();
-        mechanicalWetSend.gain.value = 0.42;
+        let mechanicalWetSend: GainNode | null = null;
+        let ballisticWetSend: GainNode | null = null;
+        let convolver: ConvolverNode | null = null;
+        let wetReturnGain: GainNode | null = null;
+        if (typeof ctx.createConvolver === 'function') {
+          try {
+            mechanicalWetSend = ctx.createGain();
+            mechanicalWetSend.gain.value = 0.42;
 
-        const ballisticWetSend = ctx.createGain();
-        ballisticWetSend.gain.value = 1.0;
+            ballisticWetSend = ctx.createGain();
+            ballisticWetSend.gain.value = 1.0;
 
-        const convolver = ctx.createConvolver();
-        convolver.normalize = false;
-        convolver.buffer = getOrCreateAcousticImpulseBuffer(
-          ctx,
-          this.environmentPreset
-        );
+            convolver = ctx.createConvolver();
+            convolver.normalize = false;
+            convolver.buffer = getOrCreateAcousticImpulseBuffer(
+              ctx,
+              this.environmentPreset
+            );
 
-        const wetReturnGain = ctx.createGain();
-        wetReturnGain.gain.value = computeDynamicWetSendGain(
-          this.environmentPreset,
-          this.activeSpeedMultiplier
-        );
+            wetReturnGain = ctx.createGain();
+            wetReturnGain.gain.value = computeDynamicWetSendGain(
+              this.environmentPreset,
+              this.activeSpeedMultiplier
+            );
+
+            mechanicalWetSend.connect(convolver);
+            ballisticWetSend.connect(convolver);
+            convolver.connect(wetReturnGain);
+            wetReturnGain.connect(duckingGain);
+          } catch {
+            mechanicalWetSend = null;
+            ballisticWetSend = null;
+            convolver = null;
+            wetReturnGain = null;
+          }
+        }
 
         dryBus.connect(duckingGain);
-        mechanicalWetSend.connect(convolver);
-        ballisticWetSend.connect(convolver);
-        convolver.connect(wetReturnGain);
-        wetReturnGain.connect(duckingGain);
-
-        duckingGain.connect(compressor);
-        compressor.connect(masterGain);
-        masterGain.connect(ctx.destination);
+        duckingGain.connect(masterGain);
+        if (softLimiter) {
+          masterGain.connect(softLimiter);
+          softLimiter.connect(ctx.destination);
+        } else {
+          masterGain.connect(ctx.destination);
+        }
 
         this.ctx = ctx;
         this.dryBus = dryBus;
@@ -904,6 +1110,7 @@ class ProceduralGunsmithSoundEngine {
         this.wetReturnGain = wetReturnGain;
         this.duckingGain = duckingGain;
         this.masterGain = masterGain;
+        this.softLimiter = softLimiter;
         this.noiseBuffer = this.buildNoiseBuffer(ctx);
         this.saturatorCurve = this.buildSaturationCurve();
       } catch {
@@ -938,7 +1145,7 @@ class ProceduralGunsmithSoundEngine {
       try {
         const dest = ctx.createMediaStreamDestination();
         this.mediaDest = dest;
-        this.masterGain.connect(dest);
+        (this.softLimiter ?? this.masterGain).connect(dest);
       } catch {
         this.mediaDest = null;
         return null;
@@ -1193,6 +1400,7 @@ class ProceduralGunsmithSoundEngine {
 
     const manifest = getWeaponManifest(weaponId);
     const profile = CALIBER_ACOUSTIC_PROFILES[manifest.caliberProfile];
+    const style = resolveWeaponMechanismAcousticStyle(weaponId);
     const now = ctx.currentTime + 0.002;
     const isSlowMo = speedMultiplier <= 0.25;
 
@@ -1287,46 +1495,86 @@ class ProceduralGunsmithSoundEngine {
             attack: 0.008,
             bus: 'mechanical',
           });
-        } else if (weaponId === 'gau8') {
-          // GE GAU-8/A twin 38.5-HP 3,000 PSI hydraulic motor servo whine + 7-bolt cam clatter
+        } else if (style === 'hydraulic_rotary_cannon') {
+          // GE GAU-8/A twin 38.5-HP 3,000 PSI hydraulic motor spool whine (820 Hz) + 7-bolt cam clatter
           this.emitModalPing({
             startTime: now,
             duration: isSlowMo ? 0.22 : 0.13,
-            freqStart: 780,
+            freqStart: 820,
             freqEnd: 1180,
             type: 'triangle',
-            gainPeak: 0.26,
+            gainPeak: 0.27,
             bus: 'mechanical',
           });
           this.emitSteelWaveguideStrike({
             startTime: now + 0.006,
-            fundamentalHz: 2640,
-            baseDecaySec: 0.042,
-            gainPeak: 0.22,
-            hardness01: 0.9,
+            fundamentalHz: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[3],
+            baseDecaySec: 0.044,
+            gainPeak: 0.23,
+            hardness01: 0.91,
             massBodyHz: 165,
             bus: 'mechanical',
           });
-        } else if (weaponId === 'mg42') {
-          // MG 42 open-bolt heavy sear release + braided driving spring surge
+        } else if (style === 'mg42_roller_buzzsaw') {
+          // MG 42 open-bolt heavy sear release, stamped sheet-metal receiver ring + braided driving spring surge
           this.emitSteelWaveguideStrike({
             startTime: now,
-            fundamentalHz: 1540,
-            baseDecaySec: 0.04,
-            gainPeak: 0.29,
-            hardness01: 0.9,
+            fundamentalHz: MG42_ROLLER_SNAP_PARTIALS_HZ[0],
+            baseDecaySec: 0.042,
+            gainPeak: 0.3,
+            hardness01: 0.91,
             massBodyHz: 230,
             bus: 'mechanical',
           });
-        } else if (weaponId === 'thompson') {
-          // Thompson M1928A1 heavy milled open-bolt sear drop + bronze Blish clack
+          this.emitNoiseBurst({
+            startTime: now + 0.004,
+            duration: isSlowMo ? 0.072 : 0.04,
+            filterType: 'bandpass',
+            freqStart: 1740,
+            freqEnd: 3290,
+            q: 4.5,
+            gainPeak: 0.17,
+            attack: 0.003,
+            bus: 'mechanical',
+          });
+        } else if (style === 'thompson_blish_drum') {
+          // Thompson M1928A1 heavy milled open-bolt sear drop + 45° bronze Blish H-block clack
           this.emitSteelWaveguideStrike({
             startTime: now,
-            fundamentalHz: 1380,
-            baseDecaySec: 0.045,
+            fundamentalHz: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0],
+            baseDecaySec: 0.048,
+            gainPeak: 0.28,
+            hardness01: 0.85,
+            massBodyHz: 198,
+            bus: 'mechanical',
+          });
+          this.emitModalPing({
+            startTime: now + (isSlowMo ? 0.015 : 0.007),
+            duration: isSlowMo ? 0.062 : 0.036,
+            freqStart: THOMPSON_BLISH_DRUM_PARTIALS_HZ[1],
+            freqEnd: THOMPSON_BLISH_DRUM_PARTIALS_HZ[1] * 0.94,
+            type: 'triangle',
+            gainPeak: 0.14,
+            bus: 'mechanical',
+          });
+        } else if (style === 'hk_roller_delayed') {
+          // H&K MP5A3 closed-bolt hammer-strut sear release (distinct from Glock 17 striker!)
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: MP5_HK_SLAP_PARTIALS_HZ[0],
+            baseDecaySec: 0.032,
             gainPeak: 0.26,
-            hardness01: 0.84,
-            massBodyHz: 205,
+            hardness01: 0.91,
+            massBodyHz: 290,
+            bus: 'mechanical',
+          });
+          this.emitModalPing({
+            startTime: now + (isSlowMo ? 0.012 : 0.006),
+            duration: 0.028,
+            freqStart: MP5_HK_SLAP_PARTIALS_HZ[1],
+            freqEnd: MP5_HK_SLAP_PARTIALS_HZ[1] * 0.97,
+            type: 'sine',
+            gainPeak: 0.11,
             bus: 'mechanical',
           });
         } else if (weaponId === 'm1911') {
@@ -1574,35 +1822,96 @@ class ProceduralGunsmithSoundEngine {
             gainPeak: 0.28,
             bus: 'ballistic',
           });
-        } else if (weaponId === 'gau8') {
-          // Iconic A-10 GAU-8/A Avenger 3,900 RPM (65 Hz) supersonic "BRRRT!" pulse-train horn + 42 Hz shock
+        } else if (style === 'hydraulic_rotary_cannon') {
+          // Iconic A-10 GAU-8/A Avenger 3,900 RPM (65 Hz) supersonic "BRRRT!" pulse-train horn + 130 Hz 2nd harmonic + 30mm crack
           this.emitModalPing({
             startTime: tBlast + 0.004,
-            duration: isSlowMo ? 0.22 : 0.125,
-            freqStart: 67,
-            freqEnd: 63,
+            duration: isSlowMo ? 0.24 : 0.135,
+            freqStart: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[0],
+            freqEnd: 62,
             type: 'sawtooth',
-            gainPeak: 0.36,
+            gainPeak: 0.38,
             bus: 'ballistic',
           });
           this.emitModalPing({
-            startTime: tBlast + 0.01,
+            startTime: tBlast + 0.009,
             duration: isSlowMo ? 0.28 : 0.16,
-            freqStart: 130,
-            freqEnd: 126,
+            freqStart: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[1],
+            freqEnd: 124,
             type: 'sawtooth',
-            gainPeak: 0.18,
+            gainPeak: 0.2,
             bus: 'ballistic',
           });
-        } else if (weaponId === 'mg42') {
-          // Iconic 1,200 RPM (20 Hz) "Hitler's Buzzsaw" rapid ripping canvas secondary pulse
+          this.emitNoiseBurst({
+            startTime: tBlast + 0.002,
+            duration: isSlowMo ? 0.11 : 0.068,
+            filterType: 'bandpass',
+            freqStart: 2240,
+            freqEnd: 880,
+            q: 1.25,
+            gainPeak: 0.44,
+            attack: 0.0007,
+            saturate: true,
+            bus: 'ballistic',
+          });
+        } else if (style === 'mg42_roller_buzzsaw') {
+          // Iconic 1,200 RPM (20 Hz / 40 Hz) "Hitler's Buzzsaw" tearing-canvas rapid cyclic pulse + stamped shroud crispness
           this.emitModalPing({
-            startTime: tBlast + 0.008,
-            duration: isSlowMo ? 0.1 : 0.055,
+            startTime: tBlast + 0.007,
+            duration: isSlowMo ? 0.11 : 0.06,
             freqStart: 42,
             freqEnd: 38,
             type: 'sawtooth',
+            gainPeak: 0.24,
+            bus: 'ballistic',
+          });
+          this.emitNoiseBurst({
+            startTime: tBlast + 0.003,
+            duration: isSlowMo ? 0.075 : 0.042,
+            filterType: 'bandpass',
+            freqStart: MG42_ROLLER_SNAP_PARTIALS_HZ[1],
+            freqEnd: MG42_ROLLER_SNAP_PARTIALS_HZ[0],
+            q: 2.2,
+            gainPeak: 0.26,
+            attack: 0.0008,
+            saturate: true,
+            bus: 'ballistic',
+          });
+        } else if (style === 'thompson_blish_drum') {
+          // Thompson M1928A1 6-slot Cutts compensator upward-vented .45 ACP metallic bark
+          this.emitNoiseBurst({
+            startTime: tBlast + 0.002,
+            duration: isSlowMo ? 0.095 : 0.056,
+            filterType: 'bandpass',
+            freqStart: 2860,
+            freqEnd: 1220,
+            q: 1.65,
+            gainPeak: 0.34,
+            attack: 0.0009,
+            saturate: true,
+            bus: 'ballistic',
+          });
+          this.emitModalPing({
+            startTime: tBlast + 0.004,
+            duration: isSlowMo ? 0.07 : 0.042,
+            freqStart: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0],
+            freqEnd: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0] * 0.88,
+            type: 'triangle',
+            gainPeak: 0.14,
+            bus: 'ballistic',
+          });
+        } else if (style === 'hk_roller_delayed') {
+          // H&K MP5A3 fluted-chamber pressurized brass seal snap + crisp cold-forged 9mm carbine crack
+          this.emitNoiseBurst({
+            startTime: tBlast + 0.002,
+            duration: isSlowMo ? 0.068 : 0.038,
+            filterType: 'bandpass',
+            freqStart: MP5_HK_SLAP_PARTIALS_HZ[1],
+            freqEnd: MP5_HK_SLAP_PARTIALS_HZ[0],
+            q: 2.4,
             gainPeak: 0.22,
+            attack: 0.0007,
+            saturate: false,
             bus: 'ballistic',
           });
         } else if (weaponId === 'm1911') {
@@ -1738,10 +2047,91 @@ class ProceduralGunsmithSoundEngine {
             hardness01: 0.92,
             bus: 'mechanical',
           });
-        } else if (
-          weaponId === 'vector' ||
-          profile.mechanismStyle === 'super_v_smg'
-        ) {
+        } else if (style === 'mg42_roller_buzzsaw') {
+          // MG 42 8mm muzzle-booster short-recoil barrel kick + stamped sheet-metal receiver resonance
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: MG42_ROLLER_SNAP_PARTIALS_HZ[0],
+            baseDecaySec: 0.048,
+            gainPeak: 0.28,
+            hardness01: 0.88,
+            massBodyHz: 195,
+            bus: 'mechanical',
+          });
+          this.emitModalPing({
+            startTime: now + 0.003,
+            duration: isSlowMo ? 0.095 : 0.055,
+            freqStart: MG42_ROLLER_SNAP_PARTIALS_HZ[1],
+            freqEnd: MG42_ROLLER_SNAP_PARTIALS_HZ[1] * 0.98,
+            type: 'sine',
+            gainPeak: 0.13,
+            bus: 'mechanical',
+          });
+        } else if (style === 'thompson_blish_drum') {
+          // Thompson M1928A1 45° inclined-plane bronze Blish H-block high-pressure friction delay rasp (NOT Vector Super V!)
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: isSlowMo ? 0.082 : 0.046,
+            filterType: 'bandpass',
+            freqStart: THOMPSON_BLISH_DRUM_PARTIALS_HZ[1],
+            freqEnd: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0],
+            q: 4.8,
+            gainPeak: 0.22,
+            attack: 0.003,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + 0.003,
+            fundamentalHz: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0],
+            baseDecaySec: 0.046,
+            gainPeak: 0.24,
+            hardness01: 0.8,
+            massBodyHz: 190,
+            bus: 'mechanical',
+          });
+        } else if (style === 'hk_roller_delayed') {
+          // H&K MP5A3 twin locking-roller hydraulic-like blowback hesitation + 12-flute chamber pressure equalization snap
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: MP5_HK_SLAP_PARTIALS_HZ[0],
+            baseDecaySec: 0.038,
+            gainPeak: 0.24,
+            hardness01: 0.89,
+            massBodyHz: 265,
+            bus: 'mechanical',
+          });
+          this.emitNoiseBurst({
+            startTime: now + 0.002,
+            duration: isSlowMo ? 0.056 : 0.03,
+            filterType: 'bandpass',
+            freqStart: MP5_HK_SLAP_PARTIALS_HZ[1],
+            freqEnd: MP5_HK_SLAP_PARTIALS_HZ[0],
+            q: 3.9,
+            gainPeak: 0.16,
+            attack: 0.002,
+            bus: 'mechanical',
+          });
+        } else if (style === 'hydraulic_rotary_cannon') {
+          // GE GAU-8/A 45 kN hydraulic recoil-mount axial surge + 7-barrel rotary cluster harmonic whine
+          this.emitModalPing({
+            startTime: now,
+            duration: isSlowMo ? 0.16 : 0.095,
+            freqStart: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[2],
+            freqEnd: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[2] * 1.12,
+            type: 'triangle',
+            gainPeak: 0.22,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + 0.004,
+            fundamentalHz: 680,
+            baseDecaySec: 0.092,
+            gainPeak: 0.31,
+            hardness01: 0.72,
+            massBodyHz: 108,
+            bus: 'mechanical',
+          });
+        } else if (style === 'super_v_smg') {
           // KRISS Vector 1,200 RPM lateral bolt cam-trunnion transfer into -65° tungsten Super V slider plunge
           this.emitSteelWaveguideStrike({
             startTime: now,
@@ -1915,6 +2305,91 @@ class ProceduralGunsmithSoundEngine {
           });
           break;
         }
+        if (style === 'mg42_roller_buzzsaw') {
+          // MG 42 symmetric twin locking rollers snapping inward out of barrel-extension recesses
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: MG42_ROLLER_SNAP_PARTIALS_HZ[0],
+            baseDecaySec: 0.038,
+            gainPeak: 0.31,
+            hardness01: 0.92,
+            massBodyHz: 245,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.013 : 0.006),
+            fundamentalHz: MG42_ROLLER_SNAP_PARTIALS_HZ[1],
+            baseDecaySec: 0.032,
+            gainPeak: 0.25,
+            hardness01: 0.94,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (style === 'thompson_blish_drum') {
+          // Thompson M1928A1 bronze Blish H-block lifting free from 45° receiver cam slots
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0],
+            baseDecaySec: 0.044,
+            gainPeak: 0.27,
+            hardness01: 0.84,
+            massBodyHz: 210,
+            bus: 'mechanical',
+          });
+          this.emitModalPing({
+            startTime: now + (isSlowMo ? 0.016 : 0.008),
+            duration: 0.055,
+            freqStart: THOMPSON_BLISH_DRUM_PARTIALS_HZ[1],
+            freqEnd: THOMPSON_BLISH_DRUM_PARTIALS_HZ[1] * 0.96,
+            type: 'sine',
+            gainPeak: 0.14,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (style === 'hk_roller_delayed') {
+          // H&K MP5A3 locking piece 45° bevel retracting twin rollers into bolt head + fluted chamber break
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: MP5_HK_SLAP_PARTIALS_HZ[0],
+            baseDecaySec: 0.036,
+            gainPeak: 0.28,
+            hardness01: 0.92,
+            massBodyHz: 280,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.014 : 0.007),
+            fundamentalHz: MP5_HK_SLAP_PARTIALS_HZ[1],
+            baseDecaySec: 0.028,
+            gainPeak: 0.21,
+            hardness01: 0.93,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (style === 'hydraulic_rotary_cannon') {
+          // GE GAU-8/A 360° helical cam track pulling 7 heavy breech bolts rearward along rotary housing
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[2],
+            baseDecaySec: 0.072,
+            gainPeak: 0.32,
+            hardness01: 0.84,
+            massBodyHz: 132,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.018 : 0.009),
+            fundamentalHz: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[3],
+            baseDecaySec: 0.042,
+            gainPeak: 0.24,
+            hardness01: 0.9,
+            bus: 'mechanical',
+          });
+          break;
+        }
         if (weaponId === 'p08') {
           // Luger P08 signature double-articulated metallic knee-toggle ramp strike + center-hinge buckle snap
           this.emitSteelWaveguideStrike({
@@ -1966,6 +2441,34 @@ class ProceduralGunsmithSoundEngine {
             hardness01: 0.78,
             bus: 'mechanical',
           });
+          break;
+        }
+        if (style === 'hydraulic_rotary_cannon') {
+          // GE GAU-8/A 1,150-rd closed-loop linkless conveyor return: aluminum 30×173mm spent cases
+          // route straight back into the helical drum (NO free floor-ejected brass ring!)
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[3],
+            baseDecaySec: 0.052,
+            gainPeak: 0.26,
+            hardness01: 0.86,
+            massBodyHz: 148,
+            bus: 'mechanical',
+          });
+          const fAlum = profile.casingRingHz;
+          const tAlum = now + (isSlowMo ? 0.022 : 0.009);
+          for (let i = 0; i < 3; i++) {
+            const ratio = BRASS_CASING_SHELL_PARTIALS[i];
+            this.emitModalPing({
+              startTime: tAlum + i * (isSlowMo ? 0.014 : 0.006),
+              duration: 0.095 / (1 + i * 0.45),
+              freqStart: fAlum * ratio * 1.04,
+              freqEnd: fAlum * ratio * 0.99,
+              type: 'sine',
+              gainPeak: 0.1 / (1 + i * 0.55),
+              bus: 'mechanical',
+            });
+          }
           break;
         }
         if (
@@ -2106,6 +2609,47 @@ class ProceduralGunsmithSoundEngine {
             type: 'sine',
             gainPeak: 0.075,
             bus: 'ballistic',
+          });
+        } else if (style === 'mg42_roller_buzzsaw') {
+          // MG 42 stamped Gurt 34 belt-link clatter + 50-rd Gurttrommel coil rattle + sheet-metal buffer ring
+          const tRattle = tBuffer + (isSlowMo ? 0.014 : 0.006);
+          for (let i = 0; i < MG42_ROLLER_SNAP_PARTIALS_HZ.length; i++) {
+            const fMg = MG42_ROLLER_SNAP_PARTIALS_HZ[i];
+            this.emitModalPing({
+              startTime: tRattle + i * (isSlowMo ? 0.01 : 0.004),
+              duration: 0.075 / (1 + i * 0.45),
+              freqStart: fMg,
+              freqEnd: fMg * 0.985,
+              type: 'sine',
+              gainPeak: 0.1 / (1 + i * 0.6),
+              bus: 'ballistic',
+            });
+          }
+        } else if (style === 'thompson_blish_drum') {
+          // Thompson M1928A1 50-rd L-drum clockwork mainspring rattle + oiled fiber buffer thud
+          const tDrum = tBuffer + (isSlowMo ? 0.016 : 0.007);
+          for (let i = 0; i < THOMPSON_BLISH_DRUM_PARTIALS_HZ.length; i++) {
+            const fDrum = THOMPSON_BLISH_DRUM_PARTIALS_HZ[i];
+            this.emitModalPing({
+              startTime: tDrum + i * (isSlowMo ? 0.012 : 0.005),
+              duration: 0.088 / (1 + i * 0.48),
+              freqStart: fDrum * 1.01,
+              freqEnd: fDrum * 0.99,
+              type: 'sine',
+              gainPeak: 0.095 / (1 + i * 0.62),
+              bus: 'mechanical',
+            });
+          }
+        } else if (style === 'hk_roller_delayed') {
+          // H&K MP5A3 fluted-chamber clean case flick + stamped tubular receiver bolt-head bounce
+          this.emitSteelWaveguideStrike({
+            startTime: tBuffer,
+            fundamentalHz: MP5_HK_SLAP_PARTIALS_HZ[1],
+            baseDecaySec: 0.028,
+            gainPeak: 0.18,
+            hardness01: 0.9,
+            massBodyHz: 270,
+            bus: 'mechanical',
           });
         } else if (weaponId === 'vector') {
           // KRISS Vector -65° Super V tungsten counterweight slider bottoming on polyurethane guide-rod buffer
@@ -2252,6 +2796,102 @@ class ProceduralGunsmithSoundEngine {
           }
           break;
         }
+        if (style === 'mg42_roller_buzzsaw') {
+          // MG 42 high-speed braided recoil spring + top-cover roller feed-pawl shuttle + Gurttrommel coil spring
+          const dur = isSlowMo ? 0.092 : 0.05;
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: dur,
+            filterType: 'bandpass',
+            freqStart: MG42_ROLLER_SNAP_PARTIALS_HZ[0],
+            freqEnd: MG42_ROLLER_SNAP_PARTIALS_HZ[2],
+            q: 4.8,
+            gainPeak: 0.21,
+            attack: 0.004,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + dur * 0.4,
+            fundamentalHz: MG42_ROLLER_SNAP_PARTIALS_HZ[1],
+            baseDecaySec: 0.028,
+            gainPeak: 0.2,
+            hardness01: 0.92,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (style === 'thompson_blish_drum') {
+          // Thompson M1928A1 50-rd L-drum clockwork rotor advance + heavy open-bolt forward strip
+          const dur = isSlowMo ? 0.115 : 0.064;
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: dur,
+            filterType: 'bandpass',
+            freqStart: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0],
+            freqEnd: THOMPSON_BLISH_DRUM_PARTIALS_HZ[2],
+            q: 4.2,
+            gainPeak: 0.19,
+            attack: 0.005,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + dur * 0.36,
+            fundamentalHz: THOMPSON_BLISH_DRUM_PARTIALS_HZ[1],
+            baseDecaySec: 0.034,
+            gainPeak: 0.21,
+            hardness01: 0.86,
+            massBodyHz: 225,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (style === 'hk_roller_delayed') {
+          // H&K MP5A3 closed-bolt tubular recoil spring glide + curved 30-rd steel mag strip
+          const dur = isSlowMo ? 0.098 : 0.054;
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: dur,
+            filterType: 'bandpass',
+            freqStart: MP5_HK_SLAP_PARTIALS_HZ[0],
+            freqEnd: MP5_HK_SLAP_PARTIALS_HZ[1],
+            q: 4.6,
+            gainPeak: 0.17,
+            attack: 0.004,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + dur * 0.38,
+            fundamentalHz: MP5_HK_SLAP_PARTIALS_HZ[0],
+            baseDecaySec: 0.028,
+            gainPeak: 0.19,
+            hardness01: 0.9,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (style === 'hydraulic_rotary_cannon') {
+          // GE GAU-8/A double-ended 1,150-rd helical drum scoop & linkless sprocketed conveyor feed
+          const dur = isSlowMo ? 0.14 : 0.078;
+          this.emitModalPing({
+            startTime: now,
+            duration: dur,
+            freqStart: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[2],
+            freqEnd: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[2] * 1.18,
+            type: 'triangle',
+            gainPeak: 0.19,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + dur * 0.42,
+            fundamentalHz: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[3],
+            baseDecaySec: 0.038,
+            gainPeak: 0.23,
+            hardness01: 0.88,
+            massBodyHz: 158,
+            bus: 'mechanical',
+          });
+          break;
+        }
         // Multi-strand braided recoil spring metallic coil rasp + brass cartridge feed-lip strip
         const dur = isSlowMo ? 0.12 : 0.065;
         this.emitNoiseBurst({
@@ -2349,6 +2989,97 @@ class ProceduralGunsmithSoundEngine {
           });
           break;
         }
+        if (style === 'mg42_roller_buzzsaw') {
+          // MG 42 high-speed symmetric twin locking rollers slamming outward into barrel-extension mortises
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: MG42_ROLLER_SNAP_PARTIALS_HZ[0],
+            baseDecaySec: 0.044,
+            gainPeak: 0.3,
+            hardness01: 0.91,
+            massBodyHz: 215,
+            bus: 'ballistic',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.014 : 0.007),
+            fundamentalHz: MG42_ROLLER_SNAP_PARTIALS_HZ[1],
+            baseDecaySec: 0.048,
+            gainPeak: 0.34,
+            hardness01: 0.94,
+            massBodyHz: 255,
+            bus: 'ballistic',
+          });
+          break;
+        }
+        if (style === 'thompson_blish_drum') {
+          // Thompson M1928A1 heavy machined open-bolt battery slam + 45° bronze Blish H-block seating
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0],
+            baseDecaySec: 0.056,
+            gainPeak: 0.32,
+            hardness01: 0.84,
+            massBodyHz: 185,
+            bus: 'ballistic',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.018 : 0.009),
+            fundamentalHz: THOMPSON_BLISH_DRUM_PARTIALS_HZ[1],
+            baseDecaySec: 0.044,
+            gainPeak: 0.25,
+            hardness01: 0.88,
+            massBodyHz: 230,
+            bus: 'ballistic',
+          });
+          break;
+        }
+        if (style === 'hk_roller_delayed') {
+          // H&K MP5A3 closed-bolt twin-roller cam-out lockup + metallic tubular receiver "HK Slap" harmonics
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: MP5_HK_SLAP_PARTIALS_HZ[0],
+            baseDecaySec: 0.046,
+            gainPeak: 0.31,
+            hardness01: 0.92,
+            massBodyHz: 265,
+            bus: 'ballistic',
+          });
+          for (let i = 0; i < MP5_HK_SLAP_PARTIALS_HZ.length; i++) {
+            const fHk = MP5_HK_SLAP_PARTIALS_HZ[i];
+            this.emitModalPing({
+              startTime: now + (isSlowMo ? 0.015 : 0.008),
+              duration: (0.095 / (1 + i * 0.48)) * (isSlowMo ? 1.15 : 1.0),
+              freqStart: fHk * 1.004,
+              freqEnd: fHk * 0.995,
+              type: 'sine',
+              gainPeak: 0.11 / (1 + i * 0.62),
+              bus: 'ballistic',
+            });
+          }
+          break;
+        }
+        if (style === 'hydraulic_rotary_cannon') {
+          // GE GAU-8/A cam-driven 30×173mm rotary bolt-head lug lock inside 7-barrel star rotor
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[2],
+            baseDecaySec: 0.072,
+            gainPeak: 0.34,
+            hardness01: 0.84,
+            massBodyHz: 118,
+            bus: 'ballistic',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.02 : 0.01),
+            fundamentalHz: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[3],
+            baseDecaySec: 0.056,
+            gainPeak: 0.28,
+            hardness01: 0.91,
+            massBodyHz: 162,
+            bus: 'ballistic',
+          });
+          break;
+        }
         // Authoritative twin-stage cold-forged bolt-into-battery lug lockup ("ka-chunk")
         const lockBase =
           weaponId === 'p08'
@@ -2404,6 +3135,54 @@ class ProceduralGunsmithSoundEngine {
             gainPeak: 0.22,
             hardness01: 0.88,
             massBodyHz: 250,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (style === 'mg42_roller_buzzsaw') {
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: MG42_ROLLER_SNAP_PARTIALS_HZ[2],
+            baseDecaySec: 0.022,
+            gainPeak: 0.21,
+            hardness01: 0.92,
+            massBodyHz: 265,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (style === 'thompson_blish_drum') {
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: THOMPSON_BLISH_DRUM_PARTIALS_HZ[2],
+            baseDecaySec: 0.026,
+            gainPeak: 0.22,
+            hardness01: 0.87,
+            massBodyHz: 225,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (style === 'hk_roller_delayed') {
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: MP5_HK_SLAP_PARTIALS_HZ[2],
+            baseDecaySec: 0.024,
+            gainPeak: 0.21,
+            hardness01: 0.91,
+            massBodyHz: 300,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (style === 'hydraulic_rotary_cannon') {
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[3],
+            baseDecaySec: 0.028,
+            gainPeak: 0.22,
+            hardness01: 0.88,
+            massBodyHz: 175,
             bus: 'mechanical',
           });
           break;
@@ -3048,31 +3827,62 @@ class ProceduralGunsmithSoundEngine {
 
   /**
    * Synthesizes spent brass cartridge casing hitting the gunsmith bench / range floor
-   * with velocity-scaled cylindrical C26000 brass shell modes + rim tip-over micro-clink.
+   * with velocity- & bounce-index-damped cylindrical C26000 brass shell modes +
+   * rim tip-over micro-clink. Rate-limited cleanly (zero-GC circular stamp ring) so
+   * rapid-fire 1,200 RPM MG 42 / 3,000 RPM M134D bursts never flood Web Audio nodes.
    */
   public playBrassCasingBounce(
     caliber: CaliberProfile,
-    impactSpeedCmS: number
-  ): void {
+    impactSpeedCmS: number,
+    bounceIndex = 1,
+    nowMsOverride?: number
+  ): boolean {
     if (
       isArcheryCaliber(caliber) ||
+      caliber === '473_caseless' ||
+      caliber === '30x173_gau8' ||
       impactSpeedCmS <= 6 ||
       useAppStore.getState().sfxMuted
     ) {
-      return;
+      return false;
     }
-    const ctx = this.unlock();
-    if (!ctx || ctx.state !== 'running') return;
-
     const profile =
       CALIBER_ACOUSTIC_PROFILES[caliber] ??
       CALIBER_ACOUSTIC_PROFILES['9mm_para'];
-    const vel01 = Math.max(0.06, Math.min(1.0, (impactSpeedCmS - 6) / 240));
+    if (profile.casingRingHz <= 0) {
+      return false;
+    }
+
+    const nowMs =
+      nowMsOverride ??
+      (typeof performance !== 'undefined' ? performance.now() : Date.now());
+    if (nowMs - this.lastBrassBounceMs < BRASS_BOUNCE_MIN_INTERVAL_MS) {
+      return false;
+    }
+    let recentCount = 0;
+    for (let i = 0; i < BRASS_BOUNCE_MAX_PER_WINDOW; i++) {
+      if (nowMs - this.brassBounceStampRing[i] < BRASS_BOUNCE_WINDOW_MS) {
+        recentCount++;
+      }
+    }
+    if (recentCount >= BRASS_BOUNCE_MAX_PER_WINDOW) {
+      return false;
+    }
+
+    const ctx = this.unlock();
+    if (!ctx || ctx.state !== 'running') return false;
+
+    this.lastBrassBounceMs = nowMs;
+    this.brassBounceStampRing[this.brassBounceRingCursor] = nowMs;
+    this.brassBounceRingCursor =
+      (this.brassBounceRingCursor + 1) % BRASS_BOUNCE_MAX_PER_WINDOW;
+
+    const damping = computeBrassBounceDamping(impactSpeedCmS, bounceIndex);
     const now = ctx.currentTime + 0.0015;
 
     // Tiny deterministic pitch micro-variation from arrival timestamp so multiple casings sound distinct
     const jitter = 0.975 + ((now * 17.3) % 1) * 0.05;
-    const f0 = profile.casingRingHz * jitter;
+    const f0 = profile.casingRingHz * jitter * damping.pitchScale;
 
     // Floor / mat surface contact tick
     this.emitNoiseBurst({
@@ -3081,48 +3891,50 @@ class ProceduralGunsmithSoundEngine {
       filterType: 'highpass',
       freqStart: 2600,
       q: 1.4,
-      gainPeak: 0.14 * vel01,
+      gainPeak: 0.14 * damping.gainScale,
       attack: 0.0005,
       bus: 'ballistic',
     });
 
-    // Cylindrical hollow brass shell modal partials
+    // Cylindrical hollow C26000 drawn-brass shell modal partials
     const ringDecay =
-      caliber === '50_bmg' || caliber === '338_lapua' ? 0.19 : 0.135;
+      (caliber === '50_bmg' || caliber === '338_lapua' ? 0.19 : 0.135) *
+      damping.decayScale;
     for (let i = 0; i < BRASS_CASING_SHELL_PARTIALS.length; i++) {
       const ratio = BRASS_CASING_SHELL_PARTIALS[i];
       this.emitModalPing({
         startTime: now,
-        duration: ringDecay / (1 + i * 0.52),
+        duration: Math.max(0.012, ringDecay / (1 + i * 0.52)),
         freqStart: f0 * ratio,
         freqEnd: f0 * ratio * 0.992,
         type: 'sine',
-        gainPeak: (0.16 * vel01) / (1 + i * 0.68),
+        gainPeak: (0.16 * damping.gainScale) / (1 + i * 0.68),
         bus: 'ballistic',
       });
     }
 
-    // Secondary rim-rocking double-clink when casing tips flat onto its mouth
-    if (impactSpeedCmS < 155) {
-      const rockDelay = 0.014 + (1 - vel01) * 0.012;
+    // Secondary rim-rocking double-clink when casing tips flat onto its mouth (bounce 1 or soft settle)
+    if (impactSpeedCmS < 155 && bounceIndex <= 2) {
+      const rockDelay = 0.014 + (1 - damping.gainScale) * 0.012;
       this.emitModalPing({
         startTime: now + rockDelay,
-        duration: ringDecay * 0.55,
+        duration: Math.max(0.01, ringDecay * 0.55),
         freqStart: f0 * 1.03,
         freqEnd: f0 * 1.01,
         type: 'sine',
-        gainPeak: 0.075 * vel01,
+        gainPeak: 0.075 * damping.gainScale,
         bus: 'ballistic',
       });
       this.emitModalPing({
         startTime: now + rockDelay,
-        duration: ringDecay * 0.38,
+        duration: Math.max(0.008, ringDecay * 0.38),
         freqStart: f0 * BRASS_CASING_SHELL_PARTIALS[1] * 1.02,
         type: 'sine',
-        gainPeak: 0.045 * vel01,
+        gainPeak: 0.045 * damping.gainScale,
         bus: 'ballistic',
       });
     }
+    return true;
   }
 
   public playSelectorDetent(mode: 'safe' | 'semi' | 'auto'): void {
@@ -3360,6 +4172,150 @@ class ProceduralGunsmithSoundEngine {
       return;
     }
 
+    if (activeWeaponId === 'mp5') {
+      if (isPull) {
+        // H&K MP5A3 tubular cocking-channel pull & upward locking-notch hook
+        this.emitNoiseBurst({
+          startTime: now,
+          duration: 0.064,
+          filterType: 'bandpass',
+          freqStart: MP5_HK_SLAP_PARTIALS_HZ[0],
+          freqEnd: MP5_HK_SLAP_PARTIALS_HZ[1],
+          q: 4.5,
+          gainPeak: 0.19,
+          attack: 0.005,
+          bus: 'mechanical',
+        });
+        this.emitSteelWaveguideStrike({
+          startTime: now + 0.008,
+          fundamentalHz: MP5_HK_SLAP_PARTIALS_HZ[0],
+          baseDecaySec: 0.036,
+          gainPeak: 0.24,
+          hardness01: 0.91,
+          massBodyHz: 270,
+          bus: 'mechanical',
+        });
+      } else {
+        // Iconic H&K MP5A3 "HK Slap" — palm striking cocking handle down out of notch + twin-roller slam!
+        this.emitSteelWaveguideStrike({
+          startTime: now,
+          fundamentalHz: MP5_HK_SLAP_PARTIALS_HZ[0],
+          baseDecaySec: 0.044,
+          gainPeak: 0.31,
+          hardness01: 0.94,
+          massBodyHz: 255,
+          bus: 'ballistic',
+        });
+        for (let i = 0; i < MP5_HK_SLAP_PARTIALS_HZ.length; i++) {
+          const fHk = MP5_HK_SLAP_PARTIALS_HZ[i];
+          this.emitModalPing({
+            startTime: now + 0.014,
+            duration: 0.11 / (1 + i * 0.45),
+            freqStart: fHk * 1.005,
+            freqEnd: fHk * 0.994,
+            type: 'sine',
+            gainPeak: 0.12 / (1 + i * 0.6),
+            bus: 'ballistic',
+          });
+        }
+      }
+      return;
+    }
+
+    if (activeWeaponId === 'mg42') {
+      if (isPull) {
+        this.emitNoiseBurst({
+          startTime: now,
+          duration: 0.072,
+          filterType: 'bandpass',
+          freqStart: MG42_ROLLER_SNAP_PARTIALS_HZ[0],
+          freqEnd: MG42_ROLLER_SNAP_PARTIALS_HZ[2],
+          q: 4.2,
+          gainPeak: 0.21,
+          attack: 0.005,
+          bus: 'mechanical',
+        });
+        this.emitSteelWaveguideStrike({
+          startTime: now + 0.008,
+          fundamentalHz: MG42_ROLLER_SNAP_PARTIALS_HZ[0],
+          baseDecaySec: 0.042,
+          gainPeak: 0.26,
+          hardness01: 0.92,
+          massBodyHz: 225,
+          bus: 'mechanical',
+        });
+      } else {
+        this.emitSteelWaveguideStrike({
+          startTime: now + 0.012,
+          fundamentalHz: MG42_ROLLER_SNAP_PARTIALS_HZ[1],
+          baseDecaySec: 0.052,
+          gainPeak: 0.34,
+          hardness01: 0.93,
+          massBodyHz: 240,
+          bus: 'ballistic',
+        });
+      }
+      return;
+    }
+
+    if (activeWeaponId === 'thompson') {
+      if (isPull) {
+        this.emitNoiseBurst({
+          startTime: now,
+          duration: 0.075,
+          filterType: 'bandpass',
+          freqStart: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0],
+          freqEnd: THOMPSON_BLISH_DRUM_PARTIALS_HZ[1],
+          q: 3.9,
+          gainPeak: 0.2,
+          attack: 0.005,
+          bus: 'mechanical',
+        });
+        this.emitSteelWaveguideStrike({
+          startTime: now + 0.01,
+          fundamentalHz: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0],
+          baseDecaySec: 0.048,
+          gainPeak: 0.26,
+          hardness01: 0.85,
+          massBodyHz: 195,
+          bus: 'mechanical',
+        });
+      } else {
+        this.emitSteelWaveguideStrike({
+          startTime: now + 0.016,
+          fundamentalHz: THOMPSON_BLISH_DRUM_PARTIALS_HZ[0],
+          baseDecaySec: 0.058,
+          gainPeak: 0.33,
+          hardness01: 0.86,
+          massBodyHz: 185,
+          bus: 'ballistic',
+        });
+      }
+      return;
+    }
+
+    if (activeWeaponId === 'gau8') {
+      this.emitModalPing({
+        startTime: now,
+        duration: isPull ? 0.14 : 0.12,
+        freqStart: isPull ? 820 : 1080,
+        freqEnd: isPull ? 1080 : 760,
+        type: 'triangle',
+        gainPeak: 0.24,
+        bus: 'mechanical',
+      });
+      this.emitSteelWaveguideStrike({
+        startTime: now + 0.012,
+        fundamentalHz: GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ[3],
+        baseDecaySec: 0.052,
+        gainPeak: 0.28,
+        hardness01: 0.89,
+        massBodyHz: 155,
+        bus: isPull ? 'mechanical' : 'ballistic',
+      });
+      return;
+    }
+
     if (isPull) {
       // Braided recoil spring compression rasp + partial lug cam-out click
       this.emitNoiseBurst({
@@ -3509,9 +4465,26 @@ export function triggerManualPhasePreviewSound(
 
 export function playBrassCasingBounceSound(
   caliber: CaliberProfile,
-  impactSpeedCmS: number
-): void {
-  soundEngine.playBrassCasingBounce(caliber, impactSpeedCmS);
+  impactSpeedCmS: number,
+  bounceIndex = 1,
+  nowMsOverride?: number
+): boolean {
+  return soundEngine.playBrassCasingBounce(
+    caliber,
+    impactSpeedCmS,
+    bounceIndex,
+    nowMsOverride
+  );
+}
+
+/** Reports whether the active AudioContext master bus has a DynamicsCompressorNode soft-ceiling limiter. */
+export function hasMasterSoftCeilingLimiter(): boolean {
+  return soundEngine.hasSoftCeilingLimiter();
+}
+
+/** Resets cached AudioContext / limiter / bounce throttle state (used by deterministic tests). */
+export function resetMechanicalSoundEngine(): void {
+  soundEngine.reset();
 }
 
 export function playSelectorDetentSound(
