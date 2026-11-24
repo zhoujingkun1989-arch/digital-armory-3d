@@ -228,15 +228,15 @@ if "--postprocess" in sys.argv:
         height = is_warp * (0.45 + 0.55 * warp_crown + 0.06 * warp_fil) + (1.0 - is_warp) * (
             0.40 + 0.55 * weft_crown + 0.06 * weft_fil
         )
-        # Subtle diagonal gloss contrast between warp & weft tows (signature 3K carbon checker shimmer!)
-        warp_luma = 0.148 + 0.092 * warp_crown + 0.015 * warp_fil
-        weft_luma = 0.205 + 0.105 * weft_crown + 0.015 * weft_fil
+        # Crisp diagonal gloss contrast between warp & weft tows (signature 3K carbon checker shimmer!)
+        warp_luma = 0.136 + 0.106 * warp_crown + 0.018 * warp_fil
+        weft_luma = 0.214 + 0.122 * weft_crown + 0.018 * weft_fil
         luma = is_warp * warp_luma + (1.0 - is_warp) * weft_luma
 
         # Cool graphite-carbon tint (strictly above anti-black-crush floor!)
         carb_rgb = np.stack((luma * 0.96, luma * 0.99, luma * 1.05), axis=-1).astype(np.float32)
-        carb_rgh = (0.35 - 0.11 * height + 0.04 * (1.0 - is_warp)).astype(np.float32)
-        carb_met = (0.20 + 0.14 * height).astype(np.float32)
+        carb_rgh = (0.36 - 0.14 * height + 0.05 * (1.0 - is_warp)).astype(np.float32)
+        carb_met = (0.22 + 0.16 * height).astype(np.float32)
         return carb_rgb, height.astype(np.float32), carb_rgh, carb_met
 
     def _draw_rotated_horiz_text_on_riser_patch(
@@ -421,7 +421,7 @@ if "--postprocess" in sys.argv:
         _mix(albedo, c_rgb, stab_mask)
         _mix(rgh, c_rgh, stab_mask)
         _mix(met, c_met, stab_mask)
-        detail_h += (c_h - 0.5) * 0.24 * stab_mask
+        detail_h += (c_h - 0.5) * 0.28 * stab_mask
 
         # Crisp upright un-mirrored stabilizer branding on BOTH +Z & -Z flanks!
         SW, SH = 1800, 360
@@ -527,8 +527,8 @@ if "--postprocess" in sys.argv:
             rings = 0.5 + 0.5 * np.sin(rad * 42.0)
             fine_rings = 0.5 + 0.5 * np.sin(rad * 115.0)
             lathe_val = (rings * 0.65 + fine_rings * 0.35) * box_m
-            detail_h += (lathe_val - 0.5 * box_m) * 0.14
-            rgh += (lathe_val - 0.5 * box_m) * 0.032
+            detail_h += (lathe_val - 0.5 * box_m) * 0.18
+            rgh += (lathe_val - 0.5 * box_m) * 0.038
 
             # Crisp laser markings on solid cam perimeter & SwitchWeight-X module plate!
             im = Image.new("L", (CS, CS), 0)
@@ -701,7 +701,7 @@ if "--postprocess" in sys.argv:
         _mix(albedo, c_rgb, arrow_mask)
         _mix(rgh, c_rgh, arrow_mask)
         _mix(met, c_met, arrow_mask)
-        detail_h += (c_h - 0.5) * 0.22 * arrow_mask
+        detail_h += (c_h - 0.5) * 0.26 * arrow_mask
 
         # High-visibility cresting stripes just ahead of vanes (x in [7.7, 9.8]) + white spine spec text!
         AW, AH = 2400, 420
@@ -1019,9 +1019,9 @@ def _build_pbr_mat(
     if edge_wear > 0.001:
         geom = nt.nodes.new("ShaderNodeNewGeometry")
         ramp = nt.nodes.new("ShaderNodeValToRGB")
-        ramp.color_ramp.elements[0].position = 0.555
+        ramp.color_ramp.elements[0].position = 0.548
         ramp.color_ramp.elements[0].color = (0.0, 0.0, 0.0, 1.0)
-        ramp.color_ramp.elements[1].position = 0.635
+        ramp.color_ramp.elements[1].position = 0.625
         ramp.color_ramp.elements[1].color = (edge_wear, edge_wear, edge_wear, 1.0)
         nt.links.new(geom.outputs["Pointiness"], ramp.inputs["Fac"])
 
@@ -1176,26 +1176,26 @@ def _build_radial_lathe_copper_mat(name: str) -> bpy.types.Material:
 
     mix_c = nt.nodes.new("ShaderNodeMix")
     mix_c.data_type = "RGBA"
-    mix_c.inputs[6].default_value = srgb_to_lin(0.585, 0.402, 0.214)
-    mix_c.inputs[7].default_value = srgb_to_lin(0.670, 0.480, 0.268)
+    mix_c.inputs[6].default_value = srgb_to_lin(0.615, 0.418, 0.212)
+    mix_c.inputs[7].default_value = srgb_to_lin(0.725, 0.512, 0.278)
     nt.links.new(ring01.outputs["Result"], mix_c.inputs[0])
 
     rgh_m = nt.nodes.new("ShaderNodeMapRange")
     rgh_m.inputs["From Min"].default_value = 0.0
     rgh_m.inputs["From Max"].default_value = 1.0
-    rgh_m.inputs["To Min"].default_value = 0.22
-    rgh_m.inputs["To Max"].default_value = 0.30
+    rgh_m.inputs["To Min"].default_value = 0.19
+    rgh_m.inputs["To Max"].default_value = 0.27
     nt.links.new(ring01.outputs["Result"], rgh_m.inputs["Value"])
 
     nt.links.new(mix_c.outputs[2], bsdf.inputs["Base Color"])
     nt.links.new(rgh_m.outputs["Result"], bsdf.inputs["Roughness"])
-    bsdf.inputs["Metallic"].default_value = 0.91
+    bsdf.inputs["Metallic"].default_value = 0.93
 
     bev = nt.nodes.new("ShaderNodeBevel")
     bev.samples = 6
-    bev.inputs["Radius"].default_value = 0.020
+    bev.inputs["Radius"].default_value = 0.018
     bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.055
+    bump.inputs["Strength"].default_value = 0.068
     bump.inputs["Distance"].default_value = 0.014
     nt.links.new(ring01.outputs["Result"], bump.inputs["Height"])
     nt.links.new(bev.outputs["Normal"], bump.inputs["Normal"])
@@ -1209,29 +1209,29 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # Iconic Mathews Earth-Bronze / Granite-Slate Cerakote CNC 7075-T6 truss riser
         "R_EarthBronzeRiser": _build_pbr_mat(
             "R_EarthBronzeRiser",
-            base_srgb=(0.348, 0.314, 0.272),
-            roughness=0.37,
-            metallic=0.72,
-            bevel_r=0.036,
-            edge_wear=0.38,
-            edge_srgb=(0.68, 0.67, 0.66),
+            base_srgb=(0.318, 0.284, 0.242),
+            roughness=0.34,
+            metallic=0.78,
+            bevel_r=0.028,
+            edge_wear=0.34,
+            edge_srgb=(0.66, 0.63, 0.59),
             grain_scale=48.0,
-            grain_bump=0.034,
+            grain_bump=0.030,
             aniso_stretch=(0.55, 2.8, 2.8),
-            rough_var=0.038,
+            rough_var=0.036,
         ),
         "R_RiserMachinedAccent": _build_pbr_mat(
             "R_RiserMachinedAccent",
-            base_srgb=(0.420, 0.385, 0.340),
-            roughness=0.30,
-            metallic=0.80,
-            bevel_r=0.026,
-            edge_wear=0.45,
-            edge_srgb=(0.78, 0.78, 0.80),
+            base_srgb=(0.470, 0.428, 0.372),
+            roughness=0.25,
+            metallic=0.88,
+            bevel_r=0.022,
+            edge_wear=0.40,
+            edge_srgb=(0.82, 0.81, 0.82),
             grain_scale=44.0,
-            grain_bump=0.028,
+            grain_bump=0.024,
             aniso_stretch=(2.6, 0.5, 0.5),
-            rough_var=0.032,
+            rough_var=0.028,
         ),
         "R_PocketDarkAnodize": _build_pbr_mat(
             "R_PocketDarkAnodize",
@@ -1304,15 +1304,15 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # Crown-jewel Antique Bronze-Gold CNC SwitchWeight-X eccentric binary cams!
         "A_CamBronzeGold": _build_pbr_mat(
             "A_CamBronzeGold",
-            base_srgb=(0.688, 0.496, 0.272),
-            roughness=0.25,
-            metallic=0.91,
-            bevel_r=0.024,
-            edge_wear=0.34,
-            edge_srgb=(0.86, 0.72, 0.46),
+            base_srgb=(0.725, 0.515, 0.268),
+            roughness=0.21,
+            metallic=0.94,
+            bevel_r=0.020,
+            edge_wear=0.32,
+            edge_srgb=(0.91, 0.77, 0.49),
             grain_scale=40.0,
-            grain_bump=0.022,
-            rough_var=0.028,
+            grain_bump=0.020,
+            rough_var=0.026,
         ),
         "A_CamCopperTrack": _build_radial_lathe_copper_mat("A_CamCopperTrack"),
         "A_ModuleDarkAnodize": _build_pbr_mat(
@@ -1534,16 +1534,16 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "Q_BroadheadSteel": _build_pbr_mat(
             "Q_BroadheadSteel",
-            base_srgb=(0.82, 0.85, 0.89),
-            roughness=0.14,
+            base_srgb=(0.84, 0.87, 0.91),
+            roughness=0.12,
             metallic=0.98,
-            bevel_r=0.010,
-            edge_wear=0.18,
-            edge_srgb=(0.95, 0.96, 0.98),
+            bevel_r=0.008,
+            edge_wear=0.16,
+            edge_srgb=(0.96, 0.97, 0.99),
             grain_scale=26.0,
-            grain_bump=0.012,
+            grain_bump=0.010,
             aniso_stretch=(0.35, 3.8, 3.8),
-            rough_var=0.018,
+            rough_var=0.015,
         ),
     }
 
@@ -2062,6 +2062,7 @@ def finish_part(
     bevel_segs: int = 2,
     sharp_deg: float = 34.0,
     weighted_normals: bool = True,
+    lock_flat_walls: bool = False,
 ) -> bpy.types.Object:
     select_only([obj], obj)
     if bevel_w > 0.0:
@@ -2078,9 +2079,7 @@ def finish_part(
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
-    degen = [f for f in bm.faces if f.calc_area() < 1e-10]
-    if degen:
-        bmesh.ops.delete(bm, geom=degen, context="FACES")
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-6, edges=bm.edges)
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     if bm.calc_volume(signed=True) < 0.0:
         bmesh.ops.reverse_faces(bm, faces=bm.faces)
@@ -2091,6 +2090,14 @@ def finish_part(
     for e in bm.edges:
         if len(e.link_faces) == 2:
             e.smooth = e.calc_face_angle(0.0) < angle_rad
+            if lock_flat_walls and e.smooth:
+                f0, f1 = e.link_faces[0], e.link_faces[1]
+                # Lock sharp crease where a large planar +/-Z cheek meets a curved bevel
+                # (Blender Y = -Three.js Z), eliminating bevel normal bleed onto flat CNC walls!
+                flat0 = abs(f0.normal.y) > 0.96 and f0.calc_area() > 0.12
+                flat1 = abs(f1.normal.y) > 0.96 and f1.calc_area() > 0.12
+                if flat0 != flat1:
+                    e.smooth = False
         else:
             e.smooth = False
     bm.to_mesh(obj.data)
@@ -2105,6 +2112,18 @@ def finish_part(
         wn.keep_sharp = True
         bpy.ops.object.modifier_apply(modifier=wn.name)
     return obj
+
+
+def triangulate_all_keep_normals(all_objs: list[bpy.types.Object]):
+    """Triangulate all meshes BEFORE Cycles tangent-normal baking so baked tangent frames
+    match the exact exported Draco glTF triangles 1:1 (zero diagonal facet streaks!)."""
+    for o in all_objs:
+        select_only([o], o)
+        mod = o.modifiers.new(name="TriangulatePreBake", type="TRIANGULATE")
+        mod.quad_method = "BEAUTY"
+        mod.ngon_method = "BEAUTY"
+        mod.keep_custom_normals = True
+        bpy.ops.object.modifier_apply(modifier=mod.name)
 
 
 # =============================================================================
@@ -2125,7 +2144,7 @@ def build_lift33_riser(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
         (-2.35, 11.20), ( 3.45, 11.20), ( 3.55, 14.00), ( 2.45, 21.50),
         ( 0.85, 28.50), ( 0.15, 32.70), (-2.25, 32.70), (-2.35, 27.00),
     ]
-    upper_slab = mk_extrude_z("u_slab", upper_poly, -1.43, 1.43, bevel=0.055, bevel_segs=2, mat=m_riser)
+    upper_slab = mk_extrude_z("u_slab", upper_poly, -1.43, 1.43, bevel=0.066, bevel_segs=3, mat=m_riser)
 
     # Opposing triangular & trapezoidal Mathews LIFT 33 skeletonized CNC truss pockets!
     # Preserves generous solid outer beams (X in [-2.35..-1.52] rear & forward rib) + crisp diagonal struts!
@@ -2144,7 +2163,7 @@ def build_lift33_riser(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     ]
     u_cutters = [
         mk_flared_cutout_z(
-            f"uc_{i}", _chamfer_poly2d(p, 0.15), z_half_inner=1.43, flare=0.095, flare_depth=0.14, mat=m_acc
+            f"uc_{i}", _chamfer_poly2d(p, 0.17), z_half_inner=1.43, flare=0.125, flare_depth=0.17, mat=m_acc
         )
         for i, p in enumerate(upper_cut_polys)
     ]
@@ -2156,7 +2175,7 @@ def build_lift33_riser(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
         (-2.30, -32.70), ( 0.15, -32.70), ( 1.25, -26.50), ( 3.55, -13.50),
         ( 3.55,  -6.80), (-1.85,  -6.80), (-2.35, -16.00),
     ]
-    lower_slab = mk_extrude_z("l_slab", lower_poly, -1.43, 1.43, bevel=0.055, bevel_segs=2, mat=m_riser)
+    lower_slab = mk_extrude_z("l_slab", lower_poly, -1.43, 1.43, bevel=0.066, bevel_segs=3, mat=m_riser)
 
     lower_cut_polys = [
         # Bay 1 (Y -14.70..-10.85): opposing triangles below stabilizer bridge
@@ -2173,7 +2192,7 @@ def build_lift33_riser(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     ]
     l_cutters = [
         mk_flared_cutout_z(
-            f"lc_{i}", _chamfer_poly2d(p, 0.15), z_half_inner=1.43, flare=0.095, flare_depth=0.14, mat=m_acc
+            f"lc_{i}", _chamfer_poly2d(p, 0.17), z_half_inner=1.43, flare=0.125, flare_depth=0.17, mat=m_acc
         )
         for i, p in enumerate(lower_cut_polys)
     ]
@@ -2188,27 +2207,27 @@ def build_lift33_riser(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
 
     # Arrow shelf deck (y in [0.85, 1.55], z in [-1.42, +1.25]) with smooth chamfered shelf radius
     shelf_plate = mk_box(
-        "shelf_plate", 5.10, 0.72, 2.66, [("t", 0.55, 1.20, -0.08)], mat=m_riser, bevel=0.06, bevel_segs=2
+        "shelf_plate", 5.10, 0.72, 2.66, [("t", 0.55, 1.20, -0.08)], mat=m_riser, bevel=0.070, bevel_segs=3
     )
 
     # 4. Asymmetric Caged Sight Window (y in [1.15, 11.45])
     # Rear structural spine spans full Z [-1.43, +1.43] (HERO ENGRAVING SLAB!)
     rear_sight_spine = mk_box(
-        "rear_sight_spine", 1.78, 10.40, 2.86, [("t", -1.46, 6.30, 0.0)], mat=m_riser, bevel=0.055, bevel_segs=2
+        "rear_sight_spine", 1.78, 10.40, 2.86, [("t", -1.46, 6.30, 0.0)], mat=m_riser, bevel=0.066, bevel_segs=3
     )
     # Forward caged bridge sits strictly on -Z side (z in [-1.45, -0.45]), leaving z > -0.45 100% OPEN!
     front_left_bridge = mk_box(
-        "front_left_bridge", 1.65, 10.40, 1.00, [("t", 2.55, 6.30, -0.95)], mat=m_riser, bevel=0.055, bevel_segs=2
+        "front_left_bridge", 1.65, 10.40, 1.00, [("t", 2.55, 6.30, -0.95)], mat=m_riser, bevel=0.064, bevel_segs=3
     )
     # Carve two sleek vertical weight-reduction slots in the forward -Z bridge for authentic Mathews silhouette
     fb_cuts = [
         mk_flared_cutout_z(
-            "fb_c1", _chamfer_poly2d([(2.15, 2.45), (2.95, 2.45), (2.95, 5.10), (2.15, 5.10)], 0.14),
-            z_half_inner=0.50, flare=0.045, flare_depth=0.07, mat=m_acc,
+            "fb_c1", _chamfer_poly2d([(2.15, 2.45), (2.95, 2.45), (2.95, 5.10), (2.15, 5.10)], 0.16),
+            z_half_inner=0.50, flare=0.055, flare_depth=0.085, mat=m_acc,
         ),
         mk_flared_cutout_z(
-            "fb_c2", _chamfer_poly2d([(2.15, 7.60), (2.95, 7.60), (2.95, 10.15), (2.15, 10.15)], 0.14),
-            z_half_inner=0.50, flare=0.045, flare_depth=0.07, mat=m_acc,
+            "fb_c2", _chamfer_poly2d([(2.15, 7.60), (2.95, 7.60), (2.95, 10.15), (2.15, 10.15)], 0.16),
+            z_half_inner=0.50, flare=0.055, flare_depth=0.085, mat=m_acc,
         ),
     ]
     for fc in fb_cuts:
@@ -2293,27 +2312,34 @@ def build_lift33_riser(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
         ],
         "lift33_riser",
     )
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_lift33_grip(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     """R-02: Mathews Engage Ergonomic Soft-Touch Overmolded Grip (`pos=[-0.25, -3.50, 0]`).
-    Smoothly lofted ergonomic wraparound shell with palm swell, narrow wrist throat & stippled inlays."""
+    13-station smoothly contoured ergonomic wraparound shell with palm swell, narrow Centergy
+    wrist throat, conformal rounded side traction inlays & sculpted front palm-ridge pad."""
     m_rub = mats["R_EngageRubber"]
     m_in = mats["R_EngageInlay"]
 
-    # Sculpted hollow wraparound grip shell lofted smoothly along Y in [-3.55, +3.45]
-    # Exact outer envelope stays inside min=[-1.535, -3.55, -1.23], max=[+1.585, +3.45, +1.23]
+    # Sculpted 13-station hollow wraparound grip shell lofted smoothly along Y in [-3.55, +3.45]
+    # Exact outer envelope stays strictly inside min=[-1.535, -3.55, -1.23], max=[+1.585, +3.45, +1.23]
     y_stations = [
-        (-3.55, 0.94, 0.94, 0.00),
-        (-3.15, 0.99, 0.99, 0.02),
-        (-1.60, 1.00, 1.00, 0.04),  # ergonomic lower palm swell
-        ( 0.00, 0.97, 0.96, 0.01),
-        ( 1.85, 0.93, 0.91, -0.02), # narrow Centergy low-torque thumb web
-        ( 3.10, 0.96, 0.94, 0.00),
-        ( 3.45, 0.92, 0.90, 0.00),
+        (-3.55, 0.91, 0.91, 0.00),
+        (-3.32, 0.96, 0.96, 0.01),
+        (-2.90, 0.99, 0.99, 0.02),
+        (-2.25, 1.00, 1.00, 0.04),  # ergonomic lower palm swell
+        (-1.45, 1.00, 1.00, 0.05),
+        (-0.65, 0.99, 0.98, 0.03),
+        ( 0.15, 0.96, 0.95, 0.01),
+        ( 1.00, 0.94, 0.92, -0.01),
+        ( 1.85, 0.92, 0.90, -0.03), # narrow Centergy low-torque thumb web
+        ( 2.55, 0.94, 0.92, -0.01),
+        ( 3.05, 0.96, 0.94, 0.00),
+        ( 3.32, 0.94, 0.92, 0.00),
+        ( 3.45, 0.90, 0.89, 0.00),
     ]
-    n_seg = 28
+    n_seg = 36
     bm = bmesh.new()
     outer_rings = []
     inner_rings = []
@@ -2323,9 +2349,10 @@ def build_lift33_grip(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
         for k in range(n_seg):
             a = 2.0 * math.pi * k / n_seg
             ca, sa = math.cos(a), math.sin(a)
-            # Superellipse cross-section for ergonomic rounded rectangular grip feel
-            ox = dx + math.copysign(abs(ca) ** 0.72, ca) * (1.52 * sx)
-            oz = math.copysign(abs(sa) ** 0.78, sa) * (1.17 * sz)
+            # Ergonomic superellipse with subtle curved palm-ridge contour on front (+X)
+            front_ridge = 0.045 * max(0.0, ca) ** 2.2 * (1.0 - abs(y_val + 0.3) / 4.2)
+            ox = dx + math.copysign(abs(ca) ** 0.74, ca) * (1.51 * sx) + front_ridge
+            oz = math.copysign(abs(sa) ** 0.78, sa) * (1.16 * sz)
             # Inner hollow tang cavity: cleanly clears Centergy tang (X in [-1.18, +1.18], Z in [-0.88, +0.88])
             ix = math.copysign(abs(ca) ** 0.50, ca) * 1.18
             iz = math.copysign(abs(sa) ** 0.50, sa) * 0.88
@@ -2350,13 +2377,31 @@ def build_lift33_grip(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     _apply_three_xform(bm, [])
     shell = _bm_to_obj("grip_shell", bm, m_rub)
 
-    # Raised stippled side traction panels & contoured front palm-ridge pad
-    inlay_l = mk_box("g_in_l", 1.72, 4.75, 0.14, [("t", -0.06, -0.10, -1.15)], mat=m_in, bevel=0.035, bevel_segs=2)
-    inlay_r = mk_box("g_in_r", 1.72, 4.75, 0.14, [("t", -0.06, -0.10,  1.15)], mat=m_in, bevel=0.035, bevel_segs=2)
-    front_pad = mk_box("g_front", 0.44, 5.35, 1.32, [("t", 1.36, -0.10, 0.0)], mat=m_in, bevel=0.055, bevel_segs=2)
+    # Conformal rounded stadium-oval tactile rubber side inlays (zero boxy slab overhangs!)
+    def _stadium_xy(cx: float, cy: float, hx: float, hy: float, r: float, segs_arc: int = 8):
+        pts = []
+        corners = [
+            (cx + hx - r, cy + hy - r, 0.0, math.pi * 0.5),
+            (cx - hx + r, cy + hy - r, math.pi * 0.5, math.pi),
+            (cx - hx + r, cy - hy + r, math.pi, math.pi * 1.5),
+            (cx + hx - r, cy - hy + r, math.pi * 1.5, math.pi * 2.0),
+        ]
+        for ccx, ccy, a0, a1 in corners:
+            for j in range(segs_arc + 1):
+                a = a0 + (a1 - a0) * (j / segs_arc)
+                pts.append((ccx + r * math.cos(a), ccy + r * math.sin(a)))
+        return pts
+
+    side_poly = _stadium_xy(-0.04, -0.15, 0.84, 2.35, 0.52, segs_arc=6)
+    inlay_l = mk_extrude_z("g_in_l", side_poly, -1.22, -1.04, bevel=0.055, bevel_segs=3, mat=m_in)
+    inlay_r = mk_extrude_z("g_in_r", side_poly,  1.04,  1.22, bevel=0.055, bevel_segs=3, mat=m_in)
+
+    # Smooth contoured ergonomic front palm-ridge traction pad conforming to front superellipse
+    front_poly_zy = _stadium_xy(0.0, -0.15, 0.62, 2.55, 0.42, segs_arc=6)
+    front_pad = mk_extrude_x("g_front", front_poly_zy, 1.18, 1.58, bevel=0.075, bevel_segs=3, mat=m_in)
 
     obj = join_objects([shell, inlay_l, inlay_r, front_pad], "lift33_grip")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=42.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=44.0)
 
 
 def _build_limb_pocket(is_upper: bool, mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -2544,7 +2589,7 @@ def _build_switchweight_cam(is_upper: bool, mats: dict[str, bpy.types.Material])
     m_mod = mats["A_ModuleDarkAnodize"]
     m_ti = mats["A_Stainless"]
 
-    def cam_outer_pts(r_offset: float = 0.0, n_pts: int = 72) -> list[tuple[float, float]]:
+    def cam_outer_pts(r_offset: float = 0.0, n_pts: int = 96) -> list[tuple[float, float]]:
         pts = []
         for i in range(n_pts):
             a = (i / n_pts) * math.pi * 2.0
@@ -2558,15 +2603,15 @@ def _build_switchweight_cam(is_upper: bool, mats: dict[str, bpy.types.Material])
         return pts
 
     # 1. Main Cam Web Sandwich with Deep CNC Peripheral Bowstring V-Groove around Z = 0!
-    flange_l = mk_extrude_z("cam_fl_l", cam_outer_pts(0.0), -0.24, -0.07, bevel=0.028, bevel_segs=2, mat=m_gold)
-    flange_r = mk_extrude_z("cam_fl_r", cam_outer_pts(0.0),  0.07,  0.24, bevel=0.028, bevel_segs=2, mat=m_gold)
+    flange_l = mk_extrude_z("cam_fl_l", cam_outer_pts(0.0), -0.24, -0.07, bevel=0.030, bevel_segs=3, mat=m_gold)
+    flange_r = mk_extrude_z("cam_fl_r", cam_outer_pts(0.0),  0.07,  0.24, bevel=0.030, bevel_segs=3, mat=m_gold)
     groove_core = mk_extrude_z("cam_groove", cam_outer_pts(-0.24), -0.10, 0.10, bevel=0.0, mat=m_cop)
     # Axle hub reinforcement boss spanning full cam thickness
-    hub_boss = mk_cyl("cam_hub", 0.72, 0.72, 0.56, axis="z", segs=32, mat=m_gold, bevel=0.03)
+    hub_boss = mk_cyl("cam_hub", 0.72, 0.72, 0.56, axis="z", segs=36, mat=m_gold, bevel=0.032)
     main_web = join_objects([flange_l, groove_core, flange_r, hub_boss], "cam_web_raw")
 
     # 2. Twin Inner & Outer Secondary Yoke/Control Cable Spiral Track Drums (Z in [-0.62..-0.24] & [+0.24..+0.62])
-    def track_pts(r_off: float = 0.0, n_pts: int = 56) -> list[tuple[float, float]]:
+    def track_pts(r_off: float = 0.0, n_pts: int = 72) -> list[tuple[float, float]]:
         pts = []
         for i in range(n_pts):
             a = (i / n_pts) * math.pi * 2.0
@@ -2574,16 +2619,16 @@ def _build_switchweight_cam(is_upper: bool, mats: dict[str, bpy.types.Material])
             pts.append((math.cos(a) * r, math.sin(a) * r))
         return pts
 
-    trk_l_out = mk_extrude_z("tl_o", track_pts(0.0),   -0.60, -0.47, bevel=0.022, bevel_segs=2, mat=m_cop)
+    trk_l_out = mk_extrude_z("tl_o", track_pts(0.0),   -0.60, -0.47, bevel=0.024, bevel_segs=3, mat=m_cop)
     trk_l_grv = mk_extrude_z("tl_g", track_pts(-0.18), -0.49, -0.35, bevel=0.0, mat=m_mod)
-    trk_l_in  = mk_extrude_z("tl_i", track_pts(0.0),   -0.37, -0.23, bevel=0.022, bevel_segs=2, mat=m_cop)
+    trk_l_in  = mk_extrude_z("tl_i", track_pts(0.0),   -0.37, -0.23, bevel=0.024, bevel_segs=3, mat=m_cop)
 
-    trk_r_in  = mk_extrude_z("tr_i", track_pts(0.0),    0.23,  0.37, bevel=0.022, bevel_segs=2, mat=m_cop)
+    trk_r_in  = mk_extrude_z("tr_i", track_pts(0.0),    0.23,  0.37, bevel=0.024, bevel_segs=3, mat=m_cop)
     trk_r_grv = mk_extrude_z("tr_g", track_pts(-0.18),  0.35,  0.49, bevel=0.0, mat=m_mod)
-    trk_r_out = mk_extrude_z("tr_o", track_pts(0.0),    0.47,  0.60, bevel=0.022, bevel_segs=2, mat=m_cop)
+    trk_r_out = mk_extrude_z("tr_o", track_pts(0.0),    0.47,  0.60, bevel=0.024, bevel_segs=3, mat=m_cop)
 
     # Boolean-cut exact central axle bore (r = 0.36) + chamfered CNC spoke weight-reduction windows!
-    axle_cut = mk_cyl("cam_ax_cut", 0.36, 0.36, 1.80, axis="z", segs=28, mat=m_mod)
+    axle_cut = mk_cyl("cam_ax_cut", 0.36, 0.36, 1.80, axis="z", segs=32, mat=m_mod)
     spoke_cuts = [axle_cut]
     drum_cut_polys = []
     for k in range(4):
@@ -2603,10 +2648,10 @@ def _build_switchweight_cam(is_upper: bool, mats: dict[str, bpy.types.Material])
                 (math.cos(a_mid - da * 0.80) * r_out, math.sin(a_mid - da * 0.80) * r_out),
                 (math.cos(a_mid - da) * r_in, math.sin(a_mid - da) * r_in),
             ],
-            r=0.12,
+            r=0.14,
         )
         spoke_cuts.append(
-            mk_flared_cutout_z(f"cw_{k}", win_pts, z_half_inner=0.24, flare=0.055, flare_depth=0.07, mat=m_cop)
+            mk_flared_cutout_z(f"cw_{k}", win_pts, z_half_inner=0.24, flare=0.068, flare_depth=0.085, mat=m_cop)
         )
         # Matching inner skeletonized spoke windows through secondary cable drums (leaving solid cable track rim!)
         r_drum_edge = 1.65 + 0.72 * max(0.0, math.cos(a_mid - s * 0.50))
@@ -2663,9 +2708,33 @@ def _build_switchweight_cam(is_upper: bool, mats: dict[str, bpy.types.Material])
         xform=[("t", 1.85, -s * 1.85, 0.32)], mat=mats["A_ElastomerDark"], bevel=0.025,
     )
 
+    # 4b. Twin CNC Titanium Sealed Ball-Bearing Race Shields seated concentrically around central axle bore!
+    #     Strictly stays inside r in [0.365..0.565] (< 0.66 timing ticks) & z in [-0.625, +0.625] (inside BBOX!)
+    bearing_l = mk_lathe_x(
+        "cam_brg_l",
+        [
+            (0.368, -0.575), (0.565, -0.575), (0.565, -0.622), (0.505, -0.628),
+            (0.495, -0.606), (0.425, -0.606), (0.415, -0.628), (0.368, -0.622),
+            (0.368, -0.575),
+        ],
+        segs=36, xform=[("ry", -math.pi * 0.5)], mat=m_ti,
+    )
+    bearing_r = mk_lathe_x(
+        "cam_brg_r",
+        [
+            (0.368, 0.575), (0.368, 0.622), (0.415, 0.628), (0.425, 0.606),
+            (0.495, 0.606), (0.505, 0.628), (0.565, 0.622), (0.565, 0.575),
+            (0.368, 0.575),
+        ],
+        segs=36, xform=[("ry", -math.pi * 0.5)], mat=m_ti,
+    )
+
     name = "lift33_upper_cam" if is_upper else "lift33_lower_cam"
-    obj = join_objects([main_web, trk_l, trk_r, mod_plate, *mod_bolts, draw_stop, stop_rubber], name)
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    obj = join_objects(
+        [main_web, trk_l, trk_r, mod_plate, *mod_bolts, draw_stop, stop_rubber, bearing_l, bearing_r],
+        name,
+    )
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_lift33_limb_dampeners(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -3008,26 +3077,35 @@ def build_lift33_quiver_hood(mats: dict[str, bpy.types.Material]) -> bpy.types.O
     m_anod = mats["Q_QuiverAnodize"]
 
     # Inverted-U watertight hollow hood shell extruded along X in [-3.32, +3.32]
-    # Outer +Z & -Z flat flanks serve as hero UV faces for crisp `MATHEWS LOWPRO` crest!
+    # Keeps flat outer +Z & -Z hero panels (y in [-2.85, +4.30], z = ±1.15) crisp for `MATHEWS LOWPRO` crest,
+    # while sculpting a sleek chamfered aerodynamic crown dome up to y = +5.15!
     hood_zy = [
         (-1.15, -2.85), (-0.82, -2.85), (-0.82, 3.85), ( 0.82, 3.85),
-        ( 0.82, -2.85), ( 1.15, -2.85), ( 1.15, 5.15), (-1.15, 5.15),
+        ( 0.82, -2.85), ( 1.15, -2.85), ( 1.15, 4.30), ( 0.98, 4.82),
+        ( 0.72,  5.15), (-0.72,  5.15), (-0.98, 4.82), (-1.15, 4.30),
     ]
-    hood_shell = mk_extrude_x("qh_shell", hood_zy, -3.32, 3.32, bevel=0.06, bevel_segs=2, mat=m_poly)
-    side_l = mk_box("qh_sl", 0.38, 8.00, 2.24, [("t", -3.13, 1.15, 0.0)], mat=m_poly, bevel=0.05, bevel_segs=2)
-    side_r = mk_box("qh_sr", 0.38, 8.00, 2.24, [("t",  3.13, 1.15, 0.0)], mat=m_poly, bevel=0.05, bevel_segs=2)
+    hood_shell = mk_extrude_x("qh_shell", hood_zy, -3.32, 3.32, bevel=0.070, bevel_segs=3, mat=m_poly)
+    # Contoured end cheeks matching the exact tapered crown profile
+    end_zy = [
+        (-1.11, -2.85), ( 1.11, -2.85), ( 1.11, 4.30), ( 0.95, 4.80),
+        ( 0.70,  5.12), (-0.70,  5.12), (-0.95, 4.80), (-1.11, 4.30),
+    ]
+    side_l = mk_extrude_x("qh_sl", end_zy, -3.30, -2.92, bevel=0.055, bevel_segs=3, mat=m_poly)
+    side_r = mk_extrude_x("qh_sr", end_zy,  2.92,  3.30, bevel=0.055, bevel_segs=3, mat=m_poly)
+    # Recessed decorative crown stiffener spine ridge along top dome (strictly inside y <= 5.15!)
+    crown_rib = mk_box("qh_crib", 5.80, 0.24, 0.56, [("t", 0.0, 5.03, 0.0)], mat=m_anod, bevel=0.04, bevel_segs=2)
 
     # Internal micro-cellular acoustic foam broadhead cushion cap inside upper hood dome
     foam_cap = mk_box("qh_foam", 5.65, 1.35, 1.56, [("t", 0.0, 3.10, 0.0)], mat=m_foam, bevel=0.06, bevel_segs=2)
 
     # Upper 5-slot arrow gripper bar (y_local = -7.50 -> y_world = +15.0)
-    upper_grip = mk_box("qh_ugrip", 6.55, 1.25, 1.95, [("t", 0.0, -7.50, -0.05)], mat=m_poly, bevel=0.05, bevel_segs=2)
+    upper_grip = mk_box("qh_ugrip", 6.55, 1.25, 1.95, [("t", 0.0, -7.50, -0.05)], mat=m_poly, bevel=0.055, bevel_segs=3)
 
     # Anodized spine socket collar connecting hood down onto twin vertical carbon rods
-    spine_collar = mk_box("qh_collar", 2.30, 8.80, 0.85, [("t", 0.0, -3.50, -0.92)], mat=m_anod, bevel=0.05, bevel_segs=2)
+    spine_collar = mk_box("qh_collar", 2.30, 8.80, 0.85, [("t", 0.0, -3.50, -0.92)], mat=m_anod, bevel=0.055, bevel_segs=3)
 
-    obj = join_objects([hood_shell, side_l, side_r, foam_cap, upper_grip, spine_collar], "lift33_quiver_hood")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    obj = join_objects([hood_shell, side_l, side_r, crown_rib, foam_cap, upper_grip, spine_collar], "lift33_quiver_hood")
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_lift33_quiver_latch(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -3097,28 +3175,28 @@ def build_lift33_arrow_shaft(mats: dict[str, bpy.types.Material]) -> bpy.types.O
     )
     parts.append(half_out)
 
-    # 5. Three Helical 2" High-Profile Blazer Fletching Vanes (x in [2.40, 7.60], 120 deg apart!)
+    # 5. Three Helical 2" High-Profile Parabolic Blazer Fletching Vanes (x in [2.40, 7.60], 120 deg apart!)
     # Cock vane (k=0) = crisp white; Hen vanes (k=1, 2) = vivid hunting neon-orange!
-    vane_xy = [
-        (0.00, 0.28), (0.85, 0.92), (4.20, 1.05), (5.10, 0.52), (5.20, 0.28)
-    ]
     for k in range(3):
         angle = (k * math.pi * 2.0) / 3.0 + 0.35
         v_mat = m_vw if k == 0 else m_vo
-        # Build tapered, helically twisted watertight vane directly in bmesh
+        # Build tapered, helically twisted watertight parabolic vane directly in bmesh
         bm = bmesh.new()
-        n_slices = 10
+        n_slices = 18
         half_z = 0.048
-        # Build smooth lofted blade profile from x=0..5.2 with authentic helical twist (0.16 rad)
-        # Profile height h(u) matching Blazer vane silhouette
+        # Smooth C1 parabolic Blazer vane aerodynamic silhouette (strictly inside r in [0.28..1.05])
         def vane_top_r(vx: float) -> float:
-            if vx < 0.85:
-                return 0.28 + (0.92 - 0.28) * (vx / 0.85)
-            if vx < 4.20:
-                return 0.92 + (1.05 - 0.92) * ((vx - 0.85) / 3.35)
-            if vx < 5.10:
-                return 1.05 + (0.52 - 1.05) * ((vx - 4.20) / 0.90)
-            return 0.52 + (0.28 - 0.52) * min(1.0, (vx - 5.10) / 0.10)
+            if vx < 1.05:
+                u = vx / 1.05
+                # Smooth S-curved aerodynamic leading ramp
+                return 0.28 + (0.94 - 0.28) * (0.5 - 0.5 * math.cos(math.pi * (u ** 0.82)))
+            if vx < 4.15:
+                u = (vx - 1.05) / 3.10
+                # Gentle arched parabolic dorsal spine peaking at r = 1.05
+                return 0.94 + 0.11 * math.sin(u * math.pi * 0.72)
+            u = min(1.0, (vx - 4.15) / 1.05)
+            # Swept teardrop trailing taper back onto carbon shaft
+            return 0.28 + (1.035 - 0.28) * (0.5 + 0.5 * math.cos(math.pi * (u ** 1.15)))
 
         rings = []
         for s_i in range(n_slices + 1):
@@ -3163,22 +3241,59 @@ def build_lift33_broadhead(mats: dict[str, bpy.types.Material]) -> bpy.types.Obj
     m_org = mats["Q_LatchOrange"]
 
     parts = []
-    # 1. CNC Turned 440C Stainless Ferrule & Armor-Piercing Trocar Chisel Point (x in [-0.45, +4.45])
+    # 1. CNC Turned 440C Stainless Ferrule (x in [-0.45, +3.48]) + Seamless 3-Faceted Trocar Chisel Point (x in [3.44, +4.45])
     ferrule = mk_lathe_x(
         "bh_ferrule",
         [
             (0.00, -0.45), (0.24, -0.45), (0.37, -0.35), (0.38, 0.55),
-            (0.44,  0.65), (0.44,  1.10), (0.36,  2.35), (0.20, 3.55),
-            (0.04,  4.40), (0.00,  4.45),
+            (0.44,  0.65), (0.44,  1.10), (0.36,  2.35), (0.188, 3.48),
+            (0.00,  3.48),
         ],
-        segs=28, mat=m_ti,
+        segs=36, mat=m_ti,
     )
     parts.append(ferrule)
 
-    # 2. Firewalled Anodized Safety-Orange Blade Retention Collar (x in [0.50, 1.02])
-    ret_collar = mk_cyl(
-        "bh_collar", 0.46, 0.46, 0.52, axis="x", segs=26,
-        xform=[("t", 0.75, 0.0, 0.0)], mat=m_org, bevel=0.03,
+    # Seamless CNC 3-fluted armor-piercing trocar chisel point transitioning flush from Ø3.76mm ferrule shoulder
+    bm_tip = bmesh.new()
+    n_t = 12  # 3 blades x 4 angular steps (k % 4 == 0 are the 3 sharp trocar chisel ridges!)
+    v_back_c = bm_tip.verts.new((3.44, 0.0, 0.0))
+    v_apex = bm_tip.verts.new((4.45, 0.0, 0.0))
+    ring_collar = []
+    ring_chisel = []
+    for k in range(n_t):
+        a = (k * math.pi * 2.0) / n_t
+        ca, sa = math.cos(a), math.sin(a)
+        # Collar at x=3.44 matches ferrule smoothly with zero step
+        ring_collar.append(bm_tip.verts.new((3.44, ca * 0.188, sa * 0.188)))
+        # Chisel shoulder at x=3.58 forms exact equilateral triangle with vertices at k=0,4,8 (0, 120, 240 deg)
+        rem = k % 4
+        if rem == 0:
+            r_ch = 0.194
+        elif rem == 2:
+            # Midpoint of triangle edge: r = R * cos(60 deg) = 0.5 * R
+            r_ch = 0.194 * 0.50
+        else:
+            # Quarter point along triangle edge: r = R * cos(60) / cos(30) = R / sqrt(3)
+            r_ch = 0.194 / math.sqrt(3.0)
+        ring_chisel.append(bm_tip.verts.new((3.58, ca * r_ch, sa * r_ch)))
+    for k in range(n_t):
+        kn = (k + 1) % n_t
+        bm_tip.faces.new((v_back_c, ring_collar[kn], ring_collar[k]))
+        bm_tip.faces.new((ring_collar[k], ring_collar[kn], ring_chisel[kn], ring_chisel[k]))
+        bm_tip.faces.new((ring_chisel[k], ring_chisel[kn], v_apex))
+    bmesh.ops.recalc_face_normals(bm_tip, faces=bm_tip.faces)
+    _apply_three_xform(bm_tip, [])
+    parts.append(_bm_to_obj("bh_trocar_tip", bm_tip, m_st))
+
+    # 2. Firewalled Anodized Safety-Orange Grooved Blade Retention Collar (x in [0.48, 1.02])
+    ret_collar = mk_lathe_x(
+        "bh_collar",
+        [
+            (0.37, 0.48), (0.46, 0.51), (0.46, 0.65), (0.42, 0.68),
+            (0.46, 0.71), (0.46, 0.85), (0.42, 0.88), (0.46, 0.91),
+            (0.46, 0.99), (0.37, 1.02), (0.37, 0.48),
+        ],
+        segs=32, mat=m_org,
     )
     parts.append(ret_collar)
 
@@ -3187,10 +3302,9 @@ def build_lift33_broadhead(mats: dict[str, bpy.types.Material]) -> bpy.types.Obj
         ang = (k * math.pi * 2.0) / 3.0
         # Sculpt genuine diamond double-bevel razor cross-section blade!
         bm = bmesh.new()
-        # 5 vertices defining blade spine & swept cutting edge in (X, R) with razor edge thickness = 0.012
-        # and thick spine root = 0.055 so light flashes across the razor bevel!
-        t_spine = 0.048
-        t_edge = 0.010
+        # Razor edge thickness = 0.008 and machined spine root = 0.054 so light flashes crisply across the hollow-ground bevel!
+        t_spine = 0.054
+        t_edge = 0.008
         v_r0_n = bm.verts.new((0.85, 0.34, -t_spine))
         v_r0_p = bm.verts.new((0.85, 0.34,  t_spine))
         v_r1_n = bm.verts.new((3.45, 0.18, -t_edge))
@@ -3905,13 +4019,6 @@ def verify_meshes(all_objs: list[bpy.types.Object]) -> dict:
 
 def export_draco_glb(all_objs: list[bpy.types.Object]):
     _set_identity_layout(all_objs)
-    for o in all_objs:
-        select_only([o], o)
-        mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
-        mod.quad_method = "BEAUTY"
-        mod.ngon_method = "BEAUTY"
-        mod.keep_custom_normals = True
-        bpy.ops.object.modifier_apply(modifier=mod.name)
 
     select_only(all_objs, all_objs[0])
     bpy.ops.export_scene.gltf(
@@ -4054,9 +4161,11 @@ def _render_studio_previews(all_objs: list[bpy.types.Object], preview_dir: Path)
     scene.camera = cam_obj
 
     shots = [
-        ("lift33_upper_cam_right.png", (-12.6,  41.5,   14.0), (-12.6,  41.5,  0.0), 58.0),
-        ("lift33_upper_cam_left.png",  (-12.6,  41.5,  -14.0), (-12.6,  41.5,  0.0), 58.0),
-        ("lift33_dampener_upper.png",  ( -6.5,  38.5,  -18.0), ( -6.5,  38.5,  0.0), 50.0),
+        ("lift33_qa_right.png",           (  24.0,   4.0,  112.0), (  2.0,   1.0,  0.0), 48.0),
+        ("lift33_qa_left.png",            (  22.0,   4.0, -112.0), (  2.0,   1.0,  0.0), 48.0),
+        ("lift33_qa_macro_riser.png",     (  16.0,   5.0,  -38.0), (  0.5,   3.0,  0.0), 58.0),
+        ("lift33_qa_macro_cam.png",       ( -11.5,  41.5,   15.0), (-12.6,  41.5,  0.0), 56.0),
+        ("lift33_qa_macro_broadhead.png", (  42.0,   6.0,   18.0), ( 32.5,   2.4,  0.0), 58.0),
     ]
     for fname, cpos, ctgt, lens in shots:
         cam_data.lens = lens
@@ -4128,6 +4237,9 @@ def main():
         print(f"  [UV-AUDIT] {label:14s}: total_uv_area={tot_area:.4f} (strictly <= 0.98, zero overlap!)")
         assert 0.18 < tot_area <= 0.98, f"{label} atlas UV area out of bounds: {tot_area:.4f}"
 
+    print("[TRI] Pre-bake triangulation with preserved custom normals (1:1 tangent-frame lock)...")
+    triangulate_all_keep_normals(all_objs)
+
     with tempfile.TemporaryDirectory(prefix="lift33_bake_") as tmp_str:
         tmp_dir = Path(tmp_str)
         print("[CYCLES] Baking lift33_v3_riser (2048x2048, 6 riser/grip/pocket/guard/stabilizer parts)...")
@@ -4148,6 +4260,8 @@ def main():
     if "--render-preview" in sys.argv:
         pidx = sys.argv.index("--render-preview")
         _render_studio_previews(all_objs, Path(sys.argv[pidx + 1]))
+    elif "--preview" in sys.argv:
+        _render_studio_previews(all_objs, Path("/tmp"))
 
     outputs = [
         MODELS_OUT,

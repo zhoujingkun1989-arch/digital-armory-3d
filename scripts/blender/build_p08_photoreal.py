@@ -66,34 +66,78 @@ def _smoothstep_scalar(e0: float, e1: float, x: float) -> float:
     return t * t * (3.0 - 2.0 * t)
 
 
+def _pchip_slopes(xs: Sequence[float], ys: Sequence[float]) -> list[float]:
+    """Fritsch-Carlson monotone cubic Hermite (PCHIP) tangents — C1 smooth, zero overshoot!"""
+    n = len(xs)
+    h = [xs[i + 1] - xs[i] for i in range(n - 1)]
+    d = [(ys[i + 1] - ys[i]) / max(h[i], 1e-8) for i in range(n - 1)]
+    m = [0.0] * n
+    for i in range(1, n - 1):
+        if d[i - 1] * d[i] > 0.0:
+            w1 = 2.0 * h[i] + h[i - 1]
+            w2 = h[i] + 2.0 * h[i - 1]
+            m[i] = (w1 + w2) / (w1 / d[i - 1] + w2 / d[i])
+    m0 = ((2.0 * h[0] + h[1]) * d[0] - h[0] * d[1]) / max(h[0] + h[1], 1e-8)
+    if m0 * d[0] <= 0.0:
+        m0 = 0.0
+    elif abs(m0) > 3.0 * abs(d[0]):
+        m0 = 3.0 * d[0]
+    m[0] = m0
+    mn = ((2.0 * h[-1] + h[-2]) * d[-1] - h[-1] * d[-2]) / max(h[-1] + h[-2], 1e-8)
+    if mn * d[-1] <= 0.0:
+        mn = 0.0
+    elif abs(mn) > 3.0 * abs(d[-1]):
+        mn = 3.0 * d[-1]
+    m[-1] = mn
+    return m
+
+
+P08_BS_SU = (-4.70, -3.50, -1.80, -0.20, 1.30, 2.40, 3.30)
+P08_BS_SF = (-2.08, -2.18, -2.22, -2.12, -1.96, -1.86, -1.80)
+P08_BS_M = _pchip_slopes(P08_BS_SU, P08_BS_SF)
+
+P08_FS_SU = (-4.70, -3.00, -1.20, 0.70, 2.20, 3.30, 4.30)
+P08_FS_SF = (1.93, 2.02, 2.08, 2.04, 1.94, 1.97, 2.05)
+P08_FS_M = _pchip_slopes(P08_FS_SU, P08_FS_SF)
+
+
+def _eval_pchip_scalar(xs: Sequence[float], ys: Sequence[float], ms: Sequence[float], x: float) -> float:
+    if x <= xs[0]:
+        return ys[0]
+    if x >= xs[-1]:
+        return ys[-1]
+    for i in range(len(xs) - 1):
+        if x <= xs[i + 1]:
+            h = xs[i + 1] - xs[i]
+            t = (x - xs[i]) / h
+            t2 = t * t
+            t3 = t2 * t
+            return (
+                (2.0 * t3 - 3.0 * t2 + 1.0) * ys[i]
+                + (t3 - 2.0 * t2 + t) * h * ms[i]
+                + (-2.0 * t3 + 3.0 * t2) * ys[i + 1]
+                + (t3 - t2) * h * ms[i + 1]
+            )
+    return ys[-1]
+
+
 def eval_backstrap_sf(su: float) -> float:
     """
-    Graceful curved ergonomic Luger P08 steel backstrap offset `s_fwd(s_up)` in cm:
-      - Strictly clears recoil spring tunnel (`sf <= -1.62` -> min solid steel wall >= 2.6 mm)
-      - Organic palm swell around `su = -1.5..+0.5`, slight heel flare around stock lug,
-        and slender concave thumb-web waist around `su = +2.85`!
+    Continuous C1 PCHIP curved ergonomic Luger P08 steel backstrap offset `s_fwd(s_up)` in cm:
+      - Strictly clears recoil spring tunnel (`sf <= -1.62` -> min solid steel wall >= 1.8 mm)
+      - Organic lower palm swell (`-2.22`), smooth mid spine, slender concave thumb-web waist (`-1.80`).
     """
-    t = _clamp((su - (-4.70)) / (3.30 - (-4.70)), 0.0, 1.0)
-    # Subtle S-contour: -2.06 heel -> -2.20 lower palm swell -> -2.10 mid -> -1.89 thumb-web waist
-    base = -2.08 + 0.19 * t
-    palm_arch = -0.13 * math.sin(math.pi * _clamp((t - 0.06) / 0.62, 0.0, 1.0))
-    web_waist = 0.09 * _smoothstep_scalar(0.68, 1.0, t)
-    return base + palm_arch + web_waist
+    return _eval_pchip_scalar(P08_BS_SU, P08_BS_SF, P08_BS_M, su)
 
 
 def eval_frontstrap_sf(su: float) -> float:
     """
-    Smoothly tapered ergonomic Luger P08 steel frontstrap offset `s_fwd(s_up)` in cm:
-      - Strictly clears 55-deg magazine well (`sf >= +1.66` -> min solid steel wall >= 2.8 mm)
-      - Sleek tapered butt heel (`+1.93`), subtle mid-finger belly (`+2.07`),
-        and slight concave upper-finger waist (`+1.95`) before sweeping into trigger guard knuckle!
+    Continuous C1 PCHIP tapered ergonomic Luger P08 steel frontstrap offset `s_fwd(s_up)` in cm:
+      - Strictly clears 55-deg magazine well (`sf >= +1.66` -> min solid steel wall >= 2.7 mm)
+      - Sleek tapered butt heel (`+1.93`), anatomical mid-finger belly (`+2.08`),
+        concave upper-finger waist (`+1.94`), and smooth sweep into trigger guard knuckle (`+2.05`).
     """
-    t = _clamp((su - (-4.70)) / (4.30 - (-4.70)), 0.0, 1.0)
-    base = 1.93 + 0.04 * t
-    belly = 0.13 * math.sin(math.pi * _clamp(t / 0.85, 0.0, 1.0))
-    upper_waist = -0.055 * math.sin(math.pi * _clamp((t - 0.58) / 0.36, 0.0, 1.0))
-    knuckle_flare = 0.08 * _smoothstep_scalar(0.86, 1.0, t)
-    return base + belly + upper_waist + knuckle_flare
+    return _eval_pchip_scalar(P08_FS_SU, P08_FS_SF, P08_FS_M, su)
 
 
 def eval_grip_su_bot(u: float) -> float:
@@ -544,27 +588,27 @@ if "--postprocess" in sys.argv:
         # Blend engraved color, roughness, metalness, micro-AO & V-carved heightfield!
         decal_height = np.zeros((h, w), dtype=np.float32)
 
-        # Bright steel-chased engravings on Imperial Rust-Blued steel
-        bs_bev = _bevel_mask(bright_stamp, width_px=1.6)
-        _mix(albedo, (0.74, 0.78, 0.84), bright_stamp * 0.78)
-        _mix(rgh, 0.36, bright_stamp * 0.75)
-        ao *= 1.0 - 0.22 * bs_bev
-        decal_height -= 0.62 * bs_bev
+        # Bright steel-chased engravings on Imperial Rust-Blued steel (razor crisp, zero chalky halo!)
+        bs_bev = _bevel_mask(bright_stamp, width_px=1.2)
+        _mix(albedo, (0.82, 0.85, 0.90), bright_stamp * 0.84)
+        _mix(rgh, 0.32, bright_stamp * 0.78)
+        ao *= 1.0 - 0.26 * bs_bev
+        decal_height -= 0.68 * bs_bev
 
         # Crisp white enamel-inlaid German safety/loaded indicators (GELADEN & GESICHERT)
-        we_bev = _bevel_mask(white_enamel, width_px=1.5)
-        _mix(albedo, (0.93, 0.94, 0.95), white_enamel * 0.94)
-        _mix(rgh, 0.44, white_enamel * 0.90)
-        _mix(met, 0.06, white_enamel * 0.94)
-        ao *= 1.0 - 0.10 * we_bev
-        decal_height -= 0.54 * we_bev
+        we_bev = _bevel_mask(white_enamel, width_px=1.2)
+        _mix(albedo, (0.94, 0.95, 0.96), white_enamel * 0.95)
+        _mix(rgh, 0.40, white_enamel * 0.90)
+        _mix(met, 0.06, white_enamel * 0.95)
+        ao *= 1.0 - 0.12 * we_bev
+        decal_height -= 0.58 * we_bev
 
         # Dark recessed die-stamps on bright nickel / alloy / straw-gold
-        dk_bev = _bevel_mask(dark_stamp, width_px=1.6)
-        _mix(albedo, (0.24, 0.22, 0.18), dark_stamp * 0.62)
-        _mix(rgh, 0.48, dark_stamp * 0.75)
-        ao *= 1.0 - 0.26 * dk_bev
-        decal_height -= 0.56 * dk_bev
+        dk_bev = _bevel_mask(dark_stamp, width_px=1.2)
+        _mix(albedo, (0.20, 0.18, 0.14), dark_stamp * 0.68)
+        _mix(rgh, 0.46, dark_stamp * 0.78)
+        ao *= 1.0 - 0.30 * dk_bev
+        decal_height -= 0.60 * dk_bev
 
         # Subtle authentic museum handling hairline micro-scratches across Zone A blued steel
         rng = np.random.default_rng(1917)
@@ -648,25 +692,31 @@ if "--postprocess" in sys.argv:
         patina_all = np.zeros((h, w), dtype=np.float32)
         wood_outer_all = np.zeros((h, w), dtype=np.float32)
 
-        # Evaluate exact signed distance inside curved organic grip outline in metric `(sf, su)` cm!
-        def eval_panel_interior_distance(sf_arr: np.ndarray, su_arr: np.ndarray, is_left: bool) -> np.ndarray:
-            # Vectorized backstrap & frontstrap curves matching eval_backstrap_sf / eval_frontstrap_sf
-            tb = np.clip((su_arr - (-4.70)) / 8.00, 0.0, 1.0)
-            sf_back = (
-                -2.08
-                + 0.19 * tb
-                - 0.13 * np.sin(math.pi * np.clip((tb - 0.06) / 0.62, 0.0, 1.0))
-                + 0.09 * _smoothstep(0.68, 1.0, tb)
-            ) + 0.28
+        def _eval_pchip_np(xs, ys, ms, x_arr: np.ndarray) -> np.ndarray:
+            xc = np.clip(x_arr, xs[0], xs[-1])
+            idx = np.clip(np.searchsorted(xs, xc, side="right") - 1, 0, len(xs) - 2)
+            x0 = np.asarray(xs, dtype=np.float32)[idx]
+            x1 = np.asarray(xs, dtype=np.float32)[idx + 1]
+            y0 = np.asarray(ys, dtype=np.float32)[idx]
+            y1 = np.asarray(ys, dtype=np.float32)[idx + 1]
+            m0 = np.asarray(ms, dtype=np.float32)[idx]
+            m1 = np.asarray(ms, dtype=np.float32)[idx + 1]
+            h_seg = np.maximum(x1 - x0, 1e-6)
+            t = (xc - x0) / h_seg
+            t2 = t * t
+            t3 = t2 * t
+            return (
+                (2.0 * t3 - 3.0 * t2 + 1.0) * y0
+                + (t3 - 2.0 * t2 + t) * h_seg * m0
+                + (-2.0 * t3 + 3.0 * t2) * y1
+                + (t3 - t2) * h_seg * m1
+            ).astype(np.float32)
 
-            tf = np.clip((su_arr - (-4.70)) / 9.00, 0.0, 1.0)
-            sf_front = (
-                1.93
-                + 0.04 * tf
-                + 0.13 * np.sin(math.pi * np.clip(tf / 0.85, 0.0, 1.0))
-                - 0.055 * np.sin(math.pi * np.clip((tf - 0.58) / 0.36, 0.0, 1.0))
-                + 0.08 * _smoothstep(0.86, 1.0, tf)
-            ) - 0.28
+        # Evaluate exact signed distance inside curved PCHIP organic grip outline in metric `(sf, su)` cm!
+        def eval_panel_interior_distance(sf_arr: np.ndarray, su_arr: np.ndarray, is_left: bool) -> np.ndarray:
+            # Exact vectorized PCHIP backstrap & frontstrap curves matching Mode 1 eval_backstrap_sf / eval_frontstrap_sf
+            sf_back = _eval_pchip_np(P08_BS_SU, P08_BS_SF, P08_BS_M, su_arr) + 0.28
+            sf_front = _eval_pchip_np(P08_FS_SU, P08_FS_SF, P08_FS_M, su_arr) - 0.28
 
             u_est = np.clip(2.0 * (sf_arr - sf_back) / np.maximum(sf_front - sf_back, 0.5) - 1.0, -1.0, 1.0)
             su_bot = -4.46 - 0.16 * u_est + 0.08 * (1.0 - u_est * u_est)
@@ -694,8 +744,8 @@ if "--postprocess" in sys.argv:
                 d_edge = np.minimum(d_edge, d_mag)
             return d_edge.astype(np.float32)
 
-        # Exact 20-LPI diamond checkering pitch = 0.127 cm (1.27 mm), authentic 3:1 Luger diamond angle (+/-31 deg)!
-        pitch_cm = 0.130
+        # Authentic 18-LPI Luger European walnut diamond checkering pitch = 0.141 cm (1.41 mm), 3:1 diamond angle (+/-31 deg)!
+        pitch_cm = 0.141
         ca = math.cos(math.radians(31.0))
         sa = math.sin(math.radians(31.0))
 
@@ -789,17 +839,17 @@ if "--postprocess" in sys.argv:
         ao = np.clip(ao, 0.22, 1.0).astype(np.float32)
 
         # 4) Physically-accurate roughness breakup:
-        #    - Smooth linseed-oiled wood border: warm satin (R = 0.36..0.44)
-        #    - Hand-worn diamond tips: oil-burnished satin glints (R = 0.38..0.48) catching studio highlights!
-        #    - Deep cut checkering valleys: matte dry end-grain (R = 0.74)
-        r_chk_field = 0.74 - 0.32 * np.power(pyr_all, 1.35) - 0.07 * patina_all * pyr_all
-        r_smooth_field = np.clip(rgh - 0.06 * patina_all + 0.10 * pores, 0.34, 0.62)
+        #    - Smooth hand-rubbed linseed-oiled wood border: warm satin sheen (R = 0.29..0.39)
+        #    - Hand-worn 18-LPI diamond crests: oil-burnished satin glints (R = 0.33..0.44) catching studio softboxes!
+        #    - Deep cut checkering valleys: matte dry end-grain (R = 0.72)
+        r_chk_field = 0.72 - 0.35 * np.power(pyr_all, 1.30) - 0.06 * patina_all * pyr_all
+        r_smooth_field = np.clip(rgh - 0.08 * patina_all + 0.09 * pores, 0.28, 0.56)
         rgh = np.where(wood_guard > 0.5, r_smooth_field * (1.0 - chk_all) + r_chk_field * chk_all, rgh)
-        _mix(rgh, 0.76, bdr_all * 0.85)
-        rgh = np.clip(rgh, 0.16, 0.90)
+        _mix(rgh, 0.74, bdr_all * 0.85)
+        rgh = np.clip(rgh, 0.15, 0.88)
 
-        # 5) Razor-crisp RNM Normal blending for 20-LPI diamond pyramids, border groove & wood pores!
-        chk_nrm = _height_to_normal_01(detail_height, strength=4.2)
+        # 5) Razor-crisp RNM Normal blending for 18-LPI diamond pyramids, carved border groove & wood pores!
+        chk_nrm = _height_to_normal_01(detail_height, strength=5.2)
         nrm_final = _rnm_blend(nrm, chk_nrm)
         nrm_final = _sanitize_normals(nrm_final, "p08_v3_walnut_final")
 
@@ -1410,8 +1460,10 @@ def finalize_hard_surface(
     bevel_angle_deg: float = 34.0,
     sharp_deg: float = 40.0,
     use_bevel: bool = True,
+    lock_flat_walls: bool = False,
+    use_weighted_normals: bool = True,
 ) -> bpy.types.Object:
-    """Manifold-guarded multi-segment bevel + WeightedNormal(keep_sharp=True) + beauty triangulation."""
+    """Manifold-guarded multi-segment bevel + optional flat-wall lock + WeightedNormal + beauty triangulation."""
     select_only([obj], obj)
     cleanup_mesh(obj, merge_dist=0.00003)
     set_smooth_shading(obj)
@@ -1442,17 +1494,30 @@ def finalize_hard_surface(
     if bm.calc_volume(signed=True) < 0:
         bmesh.ops.reverse_faces(bm, faces=bm.faces)
     sharp_rad = math.radians(sharp_deg)
+    flat_rad = math.radians(12.0)
     for e in bm.edges:
         if len(e.link_faces) == 2:
-            e.smooth = e.calc_face_angle(0.0) < sharp_rad
+            ang = e.calc_face_angle(0.0)
+            is_flat_wall = False
+            if lock_flat_walls and ang > flat_rad:
+                f0, f1 = e.link_faces[0], e.link_faces[1]
+                # Lock planar machined +-Z cheeks (Blender Y axis) optically mirror-flat!
+                if (abs(f0.normal.y) > 0.985 or abs(f1.normal.y) > 0.985) and (
+                    f0.calc_area() > 0.06 or f1.calc_area() > 0.06
+                ):
+                    is_flat_wall = True
+            e.smooth = (ang < sharp_rad) and (not is_flat_wall)
+        else:
+            e.smooth = False
     bm.to_mesh(obj.data)
     bm.free()
 
-    wn = obj.modifiers.new("WeightedNormal", "WEIGHTED_NORMAL")
-    wn.keep_sharp = True
-    wn.weight = 100
-    wn.thresh = 0.01
-    bpy.ops.object.modifier_apply(modifier=wn.name)
+    if use_weighted_normals:
+        wn = obj.modifiers.new("WeightedNormal", "WEIGHTED_NORMAL")
+        wn.keep_sharp = True
+        wn.weight = 100
+        wn.thresh = 0.01
+        bpy.ops.object.modifier_apply(modifier=wn.name)
 
     tri = obj.modifiers.new("Triangulate", "TRIANGULATE")
     tri.quad_method = "BEAUTY"
@@ -1619,7 +1684,23 @@ def build_p08_barrel() -> bpy.types.Object:
     feed_ramp = make_box_three("feed_ramp", 0.60, 0.44, 0.54, center=(1.90, P08_BORE_Y - 0.42, 0.0), rot_three=(0.0, 0.0, 0.46))
     ext_cut = make_box_three("ext_cut", 0.46, 0.30, 0.26, center=(1.90, P08_BORE_Y + 0.52, 0.0))
 
-    for c in (bore_cutter, chamber_cutter, feed_ramp, ext_cut):
+    # Crisp 2-stage 11-deg recessed target muzzle crown dish (single watertight lathe cutter)
+    crown_cutter = make_revolve_three(
+        "crown_cutter",
+        [
+            (0.0, 12.01),
+            (0.420, 12.01),
+            (0.518, 12.145),
+            (0.578, 12.192),
+            (0.605, 12.26),
+            (0.0, 12.26),
+        ],
+        axis="X",
+        segments=56,
+        center=(0.0, P08_BORE_Y, 0.0),
+    )
+
+    for c in (bore_cutter, crown_cutter, chamber_cutter, feed_ramp, ext_cut):
         barrel = bool_op(barrel, c, "DIFFERENCE")
 
     return finalize_hard_surface(barrel, bevel_width=0.018, bevel_segments=2, bevel_angle_deg=36.0)
@@ -1722,7 +1803,7 @@ def build_p08_barrel_extension() -> bpy.types.Object:
     bm_bi.to_mesh(ext.data)
     bm_bi.free()
 
-    return finalize_hard_surface(ext, bevel_width=0.026, bevel_segments=3, bevel_angle_deg=34.0)
+    return finalize_hard_surface(ext, bevel_width=0.024, bevel_segments=3, bevel_angle_deg=34.0, lock_flat_walls=True)
 
 
 def build_p08_breechblock() -> bpy.types.Object:
@@ -1856,7 +1937,7 @@ def build_p08_rear_toggle() -> bpy.types.Object:
     bridge = finalize_hard_surface(bridge, bevel_width=0.024, bevel_segments=3, bevel_angle_deg=34.0)
 
     # Build twin circular toggle gripping drums (Spannstuecke) cleanly with 72 radial segments &
-    # smooth spherical-cosine concave dishes finalized separately so ZERO bevel slivers touch the cup!
+    # smooth analytical cosine-spherical concave dishes (NO WeightedNormal N-gon smudge -> 100% clean optics!)
     def build_toggle_drum(sign_z: float) -> bpy.types.Object:
         z_in = 0.48
         z_outer = 1.48
@@ -1871,15 +1952,14 @@ def build_p08_rear_toggle() -> bpy.types.Object:
             (0.725, z_outer),
             (0.650, z_outer),
         ]
-        # Smooth analytic concave finger dish (14 concentric quad rings, dz/dr = 0 at rim & floor!)
-        z_floor = z_outer - 0.190
-        for k in range(1, 15):
-            u = k / 14.0
-            r = 0.650 - u * (0.650 - 0.105)
+        # Smooth analytical concave spherical finger dish (18 concentric quad rings, dz/dr = 0 at rim & center pole!)
+        z_floor = z_outer - 0.195
+        for k in range(1, 18):
+            u = k / 18.0
+            r = 0.650 * (1.0 - u)
             depth_t = 0.5 * (1.0 - math.cos(u * math.pi))
-            prof.append((r, z_outer - 0.190 * depth_t))
-        # Flat coplanar inner ring capped with a single N-gon -> ZERO 72-spoke pole starburst!
-        prof.append((0.060, z_floor))
+            prof.append((r, z_outer - 0.195 * depth_t))
+        prof.append((0.0, z_floor))
         if sign_z < 0:
             prof = [(r, -z) for (r, z) in reversed(prof)]
 
@@ -1909,14 +1989,11 @@ def build_p08_rear_toggle() -> bpy.types.Object:
                 for s in range(seg_d):
                     sn = (s + 1) % seg_d
                     bm_d.faces.new((r0[s], r0[sn], r1))
-        # Cap the open flat center ring with a pure coplanar N-gon (zero pole distortion!)
-        open_cap = rings_d[-1] if sign_z > 0 else rings_d[0]
-        if isinstance(open_cap, list):
-            bm_d.faces.new(open_cap)
         axis_m = Matrix.Rotation(math.pi * 0.5, 4, "X")
         bmesh.ops.transform(bm_d, matrix=mat_three_translate(3.30, 0.26, 0.0) @ axis_m, verts=bm_d.verts)
         drum = new_mesh_obj(f"drum_{'R' if sign_z > 0 else 'L'}", bm_d)
-        drum = finalize_hard_surface(drum, bevel_width=0.0, use_bevel=False, sharp_deg=44.0)
+        # Skip WeightedNormal on exact analytical revolution dish so radial curvature stays mirror-smooth!
+        drum = finalize_hard_surface(drum, bevel_width=0.0, use_bevel=False, sharp_deg=32.0, use_weighted_normals=False)
         return drum
 
     left_drum = build_toggle_drum(-1.0)
@@ -1926,14 +2003,14 @@ def build_p08_rear_toggle() -> bpy.types.Object:
     vg_dish_r = right_drum.vertex_groups.new(name="toggle_drum_r")
     vg_dish_r.add(list(range(len(right_drum.data.vertices))), 1.0, "REPLACE")
 
-    # Tight interlocking Swiss-watch 3D diamond knurling pyramids (38 cols x 6 rows x 2 drums!)
+    # Deep interlocking Swiss-watch 3D diamond knurling pyramids (40 cols x 7 rows x 2 drums!)
     bm_k = bmesh.new()
-    n_cols = 38
-    n_rows = 6
-    z_band_min, z_band_max = 0.70, 1.34
+    n_cols = 40
+    n_rows = 7
+    z_band_min, z_band_max = 0.695, 1.345
     dz = (z_band_max - z_band_min) / n_rows
-    r_base = 0.834
-    r_peak = 0.880
+    r_base = 0.830
+    r_peak = 0.888
     da = (2.0 * math.pi) / n_cols
     for sign_z in (-1.0, 1.0):
         for row in range(n_rows):
@@ -2294,7 +2371,7 @@ def build_p08_frame() -> bpy.types.Object:
     for c in cutters:
         frame = bool_op(frame, c, "DIFFERENCE")
 
-    frame = finalize_hard_surface(frame, bevel_width=0.022, bevel_segments=3, bevel_angle_deg=35.0)
+    frame = finalize_hard_surface(frame, bevel_width=0.022, bevel_segments=3, bevel_angle_deg=35.0, lock_flat_walls=True)
     vg_blued = frame.vertex_groups.new(name="rust_blued")
     vg_blued.add(list(range(len(frame.data.vertices))), 1.0, "REPLACE")
 
@@ -2357,7 +2434,7 @@ def build_p08_sideplate() -> bpy.types.Object:
     td_notch = make_cylinder_three("td_notch", 0.27, 0.27, 0.50, axis="Z", center=(1.18, -0.46, 0.0), segments=32)
     plate = bool_op(plate, inner_pocket, "DIFFERENCE")
     plate = bool_op(plate, td_notch, "DIFFERENCE")
-    return finalize_hard_surface(plate, bevel_width=0.020, bevel_segments=3, bevel_angle_deg=36.0)
+    return finalize_hard_surface(plate, bevel_width=0.020, bevel_segments=3, bevel_angle_deg=36.0, lock_flat_walls=True)
 
 
 def build_p08_takedown_lever() -> bpy.types.Object:
@@ -2855,15 +2932,15 @@ def build_pbr_metal_shader(
     if edge_wear > 0.001:
         geom = nt.nodes.new("ShaderNodeNewGeometry")
 
-        # Driver A: Mesh convex pointiness (strong on knurl crests, sharp ridges, muzzle crown)
+        # Driver A: Mesh convex pointiness (tight threshold -> crisp knurl tips & sharp ridges, ZERO chalky flats!)
         pt_ramp = nt.nodes.new("ShaderNodeValToRGB")
-        pt_ramp.color_ramp.elements[0].position = 0.520
+        pt_ramp.color_ramp.elements[0].position = 0.538
         pt_ramp.color_ramp.elements[0].color = (0.0, 0.0, 0.0, 1.0)
-        pt_ramp.color_ramp.elements[1].position = 0.585
+        pt_ramp.color_ramp.elements[1].position = 0.610
         pt_ramp.color_ramp.elements[1].color = (1.0, 1.0, 1.0, 1.0)
         nt.links.new(geom.outputs["Pointiness"], pt_ramp.inputs["Fac"])
 
-        # Driver B: Ray-traced BevelNormal vs TrueNormal (clean continuous rim edge silvering!)
+        # Driver B: Ray-traced BevelNormal vs TrueNormal (tight rim catchlight, zero flat halo!)
         dot_e = nt.nodes.new("ShaderNodeVectorMath")
         dot_e.operation = "DOT_PRODUCT"
         nt.links.new(bev.outputs["Normal"], dot_e.inputs[0])
@@ -2871,10 +2948,10 @@ def build_pbr_metal_shader(
 
         bev_e = nt.nodes.new("ShaderNodeMapRange")
         bev_e.clamp = True
-        bev_e.inputs["From Min"].default_value = 0.992
-        bev_e.inputs["From Max"].default_value = 0.80
+        bev_e.inputs["From Min"].default_value = 0.968
+        bev_e.inputs["From Max"].default_value = 0.72
         bev_e.inputs["To Min"].default_value = 0.0
-        bev_e.inputs["To Max"].default_value = 0.85
+        bev_e.inputs["To Max"].default_value = 0.72
         nt.links.new(dot_e.outputs["Value"], bev_e.inputs["Value"])
 
         max_e = nt.nodes.new("ShaderNodeMath")
@@ -2975,10 +3052,10 @@ def build_walnut_base_shader(name: str) -> bpy.types.Material:
     noise_fig.inputs["Distortion"].default_value = 0.9
     nt.links.new(map_wood.outputs["Vector"], noise_fig.inputs["Vector"])
 
-    # Warm rich hand-oiled European walnut palette
-    c_dark = srgb_to_lin(0.165, 0.084, 0.042)
-    c_mid = srgb_to_lin(0.345, 0.188, 0.092)
-    c_light = srgb_to_lin(0.495, 0.285, 0.145)
+    # Warm rich hand-rubbed linseed European walnut (Juglans regia) palette
+    c_dark = srgb_to_lin(0.125, 0.056, 0.024)
+    c_mid = srgb_to_lin(0.315, 0.155, 0.068)
+    c_light = srgb_to_lin(0.485, 0.258, 0.118)
 
     w_mix1 = nt.nodes.new("ShaderNodeMix")
     w_mix1.data_type = "RGBA"
@@ -3000,13 +3077,13 @@ def build_walnut_base_shader(name: str) -> bpy.types.Material:
     nt.links.new(w_mix1.outputs[2], w_mix2.inputs[6])
     w_mix2.inputs[7].default_value = c_light
 
-    # Smooth linseed-oiled wood roughness (0.39..0.49)
+    # Smooth hand-rubbed linseed-oiled wood satin roughness (0.31..0.41)
     r_wood = nt.nodes.new("ShaderNodeMapRange")
     r_wood.clamp = True
     r_wood.inputs["From Min"].default_value = 0.20
     r_wood.inputs["From Max"].default_value = 0.80
-    r_wood.inputs["To Min"].default_value = 0.39
-    r_wood.inputs["To Max"].default_value = 0.49
+    r_wood.inputs["To Min"].default_value = 0.31
+    r_wood.inputs["To Max"].default_value = 0.41
     nt.links.new(wave_ring.outputs["Fac"], r_wood.inputs["Value"])
 
     bev = nt.nodes.new("ShaderNodeBevel")
@@ -3028,53 +3105,53 @@ def build_walnut_base_shader(name: str) -> bpy.types.Material:
 
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
-        # Rich Imperial Rust-Blued Steel (Streichbruenierung, DWM 1917):
-        # Deep Prussian midnight blue-black steel (~(0.14, 0.165, 0.205)), M=0.88, R=0.22..0.32
-        # with organic CLP gun-oil mottled breakup + exposed bright bare-steel edge wear!
+        # Rich Imperial German Mirror-Rust-Blued Forged Steel (Streichbruenierung, DWM 1917):
+        # Deep Prussian midnight blue-black steel (~(0.110..0.156)), M=0.91, R=0.18..0.32
+        # catching studio softbox ribbons crisply without milky chalkiness OR crushed black!
         "M_RustBlued": build_pbr_metal_shader(
             "M_RustBlued",
-            base_srgb_a=(0.140, 0.166, 0.208),
-            base_srgb_b=(0.198, 0.232, 0.282),
-            roughness=0.27,
-            rough_var=0.068,
-            metallic=0.88,
-            bevel_r=0.032,
-            edge_wear=0.48,
+            base_srgb_a=(0.110, 0.130, 0.170),
+            base_srgb_b=(0.156, 0.182, 0.230),
+            roughness=0.235,
+            rough_var=0.072,
+            metallic=0.91,
+            bevel_r=0.024,
+            edge_wear=0.26,
             edge_srgb=(0.76, 0.80, 0.86),
             grain_scale=(4.5, 48.0, 48.0),
-            grain_bump=0.030,
-            oil_mottle_scale=0.90,
+            grain_bump=0.024,
+            oil_mottle_scale=0.85,
         ),
-        # Extra-crisp edge wear on barrel muzzle crown & toggle knurl crests!
+        # Crisp museum wear on barrel muzzle crown & toggle knurl crests (tight bevel_r keeps dish mirror-smooth!)
         "M_RustBluedHighWear": build_pbr_metal_shader(
             "M_RustBluedHighWear",
-            base_srgb_a=(0.138, 0.164, 0.206),
-            base_srgb_b=(0.196, 0.230, 0.280),
-            roughness=0.26,
-            rough_var=0.065,
-            metallic=0.89,
-            bevel_r=0.028,
-            edge_wear=0.58,
+            base_srgb_a=(0.108, 0.128, 0.168),
+            base_srgb_b=(0.154, 0.180, 0.228),
+            roughness=0.225,
+            rough_var=0.068,
+            metallic=0.92,
+            bevel_r=0.016,
+            edge_wear=0.34,
             edge_srgb=(0.80, 0.84, 0.90),
             grain_scale=(6.0, 52.0, 52.0),
-            grain_bump=0.032,
-            oil_mottle_scale=1.05,
+            grain_bump=0.022,
+            oil_mottle_scale=0.95,
         ),
-        # Vivid lustrous 240-deg-C Straw-Gold Heat-Tempered Steel (Gelbangelassen):
-        # M=0.95, R=0.18 with warm brushed champagne-gold metallic reflections!
+        # Vivid lustrous Imperial German 240-285-deg-C Straw-Tempered Steel (Gelbangelassen):
+        # M=0.96, R=0.175 with radiant warm champagne-honey metallic highlights!
         "M_StrawGold": build_pbr_metal_shader(
             "M_StrawGold",
-            base_srgb_a=(0.895, 0.735, 0.365),
-            base_srgb_b=(0.775, 0.585, 0.235),
-            roughness=0.18,
-            rough_var=0.038,
-            metallic=0.95,
-            bevel_r=0.022,
-            edge_wear=0.34,
-            edge_srgb=(0.97, 0.89, 0.62),
+            base_srgb_a=(0.915, 0.785, 0.455),
+            base_srgb_b=(0.795, 0.640, 0.315),
+            roughness=0.175,
+            rough_var=0.042,
+            metallic=0.96,
+            bevel_r=0.020,
+            edge_wear=0.28,
+            edge_srgb=(0.97, 0.91, 0.72),
             grain_scale=(10.0, 52.0, 52.0),
-            grain_bump=0.022,
-            oil_mottle_scale=1.20,
+            grain_bump=0.020,
+            oil_mottle_scale=1.15,
         ),
         # Crisp bright-white milled steel (breechblock, striker, toggle pins, transfer lever, hold-open)
         "M_WhiteSteel": build_pbr_metal_shader(
