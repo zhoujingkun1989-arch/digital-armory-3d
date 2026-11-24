@@ -1,4 +1,24 @@
 /**
+ * Heavy media top-level directories eligible for optional external CDN offloading
+ * when `VITE_CDN_ASSET_BASE_URL` is configured.
+ *
+ * Lightweight app metadata & same-origin workers (`narrations/`, `sw.js`, `draco/`,
+ * `basis/`, `showcase/`, `manifest.webmanifest`) intentionally stay local.
+ */
+export const HEAVY_ASSET_DIRS = [
+  'audio/',
+  'textures/',
+  'models/',
+  'plates/',
+  'hdri/',
+] as const;
+
+export type HeavyAssetDir = (typeof HEAVY_ASSET_DIRS)[number];
+
+const EXTERNAL_URL_RE = /^(?:https?:|data:|blob:)/i;
+const HTTP_CDN_URL_RE = /^https?:\/\/[^/\s]+/i;
+
+/**
  * Normalizes any deployment base path (e.g. `""`, `"/"`, `"digital-armory-3d"`,
  * `"/digital-armory-3d"`, `"/digital-armory-3d/"`) into a canonical leading-and-trailing
  * slash prefix (`"/"` or `"/digital-armory-3d/"`), while preserving explicit relative `"./"`.
@@ -13,17 +33,59 @@ export function normalizeBasePath(base?: string): string {
 }
 
 /**
+ * Normalizes an optional external heavy-asset CDN origin/prefix
+ * (e.g. `"https://cdn.example.com/armory"` -> `"https://cdn.example.com/armory/"`).
+ * Returns `null` when empty, whitespace-only, or not a valid `http(s)://` URL.
+ */
+export function normalizeCdnBaseUrl(cdnBase?: string | null): string | null {
+  if (typeof cdnBase !== 'string') return null;
+  const trimmed = cdnBase.trim();
+  if (!trimmed || !HTTP_CDN_URL_RE.test(trimmed)) return null;
+  return `${trimmed.replace(/\/+$/, '')}/`;
+}
+
+/**
+ * Reads the runtime/build-time configured `VITE_CDN_ASSET_BASE_URL`, if any.
+ */
+export function getConfiguredCdnBaseUrl(): string | null {
+  const raw = import.meta.env?.VITE_CDN_ASSET_BASE_URL;
+  return normalizeCdnBaseUrl(raw);
+}
+
+/**
+ * Checks whether a normalized relative asset path targets one of the heavy media
+ * directories (`audio/`, `textures/`, `models/`, `plates/`, `hdri/`).
+ */
+export function isHeavyMediaPath(cleanRelPath: string): boolean {
+  const normalized = cleanRelPath.replace(/^(?:\.\/|\/)+/, '');
+  return HEAVY_ASSET_DIRS.some((prefix) => normalized.startsWith(prefix));
+}
+
+function resolveEffectiveCdnBase(
+  cdnBaseOverride?: string | null
+): string | null {
+  if (cdnBaseOverride !== undefined) {
+    return normalizeCdnBaseUrl(cdnBaseOverride);
+  }
+  return getConfiguredCdnBaseUrl();
+}
+
+/**
  * Resolves static public asset URLs safely under any deployment base path
- * (e.g. `/` in local dev or `/digital-armory-3d/` on GitHub Pages).
- * Idempotent if `relativePath` already begins with `normalizedBase`, and
- * leaves external `http(s):` / `data:` / `blob:` URLs untouched.
+ * (e.g. `/` in local dev or `/digital-armory-3d/` on GitHub Pages), and optionally
+ * routes heavy media directories (`audio/`, `textures/`, `models/`, `plates/`, `hdri/`)
+ * through `VITE_CDN_ASSET_BASE_URL` when configured.
+ *
+ * Idempotent if `relativePath` is already prefixed with `normalizedBase` or already
+ * an external `http(s):` / `data:` / `blob:` URL.
  */
 export function resolveAssetUrl(
   relativePath: string,
-  baseOverride?: string
+  baseOverride?: string,
+  cdnBaseOverride?: string | null
 ): string {
   const trimmed = relativePath.trim();
-  if (/^(?:https?:|data:|blob:)/i.test(trimmed)) {
+  if (EXTERNAL_URL_RE.test(trimmed)) {
     return trimmed;
   }
 
@@ -32,27 +94,30 @@ export function resolveAssetUrl(
       ? baseOverride
       : (import.meta.env?.BASE_URL ?? '/');
   const normalizedBase = normalizeBasePath(base);
+  const cdnBase = resolveEffectiveCdnBase(cdnBaseOverride);
 
   if (!trimmed || trimmed === '/') {
     return normalizedBase;
   }
 
-  if (
-    normalizedBase !== '/' &&
-    normalizedBase !== './' &&
-    trimmed.startsWith(normalizedBase)
-  ) {
-    return trimmed;
+  const cleanRel = trimmed.replace(/^(?:\.\/|\/)+/, '');
+  const baseNoLead =
+    normalizedBase !== '/' && normalizedBase !== './'
+      ? normalizedBase.replace(/^\/+/, '')
+      : '';
+
+  const hasBasePrefix =
+    Boolean(baseNoLead) &&
+    (trimmed.startsWith(normalizedBase) || cleanRel.startsWith(baseNoLead));
+
+  const innerRel = hasBasePrefix ? cleanRel.slice(baseNoLead.length) : cleanRel;
+
+  if (cdnBase && isHeavyMediaPath(innerRel)) {
+    return `${cdnBase}${innerRel}`;
   }
 
-  const cleanRel = trimmed.replace(/^\/+/, '');
-  const baseNoLead = normalizedBase.replace(/^\/+/, '');
-  if (
-    baseNoLead &&
-    normalizedBase !== './' &&
-    cleanRel.startsWith(baseNoLead)
-  ) {
-    return `/${cleanRel}`;
+  if (hasBasePrefix) {
+    return trimmed.startsWith(normalizedBase) ? trimmed : `/${cleanRel}`;
   }
 
   return `${normalizedBase}${cleanRel}`;
@@ -70,44 +135,59 @@ export function normalizeTextureFileName(fileOrPath: string): string {
 
 /**
  * Resolves a texture filename (automatically normalizing legacy `.png` references to `.webp`)
- * inside `public/textures/`.
+ * inside `public/textures/`, routing to CDN when `VITE_CDN_ASSET_BASE_URL` is active.
  */
 export function resolveTextureUrl(
   fileOrPath: string,
-  baseOverride?: string
+  baseOverride?: string,
+  cdnBaseOverride?: string | null
 ): string {
-  const cleanName = normalizeTextureFileName(fileOrPath);
-  return resolveAssetUrl(`textures/${cleanName}`, baseOverride);
+  const trimmed = fileOrPath.trim();
+  if (EXTERNAL_URL_RE.test(trimmed)) {
+    return trimmed;
+  }
+  const cleanName = normalizeTextureFileName(trimmed);
+  return resolveAssetUrl(`textures/${cleanName}`, baseOverride, cdnBaseOverride);
 }
 
 /**
- * Resolves a Radiance `.hdr` studio environment filename inside `public/hdri/`.
+ * Resolves a Radiance `.hdr` studio environment filename inside `public/hdri/`,
+ * routing to CDN when `VITE_CDN_ASSET_BASE_URL` is active.
  */
 export function resolveHdriUrl(
   fileOrPath: string,
-  baseOverride?: string
+  baseOverride?: string,
+  cdnBaseOverride?: string | null
 ): string {
   const trimmed = fileOrPath.trim();
+  if (EXTERNAL_URL_RE.test(trimmed)) {
+    return trimmed;
+  }
   const idx = trimmed.lastIndexOf('hdri/');
   const cleanName =
     idx >= 0 ? trimmed.slice(idx + 'hdri/'.length) : trimmed.replace(/^\/+/, '');
-  return resolveAssetUrl(`hdri/${cleanName}`, baseOverride);
+  return resolveAssetUrl(`hdri/${cleanName}`, baseOverride, cdnBaseOverride);
 }
 
 /**
- * Resolves a Blender-baked Draco/Meshopt `.glb` firearm model filename inside `public/models/`.
+ * Resolves a Blender-baked Draco/Meshopt `.glb` firearm model filename inside `public/models/`,
+ * routing to CDN when `VITE_CDN_ASSET_BASE_URL` is active.
  */
 export function resolveModelUrl(
   fileOrPath: string,
-  baseOverride?: string
+  baseOverride?: string,
+  cdnBaseOverride?: string | null
 ): string {
   const trimmed = fileOrPath.trim();
+  if (EXTERNAL_URL_RE.test(trimmed)) {
+    return trimmed;
+  }
   const idx = trimmed.lastIndexOf('models/');
   const cleanName =
     idx >= 0
       ? trimmed.slice(idx + 'models/'.length)
       : trimmed.replace(/^\/+/, '');
-  return resolveAssetUrl(`models/${cleanName}`, baseOverride);
+  return resolveAssetUrl(`models/${cleanName}`, baseOverride, cdnBaseOverride);
 }
 
 export interface DeepLinkResolveOptions {
