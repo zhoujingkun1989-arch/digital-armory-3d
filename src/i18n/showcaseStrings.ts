@@ -1,30 +1,44 @@
 import type { LanguageCode } from '../narration/types';
 import {
-  WEAPON_IDS,
-  type ArmoryCategory,
-  type WeaponId,
-} from '../weapons/types';
+  MUSEUM_ARCHERY_COUNT,
+  MUSEUM_BALLISTICS_PROFILE_COUNT,
+  MUSEUM_CARTRIDGE_LAB_TOTAL_COUNT,
+  MUSEUM_EXHIBIT_COUNT,
+  MUSEUM_FIREARM_COUNT,
+  MUSEUM_HALL_COUNT,
+  MUSEUM_HEAVY_ARMOR_COUNT,
+  MUSEUM_HEAVY_ORDNANCE_CALIBER_COUNT,
+  MUSEUM_ORDNANCE_COUNT,
+  MUSEUM_PBR_SUITE_COUNT,
+  MUSEUM_PBR_WEBP_COUNT,
+  MUSEUM_PENETRATOR_COUNT,
+  MUSEUM_SMALL_ARMS_CALIBER_COUNT,
+  MUSEUM_TOTAL_PARTS,
+  MUSEUM_VERSION,
+} from '../weapons/museumMetrics';
+import type { ArmoryCategory, WeaponId } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 34
-const VAULT_HALLS_COUNT = 10;
-const VAULT_ARCHERY_COUNT = 2;
-const VAULT_ARMOR_COUNT = 4;
-const VAULT_ORDNANCE_COUNT = 1;
-const VAULT_FIREARM_COUNT =
-  VAULT_EXHIBIT_COUNT -
-  VAULT_ARCHERY_COUNT -
-  VAULT_ARMOR_COUNT -
-  VAULT_ORDNANCE_COUNT; // 27
+const VAULT_EXHIBIT_COUNT = MUSEUM_EXHIBIT_COUNT; // 34
+const VAULT_HALLS_COUNT = MUSEUM_HALL_COUNT; // 10
+const VAULT_ARCHERY_COUNT = MUSEUM_ARCHERY_COUNT; // 2
+const VAULT_ARMOR_COUNT = MUSEUM_HEAVY_ARMOR_COUNT; // 4
+const VAULT_ORDNANCE_COUNT = MUSEUM_ORDNANCE_COUNT; // 1
+const VAULT_FIREARM_COUNT = MUSEUM_FIREARM_COUNT; // 27
 const VAULT_EXHIBIT_ZH = '三十四';
-const VAULT_PARTS_TOTAL = 854;
-const VAULT_TEXTURES_TOTAL = 414;
-const VAULT_SUITES_TOTAL = 101;
+const VAULT_PARTS_TOTAL = MUSEUM_TOTAL_PARTS; // 854
+const VAULT_TEXTURES_TOTAL = MUSEUM_PBR_WEBP_COUNT; // 414
+const VAULT_SUITES_TOTAL = MUSEUM_PBR_SUITE_COUNT; // 101
 const VAULT_AUDIO_TOTAL = 1980;
-const LAB_CALIBER_TOTAL = 17;
-const TANK_ORDNANCE_TOTAL = 4;
-const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 21
-const BALLISTICS_PROFILES_TOTAL = 23;
+const LAB_CALIBER_TOTAL = MUSEUM_SMALL_ARMS_CALIBER_COUNT; // 17
+const TANK_ORDNANCE_TOTAL = MUSEUM_HEAVY_ORDNANCE_CALIBER_COUNT; // 4
+const ORDNANCE_TOTAL = MUSEUM_CARTRIDGE_LAB_TOTAL_COUNT; // 21
+const BALLISTICS_PROFILES_TOTAL = MUSEUM_BALLISTICS_PROFILE_COUNT; // 23
+const PENETRATOR_TOTAL = MUSEUM_PENETRATOR_COUNT; // 5
 const SHOWDOWN_RIVALRIES_TOTAL = 30;
+const CUSTOM_DUEL_MATRIX_LABEL = `${VAULT_EXHIBIT_COUNT} × ${VAULT_EXHIBIT_COUNT - 1}`;
+const VAULT_RATIO = `${VAULT_EXHIBIT_COUNT}/${VAULT_EXHIBIT_COUNT}`;
+const GLOSSARY_TERMS_TOTAL = 28;
+const VERSION_UPPER = MUSEUM_VERSION.toUpperCase();
 
 export type ShowcaseGalleryAction =
   'armory' | 'explode' | 'firing' | 'section' | 'atlas';
@@ -46,6 +60,13 @@ export interface ShowcaseArchPillarCopy {
   title: string;
   desc: string;
   metric: string;
+}
+
+export interface ShowcaseCertificationBadgeCopy {
+  id: 'exhibits' | 'wcag' | 'webgl' | 'pwa' | 'bilingual';
+  tone: 'cyan' | 'emerald' | 'amber';
+  value: string;
+  label: string;
 }
 
 export interface ShowcaseDictionary {
@@ -228,6 +249,8 @@ export interface ShowcaseDictionary {
     kicker: string;
     title: string;
     desc: string;
+    certificationsAria: string;
+    certifications: readonly ShowcaseCertificationBadgeCopy[];
     pipelineAria: string;
     pipelineSteps: readonly string[];
     pillars: readonly ShowcaseArchPillarCopy[];
@@ -253,7 +276,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
   zh: {
     nav: {
       ariaLabel: '产品宣传页主导航',
-      versionBadge: `v6.0 · ${VAULT_EXHIBIT_COUNT} 馆藏 ${VAULT_HALLS_COUNT} 展厅三维物理旗舰版`,
+      versionBadge: `${MUSEUM_VERSION} · ${VAULT_EXHIBIT_COUNT} 馆藏 ${VAULT_HALLS_COUNT} 展厅三维物理旗舰版`,
       capabilities: '四大核心模式',
       documentary: 'AI 导演纪录片',
       gallery: '实机渲染画廊',
@@ -292,7 +315,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         '生成带二维码与军械师考核认证章的高清 16:9 / 4:5 社交分享海报 (快捷键: U)',
       ctaMonograph: (tag) => `打印 ${tag} 3D 绘本 / 图鉴`,
       ctaMonographTitle:
-        '打开 34/34 Cycles 17 图版 3D 绘本与收藏图鉴打印工坊 (快捷键: Ctrl/Cmd+P)',
+        `打开 ${VAULT_RATIO} Cycles 17 图版 3D 绘本与收藏图鉴打印工坊 (快捷键: Ctrl/Cmd+P)`,
       dragStageTitle: '按住左键拖拽可自由旋转 3D 展台',
       liveBadge: 'LIVE 360° 展台旋转 · 可拖拽检视',
       partsUnit: (n) => `${n} 独立零件`,
@@ -311,67 +334,67 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       ctaDirectorWatch: (tag) => `观看 ${tag} 3D 导演纪录片`,
     },
     physicsLabs: {
-      kicker: '3D PHYSICS THEATERS & ENGINEERING LABS · V6.0',
+      kicker: `3D PHYSICS THEATERS & ENGINEERING LABS · ${VERSION_UPPER}`,
       title: '探索三维物理剧场与交互工程实验室',
-      desc: '超越静态展柜：从 1,000m 实弹靶场子弹时间追踪、1:1 复合装甲慢动作穿甲剖视、21 口径 1:1 实弹与穿甲弹纵剖馆，到单画布双视口 3D 同屏机构对决与出版级图鉴工坊，一键即开。',
+      desc: `超越静态展柜：在 1,000m 实弹靶场追踪 Litz 旋转漂移与施利伦马赫锥、在 1:1 复合装甲剧场观摩 Tate 流体侵彻、横跨 ${CUSTOM_DUEL_MATRIX_LABEL} 任意定制机构对决与 ${GLOSSARY_TERMS_TOTAL} 词条工程词典，一键直达暗室与工程白昼双影棚。`,
       cards: {
         range3d: {
           badge: '3D PROVING GROUND · R',
-          title: '3D 1,000m 交互实弹靶场与子弹镜头',
-          desc: `23 套 RK4 G1/G7 弹道档案、Bullet-Cam 子弹时间追踪、AR500 钢靶受击摆动与 d/343 声波回传。`,
+          title: '3D 1,000m 实弹靶场与子弹时间追踪',
+          desc: `${BALLISTICS_PROFILES_TOTAL} 套 RK4 G1/G7 弹道、Applied Ballistics Litz 旋转漂移、Don Miller Sg 稳定性、施利伦马赫锥、AR500 撞击火花与 d/343 声波回传。`,
           cta: '进入千米实弹靶场',
         },
         armorTheater: {
           badge: '3D ARMOR THEATER',
           title: '1:1 复合装甲三维慢动作穿甲剧场',
-          desc: '5 款动能穿甲弹（含 30mm GAU-8 API 与 125mm APFSDS）实时演绎 ERA 双飞板剪切与崩落粒子锥。',
+          desc: `${PENETRATOR_TOTAL} 款动能穿甲弹（含 30mm GAU-8 API 与 125mm APFSDS）实时求解 Tate 流体侵彻方程，演绎 ERA 双飞板剪切与车内崩落粒子锥。`,
           cta: '启动三维穿甲剧场',
         },
         cartridgeLab: {
           badge: '1:1 ORDNANCE LAB · B',
           title: `${ORDNANCE_TOTAL} 口径实弹、航炮与坦克穿甲弹纵剖馆`,
-          desc: `${LAB_CALIBER_TOTAL} 款轻武器实弹 + ${TANK_ORDNANCE_TOTAL} 款重型炮弹 1:1 毫米标尺并排纵剖，直视 APFSDS 尾翼穿甲杆与三瓣弹托。`,
+          desc: `${LAB_CALIBER_TOTAL} 款轻武器实弹 + ${TANK_ORDNANCE_TOTAL} 款重型炮弹 1:1 毫米标尺并排纵剖，直视 APFSDS 尾翼穿甲杆、三瓣弹托与双弹对比。`,
           cta: '进入弹药纵剖馆',
         },
         showdown: {
           badge: 'LIVE 3D SPLIT-SCREEN · S',
-          title: '9×9×9 原理流派矩阵与双屏 3D 对决',
-          desc: `${SHOWDOWN_RIVALRIES_TOTAL} 组跨时代经典机械对决，支持单画布双裁剪 3D 同步剖视、爆炸与击发相位实时比对。`,
+          title: `通用 ${CUSTOM_DUEL_MATRIX_LABEL} 定制机构对决与六维雷达`,
+          desc: `${SHOWDOWN_RIVALRIES_TOTAL} 组跨时代经典对决 + 通用 ${CUSTOM_DUEL_MATRIX_LABEL} 任意自由配对、六轴工程指标雷达与单画布双视口 3D 同步剖视击发。`,
           cta: '打开原理对照台',
         },
         explode: {
-          badge: 'WORKBENCH · DAG',
-          title: '三级爆炸拆解与军械师精拆台',
-          desc: '0%–100% 渐进爆炸拆解、两级野战/全枪精拆 DAG 实操、三轴 CT 扫描与物理耦合模块化改装。',
+          badge: 'WORKBENCH · DAG & GLOSSARY',
+          title: `三维螺旋膛线剖视、精拆 DAG 与 ${GLOSSARY_TERMS_TOTAL} 词条百科`,
+          desc: `全馆 ${VAULT_EXHIBIT_COUNT} 款支持真三维螺旋膛线剖切、野战/全枪两级精拆 DAG、${GLOSSARY_TERMS_TOTAL} 词条双语机械百科、模块化光学/枪口改装（O）与工程白昼影棚。`,
           cta: (tag) => `直达 ${tag} 爆炸拆解`,
         },
         firing: {
-          badge: 'BALLISTICS & SFX',
-          title: '7 阶段内弹道示波与分口径声场',
-          desc: '60fps 膛压 P(t) 与膛内初速示波、高压燃气流线与四场所卷积混响/欧拉-伯努利钢材波导声效。',
+          badge: 'BALLISTICS & HEAVY SFX',
+          title: '膛内燃爆辉光、三瓣脱壳分离与重装声场',
+          desc: '膛内底火燃爆辉光、1:1 主战坦克三瓣铝制弹托 120° 气动分离、抽烟装置排烟、GAU-8/M134 旋翼动态模糊光环与脱壳气爆/底托撞击/液压电机声效。',
           cta: '播放实弹击发循环',
         },
         poster: {
           badge: 'SHARE STUDIO · U',
-          title: '高清 3D 剖视社交分享海报工坊',
-          desc: '一键合成 16:9 / 4:5 博物馆收藏级 3D 剖视海报，附带直达二维码与军械师认证印章。',
+          title: '高清 3D 剖视与膛线计量海报工坊',
+          desc: '一键合成 16:9 / 4:5 博物馆收藏级 3D 剖视海报，内嵌缠距膛线与闭锁原理印记、直达二维码与军械师认证印章。',
           cta: '制作分享海报',
         },
         monograph: {
           badge: 'PRINT STUDIO · CMD+P',
-          title: '34/34 Cycles 17 图版 3D 绘本与图鉴',
+          title: `${VAULT_EXHIBIT_COUNT}/${VAULT_EXHIBIT_COUNT} Cycles 17 图版 3D 绘本与图鉴`,
           desc: '调用全馆 2880×1800 Cycles 印刷主图，一键排版双语儿童 3D 机械绘本与 DK 风格视觉百科。',
           cta: (tag) => `打印 ${tag} 17 图版图鉴`,
         },
         scaleWall: {
           badge: '1:1 TRUE SCALE',
-          title: `1:1 真实尺度对比墙（全馆 ${VAULT_EXHIBIT_COUNT} 展品）`,
+          title: `史密森尼式 1:1 真实尺度对比墙（全馆 ${VAULT_EXHIBIT_COUNT} 展品）`,
           desc: '按毫米级绝对比例并排比对手枪、步枪、6.06m GAU-8 航炮、10m 主战坦克与 1.75m 人体参照。',
           cta: '打开 1:1 尺度墙',
         },
         recoilLab: {
           badge: 'RECOIL & TORQUE LAB',
-          title: '后坐冲量、燃气动量与枪口上跳实验室',
+          title: '后坐冲量、燃气动量与枪口上跳物理实验室',
           desc: '定量分解弹丸与火药燃气喷射动量、制退器反推减冲、120 点 F(t) 力波形与枪管轴线上跳力矩。',
           cta: '启动后坐实验室',
         },
@@ -397,46 +420,46 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       },
     ],
     capabilities: {
-      kicker: 'FOUR CORE CAPABILITIES · V6.0 3D THEATERS',
+      kicker: `FOUR CORE CAPABILITIES · ${VERSION_UPPER} 3D THEATERS`,
       title: '四大军械级三维检视、改装与物理剧场模式',
-      desc: `从 M1911A1 单绞链、MG 42 对称双滚柱、毛瑟 98k 大抓钩、汤姆逊 50 发发条圆鼓到第十展厅 1:1 GAU-8/A「复仇者」30mm 七管航炮与四大主战坦克，全部 ${VAULT_EXHIBIT_COUNT} 款展品 ${VAULT_PARTS_TOTAL} 个零件打通「多级爆炸拆解、7 阶段内弹道、三轴 CT 纵剖与 3D 剖切盒、物理耦合模块化光学/枪口改装（O）」，并配套 3D 复合装甲穿甲剧场、3D 1,000m 交互实弹靶场（R · ${BALLISTICS_PROFILES_TOTAL} 档案）、原理对照矩阵（S · ${SHOWDOWN_RIVALRIES_TOTAL} 组对决）与 ${ORDNANCE_TOTAL} 口径弹药馆（B）。`,
+      desc: `从 M1911A1 单绞链、MG 42 对称双滚柱、毛瑟 98k 大抓钩、汤姆逊 50 发发条圆鼓到第十展厅 1:1 GAU-8/A「复仇者」30mm 七管航炮与四大主战坦克，全部 ${VAULT_EXHIBIT_COUNT} 款展品 ${VAULT_PARTS_TOTAL} 个零件打通「真三维螺旋膛线与膛内燃爆辉光、三瓣脱壳分离与旋翼模糊光环、三轴 CT 纵剖、${GLOSSARY_TERMS_TOTAL} 词条工程百科、模块化光学/枪口改装（O）与工程白昼影棚」，并联动 3D Tate 穿甲剧场、3D 1,000m Litz/施利伦实弹靶场（R · ${BALLISTICS_PROFILES_TOTAL} 档案）、通用 ${CUSTOM_DUEL_MATRIX_LABEL} 对决矩阵（S）与 ${ORDNANCE_TOTAL} 口径弹药馆（B）。`,
       cards: {
         explode: {
           alt: 'AK-15M1 零回流引线与多级爆炸拆解工作台',
-          tag: 'MODE 01 · EXPLODED CAD & MODULAR BENCH (O)',
-          title: '渐进式三级爆炸拆解 + 模块化光学与枪口改装工作台 (O)',
+          tag: 'MODE 01 · EXPLODED CAD, MODS (O) & GLOSSARY',
+          title: `渐进式三级爆炸拆解、${GLOSSARY_TERMS_TOTAL} 词条百科与模块化改装 (O)`,
           descPrefix:
-            '支持「0% 合拢 → 30% 野战快拆 → 65% 细拆 → 100% 全爆炸」无级拖拽与两级全枪精拆 DAG，并可一键挂载钛合金 K 挡板消音器、双室制退器、1–8× LPVO 与串列 FLIR（O），实时耦合燃气涡旋、声学衰减与 ',
+            '支持「0% 合拢 → 30% 野战快拆 → 65% 细拆 → 100% 全爆炸」与两级精拆 DAG、内联 28 词条史密森尼式双语工程百科，一键挂载钛合金 K 挡板消音器、双室制退器、1–8× LPVO 与串列 FLIR（O），实时耦合燃气涡旋、声学衰减与 ',
           descSuffix: ' 毫米三维包络尺寸。',
           cta: '打开 AK-15M1 拆解演示台',
         },
         firing: {
           alt: 'Barrett M82A1 .50 BMG 整管短后坐与箭头制退侧喷',
-          tag: 'MODE 02 · 7-STAGE KINEMATICS & 3D THEATERS',
-          title: `7 阶段耦合运动学 + ${ORDNANCE_TOTAL} 口径实弹/航炮/坦克内弹道与 3D 靶场`,
-          desc: '严格遵循全部 34 款展品机械定律：GAU-8/A 3,900 RPM 七管双液压凸轮波、MG 42 1,200 RPM 双滚柱短后坐、M1911A1 单绞链、毛瑟 98k 受控供弹、汤姆逊青铜布利什锁、ZTZ-99A 转盘装弹机、M1A2 隔爆门与复合弓弩；联动 3D 1,000m 子弹时间靶场与 3D 复合装甲穿甲剧场。',
+          tag: 'MODE 02 · SABOT DISCARD, ROTARY HALO & 3D THEATERS',
+          title: `膛内燃爆辉光、三瓣脱壳分离、旋翼光环与 ${ORDNANCE_TOTAL} 口径内弹道`,
+          desc: `严格遵循全部 ${VAULT_EXHIBIT_COUNT} 款机械定律：新增膛内底火燃爆辉光、1:1 主战坦克三瓣铝制弹托 120° 气动分离与抽烟装置排烟、GAU-8/A 与 M134D 旋翼动态模糊光环；联动 Applied Ballistics Litz 旋转漂移 / Don Miller Sg / 施利伦马赫锥 / AR500 火花千米靶场，以及 Tate 流体侵彻 3D 复合装甲剧场。`,
           cta: '体验巴雷特 .50 BMG 慢放击发',
         },
         section: {
           alt: '纵向中轴军械剖视切面',
-          tag: 'MODE 03 · TRI-AXIAL CT & 3D SLICE BOX (C)',
-          title: '三轴实时 CT 扫描纵剖、6 面 3D 剖切盒与穿透拾取',
+          tag: 'MODE 03 · 3D HELICAL RIFLING BORE & TRI-AXIAL CT (C)',
+          title: `全馆 ${VAULT_RATIO} 真三维螺旋膛线剖视、三轴 CT 与 6 面 3D 剖切盒`,
           descPrefix: '按下 ',
           descSuffix:
-            ' 键即可沿 Z/X/Y 三轴或 6 面 3D 剖切盒实时切开壳体、弹匣、螺旋弹鼓与改装消音器内部 7 级 K 挡板；鼠标穿透剖切面精准点选内部闭锁与火控件并听取双语零件讲解。',
+            ` 键沿 Z/X/Y 三轴或 6 面 3D 剖切盒实时切开枪管、机匣、螺旋弹鼓与消音器内部 7 级 K 挡板，直视全馆 ${VAULT_EXHIBIT_COUNT} 款真三维螺旋阴线/阳线缠距与博克塞底火引燃闪光；鼠标穿透剖面精准点选内部零件听取双语讲解。`,
           cta: '直达纵向军械剖视模式',
         },
         pbr: {
           alt: '5 通道 Packed ORM 物理贴图图集检视器',
-          tag: 'MODE 04 · 5-CHANNEL ORM & KTX2 / CDN PIPELINE',
-          title: 'Khronos 校准 2K/4K 金属/胡桃木/装甲 PBR 与图集检视',
-          desc: '针对磷化钢、皇家烤蓝、拉丝钛合金、黑胡桃实木、层压榉木与 4K 复合/防磁装甲建立光学梯度，配合 KTX2 (toktx) / CDN / PWA 离线管线与浏览器内 2K/4K WebP 三通道图集检视下载。',
+          tag: 'MODE 04 · BLUEPRINT DAYLIGHT & 5-CHANNEL ORM',
+          title: '暗室展厅 / 工程白昼双影棚、2K/4K PBR 与 KTX2 离线管线',
+          desc: '在深邃战术暗室与高对比度工程白昼（Blueprint Daylight）影棚间无缝切换，精准区分磷化钢、皇家烤蓝、黑胡桃木与 4K 复合/防磁装甲，配合 KTX2 / CDN / PWA 离线缓存与浏览器内 2K/4K WebP 三通道图集检视。',
           cta: `打开 ${VAULT_TEXTURES_TOTAL} 张 PBR 贴图图集检视器`,
         },
       },
     },
     documentary: {
-      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V6.0',
+      kicker: `MULTIMODAL AUDIO-VISUAL ENGINE · ${VERSION_UPPER}`,
       title: 'AI 四幕双语研发纪录片 · 3D 导演运镜 & 军械声场',
       desc: `告别无声手动拖拽模型的传统看图模式：全馆藏 ${VAULT_EXHIBIT_COUNT} 款名枪、复合弓弩、1:1 主战坦克与 1:1 GAU-8/A 30mm 七管航炮内置中英双语四幕研发史、${VAULT_PARTS_TOTAL} 枚零件独立配音、1080p 导演录屏、自动镜头编排器与物理耦合 Web Audio 声场。`,
       directorBadge: '3D STORY DIRECTOR · 自动运镜编排',
@@ -479,17 +502,17 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       monographCta: (tag) => `打印 ${tag} 17 图版绘本 / 图鉴`,
       monographCtaTitle:
         '一键离线抓拍 17 图版并排版打印双语绘本与收藏图鉴 (Ctrl/Cmd+P)',
-      soundBadge: 'PROCEDURAL WEB AUDIO · 物理耦合声场',
-      soundTitle: `${ORDNANCE_TOTAL} 口径实弹/航炮/主炮 + 弓弩声浪 & 模块化消音/制退耦合`,
+      soundBadge: 'PROCEDURAL WEB AUDIO · 四场所卷积与重装声学',
+      soundTitle: `${ORDNANCE_TOTAL} 口径重装脱壳、旋翼电机与四场所卷积混响声场`,
       soundDesc:
-        '基于 Web Audio API 实时物理建模（零外部 WAV/MP3 体积膨胀）：1.0x 标准射速清晰区分 GAU-8/A 30mm 3,900 RPM「BRRRT!」咆哮、125/120/88mm 坦克主炮雷霆震波、MG 42 1,200 RPM「撕布声」、.50 BMG 重炮轰鸣、M134D 六管电锯、汤姆逊 50 发圆鼓连射与 M1 加兰德「PING!」清鸣；并随模块化消音器/制退器（O）实时改变声谱，播报语音时自动执行 Audio Ducking 闪避。',
+        '基于 Web Audio API 实时物理建模（零外部音频体积膨胀）：新增 125/120mm APFSDS 超音速脱壳气爆、主战坦克转盘/尾舱底托撞击与虎式 88mm 全黄铜壳长鸣、GAU-8/A 双液压与 M134D 28V 直流电机启停谐波啸叫，搭配四场所立体声卷积混响（近场台/靶道/穹顶/旷野）、欧拉-伯努利钢材波导与模块化消音/制退实时频谱耦合。',
       caliberRows: [
         {
           caliber: '125mm / 120×570mm / 88×571mmR / 30×173mm',
           weaponTag: 'ZTZ-99A / M1A2 / Leopard 2A7V / Tiger 131 / GAU-8/A',
-          freqTag: '24–42 Hz 主炮震波与 3,900 RPM 航炮咆哮',
+          freqTag: '24–42 Hz 脱壳气爆、底托撞击与双液压咆哮',
           signature:
-            'GAU-8/A 30mm 七管双液压「BRRRT!」风暴 / 125mm 转盘举升 / M1A2 隔爆门与 AGT1500 涡轮 / 豹 2A7V / 虎式 88mm 楔闩',
+            'APFSDS 三瓣弹托超音速裂空 + AZ 转盘/尾舱底托金属撞击 + 虎式 88mm 黄铜壳余鸣 + GAU-8/A 双液压马达啸叫与 3,900 RPM 65 Hz「BRRRT!」',
         },
         {
           caliber: '12.7×99mm (.50 BMG) / 7.92×57mm Mauser',
@@ -548,9 +571,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         },
       ],
       soundFeatures: [
-        '8 点相位硬绑定：阻铁释放 → 击针撞底火 → 膛口爆轰 → 导气/后坐 → 凸轮开锁 → 抛壳清鸣 → 复进簧摩擦 → 闭锁复位',
-        'TTS 智能闪避：旁白与零件语音播放时，机械与枪声自动平滑衰减至 -12.4 dB，人声清晰不掩蔽',
-        '独立静音控制：工作台顶栏、发射时间轴与全局快捷键 M 随时一键静音/恢复机械声效',
+        '重装与旋翼同步声学：APFSDS 超音速脱壳气爆、主战坦克底托金属撞击、GAU-8/A 液压与 M134D 28V 电机启停啸叫 + 4 场所卷积混响与声学试听台',
+        '8 点相位硬绑定 + TTS 智能闪避：旁白与零件语音播放时，机械与重炮声效自动平滑衰减至 -12.4 dB，人声清晰不掩蔽',
+        '独立静音与试听控制：工作台声学试听台、发射时间轴与全局快捷键 M 随时一键静音或试听实弹/拉栓/抛壳声效',
       ],
       testSlowMoCta: '实测巴雷特 .50 BMG 0.25x 慢放声场',
     },
@@ -678,9 +701,42 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       btnStory: '3D 导演纪录片',
     },
     architecture: {
-      kicker: 'ENGINEERING ARCHITECTURE',
+      kicker: 'ENGINEERING ARCHITECTURE & LIVE CERTIFICATIONS',
       title: '纯 TypeScript + Blender 5.2 + Web Audio 工业级管线',
-      desc: '完全开源可复现的 Blender 5.2 Draco `.glb` + Web Worker 动态 CSG 双轨架构（零闭源黑盒模型），以严谨图形与声学管线解决大尺度几何、60Hz 动画时钟与显存生命周期管理。',
+      desc: '完全开源可复现的 Blender 5.2 Draco `.glb` + Web Worker 动态 CSG 双轨架构，打通暗室/工程白昼双影棚、真三维螺旋膛线与脱壳分离 VFX、四场所重装声学，并获 75/75 WCAG 2.1 AA 与 60 FPS WebGL 实机认证。',
+      certificationsAria: '实时工程认证与架构指标徽章',
+      certifications: [
+        {
+          id: 'exhibits',
+          tone: 'cyan',
+          value: `${VAULT_EXHIBIT_COUNT} 馆藏 · ${VAULT_HALLS_COUNT} 展厅`,
+          label: `${VAULT_PARTS_TOTAL} 枚运动零件`,
+        },
+        {
+          id: 'wcag',
+          tone: 'emerald',
+          value: '75/75 WCAG 2.1 AA',
+          label: '100% 实机无障碍认证',
+        },
+        {
+          id: 'webgl',
+          tone: 'cyan',
+          value: '60 FPS WebGL 2.0',
+          label: '暗室与工程白昼双影棚',
+        },
+        {
+          id: 'pwa',
+          tone: 'amber',
+          value: '零依赖离线 PWA',
+          label: `${VAULT_TEXTURES_TOTAL} PBR 贴图 · ${VAULT_AUDIO_TOTAL} 语音`,
+        },
+        {
+          id: 'bilingual',
+          tone: 'emerald',
+          value: '100% 中英双语',
+          label: `${GLOSSARY_TERMS_TOTAL} 词条百科 · ${CUSTOM_DUEL_MATRIX_LABEL} 对决`,
+        },
+      ],
       pipelineAria: '渲染与建模流水线',
       pipelineSteps: [
         'Manifest 轻量目录 (<8KB)',
@@ -708,30 +764,30 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         {
           code: 'ARCH-03',
           iconKey: 'gauge',
-          title: '60Hz 三维物理剧场、靶场与耦合声场',
-          desc: `零 GC 瞬态时钟同步驱动 ${ORDNANCE_TOTAL} 口径内弹道示波、3D 复合装甲穿甲剧场、3D 1,000m 子弹时间靶场（${BALLISTICS_PROFILES_TOTAL} 套 RK4 档案，R）、模块化光学/枪口改装耦合（O）与立体声卷积 IR 波导声效。`,
+          title: '60Hz 三维物理剧场、脱壳 VFX 与重装声场',
+          desc: `零 GC 瞬态时钟同步驱动 ${ORDNANCE_TOTAL} 口径内弹道、Tate 流体侵彻 3D 装甲剧场、Litz/Miller/施利伦 3D 千米靶场（${BALLISTICS_PROFILES_TOTAL} 档案，R）、三瓣脱壳与旋翼光环 VFX 及四场所卷积重装声效。`,
           metric: '60 FPS 零重渲染',
         },
         {
           code: 'ARCH-04',
           iconKey: 'sparkles',
-          title: 'GTAO + AgX 管线、KTX2 / CDN 与图鉴出版',
-          desc: `全馆 ${VAULT_SUITES_TOTAL} 套图集 ${VAULT_TEXTURES_TOTAL} 张 5 通道 ORM 贴图支持 toktx KTX2 / 可选 CDN / PWA 离线博物馆；3D 导演同步 ${VAULT_AUDIO_TOTAL} 段 Charon 语音，内置 1080p 导演录屏、分享海报（U）与 34/34 Cycles 图鉴打印（Ctrl/Cmd+P）。`,
+          title: 'GTAO + AgX、工程白昼影棚与离线 PWA 出版',
+          desc: `全馆 ${VAULT_SUITES_TOTAL} 套图集 ${VAULT_TEXTURES_TOTAL} 张 5 通道 ORM 贴图支持暗室/工程白昼双影棚、toktx KTX2 / CDN / PWA 离线博物馆；3D 导演同步 ${VAULT_AUDIO_TOTAL} 段语音，内置 1080p 录屏、膛线海报（U）与 ${VAULT_EXHIBIT_COUNT}/${VAULT_EXHIBIT_COUNT} Cycles 图鉴打印（Ctrl/Cmd+P）。`,
           metric: `${VAULT_AUDIO_TOTAL} 语音 · ${VAULT_SUITES_TOTAL} 图集`,
         },
         {
           code: 'ARCH-05',
           iconKey: 'scissors',
-          title: '三轴 Stencil 实心剖视与 6 面 3D 剖切盒',
-          desc: 'WebGL Stencil 奇偶计数封盖切口并叠加 ISO 128 金属剖面线，支持 Z/X/Y 三轴与 6 面 3D 剖切盒直接切开壳体、螺旋弹鼓及消音器 K 挡板，并精准穿透拾取内部零件。',
-          metric: '三轴 + 3D 剖切盒',
+          title: `${VAULT_RATIO} 真三维螺旋膛线、膛内燃爆与三轴 CT 剖切`,
+          desc: `WebGL Stencil 奇偶计数封盖三轴 CT 与 6 面 3D 剖切盒并叠加 ISO 128 金属剖面线，实时剖开全馆 ${VAULT_EXHIBIT_COUNT} 款真三维螺旋阴线/阳线膛线、底火燃爆辉光、螺旋弹鼓与消音器 K 挡板。`,
+          metric: `${VAULT_RATIO} 膛线 · 3D 剖切盒`,
         },
         {
           code: 'ARCH-06',
           iconKey: 'shield',
-          title: '全馆契约测试、资产审计与 1080p 视觉门禁',
-          desc: `33 套 Vitest 自动化契约对全部 ${VAULT_EXHIBIT_COUNT} 款展品 ${VAULT_PARTS_TOTAL} 零件、${VAULT_AUDIO_TOTAL} 段配音、3D 穿甲/靶场/改装耦合执行断言，并配套 assets:audit（<= 12 MB）与 qa:visual 1080p 无头视觉回归门禁。`,
-          metric: '33 套契约 · 1080p QA',
+          title: '95+ 契约套件、75/75 WCAG 2.1 AA 与 60 FPS QA 门禁',
+          desc: `95+ 套 Vitest 自动化契约守护全部 ${VAULT_EXHIBIT_COUNT} 款展品 ${VAULT_PARTS_TOTAL} 零件、${VAULT_AUDIO_TOTAL} 段配音、${GLOSSARY_TERMS_TOTAL} 词条百科与三维物理剧场，配套 assets:audit（<= 12 MB）与实机 75/75 (100%) WCAG 2.1 AA / 60 FPS 无头 Chromium 门禁。`,
+          metric: '75/75 WCAG · 60 FPS QA',
         },
       ],
     },
@@ -791,16 +847,16 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         { key: 'E', label: '显示 / 隐藏工业 CAD 硬边轮廓线' },
         { key: 'L', label: '开关零回流 3D 零件引出编号签' },
         { key: 'H', label: '隐藏 / 恢复全部界面按钮，进入纯净全屏展示' },
-        { key: 'Ctrl/Cmd+P', label: '打开 34/34 Cycles 17 图版 3D 绘本与图鉴打印工坊' },
+        { key: 'Ctrl/Cmd+P', label: `打开 ${VAULT_RATIO} Cycles 17 图版 3D 绘本与图鉴打印工坊` },
         { key: 'Shift+R / Esc', label: '一键复位合拢态 / 取消选中返回枪库' },
       ],
-      finalKicker: 'READY FOR INSPECTION · V6.0',
+      finalKicker: `READY FOR INSPECTION · ${VERSION_UPPER}`,
       finalTitle: '现在进入 3D 数字枪库，体验三维物理剧场与十殿堂机械美学',
       finalSub:
-        '支持中英双语自由切换、3D 复合装甲穿甲剧场、3D 1,000m 交互实弹靶场与子弹时间镜头（R）、模块化光学与枪口改装台（O）、34/34 Cycles 绘本打印（Ctrl/Cmd+P）与 PWA 离线博物馆；开源免费，欢迎在 GitHub 点亮一颗 Star。',
+        `覆盖全馆 ${VAULT_EXHIBIT_COUNT} 款真三维螺旋膛线与脱壳分离 VFX、重装同步声场、${GLOSSARY_TERMS_TOTAL} 词条机械百科、${CUSTOM_DUEL_MATRIX_LABEL} 定制机构对决、1,000m Litz/施利伦实弹靶场（R）、Tate 流体 3D 穿甲剧场、1:1 尺度墙与后坐实验室、暗室/工程白昼双影棚、75/75 WCAG 2.1 AA 认证与 PWA 离线博物馆；MIT 开源免费，欢迎点亮 Star。`,
       finalLaunchBtn: `启动 ${VAULT_EXHIBIT_COUNT} 槽 ${VAULT_HALLS_COUNT} 展厅数字枪库`,
       finalStarBtn: '前往 GitHub 点亮 Star',
-      footerBrand: 'Digital Armory 3D v6.0 · 轻武器、重装甲与航空重武 3D 数字博物馆',
+      footerBrand: `Digital Armory 3D ${MUSEUM_VERSION} · 轻武器、重装甲与航空重武 3D 数字博物馆`,
       footerDisclaimer:
         '原理示意级（Schematic / Educational Level）机械科普与三维声画可视化开源工程 · 不包含任何工业制造加工公差或可打印图纸。',
     },
@@ -808,7 +864,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
   en: {
     nav: {
       ariaLabel: 'Product showcase primary navigation',
-      versionBadge: `v6.0 · ${VAULT_EXHIBIT_COUNT} EXHIBITS · ${VAULT_HALLS_COUNT} HALLS`,
+      versionBadge: `${MUSEUM_VERSION} · ${VAULT_EXHIBIT_COUNT} EXHIBITS · ${VAULT_HALLS_COUNT} HALLS`,
       capabilities: '4 Core Modes',
       documentary: 'AI 3D Director',
       gallery: 'Live Captures',
@@ -847,7 +903,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         'Open Instant HD 3D Cutaway Social Poster Studio with QR Deep-Link & Armorer Rank Seal (Shortcut: U)',
       ctaMonograph: (tag) => `Print ${tag} 3D Picture Book / Monograph`,
       ctaMonographTitle:
-        'Open 34/34 Cycles 17-Plate 3D Picture Book & Collector Monograph Print Studio (Ctrl/Cmd+P)',
+        `Open ${VAULT_RATIO} Cycles 17-Plate 3D Picture Book & Collector Monograph Print Studio (Ctrl/Cmd+P)`,
       dragStageTitle: 'Hold left mouse button and drag to orbit 3D turntable',
       liveBadge: 'LIVE 360° WEBGL TURNTABLE · DRAG TO ORBIT',
       partsUnit: (n) => `${n} CAD Parts`,
@@ -866,67 +922,67 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       ctaDirectorWatch: (tag) => `Watch ${tag} 3D Documentary`,
     },
     physicsLabs: {
-      kicker: '3D PHYSICS THEATERS & ENGINEERING LABS · V6.0',
+      kicker: `3D PHYSICS THEATERS & ENGINEERING LABS · ${VERSION_UPPER}`,
       title: 'Explore 3D Physics Theaters & Engineering Labs',
-      desc: 'Go beyond static displays: fire down a 1,000m 3D proving ground with Bullet-Cam tracking, replay 1:1 composite armor penetration in slow motion, inspect 21 ordnance cutaways at millimeter scale, or launch live 3D split-screen mechanism showdowns.',
+      desc: `Go beyond static displays: track Applied Ballistics Litz spin-drift & Schlieren Mach cones down a 1,000m 3D proving ground, replay Tate hydrodynamic composite armor erosion, compare any ${CUSTOM_DUEL_MATRIX_LABEL} mechanism duel with our ${GLOSSARY_TERMS_TOTAL}-term Smithsonian engineering glossary, and switch seamlessly between Dark Vault and Blueprint Daylight studios.`,
       cards: {
         range3d: {
           badge: '3D PROVING GROUND · R',
           title: '3D 1,000m Interactive Range & Bullet-Cam',
-          desc: `${BALLISTICS_PROFILES_TOTAL} RK4 G1/G7 ballistic profiles, slow-mo Bullet-Cam chase, swinging AR500 steel gong & d/343 acoustic return.`,
+          desc: `${BALLISTICS_PROFILES_TOTAL} RK4 G1/G7 profiles with Applied Ballistics Litz spin-drift, Don Miller Sg stability, Schlieren Mach-cone waves, AR500 impact sparks & d/343 acoustic return.`,
           cta: 'Launch 1,000m Range',
         },
         armorTheater: {
           badge: '3D ARMOR THEATER',
           title: '1:1 3D Composite Armor Penetration Theater',
-          desc: 'Watch 5 kinetic penetrators (incl. 30mm GAU-8 API & 125mm APFSDS) shear ERA flyer plates and project spall cones.',
+          desc: `Watch ${PENETRATOR_TOTAL} kinetic penetrators (incl. 30mm GAU-8 API & 125mm APFSDS) solve Tate hydrodynamic armor erosion, shear ERA flyer plates & project spall cones.`,
           cta: 'Open Armor Theater',
         },
         cartridgeLab: {
           badge: '1:1 ORDNANCE LAB · B',
           title: `${ORDNANCE_TOTAL}-Caliber 1:1 Ordnance Cutaway Lab`,
-          desc: `Compare ${LAB_CALIBER_TOTAL} small-arms cartridges & ${TANK_ORDNANCE_TOTAL} heavy cannon shells side-by-side at 1:1 millimeter scale with finned APFSDS darts.`,
+          desc: `Compare ${LAB_CALIBER_TOTAL} small-arms cartridges & ${TANK_ORDNANCE_TOTAL} heavy cannon shells side-by-side at 1:1 millimeter scale with finned APFSDS darts & 3-petal sabots.`,
           cta: 'Enter Ordnance Lab',
         },
         showdown: {
           badge: 'LIVE 3D SPLIT-SCREEN · S',
-          title: 'Mechanism Lineage Matrix & 3D Split Showdown',
-          desc: `${SHOWDOWN_RIVALRIES_TOTAL} cross-era rivalries with single-canvas dual-scissor live 3D cutaways, synchronized explosions & firing cycles.`,
+          title: `Universal ${CUSTOM_DUEL_MATRIX_LABEL} Custom Duel & 6-Axis Radar`,
+          desc: `${SHOWDOWN_RIVALRIES_TOTAL} cross-era rivalries plus a universal ${CUSTOM_DUEL_MATRIX_LABEL} custom duel builder, 6-axis engineering radar & single-canvas live 3D split-screen cutaways.`,
           cta: 'Launch Showdown Lab',
         },
         explode: {
-          badge: 'WORKBENCH · DAG',
-          title: '3-Stage Disassembly & Detail-Strip Bench',
-          desc: 'Continuous 0–100% exploded view, Field-Strip & Detail-Strip DAGs, tri-axial CT planes & modular optics/muzzle modding.',
+          badge: 'WORKBENCH · DAG & GLOSSARY',
+          title: `3D Helical Rifling, Detail-Strip & ${GLOSSARY_TERMS_TOTAL}-Term Glossary`,
+          desc: `True 3D cutaway helical rifling across all ${VAULT_EXHIBIT_COUNT} exhibits, Field/Detail-Strip DAGs, ${GLOSSARY_TERMS_TOTAL}-term bilingual engineering glossary, modular optics/muzzles (O) & Blueprint Daylight Studio.`,
           cta: (tag) => `Disassemble ${tag}`,
         },
         firing: {
-          badge: 'BALLISTICS & SFX',
-          title: '7-Stage Internal Ballistics & Acoustic Engine',
-          desc: '60fps chamber pressure P(t) & velocity telemetry, propellant gas streams, and convolution-reverb acoustic synthesis.',
+          badge: 'BALLISTICS & HEAVY SFX',
+          title: 'In-Bore Glow, Discarding Sabots & Heavy Acoustics',
+          desc: 'In-bore propellant deflagration glow, 1:1 MBT 3-petal discarding sabot separation, bore-evacuator vent plumes, GAU-8/M134 rotary blur halo & sabot/stub/motor acoustics.',
           cta: 'Launch Live Ballistics',
         },
         poster: {
           badge: 'SHARE STUDIO · U',
-          title: 'HD 3D Cutaway Share Poster Studio',
-          desc: 'Compose museum-grade 16:9 / 4:5 cutaway posters complete with QR deep-links and your verified Armorer Rank seal.',
+          title: 'HD 3D Cutaway & Rifling Metrology Poster Studio',
+          desc: 'Compose museum-grade 16:9 / 4:5 cutaway posters stamped with bore rifling twist, engineering principles, QR deep-links & your Armorer Rank seal.',
           cta: 'Create 3D Poster',
         },
         monograph: {
           badge: 'PRINT STUDIO · CMD+P',
-          title: '34/34 Cycles 17-Plate Monograph Print Studio',
+          title: `${VAULT_EXHIBIT_COUNT}/${VAULT_EXHIBIT_COUNT} Cycles 17-Plate Monograph Print Studio`,
           desc: 'Lay out 2880x1800 Cycles studio plates into bilingual 3D picture books and DK-style engineering encyclopedias.',
           cta: (tag) => `Print ${tag} Monograph`,
         },
         scaleWall: {
           badge: '1:1 TRUE SCALE',
-          title: `1:1 True-Scale Museum Wall (All ${VAULT_EXHIBIT_COUNT} Exhibits)`,
+          title: `Smithsonian 1:1 True-Scale Museum Wall (All ${VAULT_EXHIBIT_COUNT} Exhibits)`,
           desc: 'Compare pistols, rifles, the 6.06m GAU-8 cannon & 10m MBTs side-by-side in true millimeters against a 1.75m human silhouette.',
           cta: 'Open 1:1 Scale Wall',
         },
         recoilLab: {
           badge: 'RECOIL & TORQUE LAB',
-          title: 'Recoil Impulse, Gas-Jet & Muzzle-Climb Lab',
+          title: 'Recoil Impulse, Gas-Jet & Muzzle-Climb Physics Lab',
           desc: 'Decompose projectile vs rocket gas-jet momentum, muzzle-brake counter-thrust, 120-pt F(t) waveforms & bore-axis climb torque.',
           cta: 'Open Recoil Lab',
         },
@@ -955,46 +1011,46 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       },
     ],
     capabilities: {
-      kicker: 'FOUR CORE CAPABILITIES · V6.0 3D THEATERS',
+      kicker: `FOUR CORE CAPABILITIES · ${VERSION_UPPER} 3D THEATERS`,
       title: 'Four Armorer-Grade 3D Inspection, Modding & Physics Modes',
-      desc: `From M1911A1 single-link short-recoil, MG 42 twin-roller 1,200 RPM cycles, Mauser K98k CRF claws, and Thompson 50-rd drums to the 10th Hall 1:1 GE GAU-8/A Avenger 30mm rotary cannon and 4 1:1 MBTs, all ${VAULT_EXHIBIT_COUNT} exhibits (${VAULT_PARTS_TOTAL} parts) unify disassembly, 7-stage ballistics, tri-axial CT + 3D Slice Box, physically coupled Modular Optics & Muzzle Bench (O), 3D Armor Penetration Theater, 3D 1,000m Range & Bullet-Cam (R · ${BALLISTICS_PROFILES_TOTAL} profiles), Showdown (S · ${SHOWDOWN_RIVALRIES_TOTAL} rivalries), and ${ORDNANCE_TOTAL}-Caliber Lab (B).`,
+      desc: `From M1911A1 single-link short-recoil, MG 42 twin-roller 1,200 RPM cycles, Mauser K98k CRF claws, and Thompson 50-rd drums to the 10th Hall 1:1 GE GAU-8/A Avenger 30mm rotary cannon and 4 1:1 MBTs, all ${VAULT_EXHIBIT_COUNT} exhibits (${VAULT_PARTS_TOTAL} parts) unify true 3D cutaway helical rifling & in-bore propellant deflagration glow, 3-petal discarding sabot separation & rotary blur halos, ${GLOSSARY_TERMS_TOTAL}-term Smithsonian engineering glossary, Modular Optics & Muzzle Bench (O), Blueprint Daylight Studio, Tate 3D Armor Theater, Litz/Schlieren 1,000m Range (R · ${BALLISTICS_PROFILES_TOTAL} profiles), Universal ${CUSTOM_DUEL_MATRIX_LABEL} Showdown (S), and ${ORDNANCE_TOTAL}-Caliber Lab (B).`,
       cards: {
         explode: {
           alt: 'AK-15M1 zero-reflow callout leaders and multi-stage exploded workbench',
-          tag: 'MODE 01 · EXPLODED CAD & MODULAR BENCH (O)',
-          title: 'Progressive 3-Stage Disassembly + Modular Optics & Muzzle Bench (O)',
+          tag: 'MODE 01 · EXPLODED CAD, MODS (O) & GLOSSARY',
+          title: `Progressive Disassembly, ${GLOSSARY_TERMS_TOTAL}-Term Glossary & Modular Bench (O)`,
           descPrefix:
-            'Scrub 0% Assembled → 30% Field Strip → 65% Sub-Assembly → 100% Full Explode with two-tier Detail-Strip DAGs, or mount physically coupled K-baffle suppressors, competition brakes, 1-8x LPVOs & clip-on FLIR optics (O) with live ',
+            'Scrub 0% Assembled → 30% Field Strip → 65% Sub-Assembly → 100% Full Explode with Detail-Strip DAGs, cross-linked 28-term bilingual Smithsonian engineering glossary & physically coupled K-baffle suppressors, competition brakes, 1-8x LPVOs & clip-on FLIR optics (O) with live ',
           descSuffix: ' millimeter bounding dimensions.',
           cta: 'Open AK-15M1 Disassembly Bench',
         },
         firing: {
           alt: 'Barrett M82A1 .50 BMG barrel short-recoil and 60-degree arrowhead muzzle blast',
-          tag: 'MODE 02 · 7-STAGE KINEMATICS & 3D THEATERS',
-          title: `7-Stage Coupled Kinematics + ${ORDNANCE_TOTAL}-Caliber Ordnance & 3D Physics Theaters`,
-          desc: 'Faithfully models all 34 exhibits: GAU-8/A 3,900 RPM hydraulic 7-barrel cam waves, MG 42 1,200 RPM roller lock, M1911A1 single-link tilt, Mauser K98k 3-lug bolt, Thompson bronze Blish lock, ZTZ-99A carousel autoloader, M1A2 blast doors & compound archery—paired with the 3D 1,000m Firing Range & 3D Armor Penetration Theater.',
+          tag: 'MODE 02 · SABOT DISCARD, ROTARY HALO & 3D THEATERS',
+          title: `In-Bore Deflagration, 3-Petal Sabot Discard, Rotary Halo & ${ORDNANCE_TOTAL}-Caliber Ballistics`,
+          desc: `Models all ${VAULT_EXHIBIT_COUNT} exhibits with in-bore propellant deflagration glow, 1:1 smoothbore MBT 3-petal aluminum discarding sabot separation & bore-evacuator vent plumes, plus GAU-8/A & M134D rotary motion-blur halos—paired with Applied Ballistics Litz spin-drift / Miller Sg / Schlieren Mach-cone / AR500 sparks in the 1,000m Range and Tate hydrodynamic erosion in the 3D Armor Theater.`,
           cta: 'Launch Barrett .50 BMG Slow-Mo Cycle',
         },
         section: {
           alt: 'GPU longitudinal centerline armorer section-cut',
-          tag: 'MODE 03 · TRI-AXIAL CT & 3D SLICE BOX (C)',
-          title: 'Tri-Axial CT Cutaway, 6-Plane 3D Slice Box & Raycast Picking',
+          tag: 'MODE 03 · 3D HELICAL RIFLING BORE & TRI-AXIAL CT (C)',
+          title: `${VAULT_RATIO} True 3D Cutaway Helical Rifling Bore, Tri-Axial CT & 3D Slice Box`,
           descPrefix: 'Press ',
           descSuffix:
-            ' to sweep Z/X/Y orthogonal planes or a 6-plane 3D Slice Box right through receivers, helical drums, and mounted K-baffle suppressors & LPVO lens stacks; click directly through the cutaway plane to inspect internal parts with spoken narration.',
+            ` to sweep Z/X/Y orthogonal planes or a 6-plane 3D Slice Box right through barrels, receivers, helical drums & mounted K-baffle suppressors—exposing true 3D helical lands/grooves and Boxer primer ignition glow across all ${VAULT_EXHIBIT_COUNT} exhibits with precision raycast picking.`,
           cta: 'Launch Longitudinal Cutaway Bench',
         },
         pbr: {
           alt: '5-Channel Packed ORM PBR Texture Atlas Inspector',
-          tag: 'MODE 04 · 5-CHANNEL ORM & KTX2 / CDN PIPELINE',
-          title: 'Khronos-Calibrated 2K/4K Metal / Walnut / Armor PBR & Live Atlas',
-          desc: 'Separates manganese phosphate steel, Colt Royal Blue, brushed titanium, American black walnut, laminated beech, and 4K composite/Zimmerit armor—backed by KTX2 (toktx), optional CDN routing, PWA offline caching & an in-browser 2K/4K WebP inspector.',
+          tag: 'MODE 04 · BLUEPRINT DAYLIGHT & 5-CHANNEL ORM',
+          title: 'Dark Tactical Vault / Blueprint Daylight Studio & 2K/4K PBR Atlas',
+          desc: 'Switch effortlessly between Dark Tactical Vault and crisp high-contrast Blueprint Daylight Studio, separating manganese phosphate steel, Colt Royal Blue, walnut & 4K composite/Zimmerit armor—backed by KTX2 (toktx), optional CDN routing, offline PWA caching & an in-browser 2K/4K WebP inspector.',
           cta: `Inspect All ${VAULT_TEXTURES_TOTAL} 2K/4K PBR Texture Maps`,
         },
       },
     },
     documentary: {
-      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V6.0',
+      kicker: `MULTIMODAL AUDIO-VISUAL ENGINE · ${VERSION_UPPER}`,
       title: 'Bilingual 4-Act AI Documentary · 3D Director & Acoustic Engine',
       desc: `Beyond silent manual model viewers: all ${VAULT_EXHIBIT_COUNT} firearms, compound archery, 1:1 main battle tanks & the 1:1 GE GAU-8/A 30mm rotary cannon ship with bilingual 4-act R&D documentaries, ${VAULT_PARTS_TOTAL} spoken component breakdowns, 1080p Director Reel video capture, automated 3D camera choreography, and physically coupled Web Audio acoustics.`,
       directorBadge: '3D STORY DIRECTOR · AUTO-CHOREOGRAPHY',
@@ -1037,17 +1093,17 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       monographCta: (tag) => `Print ${tag} 17-Plate Picture Book / Monograph`,
       monographCtaTitle:
         'Capture 17 offscreen 3D plates and print bilingual Kids Picture Book or Collector Monograph (Ctrl/Cmd+P)',
-      soundBadge: 'PROCEDURAL WEB AUDIO · PHYSICALLY COUPLED',
-      soundTitle: `${ORDNANCE_TOTAL}-Caliber Small-Arms/Aero/Tank Acoustics & Muzzle Attachment Coupling`,
+      soundBadge: 'PROCEDURAL WEB AUDIO · 4-ROOM CONVOLUTION & HEAVY SFX',
+      soundTitle: `${ORDNANCE_TOTAL}-Caliber Sabot Crack, Rotary Drive Whine & 4-Room Convolution Acoustics`,
       soundDesc:
-        'Real-time procedural Web Audio synthesis (0 KB external audio bloat): distinguishes the GAU-8/A 30mm 3,900 RPM "BRRRT!" roar, 125/120/88mm main battle tank cannon blasts, MG 42 1,200 RPM buzzsaw bursts, .50 BMG shockwaves, M134D six-barrel roars, Thompson 50-rd drum bursts, and M1 Garand "PING!" ringing—shifting dynamically with modular suppressors/brakes (O) and ducking automatically under TTS voice.',
+        'Real-time procedural Web Audio synthesis (0 KB external audio bloat): adds 125/120mm APFSDS supersonic discarding-sabot air-crack, MBT autoloader & bustle stub-case clang, Tiger I 88mm drawn-brass bell ring, and GAU-8/A hydraulic + M134D 28V DC electric drive motor spin-up whine—routed through 4-room stereo convolution reverb, Euler-Bernoulli steel waveguides, and modular muzzle coupling.',
       caliberRows: [
         {
           caliber: '125mm / 120×570mm / 88×571mmR / 30×173mm',
           weaponTag: 'ZTZ-99A / M1A2 / Leopard 2A7V / Tiger 131 / GAU-8/A',
-          freqTag: '24–42 Hz Cannon Blast & 3,900 RPM Rotary Roar',
+          freqTag: '24–42 Hz Sabot Crack, Stub Clang & Hydraulic Roar',
           signature:
-            'GAU-8/A 30mm 7-barrel hydraulic "BRRRT!" storm / 125mm carousel hoist / M1A2 blast-door slam & AGT1500 / Leopard 2A7V / Tiger 88mm wedge',
+            'APFSDS 3-petal sabot whip-crack + AZ carousel/bustle stub-case clang + Tiger 88mm drawn-brass ring + GAU-8/A dual hydraulic motor whine & 3,900 RPM 65 Hz "BRRRT!"',
         },
         {
           caliber: '12.7×99mm (.50 BMG) / 7.92×57mm Mauser',
@@ -1107,9 +1163,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         },
       ],
       soundFeatures: [
-        '8-Point Phase Binding: Sear release → Primer strike → Muzzle blast → Gas/recoil → Cam unlock → Brass casing ring → Spring rasp → Lockup & reset',
-        'Smart TTS Audio Ducking: Smoothly attenuates mechanical & ballistic SFX to -12.4 dB whenever Gemini TTS narration is speaking',
-        'Independent Mute Control: Instant SFX toggle in Workbench Header, Firing Dock, or keyboard shortcut M',
+        'Synchronized Heavy-Ordnance Acoustics: APFSDS supersonic sabot air-crack, MBT stub-case clang, GAU-8/A hydraulic & M134D 28V electric drive motor whine + 4-room convolution reverb & live Studio Audition Deck',
+        '8-Point Phase Binding + Smart TTS Ducking: Smoothly attenuates mechanical & ballistic SFX to -12.4 dB whenever Gemini TTS narration is speaking',
+        'Instant Audition & Mute Controls: Audition live-shot, action, brass & lockup cues directly in the Acoustic Studio Deck or press M to mute',
       ],
       testSlowMoCta: 'Test Barrett .50 BMG 0.25x Acoustic Cycle',
     },
@@ -1238,9 +1294,42 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       btnStory: '3D Documentary',
     },
     architecture: {
-      kicker: 'ENGINEERING ARCHITECTURE',
+      kicker: 'ENGINEERING ARCHITECTURE & LIVE CERTIFICATIONS',
       title: 'Industrial-Grade TypeScript + Blender 5.2 + Web Audio Pipeline',
-      desc: 'Zero closed-source static 3D blobs—combining reproducible MIT Blender 5.2 Draco .glb meshes, Worker-isolated dynamic CSG springs, transient 60Hz animation clocks, automated story choreography, and procedural acoustic synthesis.',
+      desc: 'Zero closed-source static 3D blobs—combining reproducible MIT Blender 5.2 Draco .glb meshes, Worker-isolated CSG springs, Dark Vault & Blueprint Daylight studios, 3D rifling/sabot/rotary VFX, 4-room heavy acoustics, and live 75/75 WCAG 2.1 AA + 60 FPS WebGL certification.',
+      certificationsAria: 'Live engineering certifications and architecture badges',
+      certifications: [
+        {
+          id: 'exhibits',
+          tone: 'cyan',
+          value: `${VAULT_EXHIBIT_COUNT} Exhibits · ${VAULT_HALLS_COUNT} Halls`,
+          label: `${VAULT_PARTS_TOTAL} CAD Parts`,
+        },
+        {
+          id: 'wcag',
+          tone: 'emerald',
+          value: '75/75 WCAG 2.1 AA',
+          label: '100% Live CDP Certified',
+        },
+        {
+          id: 'webgl',
+          tone: 'cyan',
+          value: '60 FPS WebGL 2.0',
+          label: 'Dark Vault & Blueprint Daylight',
+        },
+        {
+          id: 'pwa',
+          tone: 'amber',
+          value: 'Zero-Dependency Offline PWA',
+          label: `${VAULT_TEXTURES_TOTAL} PBR Maps · ${VAULT_AUDIO_TOTAL} Clips`,
+        },
+        {
+          id: 'bilingual',
+          tone: 'emerald',
+          value: 'Bilingual ZH/EN',
+          label: `${GLOSSARY_TERMS_TOTAL}-Term Glossary · ${CUSTOM_DUEL_MATRIX_LABEL} Duels`,
+        },
+      ],
       pipelineAria: 'Rendering, CSG and audio pipeline',
       pipelineSteps: [
         'Lightweight Manifest (<8KB)',
@@ -1268,30 +1357,30 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         {
           code: 'ARCH-03',
           iconKey: 'gauge',
-          title: '60Hz 3D Physics Theaters, Range & IR Audio',
-          desc: `Zero-GC transient clock drives 60fps ${ORDNANCE_TOTAL}-caliber chamber curves, 3D Armor Penetration Theater, 3D 1,000m Bullet-Cam Range (${BALLISTICS_PROFILES_TOTAL} RK4 profiles, R), Modular Bench coupling (O), and stereo convolution waveguide SFX.`,
+          title: '60Hz Physics Theaters, Sabot VFX & Heavy IR Audio',
+          desc: `Zero-GC transient clock drives ${ORDNANCE_TOTAL}-caliber ballistics, Tate hydrodynamic 3D Armor Theater, Litz/Miller/Schlieren 1,000m Range (${BALLISTICS_PROFILES_TOTAL} profiles, R), 3-petal sabot & rotary blur VFX, and 4-room convolution heavy-ordnance acoustics.`,
           metric: '60 FPS Zero Re-render',
         },
         {
           code: 'ARCH-04',
           iconKey: 'sparkles',
-          title: 'GTAO + AgX Cinema, KTX2 / CDN & Print Studio',
-          desc: `${VAULT_SUITES_TOTAL} suites (${VAULT_TEXTURES_TOTAL} 5-channel ORM maps) pair with toktx KTX2, optional CDN routing & PWA Offline Museum; 3D Director syncs to ${VAULT_AUDIO_TOTAL} Charon clips alongside 1080p Reels, Share Posters (U) and 34/34 Cycles Monographs (Ctrl/Cmd+P).`,
+          title: 'GTAO + AgX, Blueprint Daylight & Offline PWA Studio',
+          desc: `${VAULT_SUITES_TOTAL} suites (${VAULT_TEXTURES_TOTAL} 5-channel ORM maps) support Dark Vault & Blueprint Daylight studios, toktx KTX2 / CDN / PWA Offline Museum; 3D Director syncs ${VAULT_AUDIO_TOTAL} Charon clips with 1080p Reels, Rifling Posters (U) & ${VAULT_EXHIBIT_COUNT}/${VAULT_EXHIBIT_COUNT} Cycles Monographs (Ctrl/Cmd+P).`,
           metric: `${VAULT_AUDIO_TOTAL} Clips · ${VAULT_SUITES_TOTAL} Suites`,
         },
         {
           code: 'ARCH-05',
           iconKey: 'scissors',
-          title: 'Tri-Axial Stencil Cutaway & 6-Plane Slice Box',
-          desc: 'WebGL Stencil front/back parity caps Z/X/Y planes and a 6-plane 3D Slice Box with ISO 128 metallic hatching—slicing receivers, helical drums & mounted K-baffles with clean raycast picking.',
-          metric: 'Tri-Axial + 3D Box',
+          title: `${VAULT_RATIO} 3D Helical Rifling Bore, In-Bore Glow & CT Box`,
+          desc: `WebGL Stencil front/back parity caps Z/X/Y planes and a 6-plane 3D Slice Box with ISO 128 hatching—exposing true 3D helical lands/grooves, Boxer primer deflagration glow, helical drums & K-baffle suppressors across all ${VAULT_EXHIBIT_COUNT} exhibits.`,
+          metric: `${VAULT_RATIO} Rifling · 3D Box`,
         },
         {
           code: 'ARCH-06',
           iconKey: 'shield',
-          title: 'Contract Suites, Budget Audit & 1080p Visual QA',
-          desc: `33 Vitest suites verify geometry, UV, PBR luminance, ${VAULT_AUDIO_TOTAL} audio assets, 3D Armor/Range/Mods physics & Armorer exams across all ${VAULT_PARTS_TOTAL} parts—backed by assets:audit (<= 12 MB) & qa:visual 1080p Chromium gates.`,
-          metric: '33 Suites · 1080p QA',
+          title: '95+ Contract Suites, 75/75 WCAG 2.1 AA & 60 FPS QA',
+          desc: `95+ Vitest suites verify geometry, PBR luminance, ${VAULT_AUDIO_TOTAL} audio clips, ${GLOSSARY_TERMS_TOTAL}-term glossary & 3D physics across all ${VAULT_PARTS_TOTAL} parts—backed by assets:audit (<= 12 MB) and live 75/75 (100%) WCAG 2.1 AA + 60 FPS Chromium gates.`,
+          metric: '75/75 WCAG · 60 FPS QA',
         },
       ],
     },
@@ -1369,22 +1458,22 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         {
           key: 'Ctrl/Cmd+P',
           label:
-            'Open 34/34 Cycles 17-Plate 3D Picture Book & Collector Monograph Print Studio',
+            `Open ${VAULT_RATIO} Cycles 17-Plate 3D Picture Book & Collector Monograph Print Studio`,
         },
         {
           key: 'Shift+R / Esc',
           label: 'Reset 0% state / Clear part or exit to Vault',
         },
       ],
-      finalKicker: 'READY FOR INSPECTION · V6.0',
+      finalKicker: `READY FOR INSPECTION · ${VERSION_UPPER}`,
       finalTitle:
         'Step Inside the 10-Hall 3D Armory & Live Physics Theaters',
       finalSub:
-        'Full EN/ZH parity, 3D Composite Armor Penetration Theater, 3D 1,000m Firing Range & Bullet-Cam (R), Physically Coupled Modular Optics & Muzzle Bench (O), 34/34 Cycles Monograph Printing (Ctrl/Cmd+P), and PWA Offline Museum. Open-source under MIT—star the repo on GitHub!',
+        `Explore ${VAULT_RATIO} 3D cutaway helical rifling & discarding-sabot VFX, synchronized heavy-ordnance acoustics, the ${GLOSSARY_TERMS_TOTAL}-term Smithsonian engineering glossary, universal ${CUSTOM_DUEL_MATRIX_LABEL} Showdown duels, the Litz/Schlieren 1,000m Proving Ground (R), Tate 3D Armor Theater, 1:1 Scale Wall, Recoil Lab, Blueprint Daylight Studio, live 75/75 WCAG 2.1 AA certification & Offline PWA—MIT open-source!`,
       finalLaunchBtn: `Launch ${VAULT_EXHIBIT_COUNT}-Bay ${VAULT_HALLS_COUNT}-Hall 3D Armory`,
       finalStarBtn: 'Star on GitHub',
       footerBrand:
-        'Digital Armory 3D v6.0 · Open-Source 3D Firearms, Heavy Armor & Aero Ordnance Museum',
+        `Digital Armory 3D ${MUSEUM_VERSION} · Open-Source 3D Firearms, Heavy Armor & Aero Ordnance Museum`,
       footerDisclaimer:
         'Schematic / Educational-grade mechanical visualization & interactive encyclopedia · Contains zero manufacturing tolerances or 3D-printable blueprints.',
     },
