@@ -31,6 +31,8 @@ const BRAKE_JET_SLOTS = [0, 1, 2, 3] as const;
 const FH_PRONG_SLOTS = [0, 1, 2] as const;
 const BREECH_WISP_SLOTS = [0, 1, 2] as const;
 const THERMAL_MIRAGE_SLOTS = [0, 1, 2, 3] as const;
+const TANK_EVAC_PUFF_SLOTS = [0, 1, 2, 3, 4, 5] as const;
+const TIGER_BAFFLE_JET_SLOTS = [0, 1, 2, 3] as const;
 const BRAKE_SWEEP_RAD = (32 * Math.PI) / 180;
 const noRaycast = (): null => null;
 
@@ -40,6 +42,177 @@ const TAKEDOWN_MAT_FLOOR_OFFSET_Y = 0.45;
 
 export const THERMAL_MIRAGE_HEAT_THRESHOLD = 0.22;
 export const THERMAL_MIRAGE_RIBBON_COUNT = THERMAL_MIRAGE_SLOTS.length;
+
+// Cycle 19A: High-RPM Rotary Cannon Motion-Blur Sweep Halo & 1:1 MBT Bore-Evacuator Vent Plume constants
+export const ROTARY_BLUR_FIRE_THRESHOLD = 0.04;
+export const TANK_BORE_EVACUATOR_START_F = 0.28;
+export const TANK_BORE_EVACUATOR_END_F = 0.78;
+export const TANK_EVAC_PUFF_COUNT = TANK_EVAC_PUFF_SLOTS.length;
+export const TIGER_BAFFLE_JET_COUNT = TIGER_BAFFLE_JET_SLOTS.length;
+
+export interface RotaryBlurHaloSample {
+  /** True ONLY for `gau8` & `m134` during active firing (`fireProgress > 0.04`), non-cutaway, non-exploded */
+  active: boolean;
+  /** Translucent radial-streak cylindrical sweep halo opacity `[0..0.46]` */
+  opacity: number;
+  /** Effective barrel-cluster angular velocity in rad/s scaled by RPM & `speedMultiplier` */
+  spinRadPerSec: number;
+  /** Outer cylindrical motion-blur sweep radius around the coaxial rotor axis (cm) */
+  radiusCm: number;
+  /** Axial length of the exposed spinning barrel cluster sweep halo (cm) */
+  lengthCm: number;
+  /** Dull-cherry thermal heat tint `[0..1]` rising smoothly with `barrelHeat01` */
+  heatTint01: number;
+  /** World-space axial center X (cm) of the exposed rotary barrel cluster */
+  centerX: number;
+  /** Number of rotary barrels (`7` for GAU-8/A, `6` for M134D) */
+  barrelCount: number;
+}
+
+export function createMutableRotaryBlurHaloSample(): RotaryBlurHaloSample {
+  return {
+    active: false,
+    opacity: 0,
+    spinRadPerSec: 0,
+    radiusCm: 0,
+    lengthCm: 0,
+    heatTint01: 0,
+    centerX: 0,
+    barrelCount: 0,
+  };
+}
+
+export interface TankBoreEvacuatorSample {
+  /** True strictly for the 4 1:1 MBTs (`ztz99a`, `m1a2`, `leopard2a7`, `tiger1`) post-exit */
+  active: boolean;
+  /** Expanding volumetric scavenging plume scale multiplier `[0..1.9]` */
+  plumeScale: number;
+  /** Soft trailing bore-scavenging residual smoke opacity `[0..0.40]` */
+  opacity: number;
+  /** World-space bore evacuator / muzzle-brake anchor X (cm) */
+  originX: number;
+  /** World-space bore centerline Y (cm) */
+  originY: number;
+  /** World-space muzzle crown X (cm) for trailing barrel-scavenging smoke */
+  muzzleX: number;
+  /** Normalized progression `[0..1]` across the post-exit scavenging window */
+  progress01: number;
+  /** True on Tiger I (`tiger1`) Krupp twin-baffle muzzle brake, false on modern bore-evacuator MBTs */
+  hasTwinBaffleBrake: boolean;
+  /** Lateral dual-baffle smoke jet intensity `[0..1]` on Tiger I (`0` on non-Tiger MBTs) */
+  baffleJetStrength01: number;
+}
+
+export function createMutableTankBoreEvacuatorSample(): TankBoreEvacuatorSample {
+  return {
+    active: false,
+    plumeScale: 0,
+    opacity: 0,
+    originX: 0,
+    originY: 0,
+    muzzleX: 0,
+    progress01: 0,
+    hasTwinBaffleBrake: false,
+    baffleJetStrength01: 0,
+  };
+}
+
+interface RotaryBlurProfile {
+  cyclicRpm: number;
+  barrelCount: number;
+  radiusCm: number;
+  lengthCm: number;
+  centerX: number;
+  peakOpacity: number;
+}
+
+const ROTARY_BLUR_PROFILES: Partial<Record<WeaponId, RotaryBlurProfile>> = {
+  // GE GAU-8/A Avenger: 3,900 RPM across 7 barrels (557.14 cluster RPM = 58.34 rad/s),
+  // exposed 2.3m barrel bundle X ∈ [90, 306] cm, pitch R=7.4 cm + tube R=2.75 cm -> halo R=10.8 cm
+  gau8: {
+    cyclicRpm: 3900,
+    barrelCount: 7,
+    radiusCm: 10.8,
+    lengthCm: 216.0,
+    centerX: 198.0,
+    peakOpacity: 0.36,
+  },
+  // GE / Dillon Aero M134D Minigun: 3,000 RPM nominal across 6 barrels (500 cluster RPM = 52.36 rad/s),
+  // exposed 22" barrel bundle X ∈ [3.6, 45.2] cm, pitch R=2.65 cm + tube R=0.84 cm -> halo R=3.65 cm
+  m134: {
+    cyclicRpm: 3000,
+    barrelCount: 6,
+    radiusCm: 3.65,
+    lengthCm: 41.6,
+    centerX: 24.4,
+    peakOpacity: 0.34,
+  },
+};
+
+interface TankBoreEvacuatorProfile {
+  originX: number;
+  originY: number;
+  muzzleX: number;
+  evacRadiusCm: number;
+  peakOpacity: number;
+  mainGunPartId: string;
+  hasTwinBaffleBrake: boolean;
+  rearBaffleX: number;
+  frontBaffleX: number;
+}
+
+const TANK_BORE_EVACUATOR_PROFILES: Partial<
+  Record<WeaponId, TankBoreEvacuatorProfile>
+> = {
+  // PLA ZTZ-99A 125mm ZPT-98 L/50 smoothbore: evacuator world X ∈ [335, 419], forward collar 405, Y=38
+  ztz99a: {
+    originX: 405.0,
+    originY: 38.0,
+    muzzleX: 710.0,
+    evacRadiusCm: 14.8,
+    peakOpacity: 0.34,
+    mainGunPartId: 'ztz99a_main_gun',
+    hasTwinBaffleBrake: false,
+    rearBaffleX: 0,
+    frontBaffleX: 0,
+  },
+  // M1A2 SEP v3 Abrams 120mm L/44 M256 smoothbore: evacuator world X ∈ [280, 350], center 315, Y=44
+  m1a2: {
+    originX: 315.0,
+    originY: 44.0,
+    muzzleX: 581.0,
+    evacRadiusCm: 13.4,
+    peakOpacity: 0.34,
+    mainGunPartId: 'm1a2_main_gun',
+    hasTwinBaffleBrake: false,
+    rearBaffleX: 0,
+    frontBaffleX: 0,
+  },
+  // Leopard 2A7V 120mm Rh-120 L/55A1 smoothbore: evacuator world X ∈ [338, 414], center 376, Y=74
+  leopard2a7: {
+    originX: 376.0,
+    originY: 74.0,
+    muzzleX: 712.0,
+    evacRadiusCm: 13.8,
+    peakOpacity: 0.34,
+    mainGunPartId: 'leo_main_gun',
+    hasTwinBaffleBrake: false,
+    rearBaffleX: 0,
+    frontBaffleX: 0,
+  },
+  // Pz.Kpfw. VI Tiger 131 88mm KwK 36 L/56 rifled + Krupp twin-baffle brake (world X ∈ [498, 529], center 513.5, Y=102)
+  tiger1: {
+    originX: 513.5,
+    originY: 102.0,
+    muzzleX: 529.0,
+    evacRadiusCm: 13.5,
+    peakOpacity: 0.38,
+    mainGunPartId: 'tiger_main_gun',
+    hasTwinBaffleBrake: true,
+    rearBaffleX: 507.5,
+    frontBaffleX: 519.5,
+  },
+};
 
 // Cycle 15A: Matt Rittman In-Bore Propellant Deflagration & Boxer Primer Flash constants
 export const IN_BORE_RADIUS_CLEARANCE_SCALE = 0.88;
@@ -573,6 +746,178 @@ export function computeInBoreDeflagrationSample(
   );
 }
 
+/**
+ * Zero-GC evaluator writing Cycle 19A.1 High-RPM rotary barrel-cluster motion-blur
+ * sweep halo state into `out`.
+ * Strictly active ONLY for `gau8` & `m134` when `isFiring === true && fireProgress > 0.04`,
+ * and strictly inactive at `t = 0`, in `explode` mode (`!isFiring` or `explodeProgress >= 0.04`),
+ * during `sectionCut` cutaway (`isCutaway === true`), and on all other 32 exhibits.
+ */
+export function writeRotaryBlurHaloSampleInto(
+  weaponId: WeaponId,
+  isFiring: boolean,
+  fireProgress: number,
+  speedMultiplier: number,
+  barrelHeat01: number,
+  out: RotaryBlurHaloSample,
+  isCutaway = false,
+  explodeProgress = 0
+): RotaryBlurHaloSample {
+  out.active = false;
+  out.opacity = 0;
+  out.spinRadPerSec = 0;
+  out.radiusCm = 0;
+  out.lengthCm = 0;
+  out.heatTint01 = 0;
+  out.centerX = 0;
+  out.barrelCount = 0;
+
+  const prof = ROTARY_BLUR_PROFILES[weaponId];
+  if (
+    !prof ||
+    !isFiring ||
+    isCutaway ||
+    !Number.isFinite(explodeProgress) ||
+    explodeProgress >= RIFLING_EXPLODE_VISIBILITY_MAX ||
+    !Number.isFinite(fireProgress) ||
+    fireProgress <= ROTARY_BLUR_FIRE_THRESHOLD ||
+    fireProgress > 1.0001 ||
+    !Number.isFinite(speedMultiplier) ||
+    speedMultiplier <= 0
+  ) {
+    return out;
+  }
+
+  const clampedSpeed = Math.max(0.05, Math.min(2.5, speedMultiplier));
+  const baseOmega = (prof.cyclicRpm / prof.barrelCount) * ((Math.PI * 2) / 60);
+  const spinEnvelope =
+    0.22 + 0.78 * smoothstep01(ROTARY_BLUR_FIRE_THRESHOLD, 0.16, fireProgress);
+  const spinRadPerSec = baseOmega * clampedSpeed * spinEnvelope;
+
+  const speedBlur = Math.pow(clamp01(spinRadPerSec / 62.0), 0.72);
+  const opacity = clamp01(
+    prof.peakOpacity * (0.18 + 0.82 * speedBlur) * spinEnvelope
+  );
+
+  const clampedHeat = Number.isFinite(barrelHeat01) ? clamp01(barrelHeat01) : 0;
+  const heatTint01 =
+    clampedHeat <= 0.05 ? 0 : smoothstep01(0.05, 0.95, clampedHeat);
+
+  out.active = opacity > 0.004;
+  out.opacity = out.active ? opacity : 0;
+  out.spinRadPerSec = out.active ? spinRadPerSec : 0;
+  out.radiusCm = out.active ? prof.radiusCm : 0;
+  out.lengthCm = out.active ? prof.lengthCm : 0;
+  out.heatTint01 = out.active ? heatTint01 : 0;
+  out.centerX = out.active ? prof.centerX : 0;
+  out.barrelCount = out.active ? prof.barrelCount : 0;
+  return out;
+}
+
+/**
+ * Pure allocating wrapper for `writeRotaryBlurHaloSampleInto`.
+ */
+export function computeRotaryBlurHaloSample(
+  weaponId: WeaponId,
+  isFiring: boolean,
+  fireProgress: number,
+  speedMultiplier = 1.0,
+  barrelHeat01 = 0,
+  isCutaway = false,
+  explodeProgress = 0
+): RotaryBlurHaloSample {
+  return writeRotaryBlurHaloSampleInto(
+    weaponId,
+    isFiring,
+    fireProgress,
+    speedMultiplier,
+    barrelHeat01,
+    createMutableRotaryBlurHaloSample(),
+    isCutaway,
+    explodeProgress
+  );
+}
+
+/**
+ * Zero-GC evaluator writing Cycle 19A.2 1:1 MBT bore-evacuator / fume-extractor
+ * & Tiger I twin-baffle muzzle-brake scavenging smoke plume state into `out`.
+ * Strictly active ONLY for the 4 1:1 MBTs (`ztz99a`, `m1a2`, `leopard2a7`, `tiger1`)
+ * during the post-exit scavenging window `(0.28..0.78)`; strictly inactive at `t = 0`
+ * and on all non-tank exhibits.
+ */
+export function writeTankBoreEvacuatorSampleInto(
+  weaponId: WeaponId,
+  isFiring: boolean,
+  fireProgress: number,
+  out: TankBoreEvacuatorSample,
+  explodeProgress = 0
+): TankBoreEvacuatorSample {
+  const prof = TANK_BORE_EVACUATOR_PROFILES[weaponId];
+
+  out.active = false;
+  out.plumeScale = 0;
+  out.opacity = 0;
+  out.originX = prof ? prof.originX : 0;
+  out.originY = prof ? prof.originY : 0;
+  out.muzzleX = prof ? prof.muzzleX : 0;
+  out.progress01 = 0;
+  out.hasTwinBaffleBrake = prof ? prof.hasTwinBaffleBrake : false;
+  out.baffleJetStrength01 = 0;
+
+  if (
+    !prof ||
+    !isFiring ||
+    !Number.isFinite(explodeProgress) ||
+    explodeProgress >= RIFLING_EXPLODE_VISIBILITY_MAX ||
+    !Number.isFinite(fireProgress) ||
+    fireProgress <= TANK_BORE_EVACUATOR_START_F ||
+    fireProgress >= TANK_BORE_EVACUATOR_END_F
+  ) {
+    return out;
+  }
+
+  const u = clamp01(
+    (fireProgress - TANK_BORE_EVACUATOR_START_F) /
+      (TANK_BORE_EVACUATOR_END_F - TANK_BORE_EVACUATOR_START_F)
+  );
+  if (u <= 0 || u >= 1) {
+    return out;
+  }
+
+  const onset = smoothstep01(0.0, 0.16, u);
+  const decay = Math.pow(1 - u, 1.15);
+  const opacity = prof.peakOpacity * onset * decay;
+  const plumeScale = 0.55 + 1.3 * Math.pow(u, 0.72);
+  const baffleJetStrength01 = prof.hasTwinBaffleBrake
+    ? smoothstep01(0.0, 0.1, u) * Math.pow(1 - u, 1.45)
+    : 0;
+
+  out.active = opacity > 0.004;
+  out.plumeScale = out.active ? plumeScale : 0;
+  out.opacity = out.active ? opacity : 0;
+  out.progress01 = out.active ? u : 0;
+  out.baffleJetStrength01 = out.active ? baffleJetStrength01 : 0;
+  return out;
+}
+
+/**
+ * Pure allocating wrapper for `writeTankBoreEvacuatorSampleInto`.
+ */
+export function computeTankBoreEvacuatorSample(
+  weaponId: WeaponId,
+  isFiring: boolean,
+  fireProgress: number,
+  explodeProgress = 0
+): TankBoreEvacuatorSample {
+  return writeTankBoreEvacuatorSampleInto(
+    weaponId,
+    isFiring,
+    fireProgress,
+    createMutableTankBoreEvacuatorSample(),
+    explodeProgress
+  );
+}
+
 const SHOCKWAVE_RING_VERT_GLSL = /* glsl */ `
   varying vec2 vUv;
   void main() {
@@ -746,10 +1091,184 @@ const PRIMER_SPARK_FRAG_GLSL = /* glsl */ `
   }
 `;
 
+// Cycle 19A.1: High-RPM Rotary Barrel-Cluster Motion-Blur Sweep Halo shader
+// Open cylinder oriented along +X (rotateZ(-PI/2)): vUv.x = azimuth [0..1], vUv.y = axial [0..1].
+const ROTARY_BLUR_HALO_VERT_GLSL = /* glsl */ `
+  varying vec2 vUv;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    vUv = uv;
+    vViewNormal = normalize(normalMatrix * normal);
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    vViewDir = normalize(-mvPos.xyz);
+    gl_Position = projectionMatrix * mvPos;
+  }
+`;
+
+const ROTARY_BLUR_HALO_FRAG_GLSL = /* glsl */ `
+  uniform vec3 uCoolColor;
+  uniform vec3 uHighlightColor;
+  uniform vec3 uHeatColor;
+  uniform float uOpacity;
+  uniform float uPhase;
+  uniform float uBarrelCount;
+  uniform float uBlurFactor;
+  uniform float uHeatTint;
+
+  varying vec2 vUv;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    // Soft axial end-feathering (strict edge0 < edge1 per GLSL ES spec)
+    float breechFade = smoothstep(0.0, 0.08, vUv.y);
+    float muzzleFade = 1.0 - smoothstep(0.92, 1.0, vUv.y);
+    float axialMask = breechFade * muzzleFade;
+
+    // Coaxial tangential streak harmonics locked to 7-barrel (GAU-8) / 6-barrel (M134D) symmetry
+    float theta = vUv.x * 6.2831853;
+    float spun = theta - uPhase;
+    float primaryWave = 0.5 + 0.5 * sin(spun * uBarrelCount);
+    float secondHarmonic = 0.5 + 0.5 * sin(spun * uBarrelCount * 2.0 + 0.85);
+    float microStreak = 0.5 + 0.5 * sin(spun * uBarrelCount * 5.0 - vUv.y * 6.0);
+
+    float axialRipple = 0.86 + 0.14 * sin(vUv.y * 18.84955);
+
+    // Higher RPM / speedMultiplier smears individual barrel pulses toward a sleek continuous halo
+    float streakArticulation = mix(0.62, 0.24, clamp(uBlurFactor, 0.0, 1.0));
+    float streakPattern =
+      (1.0 - streakArticulation) +
+      streakArticulation * (primaryWave * 0.56 + secondHarmonic * 0.28 + microStreak * 0.16);
+
+    // Grazing cylindrical Fresnel rim emphasizes metallic spin envelope while keeping center transparent
+    float ndotv = abs(dot(normalize(vViewNormal), normalize(vViewDir)));
+    float fresnel = pow(1.0 - clamp(ndotv, 0.0, 1.0), 1.45);
+    float silhouetteWeight = 0.34 + 0.66 * fresnel;
+
+    // Subtle dull-cherry thermal glow concentrated along mid-forward heated barrel span
+    float thermalAxial = smoothstep(0.14, 0.86, vUv.y);
+    float heatMix = clamp(uHeatTint * (0.38 + 0.62 * thermalAxial), 0.0, 1.0);
+    vec3 metalCol = mix(uCoolColor, uHighlightColor, clamp(fresnel * 0.7 + microStreak * 0.3, 0.0, 1.0));
+    vec3 col = mix(metalCol, uHeatColor, heatMix * 0.78);
+    col += uHeatColor * heatMix * (0.28 + 0.32 * primaryWave);
+
+    float alpha = clamp(
+      axialMask * axialRipple * streakPattern * silhouetteWeight * uOpacity,
+      0.0,
+      0.65
+    );
+    if (alpha <= 0.003) discard;
+
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
+// Cycle 19A.2a: Soft volumetric 1:1 MBT bore-evacuator & muzzle-scavenging residual cordite smoke puff
+const TANK_EVAC_PUFF_VERT_GLSL = /* glsl */ `
+  varying vec2 vUv;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    vUv = uv;
+    vViewNormal = normalize(normalMatrix * normal);
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    vViewDir = normalize(-mvPos.xyz);
+    gl_Position = projectionMatrix * mvPos;
+  }
+`;
+
+const TANK_EVAC_PUFF_FRAG_GLSL = /* glsl */ `
+  uniform vec3 uWarmColor;
+  uniform vec3 uCoolColor;
+  uniform float uOpacity;
+  uniform float uProgress;
+  uniform float uPhase;
+
+  varying vec2 vUv;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    // Center-weighted volumetric falloff eliminates spherical silhouette edges from every angle
+    float ndotv = abs(dot(normalize(vViewNormal), normalize(vViewDir)));
+    float softCore = pow(clamp(ndotv, 0.0, 1.0), 1.45);
+
+    // Organic buoyant turbulent smoke billows
+    float w1 = 0.5 + 0.5 * sin(vUv.x * 12.56637 + uProgress * 4.2 + uPhase);
+    float w2 = 0.5 + 0.5 * cos(vUv.y * 9.42478 - uProgress * 5.6 + uPhase * 1.7);
+    float w3 = 0.5 + 0.5 * sin((vUv.x + vUv.y) * 15.70796 - uProgress * 3.8);
+    float billow = 0.52 + 0.48 * (w1 * 0.45 + w2 * 0.35 + w3 * 0.20);
+
+    float alpha = clamp(softCore * billow * uOpacity, 0.0, 0.52);
+    if (alpha <= 0.003) discard;
+
+    float coolMix = clamp(uProgress * 1.15 + (1.0 - ndotv) * 0.35, 0.0, 1.0);
+    vec3 col = mix(uWarmColor, uCoolColor, coolMix);
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
+// Cycle 19A.2b: Tiger I 88mm KwK 36 dual-baffle conical muzzle-brake lateral smoke jet shader
+const TANK_BAFFLE_JET_VERT_GLSL = /* glsl */ `
+  varying vec2 vUv;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    vUv = uv;
+    vViewNormal = normalize(normalMatrix * normal);
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    vViewDir = normalize(-mvPos.xyz);
+    gl_Position = projectionMatrix * mvPos;
+  }
+`;
+
+const TANK_BAFFLE_JET_FRAG_GLSL = /* glsl */ `
+  uniform vec3 uWarmColor;
+  uniform vec3 uCoolColor;
+  uniform float uOpacity;
+  uniform float uProgress;
+  uniform float uPhase;
+
+  varying vec2 vUv;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    // Soft cylindrical volume falloff so lateral smoke plumes blend seamlessly in 3D
+    float ndotv = abs(dot(normalize(vViewNormal), normalize(vViewDir)));
+    float volEdge = pow(clamp(ndotv, 0.0, 1.0), 0.95);
+
+    // Smooth baffle-port nozzle entry & far dispersion fade (strict edge0 < edge1)
+    float portEntry = smoothstep(0.0, 0.14, vUv.y);
+    float farFade = 1.0 - smoothstep(0.32, 1.0, vUv.y);
+    float axialEnv = portEntry * farFade;
+
+    float theta = vUv.x * 6.2831853;
+    float eddyA = 0.5 + 0.5 * sin(vUv.y * 10.5 - uProgress * 9.0 + sin(theta * 3.0 + uPhase));
+    float eddyB = 0.5 + 0.5 * cos(vUv.y * 17.0 - uProgress * 13.0 + theta * 2.0 + uPhase * 1.4);
+    float smokeTex = 0.56 + 0.44 * (eddyA * 0.62 + eddyB * 0.38);
+
+    float alpha = clamp(volEdge * axialEnv * smokeTex * uOpacity, 0.0, 0.58);
+    if (alpha <= 0.003) discard;
+
+    float coolMix = clamp(vUv.y * 0.85 + uProgress * 0.55, 0.0, 1.0);
+    vec3 col = mix(uWarmColor, uCoolColor, coolMix);
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
 // Module-pooled Zero-GC math & color scratch objects (never allocate in useFrame)
 const _sample = createInternalBallisticsSample('556_nato');
 const _inBoreSample: InBoreDeflagrationSample =
   createMutableInBoreDeflagrationSample();
+const _rotaryBlurSample: RotaryBlurHaloSample =
+  createMutableRotaryBlurHaloSample();
+const _tankEvacSample: TankBoreEvacuatorSample =
+  createMutableTankBoreEvacuatorSample();
 const _inBoreCoreColor = new THREE.Color();
 const _inBoreEdgeColor = new THREE.Color();
 const _shockSample: MuzzleShockwaveSample = {
@@ -814,6 +1333,11 @@ const COL_INBORE_ORANGE = new THREE.Color('#fb7a18');
 const COL_INBORE_EMBER = new THREE.Color('#b8320a');
 const COL_PRIMER_CORE = new THREE.Color('#fffbeb');
 const COL_PRIMER_HALO = new THREE.Color('#f59e0b');
+const COL_ROTARY_STEEL_COOL = new THREE.Color('#7f90a6');
+const COL_ROTARY_STEEL_GLINT = new THREE.Color('#dbe4ef');
+const COL_ROTARY_CHERRY_HEAT = new THREE.Color('#c84224');
+const COL_TANK_EVAC_WARM = new THREE.Color('#d2c5b0');
+const COL_TANK_EVAC_COOL = new THREE.Color('#9aa6b5');
 
 function clamp01(x: number): number {
   if (!(x > 0)) return 0;
@@ -846,6 +1370,13 @@ export const GasFlowVisualizer: React.FC = () => {
   const inBoreGroupRef = useRef<THREE.Group>(null);
   const inBorePlasmaMeshRef = useRef<THREE.Mesh>(null);
   const primerSparkMeshRef = useRef<THREE.Mesh>(null);
+  const rotaryBlurGroupRef = useRef<THREE.Group>(null);
+  const rotaryBlurOuterRef = useRef<THREE.Mesh>(null);
+  const rotaryBlurInnerRef = useRef<THREE.Mesh>(null);
+  const rotaryBlurPhaseRef = useRef<number>(0);
+  const tankEvacGroupRef = useRef<THREE.Group>(null);
+  const tankEvacPuffRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const tigerBaffleJetRefs = useRef<(THREE.Mesh | null)[]>([]);
   const boreOuterRef = useRef<THREE.Mesh>(null);
   const boreOuterMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const boreCoreRef = useRef<THREE.Mesh>(null);
@@ -991,6 +1522,96 @@ export const GasFlowVisualizer: React.FC = () => {
     []
   );
 
+  // Cycle 19A.1: High-RPM rotary barrel-cluster motion-blur sweep halo materials (explicitly disposed on unmount)
+  const rotaryBlurOuterMat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: ROTARY_BLUR_HALO_VERT_GLSL,
+        fragmentShader: ROTARY_BLUR_HALO_FRAG_GLSL,
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        uniforms: {
+          uCoolColor: { value: COL_ROTARY_STEEL_COOL.clone() },
+          uHighlightColor: { value: COL_ROTARY_STEEL_GLINT.clone() },
+          uHeatColor: { value: COL_ROTARY_CHERRY_HEAT.clone() },
+          uOpacity: { value: 0 },
+          uPhase: { value: 0 },
+          uBarrelCount: { value: 7 },
+          uBlurFactor: { value: 0 },
+          uHeatTint: { value: 0 },
+        },
+      }),
+    []
+  );
+
+  const rotaryBlurInnerMat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: ROTARY_BLUR_HALO_VERT_GLSL,
+        fragmentShader: ROTARY_BLUR_HALO_FRAG_GLSL,
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        uniforms: {
+          uCoolColor: { value: COL_ROTARY_STEEL_COOL.clone() },
+          uHighlightColor: { value: COL_ROTARY_STEEL_GLINT.clone() },
+          uHeatColor: { value: COL_ROTARY_CHERRY_HEAT.clone() },
+          uOpacity: { value: 0 },
+          uPhase: { value: 0 },
+          uBarrelCount: { value: 7 },
+          uBlurFactor: { value: 0 },
+          uHeatTint: { value: 0 },
+        },
+      }),
+    []
+  );
+
+  // Cycle 19A.2: 1:1 MBT bore-evacuator scavenging puffs & Tiger I dual-baffle smoke jets (explicitly disposed)
+  const tankEvacPuffMats = useMemo(
+    () =>
+      TANK_EVAC_PUFF_SLOTS.map(
+        (i) =>
+          new THREE.ShaderMaterial({
+            vertexShader: TANK_EVAC_PUFF_VERT_GLSL,
+            fragmentShader: TANK_EVAC_PUFF_FRAG_GLSL,
+            transparent: true,
+            depthWrite: false,
+            side: THREE.FrontSide,
+            uniforms: {
+              uWarmColor: { value: COL_TANK_EVAC_WARM.clone() },
+              uCoolColor: { value: COL_TANK_EVAC_COOL.clone() },
+              uOpacity: { value: 0 },
+              uProgress: { value: 0 },
+              uPhase: { value: i * 1.17 + 0.4 },
+            },
+          })
+      ),
+    []
+  );
+
+  const tigerBaffleJetMats = useMemo(
+    () =>
+      TIGER_BAFFLE_JET_SLOTS.map(
+        (i) =>
+          new THREE.ShaderMaterial({
+            vertexShader: TANK_BAFFLE_JET_VERT_GLSL,
+            fragmentShader: TANK_BAFFLE_JET_FRAG_GLSL,
+            transparent: true,
+            depthWrite: false,
+            side: THREE.DoubleSide,
+            uniforms: {
+              uWarmColor: { value: COL_TANK_EVAC_WARM.clone() },
+              uCoolColor: { value: COL_TANK_EVAC_COOL.clone() },
+              uOpacity: { value: 0 },
+              uProgress: { value: 0 },
+              uPhase: { value: i * 1.43 + 0.25 },
+            },
+          })
+      ),
+    []
+  );
+
   useEffect(
     () => () => {
       shockPrimaryMat.dispose();
@@ -1000,8 +1621,26 @@ export const GasFlowVisualizer: React.FC = () => {
       }
       inBorePlasmaMat.dispose();
       primerSparkMat.dispose();
+      rotaryBlurOuterMat.dispose();
+      rotaryBlurInnerMat.dispose();
+      for (let i = 0; i < tankEvacPuffMats.length; i++) {
+        tankEvacPuffMats[i].dispose();
+      }
+      for (let i = 0; i < tigerBaffleJetMats.length; i++) {
+        tigerBaffleJetMats[i].dispose();
+      }
     },
-    [shockPrimaryMat, shockDustMat, mirageMats, inBorePlasmaMat, primerSparkMat]
+    [
+      shockPrimaryMat,
+      shockDustMat,
+      mirageMats,
+      inBorePlasmaMat,
+      primerSparkMat,
+      rotaryBlurOuterMat,
+      rotaryBlurInnerMat,
+      tankEvacPuffMats,
+      tigerBaffleJetMats,
+    ]
   );
 
   useEffect(() => {
@@ -1015,7 +1654,7 @@ export const GasFlowVisualizer: React.FC = () => {
     if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
   }, [activeWeaponId, mode, gasFlowVisible]);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     const root = rootRef.current;
     if (!root) return;
 
@@ -1024,6 +1663,8 @@ export const GasFlowVisualizer: React.FC = () => {
       root.visible = false;
       return;
     }
+
+    const dt = Math.min(0.05, Math.max(0, delta));
 
     const weaponId = appState.activeWeaponId;
     const isArchery =
@@ -1217,10 +1858,192 @@ export const GasFlowVisualizer: React.FC = () => {
       }
     }
 
+    // --- Cycle 19A.1: High-RPM Rotary Barrel-Cluster Motion-Blur Sweep Halo (`gau8` & `m134`) ---
+    writeRotaryBlurHaloSampleInto(
+      weaponId,
+      appState.mode === 'firing',
+      f,
+      appState.fireSpeedMultiplier,
+      phys.barrelHeat01,
+      _rotaryBlurSample,
+      appState.sectionCut,
+      explodeT
+    );
+    const rotaryBlurVisible = _rotaryBlurSample.active;
+    const rotaryBlurGroup = rotaryBlurGroupRef.current;
+    if (rotaryBlurGroup) {
+      rotaryBlurGroup.visible = rotaryBlurVisible;
+      if (rotaryBlurVisible) {
+        if (appState.isFiringPlaying) {
+          rotaryBlurPhaseRef.current =
+            (rotaryBlurPhaseRef.current + _rotaryBlurSample.spinRadPerSec * dt) %
+            (Math.PI * 200);
+        } else {
+          rotaryBlurPhaseRef.current = f * Math.PI * 2;
+        }
+        const blurFactor = clamp01(_rotaryBlurSample.spinRadPerSec / 62.0);
+        const outerMesh = rotaryBlurOuterRef.current;
+        if (outerMesh) {
+          outerMesh.position.set(_rotaryBlurSample.centerX, 0, 0);
+          outerMesh.scale.set(
+            _rotaryBlurSample.radiusCm,
+            _rotaryBlurSample.lengthCm,
+            _rotaryBlurSample.radiusCm
+          );
+          const oMat = outerMesh.material as THREE.ShaderMaterial;
+          oMat.uniforms.uOpacity.value = _rotaryBlurSample.opacity;
+          oMat.uniforms.uPhase.value = rotaryBlurPhaseRef.current;
+          oMat.uniforms.uBarrelCount.value = _rotaryBlurSample.barrelCount;
+          oMat.uniforms.uBlurFactor.value = blurFactor;
+          oMat.uniforms.uHeatTint.value = _rotaryBlurSample.heatTint01;
+        }
+        const innerMesh = rotaryBlurInnerRef.current;
+        if (innerMesh) {
+          const innerR = _rotaryBlurSample.radiusCm * 0.72;
+          innerMesh.position.set(_rotaryBlurSample.centerX, 0, 0);
+          innerMesh.scale.set(innerR, _rotaryBlurSample.lengthCm * 0.96, innerR);
+          const iMat = innerMesh.material as THREE.ShaderMaterial;
+          iMat.uniforms.uOpacity.value = _rotaryBlurSample.opacity * 0.52;
+          iMat.uniforms.uPhase.value = rotaryBlurPhaseRef.current + 0.35;
+          iMat.uniforms.uBarrelCount.value = _rotaryBlurSample.barrelCount;
+          iMat.uniforms.uBlurFactor.value = blurFactor;
+          iMat.uniforms.uHeatTint.value = _rotaryBlurSample.heatTint01;
+        }
+      }
+    }
+
+    // --- Cycle 19A.2: 1:1 MBT Bore-Evacuator / Fume-Extractor & Tiger I Twin-Baffle Vent Plume ---
+    writeTankBoreEvacuatorSampleInto(
+      weaponId,
+      appState.mode === 'firing',
+      f,
+      _tankEvacSample,
+      explodeT
+    );
+    const tankEvacVisible = _tankEvacSample.active;
+    const tankEvacGroup = tankEvacGroupRef.current;
+    if (tankEvacGroup) {
+      tankEvacGroup.visible = tankEvacVisible;
+      if (tankEvacVisible) {
+        const tankProf = TANK_BORE_EVACUATOR_PROFILES[weaponId];
+        let barrelRecoilDx = 0;
+        if (tankProf) {
+          const loadedPlugin = getLoadedWeaponPlugin(weaponId);
+          if (loadedPlugin) {
+            const kd = loadedPlugin.computeFiringKinematics(
+              tankProf.mainGunPartId,
+              f
+            );
+            if (kd.pos) {
+              barrelRecoilDx = kd.pos[0];
+            }
+          }
+        }
+
+        const u = _tankEvacSample.progress01;
+        const evacR = tankProf ? tankProf.evacRadiusCm : 14.0;
+        const evacOriginX = _tankEvacSample.originX + barrelRecoilDx;
+        const muzzleOriginX = _tankEvacSample.muzzleX + barrelRecoilDx;
+        const boreY = _tankEvacSample.originY;
+
+        for (let i = 0; i < TANK_EVAC_PUFF_SLOTS.length; i++) {
+          const pMesh = tankEvacPuffRefs.current[i];
+          if (!pMesh) continue;
+          const isMuzzleLobe = i >= 3;
+          const localIdx = isMuzzleLobe ? i - 3 : i;
+          const delay = localIdx * 0.08 + (isMuzzleLobe ? 0.04 : 0);
+          const uSlot = clamp01((u - delay) / Math.max(0.25, 1 - delay));
+          const slotEnv = smoothstep01(0, 0.14, uSlot) * (1 - uSlot * 0.55);
+          const showPuff = uSlot > 0.005 && slotEnv > 0.01;
+          pMesh.visible = showPuff;
+          if (!showPuff) continue;
+
+          const zSign = localIdx === 1 ? -1 : localIdx === 2 ? 1 : 0;
+          if (isMuzzleLobe) {
+            // Trailing residual scavenging smoke drifting out of 120/125/88mm muzzle crown
+            const fwdX = 16 + uSlot * (96 + localIdx * 16);
+            const liftY = 8 + uSlot * (62 + localIdx * 14);
+            const spreadZ = zSign * (7 + uSlot * 24);
+            const rad = (13 + 26 * _tankEvacSample.plumeScale) * (0.85 + localIdx * 0.12);
+            pMesh.position.set(muzzleOriginX + fwdX, boreY + liftY, spreadZ);
+            pMesh.scale.set(rad * 1.32, rad * 0.96, rad * 1.05);
+            pMesh.rotation.set(localIdx * 0.7, uSlot * 0.8, 0.22);
+          } else {
+            // Subtle pressurized scavenging wisps curling above & forward from bore evacuator / brake collar
+            const fwdX = 6 + uSlot * (44 + localIdx * 10);
+            const liftY = evacR * 0.78 + 8 + uSlot * (48 + localIdx * 11);
+            const spreadZ = zSign * (evacR * 0.45 + uSlot * 16);
+            const rad = (10 + 18 * _tankEvacSample.plumeScale) * (0.82 + localIdx * 0.1);
+            pMesh.position.set(evacOriginX + fwdX, boreY + liftY, spreadZ);
+            pMesh.scale.set(rad * 1.24, rad * 0.94, rad);
+            pMesh.rotation.set(localIdx * 0.9, -uSlot * 0.7, -0.18);
+          }
+          const pMat = pMesh.material as THREE.ShaderMaterial;
+          pMat.uniforms.uOpacity.value =
+            _tankEvacSample.opacity *
+            slotEnv *
+            (isMuzzleLobe ? 0.92 : 0.62) *
+            (1 - localIdx * 0.14);
+          pMat.uniforms.uProgress.value = uSlot;
+        }
+
+        // Tiger I iconic Krupp dual-baffle conical muzzle-brake lateral smoke jets (±Z × rear/front baffles)
+        const showTigerJets =
+          Boolean(tankProf?.hasTwinBaffleBrake) &&
+          _tankEvacSample.baffleJetStrength01 > 0.008;
+        for (let i = 0; i < TIGER_BAFFLE_JET_SLOTS.length; i++) {
+          const jMesh = tigerBaffleJetRefs.current[i];
+          if (!jMesh) continue;
+          if (!showTigerJets || !tankProf) {
+            jMesh.visible = false;
+            continue;
+          }
+          const isRearBaffle = i < 2;
+          const zSide = i % 2 === 0 ? 1 : -1;
+          const portX =
+            (isRearBaffle ? tankProf.rearBaffleX : tankProf.frontBaffleX) +
+            barrelRecoilDx;
+          const portZ = zSide * tankProf.evacRadiusCm;
+          const backSweep = isRearBaffle ? -0.37 : -0.24;
+          const liftBias = (isRearBaffle ? 0.14 : 0.12) + 0.34 * u;
+          const sideBias = isRearBaffle ? 0.91 : 0.96;
+
+          _dirVec.set(backSweep, liftBias, zSide * sideBias).normalize();
+          _quat.setFromUnitVectors(_upAxis, _dirVec);
+
+          const baffleGain = isRearBaffle ? 1.0 : 0.84;
+          const jetLen =
+            (42 + 74 * u) *
+            baffleGain *
+            (0.62 + 0.42 * _tankEvacSample.plumeScale);
+          const jetRad = (10.5 + 22 * u) * (isRearBaffle ? 1.0 : 0.88);
+
+          jMesh.visible = true;
+          jMesh.position.set(
+            portX + _dirVec.x * (jetLen * 0.5),
+            boreY + _dirVec.y * (jetLen * 0.5),
+            portZ + _dirVec.z * (jetLen * 0.5)
+          );
+          jMesh.quaternion.copy(_quat);
+          jMesh.scale.set(jetRad, jetLen, jetRad);
+
+          const jMat = jMesh.material as THREE.ShaderMaterial;
+          jMat.uniforms.uOpacity.value =
+            _tankEvacSample.baffleJetStrength01 * 0.44 * baffleGain;
+          jMat.uniforms.uProgress.value = u;
+        }
+      }
+    }
+
     const gasGroup = gasGroupRef.current;
     if (!appState.gasFlowVisible) {
       if (gasGroup) gasGroup.visible = false;
-      root.visible = shockVisible || mirageVisible || inBoreVisible;
+      root.visible =
+        shockVisible ||
+        mirageVisible ||
+        inBoreVisible ||
+        rotaryBlurVisible ||
+        tankEvacVisible;
       return;
     }
 
@@ -1458,7 +2281,12 @@ export const GasFlowVisualizer: React.FC = () => {
     const blowdownEndF = Math.min(0.95, _sample.safeUnlockF + 0.11);
     if (f < timing.ignitionF || f > blowdownEndF) {
       if (gasGroup) gasGroup.visible = false;
-      root.visible = shockVisible || mirageVisible || inBoreVisible;
+      root.visible =
+        shockVisible ||
+        mirageVisible ||
+        inBoreVisible ||
+        rotaryBlurVisible ||
+        tankEvacVisible;
       return;
     }
     if (gasGroup) gasGroup.visible = true;
@@ -2289,6 +3117,76 @@ export const GasFlowVisualizer: React.FC = () => {
         >
           <planeGeometry args={[2, 2, 1, 1]} />
         </mesh>
+      </group>
+
+      {/* Cycle 19A.1: High-RPM Rotary Barrel-Cluster Motion-Blur Sweep Halo (`gau8` & `m134`) */}
+      <group
+        ref={rotaryBlurGroupRef}
+        name="RotaryBarrelBlurHalo"
+        visible={false}
+      >
+        <mesh
+          ref={rotaryBlurOuterRef}
+          rotation={[0, 0, -Math.PI / 2]}
+          material={rotaryBlurOuterMat}
+          frustumCulled={false}
+          raycast={noRaycast}
+          userData={{ excludeFromGtao: true }}
+          renderOrder={13}
+        >
+          <cylinderGeometry args={[1, 1, 1, 48, 1, true]} />
+        </mesh>
+        <mesh
+          ref={rotaryBlurInnerRef}
+          rotation={[0, 0, -Math.PI / 2]}
+          material={rotaryBlurInnerMat}
+          frustumCulled={false}
+          raycast={noRaycast}
+          userData={{ excludeFromGtao: true }}
+          renderOrder={12}
+        >
+          <cylinderGeometry args={[1, 1, 1, 40, 1, true]} />
+        </mesh>
+      </group>
+
+      {/* Cycle 19A.2: 1:1 MBT Bore-Evacuator Scavenging Plume & Tiger I Twin-Baffle Lateral Smoke Jets */}
+      <group
+        ref={tankEvacGroupRef}
+        name="TankBoreEvacuatorPlume"
+        visible={false}
+      >
+        {TANK_EVAC_PUFF_SLOTS.map((i) => (
+          <mesh
+            key={`tank-evac-puff-${i}`}
+            ref={(el) => {
+              tankEvacPuffRefs.current[i] = el;
+            }}
+            material={tankEvacPuffMats[i]}
+            visible={false}
+            frustumCulled={false}
+            raycast={noRaycast}
+            userData={{ excludeFromGtao: true }}
+            renderOrder={13}
+          >
+            <icosahedronGeometry args={[1, 2]} />
+          </mesh>
+        ))}
+        {TIGER_BAFFLE_JET_SLOTS.map((i) => (
+          <mesh
+            key={`tiger-baffle-jet-${i}`}
+            ref={(el) => {
+              tigerBaffleJetRefs.current[i] = el;
+            }}
+            material={tigerBaffleJetMats[i]}
+            visible={false}
+            frustumCulled={false}
+            raycast={noRaycast}
+            userData={{ excludeFromGtao: true }}
+            renderOrder={13}
+          >
+            <cylinderGeometry args={[1.0, 0.28, 1, 16, 1, true]} />
+          </mesh>
+        ))}
       </group>
 
       <group ref={gasGroupRef} name="PropellantGasFlowSubgroup" visible={false}>
