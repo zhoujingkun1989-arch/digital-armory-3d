@@ -27,6 +27,7 @@ import { MagazineAmmoStack } from '../actors/MagazineAmmoStack';
 import { MalfunctionActor } from '../actors/MalfunctionActor';
 import { PartActor } from '../actors/PartActor';
 import { RiflingBoreActor } from '../actors/RiflingBoreActor';
+import type { SectionCutAxis } from '../actors/StencilSectionCap';
 import { playBrassCasingBounceSound } from '../audio/mechanicalSoundEngine';
 import { updateCalloutOverlay60fps } from '../callout/CalloutOverlay';
 import {
@@ -218,6 +219,70 @@ export function computeWorkbenchSectionBarOffsetY(
   return baseLift + tallGripExtra + firingTallGripExtra;
 }
 
+export interface CutawayCameraPose {
+  pos: readonly [number, number, number];
+  target: readonly [number, number, number];
+}
+
+export interface RefinedCutawayCameraPose {
+  pos: [number, number, number];
+  target: [number, number, number];
+  mirroredZ: boolean;
+}
+
+/**
+ * Refines a cutaway focus camera pose for Z-axis longitudinal CT inspection:
+ * - When `!sectionCut` or `sectionCutAxis !== 'z'`, preserves `baseCam` verbatim.
+ * - When `sectionCut && sectionCutAxis === 'z'`:
+ *   - Clamps lateral Z standoff cleanly per weapon scale (small arms, `gau8`, 1:1 MBTs)
+ *     and bounds grazing X obliquity so the rifled bore & breech remain squarely visible.
+ *   - When `sectionCutFlip === true` (`-Z` flank exposed), mirrors the camera across the
+ *     midplane onto the open `-Z` side instead of staring at the uncut `+Z` back wall.
+ */
+export function computeCutawayFocusRefinement(
+  baseCam: CutawayCameraPose,
+  weaponId: WeaponId,
+  sectionCut: boolean,
+  sectionCutAxis: SectionCutAxis,
+  sectionCutFlip: boolean
+): RefinedCutawayCameraPose {
+  if (!sectionCut || sectionCutAxis !== 'z') {
+    return {
+      pos: [baseCam.pos[0], baseCam.pos[1], baseCam.pos[2]],
+      target: [baseCam.target[0], baseCam.target[1], baseCam.target[2]],
+      mirroredZ: false,
+    };
+  }
+
+  const scaleProfile = getWeaponManifest(weaponId).workbenchMeta.scaleProfile;
+  const isGau8 = weaponId === 'gau8';
+  const isMbt = scaleProfile === 'main_battle_tank' && !isGau8;
+
+  const minZ = isMbt ? 340 : isGau8 ? 180 : 9.5;
+  const maxZ = isMbt ? 900 : isGau8 ? 520 : 85;
+
+  const targetX = baseCam.target[0];
+  const targetY = baseCam.target[1];
+  const targetZ = sectionCutFlip ? -baseCam.target[2] : baseCam.target[2];
+
+  const rawDz = baseCam.pos[2] - baseCam.target[2];
+  const clampedAbsDz = THREE.MathUtils.clamp(Math.abs(rawDz), minZ, maxZ);
+  const signedDz = sectionCutFlip ? -clampedAbsDz : clampedAbsDz;
+
+  const maxObliqueDx = clampedAbsDz * 0.78;
+  const clampedDx = THREE.MathUtils.clamp(
+    baseCam.pos[0] - baseCam.target[0],
+    -maxObliqueDx,
+    maxObliqueDx
+  );
+
+  return {
+    pos: [targetX + clampedDx, baseCam.pos[1], targetZ + signedDz],
+    target: [targetX, targetY, targetZ],
+    mirroredZ: sectionCutFlip,
+  };
+}
+
 function applyWorkbenchFraming(
   cfg: WeaponCameraMap[CameraPresetType],
   scaleProfile: WeaponScaleProfile,
@@ -228,7 +293,8 @@ function applyWorkbenchFraming(
   goalPos: THREE.Vector3,
   sectionCutActive = false,
   weaponId?: WeaponId,
-  isFiringMode = false
+  isFiringMode = false,
+  mirrorZ = false
 ): void {
   const isFixedClosePreset =
     preset === 'cutaway_focus' || preset === 'firing_view';
@@ -281,16 +347,17 @@ function applyWorkbenchFraming(
   const finalXShift = isFixedClosePreset ? 0 : xShift;
   const finalYShift =
     (isFixedClosePreset ? 0 : yShift) + sectionBarOffsetY;
+  const zSign = mirrorZ ? -1 : 1;
 
   goalTarget.set(
     cfg.target[0] + finalXShift,
     cfg.target[1] + finalYShift,
-    cfg.target[2]
+    cfg.target[2] * zSign
   );
   goalPos.set(
     cfg.pos[0] * scale + finalXShift,
     cfg.pos[1] * scale + finalYShift,
-    cfg.pos[2] * scale
+    cfg.pos[2] * scale * zSign
   );
 }
 
@@ -375,6 +442,8 @@ const DisassemblyRig: React.FC = () => {
   const selectedPartId = useAppStore((s) => s.selectedPartId);
   const cameraCommand = useAppStore((s) => s.cameraCommand);
   const sectionCut = useAppStore((s) => s.sectionCut);
+  const sectionCutAxis = useAppStore((s) => s.sectionCutAxis);
+  const sectionCutFlip = useAppStore((s) => s.sectionCutFlip);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const hudHidden = useAppStore((s) => s.hudHidden);
   const activeCartridgeCaliber = useAppStore((s) => s.activeCartridgeCaliber);
@@ -580,8 +649,29 @@ const DisassemblyRig: React.FC = () => {
       prevScreenRef.current = screen;
       turntableRigRef.current.active = false;
 
+      const useCutawayRefinement =
+        screen === 'workbench' &&
+        sectionCut &&
+        sectionCutAxis === 'z' &&
+        cameraCommand.preset === 'cutaway_focus';
+      const effectiveCfg = useCutawayRefinement
+        ? computeCutawayFocusRefinement(
+            cfg,
+            activeWeaponId,
+            true,
+            sectionCutAxis,
+            sectionCutFlip
+          )
+        : cfg;
+      const mirrorNonCutawayZ =
+        !useCutawayRefinement &&
+        screen === 'workbench' &&
+        sectionCut &&
+        sectionCutAxis === 'z' &&
+        sectionCutFlip;
+
       applyWorkbenchFraming(
-        cfg,
+        effectiveCfg,
         scaleProfile,
         cameraCommand.preset,
         t,
@@ -590,7 +680,8 @@ const DisassemblyRig: React.FC = () => {
         flyRef.current.goalPos,
         screen === 'workbench' && sectionCut,
         activeWeaponId,
-        screen === 'workbench' && mode === 'firing'
+        screen === 'workbench' && mode === 'firing',
+        mirrorNonCutawayZ
       );
 
       if (!hasSnappedInitialRef.current && controlsRef.current) {
@@ -643,6 +734,8 @@ const DisassemblyRig: React.FC = () => {
     screen,
     mode,
     sectionCut,
+    sectionCutAxis,
+    sectionCutFlip,
     size.width,
     size.height,
     showcaseWindowVer,
@@ -803,8 +896,12 @@ const DisassemblyRig: React.FC = () => {
     }
     _focusViewDir.copy(camera.position).sub(_focusCurrentTarget);
     if (_focusViewDir.lengthSq() < 0.01) _focusViewDir.set(0.3, 0.2, 1);
-    if (state.sectionCut && _focusViewDir.z < 0.45) {
-      _focusViewDir.set(0.22, 0.16, 0.96);
+    if (state.sectionCut && state.sectionCutAxis === 'z') {
+      if (state.sectionCutFlip && _focusViewDir.z > -0.45) {
+        _focusViewDir.set(0.22, 0.16, -0.96);
+      } else if (!state.sectionCutFlip && _focusViewDir.z < 0.45) {
+        _focusViewDir.set(0.22, 0.16, 0.96);
+      }
     }
     _focusViewDir.normalize();
 
@@ -926,7 +1023,10 @@ const DisassemblyRig: React.FC = () => {
           flyRef.current.goalPos,
           state.sectionCut,
           state.activeWeaponId,
-          false
+          false,
+          state.sectionCut &&
+            state.sectionCutAxis === 'z' &&
+            state.sectionCutFlip
         );
         lastFramedTRef.current = nextAnimatedT;
         flyRef.current.timed = false;
