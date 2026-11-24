@@ -74,6 +74,7 @@ import type {
 import { queueMechanismShowdownLaunch } from '../armory/mechanismShowdownSpecs';
 import { WeaponSilhouetteSvg } from '../armory/WeaponSilhouetteSvg';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
+import '../../styles/showcase.css';
 
 const GITHUB_REPO_URL =
   'https://github.com/zhoujingkun1989-arch/digital-armory-3d';

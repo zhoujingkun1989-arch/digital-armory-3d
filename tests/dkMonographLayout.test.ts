@@ -432,7 +432,17 @@ describe('DK Visual Encyclopedia Layout, Spread Geometry, Bilingual Strings & De
       path.resolve(__dirname, '../src/styles/index.css'),
       'utf8'
     );
-    expect(indexCss).toContain("@import './dk-monograph.css';");
+    const monographModalSrc = fs.readFileSync(
+      path.resolve(__dirname, '../src/features/monograph/MonographPrintModal.tsx'),
+      'utf8'
+    );
+    expect(indexCss).not.toContain("@import './dk-monograph.css';");
+    expect(indexCss).not.toContain("@import './monograph.css';");
+    expect(monographModalSrc).toContain("import '../../styles/monograph.css';");
+    expect(monographModalSrc).toContain("import '../../styles/dk-monograph.css';");
+    expect(monographModalSrc.indexOf("import '../../styles/monograph.css';")).toBeLessThan(
+      monographModalSrc.indexOf("import '../../styles/dk-monograph.css';")
+    );
 
     const dkCss = fs.readFileSync(
       path.resolve(__dirname, '../src/styles/dk-monograph.css'),

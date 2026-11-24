@@ -31,6 +31,7 @@ import { getLocalizedShortWeaponLabel } from '../../i18n/weaponFallbacks';
 import { useAppStore } from '../../store/useAppStore';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
+import '../../styles/cartridges.css';
 
 const MAX_SMALL_ARMS_OAL_MM = 138.43; // .50 BMG reference 100% bar height
 const MAX_TANK_ORDNANCE_OAL_MM = 1150.0; // 125mm DTC10-125 APFSDS reference 100% bar height

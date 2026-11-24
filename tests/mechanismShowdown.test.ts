@@ -504,7 +504,13 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
       'utf8'
     );
 
-    expect(indexCss).toContain("@import './showdown.css';");
+    const showdownModalSrc = fs.readFileSync(
+      path.resolve(__dirname, '../src/features/armory/MechanismShowdownModal.tsx'),
+      'utf8'
+    );
+
+    expect(indexCss).not.toContain("@import './showdown.css';");
+    expect(showdownModalSrc).toContain("import '../../styles/showdown.css';");
     expect(showdownCss).toContain('pointer-events: auto');
     expect(showdownCss).toContain("[data-theme='light']");
     expect(armoryViewSrc).toContain('armory-showdown-btn');
