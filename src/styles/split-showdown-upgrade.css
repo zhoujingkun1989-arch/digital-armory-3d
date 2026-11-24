@@ -108,10 +108,11 @@
     position: fixed;
     left: 10px;
     right: auto;
+    box-sizing: border-box;
     max-width: calc(100vw - 20px);
-    width: min(268px, calc(100vw - 20px));
+    width: min(340px, calc(100vw - 20px));
     max-height: 54px;
-    padding: 5px 9px;
+    padding: 5px 10px;
     border-radius: 9px;
     overflow: hidden;
     text-align: left;
@@ -124,14 +125,26 @@
 
   .split-plaque.is-b {
     top: calc(50% + 10px);
+    justify-self: start;
+    align-items: flex-start;
     text-align: left;
+    border-left: 3px solid #f97316;
+    border-right: 1px solid var(--border-subtle);
   }
 
   .split-plaque-head {
     display: flex;
     align-items: baseline;
+    justify-content: flex-start;
     gap: 6px;
+    width: 100%;
     min-width: 0;
+    overflow: hidden;
+  }
+
+  .split-plaque.is-b .split-plaque-head {
+    justify-content: flex-start;
+    text-align: left;
   }
 
   .split-plaque-tag {
@@ -142,6 +155,7 @@
   }
 
   .split-plaque-title {
+    flex: 1 1 auto;
     font-size: 11.5px;
     line-height: 1.25;
     margin: 0;
@@ -155,12 +169,33 @@
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
+    justify-content: flex-start;
     gap: 8px;
+    width: 100%;
+    min-width: 0;
     margin-top: 2px;
     font-size: 9.5px;
     line-height: 1.25;
     white-space: nowrap;
     overflow: hidden;
+  }
+
+  .split-plaque.is-b .split-plaque-specs {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .split-plaque-caliber {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .split-plaque-velocity {
+    flex-shrink: 0;
+    white-space: nowrap;
   }
 
   .split-plaque-specs > :nth-child(n + 3),
@@ -201,6 +236,11 @@
     border-color: rgba(15, 23, 42, 0.16);
     color: #0f172a;
     box-shadow: 0 4px 14px rgba(15, 23, 42, 0.1);
+  }
+
+  :is([data-theme='light'], .theme-light) .split-plaque.is-b {
+    border-left-color: #d97706;
+    border-right-color: rgba(15, 23, 42, 0.16);
   }
 
   :is([data-theme='light'], .theme-light) .split-bottom-dock {

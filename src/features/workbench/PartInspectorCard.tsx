@@ -99,6 +99,62 @@ const RIFLING_KIND_LABELS: Readonly<
 
 const BARREL_PART_EN_RE = /barrel|bore|chamber|tube|cannon|gun|muzzle/i;
 const BARREL_PART_ZH_RE = /枪管|炮管|身管|内膛|弹膛|主炮/;
+const INSPECTOR_CJK_RE = /[\u3400-\u9fff\u3000-\u303f\uff00-\uffef]/;
+
+export function resolvePartInspectorSecondaryTitle(params: {
+  lang: LanguageCode;
+  part: { bomCode: string; nameEn: string; nameZh: string };
+  primaryTitle: string;
+  groupTitle: string;
+  engineeringRoleLabel: string;
+  roleTagDisplay: string;
+}): string {
+  const {
+    lang,
+    part,
+    primaryTitle,
+    groupTitle,
+    engineeringRoleLabel,
+    roleTagDisplay,
+  } = params;
+  if (lang !== 'en') {
+    return part.nameEn;
+  }
+  const cleanRoleTag = roleTagDisplay.trim();
+  if (
+    cleanRoleTag.length > 0 &&
+    cleanRoleTag.toLowerCase() !== primaryTitle.trim().toLowerCase() &&
+    !INSPECTOR_CJK_RE.test(cleanRoleTag)
+  ) {
+    return `${part.bomCode} · ${cleanRoleTag}`;
+  }
+  const safeGroup = INSPECTOR_CJK_RE.test(groupTitle) ? 'Assembly' : groupTitle;
+  const safeEngRole = INSPECTOR_CJK_RE.test(engineeringRoleLabel)
+    ? 'Mechanical Component'
+    : engineeringRoleLabel;
+  return `${part.bomCode} · ${safeEngRole} · ${safeGroup}`;
+}
+
+export function resolvePartInspectorFallbackDescription(params: {
+  lang: LanguageCode;
+  part: { bomCode: string; nameEn: string; description: string };
+  groupTitle: string;
+  engineeringRoleLabel: string;
+  materialLabel: string;
+}): string {
+  const { lang, part, groupTitle, engineeringRoleLabel, materialLabel } = params;
+  if (lang !== 'en' || !INSPECTOR_CJK_RE.test(part.description)) {
+    return part.description;
+  }
+  const safeGroup = INSPECTOR_CJK_RE.test(groupTitle) ? 'Assembly' : groupTitle;
+  const safeEngRole = INSPECTOR_CJK_RE.test(engineeringRoleLabel)
+    ? 'Mechanical Component'
+    : engineeringRoleLabel;
+  const safeMaterial = INSPECTOR_CJK_RE.test(materialLabel)
+    ? 'Ordnance Alloy'
+    : materialLabel;
+  return `${part.nameEn} (${part.bomCode}) — ${safeEngRole} in the ${safeGroup} assembly, manufactured from ${safeMaterial}.`;
+}
 
 export function isBarrelOrBorePart(part: {
   id: string;
@@ -363,10 +419,6 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
   };
 
   const primaryTitle = lang === 'en' ? part.nameEn : part.nameZh;
-  const secondaryTitle = lang === 'en' ? part.nameZh : part.nameEn;
-  const roleTagDisplay =
-    localizedPartNarration?.roleTag ??
-    (lang === 'en' ? part.nameEn : part.roleTag);
   const engineeringRole = resolvePartEngineeringRole(activeWeaponId, part);
   const engineeringRoleMeta = getEngineeringRoleMeta(
     engineeringRole,
@@ -374,7 +426,29 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
   );
   const engineeringRoleLabel =
     lang === 'en' ? engineeringRoleMeta.labelEn : engineeringRoleMeta.labelZh;
+  const rawRoleTag =
+    localizedPartNarration?.roleTag ??
+    (lang === 'en' ? engineeringRoleLabel : part.roleTag);
+  const roleTagDisplay =
+    lang === 'en' && INSPECTOR_CJK_RE.test(rawRoleTag)
+      ? engineeringRoleLabel
+      : rawRoleTag;
+  const secondaryTitle = resolvePartInspectorSecondaryTitle({
+    lang,
+    part,
+    primaryTitle,
+    groupTitle,
+    engineeringRoleLabel,
+    roleTagDisplay,
+  });
   const materialLabel = resolvePartMaterialLabel(activeWeaponId, part, lang);
+  const fallbackDescription = resolvePartInspectorFallbackDescription({
+    lang,
+    part,
+    groupTitle,
+    engineeringRoleLabel,
+    materialLabel,
+  });
   const materialSwatchHex = MATERIAL_SWATCH_MAP[part.material] ?? '#94a3b8';
   const suggestedRivalId = getSuggestedRivalWeaponId(activeWeaponId) as WeaponId;
   const rivalShortLabel = getWeaponManifest(suggestedRivalId).shortLabel;
@@ -531,7 +605,9 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
       </div>
 
       <h2 className="part-title-zh">{primaryTitle}</h2>
-      <div className="part-title-en">{secondaryTitle}</div>
+      <div className="part-title-en" data-testid="part-inspector-subtitle">
+        {secondaryTitle}
+      </div>
 
       <div className="inspector-spec-pills">
         <span
@@ -675,7 +751,7 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
             </button>
           </>
         ) : (
-          <div className="part-description">{part.description}</div>
+          <div className="part-description">{fallbackDescription}</div>
         )}
       </div>
 

@@ -1025,10 +1025,10 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
     <div className="armory-overlay">
       {/* Consolidated Single-Row Luxury Digital Armory Header (<= 8 Desktop Controls) */}
       <header className="armory-header">
-        <div className="brand-block armory-brand-block">
+        <div className="brand-block armory-brand-block" data-lang={lang}>
           <div className="brand-badge armory-vault-badge">DIGITAL ARMORY</div>
           <div className="armory-brand-titles">
-            <h1 className="brand-title">
+            <h1 className="brand-title" data-testid="armory-brand-title">
               <span className="armory-title-desktop">
                 {resolveArmoryHeaderDesktopTitle(lang, ui.title)}
               </span>

@@ -200,71 +200,71 @@ export const CaliperHud: React.FC<CaliperHudProps> = ({
           <span>{ui.badge}</span>
         </div>
 
-        <div className="caliper-header-actions">
-          <div
-            className="caliper-unit-seg"
-            role="group"
-            data-testid="caliper-unit-toggle"
-            aria-label={
-              lang === 'en'
-                ? 'Select measurement unit system'
-                : '切换毫米 / 英寸计量单位'
-            }
-          >
-            <button
-              type="button"
-              className={`caliper-unit-btn ${unit === 'mm' ? 'active' : ''}`}
-              data-testid="caliper-unit-mm"
-              aria-pressed={unit === 'mm'}
-              onClick={() => caliperStore.setUnitSystem('mm')}
-            >
-              mm
-            </button>
-            <button
-              type="button"
-              className={`caliper-unit-btn ${unit === 'in' ? 'active' : ''}`}
-              data-testid="caliper-unit-in"
-              aria-pressed={unit === 'in'}
-              onClick={() => caliperStore.setUnitSystem('in')}
-            >
-              in
-            </button>
-          </div>
+        <button
+          type="button"
+          className="caliper-close-btn"
+          aria-label={ui.closeTitle}
+          title={ui.closeTitle}
+          onClick={() => setCaliperActive(false)}
+        >
+          <X size={13} aria-hidden="true" />
+        </button>
+      </div>
 
+      <div className="caliper-hud-actions" data-testid="caliper-hud-actions">
+        <div
+          className="caliper-unit-seg"
+          role="group"
+          data-testid="caliper-unit-toggle"
+          aria-label={
+            lang === 'en'
+              ? 'Select measurement unit system'
+              : '切换毫米 / 英寸计量单位'
+          }
+        >
           <button
             type="button"
-            className={`caliper-mini-btn ${
-              envelopeRulerVisible ? 'active' : ''
-            }`}
-            aria-pressed={envelopeRulerVisible}
-            title={ui.envelopeRulerTitle}
-            onClick={toggleEnvelopeRuler}
+            className={`caliper-unit-btn ${unit === 'mm' ? 'active' : ''}`}
+            data-testid="caliper-unit-mm"
+            aria-pressed={unit === 'mm'}
+            onClick={() => caliperStore.setUnitSystem('mm')}
           >
-            <BoxSelect size={12} aria-hidden="true" />
-            <span>{ui.envelopeRulerBtn}</span>
+            mm
           </button>
-
           <button
             type="button"
-            className="caliper-mini-btn"
-            disabled={!snap.pointA && !snap.pointB}
-            title={ui.clearTitle}
-            onClick={() => caliperStore.clearPoints()}
+            className={`caliper-unit-btn ${unit === 'in' ? 'active' : ''}`}
+            data-testid="caliper-unit-in"
+            aria-pressed={unit === 'in'}
+            onClick={() => caliperStore.setUnitSystem('in')}
           >
-            <RotateCcw size={11} aria-hidden="true" />
-            <span>{ui.clearBtn}</span>
-          </button>
-
-          <button
-            type="button"
-            className="caliper-close-btn"
-            aria-label={ui.closeTitle}
-            title={ui.closeTitle}
-            onClick={() => setCaliperActive(false)}
-          >
-            <X size={13} aria-hidden="true" />
+            in
           </button>
         </div>
+
+        <button
+          type="button"
+          className={`caliper-mini-btn ${
+            envelopeRulerVisible ? 'active' : ''
+          }`}
+          aria-pressed={envelopeRulerVisible}
+          title={ui.envelopeRulerTitle}
+          onClick={toggleEnvelopeRuler}
+        >
+          <BoxSelect size={12} aria-hidden="true" />
+          <span>{ui.envelopeRulerBtn}</span>
+        </button>
+
+        <button
+          type="button"
+          className="caliper-mini-btn"
+          disabled={!snap.pointA && !snap.pointB}
+          title={ui.clearTitle}
+          onClick={() => caliperStore.clearPoints()}
+        >
+          <RotateCcw size={11} aria-hidden="true" />
+          <span>{ui.clearBtn}</span>
+        </button>
       </div>
 
       {/* Digital Vernier Millimeter LCD Display */}
