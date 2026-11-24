@@ -42,6 +42,7 @@ import {
   useTankCrewStore,
 } from '../tank/tankCrewStore';
 import {
+  type ArmoryStudioLightingPreset,
   CURATOR_SPOTLIGHT_RIM_DARK,
   CURATOR_SPOTLIGHT_RIM_DAYLIGHT,
   computeThermalSpanInto,
@@ -51,6 +52,7 @@ import {
   getArmoryProgramCacheKey,
   getArmoryWearLevel,
   resolveArmoryShaderFeatures,
+  resolveSpecularAaParams,
   resolveThermalForWeapon,
   syncArmoryUniformProfile,
   usesBarrelThermalProfile,
@@ -236,6 +238,117 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
 };
 
 const _caliperWorldNormal = new THREE.Vector3(0, 1, 0);
+
+export interface PartDaylightMaterialTuning {
+  normalScale: number;
+  envMapIntensity: number;
+  clearcoat: number;
+  clearcoatRoughness: number;
+  iridescence: number;
+}
+
+/**
+ * Pure studio-adaptive PBR calibration for `blueprint_daylight` vs dark/bench studios.
+ * Under high-luminance full-sphere `blueprint_daylight` IBL, dampens dark parkerized/nDLC
+ * metal clearcoat, envMapIntensity & normal-map micro-relief so flat stamped/milled steel
+ * receivers read as silky satin matte steel without pixel sparkle, while preserving crisp
+ * machined highlights and never crossing the `0 <-> >0` threshold on `clearcoat`/`iridescence`
+ * (guaranteeing zero WebGL shader recompilations on studio environment switches).
+ */
+export function resolvePartDaylightMaterialTuning(
+  preset: ArmoryStudioLightingPreset,
+  materialKind: MaterialKind,
+  baseNormalScale: number,
+  baseEnvMapIntensity: number,
+  baseClearcoat: number,
+  baseClearcoatRoughness: number,
+  baseIridescence: number,
+  isTank: boolean,
+  isXrayHousing: boolean
+): PartDaylightMaterialTuning {
+  if (preset !== 'blueprint_daylight' || isXrayHousing) {
+    return {
+      normalScale: baseNormalScale,
+      envMapIntensity: baseEnvMapIntensity,
+      clearcoat: baseClearcoat,
+      clearcoatRoughness: baseClearcoatRoughness,
+      iridescence: baseIridescence,
+    };
+  }
+
+  if (isTank) {
+    return {
+      normalScale: baseNormalScale * 0.86,
+      envMapIntensity: baseEnvMapIntensity * 0.92,
+      clearcoat: baseClearcoat > 0 ? Math.max(0.01, baseClearcoat * 0.65) : 0,
+      clearcoatRoughness: Math.min(0.95, Math.max(baseClearcoatRoughness, 0.42)),
+      iridescence:
+        baseIridescence > 0 ? Math.max(0.01, baseIridescence * 0.5) : 0,
+    };
+  }
+
+  switch (materialKind) {
+    case 'nitride_steel':
+      return {
+        normalScale: baseNormalScale * 0.48,
+        envMapIntensity: baseEnvMapIntensity * 0.62,
+        clearcoat: baseClearcoat > 0 ? Math.max(0.01, baseClearcoat * 0.28) : 0,
+        clearcoatRoughness: Math.min(
+          0.95,
+          Math.max(baseClearcoatRoughness, 0.38)
+        ),
+        iridescence:
+          baseIridescence > 0 ? Math.max(0.01, baseIridescence * 0.25) : 0,
+      };
+    case 'barrel_steel':
+      return {
+        normalScale: baseNormalScale * 0.56,
+        envMapIntensity: baseEnvMapIntensity * 0.68,
+        clearcoat: baseClearcoat > 0 ? Math.max(0.01, baseClearcoat * 0.34) : 0,
+        clearcoatRoughness: Math.min(
+          0.95,
+          Math.max(baseClearcoatRoughness, 0.34)
+        ),
+        iridescence:
+          baseIridescence > 0 ? Math.max(0.01, baseIridescence * 0.3) : 0,
+      };
+    case 'spring_steel':
+      return {
+        normalScale: baseNormalScale * 0.66,
+        envMapIntensity: baseEnvMapIntensity * 0.74,
+        clearcoat: baseClearcoat > 0 ? Math.max(0.01, baseClearcoat * 0.45) : 0,
+        clearcoatRoughness: Math.min(
+          0.95,
+          Math.max(baseClearcoatRoughness, 0.28)
+        ),
+        iridescence:
+          baseIridescence > 0 ? Math.max(0.01, baseIridescence * 0.4) : 0,
+      };
+    case 'stainless':
+    case 'copper_accent':
+      return {
+        normalScale: baseNormalScale * 0.76,
+        envMapIntensity: baseEnvMapIntensity * 0.78,
+        clearcoat: baseClearcoat > 0 ? Math.max(0.01, baseClearcoat * 0.65) : 0,
+        clearcoatRoughness: Math.min(
+          0.95,
+          Math.max(baseClearcoatRoughness, 0.22)
+        ),
+        iridescence:
+          baseIridescence > 0 ? Math.max(0.01, baseIridescence * 0.5) : 0,
+      };
+    case 'polymer_frame':
+    case 'follower_orange':
+    default:
+      return {
+        normalScale: baseNormalScale * 0.88,
+        envMapIntensity: baseEnvMapIntensity * 0.92,
+        clearcoat: baseClearcoat,
+        clearcoatRoughness: baseClearcoatRoughness,
+        iridescence: baseIridescence,
+      };
+  }
+}
 
 export interface InteractiveHandleSheenInput {
   screen: string;
@@ -434,9 +547,8 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     const sectionCut = useAppStore((s) => s.sectionCut);
     const sectionCutAxis = useAppStore((s) => s.sectionCutAxis);
     const showEdges = useAppStore((s) => s.showEdges);
-    const isDaylightTheme = useAppStore(
-      (s) => s.environmentPreset === 'blueprint_daylight'
-    );
+    const environmentPreset = useAppStore((s) => s.environmentPreset);
+    const isDaylightTheme = environmentPreset === 'blueprint_daylight';
     const engineeringTint = useAppStore((s) => s.engineeringTint);
     const focusedEngineeringRole = useAppStore((s) => s.focusedEngineeringRole);
     const isGroupHidden = useAppStore((s) => s.hiddenGroups[part.group]);
@@ -510,9 +622,57 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       });
     }, [allTextureKeys]);
 
-    const normalScaleVec = useMemo(
-      () => new THREE.Vector2(pbr.normalScale, pbr.normalScale),
-      [pbr.normalScale]
+    const isXrayHousing = xrayShells && !!part.isShell && !isSelected;
+    const isTankBareMetal =
+      isTank &&
+      (part.material === 'stainless' ||
+        part.material === 'copper_accent' ||
+        part.material === 'spring_steel');
+    const isTankOrdnanceBarrel = isTank && part.material === 'barrel_steel';
+    const baseClearcoat = isXrayHousing
+      ? 0.36
+      : isTank
+        ? isTankBareMetal
+          ? 0.06
+          : isTankOrdnanceBarrel
+            ? 0.04
+            : 0.0
+        : matCfg.clearcoat;
+    const baseClearcoatRoughness = isXrayHousing
+      ? 0.14
+      : isTank
+        ? 0.38
+        : matCfg.clearcoatRoughness;
+    const baseIridescence = isXrayHousing || isTank ? 0 : matCfg.iridescence;
+    const baseEnvMapIntensity = isXrayHousing
+      ? 0.54
+      : isTank
+        ? isTankBareMetal
+          ? 1.32
+          : isTankOrdnanceBarrel
+            ? 1.08
+            : part.material === 'polymer_frame'
+              ? 0.78
+              : 0.86
+        : matCfg.envMapIntensity;
+    const daylightTuning = resolvePartDaylightMaterialTuning(
+      environmentPreset,
+      part.material,
+      pbr.normalScale,
+      baseEnvMapIntensity,
+      baseClearcoat,
+      baseClearcoatRoughness,
+      baseIridescence,
+      isTank,
+      isXrayHousing
+    );
+
+    const [normalScaleVec] = useState(
+      () =>
+        new THREE.Vector2(
+          daylightTuning.normalScale,
+          daylightTuning.normalScale
+        )
     );
 
     // Clamp PBR texture anisotropy to the GPU's real capability (idempotent)
@@ -558,6 +718,14 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       armoryUniforms.uSpringScale.value = 1;
     }, [armoryUniforms, part.material, surfaceScale]);
 
+    // Cycle 22C: Sync studio Specular AA uniforms in-place (zero WebGL shader recompilation)
+    useEffect(() => {
+      const specAa = resolveSpecularAaParams(environmentPreset, isTank);
+      armoryUniforms.uSpecularAaStrength.value = specAa.strength;
+      armoryUniforms.uSpecularAaThreshold.value = specAa.threshold;
+      armoryUniforms.uMicroDetailDamping.value = specAa.microDetailDamping;
+    }, [armoryUniforms, environmentPreset, isTank]);
+
     useEffect(() => {
       if (!geometry) return;
       computeThermalSpanInto(geometry, armoryUniforms.uThermalSpan.value);
@@ -588,8 +756,53 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       }
     }, [armoryUniforms, engineeringTint, focusedEngineeringRole, partRole]);
 
-    const isXrayHousing = xrayShells && !!part.isShell && !isSelected;
     const usePbrNow = pbrTexturesEnabled && !isXrayHousing;
+    const isBarrelRiflingCut = shouldSliceBarrelForRifling(
+      weaponId,
+      part,
+      sectionCut,
+      sectionCutAxis,
+      isAssemblyClosedForRifling ? 0 : RIFLING_EXPLODE_VISIBILITY_MAX,
+      isSelected
+    );
+    const isSectionCutShell =
+      (sectionCut && !!part.isShell && !isSelected) || isBarrelRiflingCut;
+    const albedoReady =
+      usePbrNow && pbr.hasCustomAtlas && isTextureLoaded(pbr.map);
+    const normalReady = usePbrNow && isTextureLoaded(pbr.normalMap);
+    const roughReady = usePbrNow && isTextureLoaded(pbr.roughnessMap);
+
+    const activeMap = albedoReady ? pbr.map : null;
+    const activeNormalMap = normalReady ? pbr.normalMap : null;
+    const activeOrmMap = roughReady ? pbr.roughnessMap : null;
+    const activeMetalnessMap =
+      pbr.hasCustomAtlas && activeOrmMap ? activeOrmMap : null;
+    // Armory shader stays off on optical X-ray housings (clean glass look), except springs.
+    const armoryActive = !isXrayHousing || armoryFeatures.spring;
+    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isTank ? 't1' : 't0'}-${isSectionCutShell ? (sectionCutAxis === 'box' ? 'cb' : 'c1') : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
+    const hasMeshVisible = Boolean(
+      geometry && !isGroupHidden && !isReplacedByAttachment
+    );
+
+    // Sync BOTH the stable Vector2 prop AND Three.js's live material.normalScale directly:
+    // R3F copies Vector2 props by value (`targetProp.copy(value)`) and skips `diffProps`
+    // when the Vector2 reference is identical across live `[Vault] <-> [Blueprint]` toggles.
+    useEffect(() => {
+      normalScaleVec.set(
+        daylightTuning.normalScale,
+        daylightTuning.normalScale
+      );
+      matRef.current?.normalScale.set(
+        daylightTuning.normalScale,
+        daylightTuning.normalScale
+      );
+    }, [
+      normalScaleVec,
+      daylightTuning.normalScale,
+      matShaderKey,
+      hasMeshVisible,
+    ]);
+
     const armorDetailReady =
       usePbrNow &&
       isTextureLoaded(armorDetail.normalMap) &&
@@ -824,6 +1037,14 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
           : _curatorRimDarkColor
       );
 
+      const specAaNow = resolveSpecularAaParams(
+        appState.environmentPreset,
+        isTank
+      );
+      u.uSpecularAaStrength.value = specAaNow.strength;
+      u.uSpecularAaThreshold.value = specAaNow.threshold;
+      u.uMicroDetailDamping.value = specAaNow.microDetailDamping;
+
       // WP-07 & WP-09: Zero-GC transient interference / diagnostic pulsing
       const mat = matRef.current;
       if (mat) {
@@ -917,28 +1138,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
 
     if (!geometry || isGroupHidden || isReplacedByAttachment) return null;
 
-    const isBarrelRiflingCut = shouldSliceBarrelForRifling(
-      weaponId,
-      part,
-      sectionCut,
-      sectionCutAxis,
-      isAssemblyClosedForRifling ? 0 : RIFLING_EXPLODE_VISIBILITY_MAX,
-      isSelected
-    );
-    const isSectionCutShell =
-      (sectionCut && !!part.isShell && !isSelected) || isBarrelRiflingCut;
     const isTransparent = isGhostByIsolate || isXrayHousing;
-
-    const albedoReady =
-      usePbrNow && pbr.hasCustomAtlas && isTextureLoaded(pbr.map);
-    const normalReady = usePbrNow && isTextureLoaded(pbr.normalMap);
-    const roughReady = usePbrNow && isTextureLoaded(pbr.roughnessMap);
-
-    const activeMap = albedoReady ? pbr.map : null;
-    const activeNormalMap = normalReady ? pbr.normalMap : null;
-    const activeOrmMap = roughReady ? pbr.roughnessMap : null;
-    const activeMetalnessMap =
-      pbr.hasCustomAtlas && activeOrmMap ? activeOrmMap : null;
     const useVertexColors = !isXrayHousing && !albedoReady;
 
     // Optical X-ray clarity: ultra-low front-face haze + clean depth sorting (renderOrder 12)
@@ -1082,10 +1282,8 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       selectPart(isSelected ? null : part.id);
     };
 
-    // Armory shader stays off on optical X-ray housings (clean glass look), except springs.
     // Sliced main barrels intentionally skip StencilSectionCap so a solid-core lathe barrel
     // never plugs the hollow bore cavity covering `RiflingBoreActor`.
-    const armoryActive = !isXrayHousing || armoryFeatures.spring;
     const showSectionCap =
       isSectionCutShell &&
       !isBarrelRiflingCut &&
@@ -1094,33 +1292,13 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       sectionCutAxis !== 'box' &&
       !isThinWallCutawayShell(part.id);
 
-    // 1:1 Heavy Armor physical surface calibration:
+    // 1:1 Heavy Armor & Blueprint Daylight physical surface calibration:
     // Firearms use gun-oil clearcoat & CLP iridescence (`nitride_steel` clearcoat=0.28),
-    // which would wrap matte CARC-painted tank armor in wet plastic glare! On Main Battle Tanks,
-    // matte painted armor obeys the Cycles-baked ORM roughness/metalness directly with subtle
-    // dry mineral dust grazing sheen, while machined bare steel/chrome/brass stays crisp.
-    const isTankBareMetal =
-      isTank &&
-      (part.material === 'stainless' ||
-        part.material === 'copper_accent' ||
-        part.material === 'spring_steel');
-    const isTankOrdnanceBarrel = isTank && part.material === 'barrel_steel';
-    const resolvedClearcoat = isXrayHousing
-      ? 0.36
-      : isTank
-        ? isTankBareMetal
-          ? 0.06
-          : isTankOrdnanceBarrel
-            ? 0.04
-            : 0.0
-        : matCfg.clearcoat;
-    const resolvedClearcoatRoughness = isXrayHousing
-      ? 0.14
-      : isTank
-        ? 0.38
-        : matCfg.clearcoatRoughness;
-    const resolvedIridescence =
-      isXrayHousing || isTank ? 0 : matCfg.iridescence;
+    // which would wrap matte CARC-painted tank armor in wet plastic glare and create bright
+    // specular fireflies on dark parkerized/nDLC receivers under full-sphere `blueprint_daylight` IBL.
+    const resolvedClearcoat = daylightTuning.clearcoat;
+    const resolvedClearcoatRoughness = daylightTuning.clearcoatRoughness;
+    const resolvedIridescence = daylightTuning.iridescence;
     const resolvedSheen = isXrayHousing
       ? 0.32
       : isTank
@@ -1138,17 +1316,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       : isTank
         ? '#7a7262'
         : matCfg.sheenColor;
-    const resolvedEnvMapIntensity = isXrayHousing
-      ? 0.54
-      : isTank
-        ? isTankBareMetal
-          ? 1.32
-          : isTankOrdnanceBarrel
-            ? 1.08
-            : part.material === 'polymer_frame'
-              ? 0.78
-              : 0.86
-        : matCfg.envMapIntensity;
+    const resolvedEnvMapIntensity = daylightTuning.envMapIntensity;
     const resolvedAoMapIntensity = isGlbAsset
       ? isTank
         ? 1.26
@@ -1156,8 +1324,6 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       : pbr.hasCustomAtlas
         ? 0.65
         : 0.48;
-
-    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isTank ? 't1' : 't0'}-${isSectionCutShell ? (sectionCutAxis === 'box' ? 'cb' : 'c1') : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
 
     const armoryMaterialProps = armoryActive
       ? {
