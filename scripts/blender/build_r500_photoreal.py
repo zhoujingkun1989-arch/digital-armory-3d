@@ -241,8 +241,8 @@ if "--postprocess" in sys.argv:
         dlo = ImageDraw.Draw(ch_lo)
 
         # Upper continuous rail strip (Y = +1.45, completely above all truss windows & forend!)
-        dlw.text((cx_left(12.0), cy_ch(1.45)), "HELICOIL 360  -  500 FPS  -  15\" STROKE", font=_load_font(FONT_DIN, 36), fill=255, anchor="mm")
-        dlw.text((cx_left(-6.5), cy_ch(1.45)), "RAVIN CROSSBOWS  -  R500", font=_load_font(FONT_DIN, 38), fill=255, anchor="mm")
+        dlw.text((cx_left(12.0), cy_ch(1.45)), "RAVIN R500  -  500 FPS  -  HEXCOIL", font=_load_font(FONT_DIN, 38), fill=255, anchor="mm")
+        dlw.text((cx_left(-6.5), cy_ch(1.45)), "6061-T6 BILLET  -  15\" STROKE", font=_load_font(FONT_DIN, 36), fill=252, anchor="mm")
 
         # Rear cheek-rest emblem + model badge (X = -18.2, Y = +1.96)
         _draw_ravin_emblem(dlo, cx_left(-16.2), cy_ch(1.94), 30)
@@ -267,7 +267,7 @@ if "--postprocess" in sys.argv:
         dro = ImageDraw.Draw(ch_ro)
 
         drw.text((cx_right(-6.5), cy_ch(1.45)), "TRAC-TRIGGER FLOATING SYSTEM", font=_load_font(FONT_DIN, 36), fill=255, anchor="mm")
-        drw.text((cx_right(12.0), cy_ch(1.45)), "RAVIN  R500  -  3.6\" AXLE-TO-AXLE", font=_load_font(FONT_DIN, 36), fill=255, anchor="mm")
+        drw.text((cx_right(12.0), cy_ch(1.45)), "RAVIN R500  -  500 FPS  -  HEXCOIL", font=_load_font(FONT_DIN, 38), fill=255, anchor="mm")
 
         _draw_ravin_emblem(dro, cx_right(-20.2), cy_ch(1.94), 30)
         drw.text((cx_right(-17.6), cy_ch(1.96)), "R500", font=_load_font(FONT_DIN, 54), fill=255, anchor="mm")
@@ -740,15 +740,15 @@ if "--postprocess" in sys.argv:
             coat_wave = 0.5 + 0.5 * np.cos(6.4 * rad * rad + 0.52 * lv - 0.38 * lu)
             sapphire_rim = _smoothstep(0.60, 0.92, rad) * (1.0 - _smoothstep(0.92, 1.18, rad))
             lens_rgb = (
-                np.array((0.020, 0.125, 0.215), dtype=np.float32)
-                + coat_wave[..., None] * np.array((0.022, 0.315, 0.175), dtype=np.float32)
-                + sapphire_rim[..., None] * np.array((0.085, 0.165, 0.285), dtype=np.float32)
+                np.array((0.022, 0.132, 0.185), dtype=np.float32)
+                + coat_wave[..., None] * np.array((0.032, 0.345, 0.188), dtype=np.float32)
+                + sapphire_rim[..., None] * np.array((0.240, 0.155, 0.075), dtype=np.float32)
             )
             lens_rgb *= 1.0 - 0.48 * _smoothstep(0.78, 1.16, rad)[..., None]
             arc1 = (1.0 - _smoothstep(0.018, 0.055, np.abs(rad - 0.70))) * _smoothstep(0.12, 0.45, lv) * (1.0 - _smoothstep(-0.20, 0.25, lu))
             arc2 = (1.0 - _smoothstep(0.016, 0.048, np.abs(rad - 0.44))) * _smoothstep(-0.55, -0.20, lv) * _smoothstep(0.05, 0.42, lu)
-            lens_rgb += arc1[..., None] * np.array((0.40, 0.82, 0.72), dtype=np.float32)
-            lens_rgb += arc2[..., None] * np.array((0.18, 0.48, 0.64), dtype=np.float32)
+            lens_rgb += arc1[..., None] * np.array((0.36, 0.88, 0.68), dtype=np.float32)
+            lens_rgb += arc2[..., None] * np.array((0.72, 0.46, 0.16), dtype=np.float32)
             albedo[sub_m] = np.clip(lens_rgb[sub_m], 0.0, 1.0)
 
         # --- 5) QUIVER BROADHEAD HOOD OUTER RIGHT FLANK MOLDED RAVIN CREST ---
@@ -829,7 +829,7 @@ MODELS_OUT.parent.mkdir(parents=True, exist_ok=True)
 TEX_OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 ATLAS_SIZE = 2048
-BAKE_AO_SAMPLES = 48
+BAKE_AO_SAMPLES = 32
 BAKE_NORMAL_SAMPLES = 16
 
 # Exact Three.js (X=muzzle, Y=up, Z=right) -> Blender (X=muzzle, Y=-right, Z=up) matrix (det = +1)
@@ -1017,9 +1017,9 @@ def _build_pbr_mat(
     nt.links.new(texcoord.outputs["Object"], mapping.inputs["Vector"])
 
     n_macro = nt.nodes.new("ShaderNodeTexNoise")
-    n_macro.inputs["Scale"].default_value = 3.80
+    n_macro.inputs["Scale"].default_value = 11.5
     n_macro.inputs["Detail"].default_value = 4.0
-    n_macro.inputs["Roughness"].default_value = 0.54
+    n_macro.inputs["Roughness"].default_value = 0.56
     nt.links.new(texcoord.outputs["Object"], n_macro.inputs["Vector"])
 
     n_micro = nt.nodes.new("ShaderNodeTexNoise")
@@ -1043,9 +1043,9 @@ def _build_pbr_mat(
 
     base_col_a = srgb_to_lin(*base_srgb)
     base_col_b = srgb_to_lin(
-        min(1.0, base_srgb[0] * 1.036),
-        min(1.0, base_srgb[1] * 1.036),
-        min(1.0, base_srgb[2] * 1.036),
+        min(1.0, base_srgb[0] * 1.024),
+        min(1.0, base_srgb[1] * 1.024),
+        min(1.0, base_srgb[2] * 1.024),
     )
     mix_base = nt.nodes.new("ShaderNodeMix")
     mix_base.data_type = "RGBA"
@@ -1067,13 +1067,24 @@ def _build_pbr_mat(
     met_sock = met_node.outputs[0]
 
     if edge_wear > 0.001:
-        geom = nt.nodes.new("ShaderNodeNewGeometry")
+        # Tight Cycles inside-AO geometric convexity mask (zero polygon-dependent Pointiness blotches!)
+        ao_in = nt.nodes.new("ShaderNodeAmbientOcclusion")
+        ao_in.samples = 8
+        ao_in.inside = True
+        ao_in.only_local = True
+        ao_in.inputs["Distance"].default_value = 0.044
+
+        inv_ao = nt.nodes.new("ShaderNodeMath")
+        inv_ao.operation = "SUBTRACT"
+        inv_ao.inputs[0].default_value = 1.0
+        nt.links.new(ao_in.outputs["AO"], inv_ao.inputs[1])
+
         ramp = nt.nodes.new("ShaderNodeValToRGB")
-        ramp.color_ramp.elements[0].position = 0.555
+        ramp.color_ramp.elements[0].position = 0.26
         ramp.color_ramp.elements[0].color = (0.0, 0.0, 0.0, 1.0)
-        ramp.color_ramp.elements[1].position = 0.635
+        ramp.color_ramp.elements[1].position = 0.66
         ramp.color_ramp.elements[1].color = (edge_wear, edge_wear, edge_wear, 1.0)
-        nt.links.new(geom.outputs["Pointiness"], ramp.inputs["Fac"])
+        nt.links.new(inv_ao.outputs["Value"], ramp.inputs["Fac"])
 
         mul_w = nt.nodes.new("ShaderNodeMath")
         mul_w.operation = "MULTIPLY"
@@ -1089,7 +1100,7 @@ def _build_pbr_mat(
 
         mix_edge_r = nt.nodes.new("ShaderNodeMix")
         mix_edge_r.data_type = "FLOAT"
-        mix_edge_r.inputs[3].default_value = max(0.14, roughness - 0.14)
+        mix_edge_r.inputs[3].default_value = max(0.14, roughness - 0.12)
         nt.links.new(mul_w.outputs["Value"], mix_edge_r.inputs[0])
         nt.links.new(rgh_sock, mix_edge_r.inputs[2])
         rgh_sock = mix_edge_r.outputs[0]
@@ -1128,43 +1139,43 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # --- SUITE 1: CHASSIS, FLIGHT RAIL, RISER & CARBON POLYMER FURNITURE (`r500_v3_chassis`) ---
         "CH_SlateAnodize": _build_pbr_mat(
             "CH_SlateAnodize",
-            base_srgb=(0.305, 0.328, 0.355),
-            roughness=0.33,
-            metallic=0.78,
+            base_srgb=(0.318, 0.344, 0.378),
+            roughness=0.285,
+            metallic=0.86,
             bevel_r=0.032,
-            edge_wear=0.32,
-            edge_srgb=(0.76, 0.79, 0.84),
-            grain_scale=44.0,
-            grain_bump=0.026,
-            aniso_stretch=(0.38, 3.6, 3.6),
-            rough_var=0.036,
+            edge_wear=0.26,
+            edge_srgb=(0.78, 0.81, 0.86),
+            grain_scale=48.0,
+            grain_bump=0.022,
+            aniso_stretch=(0.32, 3.8, 3.8),
+            rough_var=0.028,
         ),
         "CH_DarkTitanium": _build_pbr_mat(
             "CH_DarkTitanium",
-            base_srgb=(0.205, 0.222, 0.246),
-            roughness=0.37,
-            metallic=0.76,
+            base_srgb=(0.192, 0.210, 0.236),
+            roughness=0.32,
+            metallic=0.84,
             bevel_r=0.026,
-            edge_wear=0.28,
-            edge_srgb=(0.68, 0.72, 0.76),
-            grain_scale=52.0,
-            grain_bump=0.030,
-            voronoi_grain=0.40,
-            voronoi_scale=84.0,
-            rough_var=0.034,
+            edge_wear=0.24,
+            edge_srgb=(0.68, 0.72, 0.77),
+            grain_scale=54.0,
+            grain_bump=0.026,
+            voronoi_grain=0.35,
+            voronoi_scale=88.0,
+            rough_var=0.028,
         ),
         "CH_PicatinnyCrest": _build_pbr_mat(
             "CH_PicatinnyCrest",
-            base_srgb=(0.345, 0.370, 0.402),
-            roughness=0.28,
-            metallic=0.84,
+            base_srgb=(0.352, 0.378, 0.412),
+            roughness=0.25,
+            metallic=0.88,
             bevel_r=0.018,
-            edge_wear=0.52,
-            edge_srgb=(0.84, 0.87, 0.90),
-            grain_scale=38.0,
-            grain_bump=0.022,
-            aniso_stretch=(0.45, 3.2, 3.2),
-            rough_var=0.030,
+            edge_wear=0.38,
+            edge_srgb=(0.86, 0.89, 0.92),
+            grain_scale=42.0,
+            grain_bump=0.020,
+            aniso_stretch=(0.40, 3.4, 3.4),
+            rough_var=0.024,
         ),
         "CH_SlotDark": _build_pbr_mat(
             "CH_SlotDark",
@@ -1178,83 +1189,83 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "CH_MatteCarbonPoly": _build_pbr_mat(
             "CH_MatteCarbonPoly",
-            base_srgb=(0.158, 0.166, 0.180),
-            roughness=0.66,
-            metallic=0.02,
-            bevel_r=0.042,
-            edge_wear=0.22,
-            edge_srgb=(0.285, 0.298, 0.318),
-            grain_scale=66.0,
-            grain_bump=0.095,
-            voronoi_grain=0.68,
-            voronoi_scale=96.0,
-            rough_var=0.048,
+            base_srgb=(0.138, 0.146, 0.160),
+            roughness=0.64,
+            metallic=0.00,
+            bevel_r=0.044,
+            edge_wear=0.14,
+            edge_srgb=(0.255, 0.268, 0.288),
+            grain_scale=68.0,
+            grain_bump=0.085,
+            voronoi_grain=0.64,
+            voronoi_scale=102.0,
+            rough_var=0.038,
         ),
         "CH_GripStipple": _build_pbr_mat(
             "CH_GripStipple",
-            base_srgb=(0.138, 0.146, 0.158),
+            base_srgb=(0.118, 0.125, 0.136),
             roughness=0.76,
             metallic=0.00,
             bevel_r=0.026,
-            edge_wear=0.14,
-            edge_srgb=(0.245, 0.258, 0.275),
-            grain_scale=78.0,
-            grain_bump=0.175,
-            voronoi_grain=0.85,
-            voronoi_scale=136.0,
-            rough_var=0.036,
+            edge_wear=0.10,
+            edge_srgb=(0.225, 0.236, 0.252),
+            grain_scale=84.0,
+            grain_bump=0.165,
+            voronoi_grain=0.86,
+            voronoi_scale=144.0,
+            rough_var=0.030,
         ),
         "CH_RubberButtpad": _build_pbr_mat(
             "CH_RubberButtpad",
-            base_srgb=(0.112, 0.118, 0.128),
-            roughness=0.88,
+            base_srgb=(0.102, 0.108, 0.118),
+            roughness=0.86,
             metallic=0.00,
             bevel_r=0.032,
-            edge_wear=0.10,
-            edge_srgb=(0.185, 0.194, 0.208),
-            grain_scale=62.0,
-            grain_bump=0.090,
-            rough_var=0.034,
+            edge_wear=0.08,
+            edge_srgb=(0.178, 0.186, 0.198),
+            grain_scale=64.0,
+            grain_bump=0.085,
+            rough_var=0.030,
         ),
         "CH_StainlessHardware": _build_pbr_mat(
             "CH_StainlessHardware",
-            base_srgb=(0.78, 0.80, 0.84),
+            base_srgb=(0.79, 0.81, 0.85),
             roughness=0.18,
             metallic=0.96,
             bevel_r=0.016,
-            edge_wear=0.22,
-            edge_srgb=(0.91, 0.93, 0.96),
-            grain_scale=30.0,
-            grain_bump=0.018,
+            edge_wear=0.18,
+            edge_srgb=(0.92, 0.94, 0.97),
+            grain_scale=32.0,
+            grain_bump=0.016,
             aniso_stretch=(0.45, 3.2, 3.2),
-            rough_var=0.024,
+            rough_var=0.020,
         ),
 
         # --- SUITE 2: HEXCOIL CAMS, VERSADRIVE, STIRRUP & FIRE CONTROL (`r500_v3_cams_mech`) ---
         "CM_HexCoilCopper": _build_pbr_mat(
             "CM_HexCoilCopper",
-            base_srgb=(0.73, 0.42, 0.19),
-            roughness=0.25,
-            metallic=0.90,
+            base_srgb=(0.75, 0.44, 0.20),
+            roughness=0.22,
+            metallic=0.93,
             bevel_r=0.024,
-            edge_wear=0.38,
-            edge_srgb=(0.93, 0.72, 0.48),
-            grain_scale=36.0,
-            grain_bump=0.022,
+            edge_wear=0.24,
+            edge_srgb=(0.94, 0.74, 0.50),
+            grain_scale=40.0,
+            grain_bump=0.018,
             aniso_stretch=(2.4, 2.4, 0.5),
-            rough_var=0.032,
+            rough_var=0.024,
         ),
         "CM_HexCoilGoldGroove": _build_pbr_mat(
             "CM_HexCoilGoldGroove",
-            base_srgb=(0.80, 0.53, 0.24),
-            roughness=0.22,
-            metallic=0.92,
+            base_srgb=(0.82, 0.56, 0.26),
+            roughness=0.19,
+            metallic=0.94,
             bevel_r=0.016,
-            edge_wear=0.30,
-            edge_srgb=(0.95, 0.78, 0.54),
-            grain_scale=42.0,
-            grain_bump=0.018,
-            rough_var=0.026,
+            edge_wear=0.20,
+            edge_srgb=(0.96, 0.80, 0.56),
+            grain_scale=44.0,
+            grain_bump=0.015,
+            rough_var=0.022,
         ),
         "CM_BrushedStainless": _build_pbr_mat(
             "CM_BrushedStainless",
@@ -1585,6 +1596,7 @@ def mk_cyl(
     xform: list[tuple] | None = None,
     mat: bpy.types.Material | None = None,
     bevel: float = 0.0,
+    bevel_segs: int = 2,
 ) -> bpy.types.Object:
     bm = bmesh.new()
     bmesh.ops.create_cone(bm, cap_ends=True, cap_tris=False, segments=segs,
@@ -1592,7 +1604,7 @@ def mk_cyl(
     if bevel > 0.0:
         cap_edges = [e for e in bm.edges if abs(e.verts[0].co.z - e.verts[1].co.z) < 1e-4]
         if cap_edges:
-            bmesh.ops.bevel(bm, geom=cap_edges, offset=bevel, segments=2,
+            bmesh.ops.bevel(bm, geom=cap_edges, offset=bevel, segments=bevel_segs,
                             profile=0.5, affect="EDGES", clamp_overlap=True)
     pre = []
     if axis == "y":
@@ -2065,6 +2077,7 @@ def finish_part(
     bevel_segs: int = 2,
     sharp_deg: float = 34.0,
     weighted_normals: bool = True,
+    lock_flat_walls: bool = True,
 ) -> bpy.types.Object:
     select_only([obj], obj)
     if bevel_w > 0.0:
@@ -2081,6 +2094,7 @@ def finish_part(
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-5, edges=list(bm.edges))
     degen = [f for f in bm.faces if f.calc_area() < 1e-10]
     if degen:
         bmesh.ops.delete(bm, geom=degen, context="FACES")
@@ -2109,7 +2123,33 @@ def finish_part(
         wn.keep_sharp = True
         bpy.ops.object.modifier_apply(modifier=wn.name)
 
+    if lock_flat_walls:
+        mesh = obj.data
+        n_loops = len(mesh.loops)
+        custom_nrms = [None] * n_loops
+        for poly in mesh.polygons:
+            fn = poly.normal
+            is_flat_wall = (
+                poly.area >= 0.45
+                and (abs(fn.y) > 0.992 or abs(fn.z) > 0.992 or abs(fn.x) > 0.992)
+            )
+            for li in poly.loop_indices:
+                custom_nrms[li] = tuple(fn) if is_flat_wall else tuple(mesh.loops[li].normal)
+        if any(v is not None for v in custom_nrms):
+            mesh.normals_split_custom_set(custom_nrms)
+            mesh.update()
+
     return obj
+
+
+def _triangulate_keep_normals(all_objs: list[bpy.types.Object]):
+    for o in all_objs:
+        select_only([o], o)
+        mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
+        mod.quad_method = "BEAUTY"
+        mod.ngon_method = "BEAUTY"
+        mod.keep_custom_normals = True
+        bpy.ops.object.modifier_apply(modifier=mod.name)
 
 
 # =============================================================================
@@ -2127,18 +2167,18 @@ def build_r500_chassis(mats: dict) -> bpy.types.Object:
     m_dk = mats["CH_SlotDark"]
     m_ss = mats["CH_StainlessHardware"]
 
-    # Main CNC billet mainframe body (exact Z = +-1.42 flat hero walls, crisp chamfers!)
-    main_body = mk_box("ch_main", 48.70, 3.43, 2.84, [("t", -0.15, -0.035, 0.0)], m_sl, bevel=0.075, bevel_segs=2)
-    top_rails = mk_box("ch_topr", 48.50, 0.56, 2.80, [("t", -0.15,  1.560, 0.0)], m_sl, bevel=0.055, bevel_segs=2)
-    cheek_rest = mk_box("ch_cheek", 10.30, 1.05, 2.68, [("t", -19.35, 2.120, 0.0)], m_sl, bevel=0.095, bevel_segs=2)
-    lower_neck = mk_box("ch_neck", 6.80, 0.65, 1.78, [("t", 2.10, -1.820, 0.0)], m_ti, bevel=0.055, bevel_segs=2)
+    # Main CNC billet mainframe body (exact Z = +-1.42 flat hero walls, silky C2 chamfers!)
+    main_body = mk_box("ch_main", 48.70, 3.43, 2.84, [("t", -0.15, -0.035, 0.0)], m_sl, bevel=0.095, bevel_segs=4)
+    top_rails = mk_box("ch_topr", 48.50, 0.56, 2.80, [("t", -0.15,  1.560, 0.0)], m_sl, bevel=0.068, bevel_segs=3)
+    cheek_rest = mk_box("ch_cheek", 10.30, 1.05, 2.68, [("t", -19.35, 2.120, 0.0)], m_sl, bevel=0.135, bevel_segs=4)
+    lower_neck = mk_box("ch_neck", 6.80, 0.65, 1.78, [("t", 2.10, -1.820, 0.0)], m_ti, bevel=0.075, bevel_segs=3)
 
     # Right-side machined dovetail QD quiver mounting rail boss (extends to Z = +1.86)
     qd_prof_xy = [
         ( 8.00, -1.775), (13.60, -1.775),
         (13.60, -0.725), ( 8.00, -0.725),
     ]
-    quiver_boss = mk_extrude_z("ch_qdboss", qd_prof_xy, 1.34, 1.86, bevel=0.055, bevel_segs=2, mat=m_cr)
+    quiver_boss = mk_extrude_z("ch_qdboss", qd_prof_xy, 1.34, 1.86, bevel=0.068, bevel_segs=3, mat=m_cr)
 
     blank = bool_union([main_body, top_rails, cheek_rest, lower_neck, quiver_boss], "ch_blank", solver="EXACT")
 
@@ -2151,23 +2191,27 @@ def build_r500_chassis(mats: dict) -> bpy.types.Object:
         # Lower bullpup trigger transfer rod channel
         mk_box("c_trigslot", 30.60, 2.15, 0.82, [("t", -9.40, -1.15, 0.0)], m_dk),
         # Safety selector cross-axle bore at (-1.80, +0.25)
-        mk_cyl("c_safebore", 0.22, 0.22, 3.20, "z", 20, [("t", -1.80, 0.25, 0.0)], m_dk),
+        mk_cyl("c_safebore", 0.22, 0.22, 3.20, "z", 32, [("t", -1.80, 0.25, 0.0)], m_dk),
         # Right QD boss recessed dovetail lock slot
         mk_box("c_qdslot", 3.20, 0.36, 0.24, [("t", 10.80, -1.25, 1.82)], m_dk),
     ]
 
-    # 5 Sculpted angled parallelogram CNC skeleton truss windows with chamfered flared lips!
+    # 5 Sculpted angled CNC skeleton truss pockets w/ chamfered octagonal-fillet corners & flared lips!
     # Placed strictly at Y in [0.16, 0.94] so upper rail hero text (Y > 1.15) & lower slab (Y < -0.18) stay 100% solid!
     for wi, wx in enumerate((-15.2, -8.2, 1.6, 8.8, 16.0)):
         slant = 0.26
         win_pts = [
-            (wx - 1.95 - slant, 0.17),
-            (wx + 1.85 - slant, 0.17),
-            (wx + 1.95 + slant, 0.93),
-            (wx - 1.85 + slant, 0.93),
+            (wx - 1.72 - slant, 0.17),
+            (wx + 1.62 - slant, 0.17),
+            (wx + 1.87 - slant * 0.55, 0.32),
+            (wx + 1.93 + slant * 0.55, 0.78),
+            (wx + 1.72 + slant, 0.93),
+            (wx - 1.62 + slant, 0.93),
+            (wx - 1.87 + slant * 0.55, 0.78),
+            (wx - 1.93 - slant * 0.55, 0.32),
         ]
         cutters.append(
-            mk_flared_cutout_z(f"c_win_{wi}", win_pts, z_half_inner=1.42, flare=0.065, flare_depth=0.11, z_overhang=0.28, mat=m_ti)
+            mk_flared_cutout_z(f"c_win_{wi}", win_pts, z_half_inner=1.42, flare=0.072, flare_depth=0.12, z_overhang=0.28, mat=m_ti)
         )
 
     machined = bool_subtract(blank, cutters, solver="EXACT")
@@ -2178,8 +2222,8 @@ def build_r500_chassis(mats: dict) -> bpy.types.Object:
         st = "R" if side > 0 else "L"
         # Safety selector recessed flush titanium ring around (-1.80, 0.25)
         parts.append(
-            mk_cyl(f"ch_safebush_{st}", 0.36, 0.36, 0.06, "z", 24,
-                   [("t", -1.80, 0.25, side * 1.39)], m_ti, bevel=0.014)
+            mk_cyl(f"ch_safebush_{st}", 0.36, 0.36, 0.06, "z", 32,
+                   [("t", -1.80, 0.25, side * 1.39)], m_ti, bevel=0.016, bevel_segs=3)
         )
         # Front riser-coupling socket cap screws & mid-chassis frame pins (flush within +-1.42)
         for bi, (bx, by) in enumerate((
@@ -2206,56 +2250,131 @@ def build_r500_forend_grip(mats: dict) -> bpy.types.Object:
     m_ss = mats["CH_StainlessHardware"]
     m_dk = mats["CH_SlotDark"]
 
-    # Main contoured forend body cradling chassis lower belly
-    body = mk_box("fg_body", 14.80, 1.55, 2.76, [("t", 0.0, 0.55, 0.0)], m_pl, bevel=0.11, bevel_segs=2)
+    # Main contoured ergonomic rubberized forend body cradling chassis lower belly
+    body = mk_box("fg_body", 14.80, 1.55, 2.76, [("t", 0.0, 0.55, 0.0)], m_pl, bevel=0.18, bevel_segs=4)
 
     # Flared horizontal anti-thumb safety wings extending cleanly to Z = +-3.12 (Y in [1.76, 2.34])
     wing_xz: list[tuple[float, float]] = [(-6.80, -3.12), (5.80, -3.12)]
-    wing_xz += _quad_bez((5.80, -3.12), (7.12, -2.90), (7.20, -1.40), 8)
-    wing_xz.append((7.20, 1.40))
-    wing_xz += _quad_bez((7.20, 1.40), (7.12, 2.90), (5.80, 3.12), 8)
+    wing_xz += _quad_bez((5.80, -3.12), (7.18, -2.92), (7.22, -1.35), 14)
+    wing_xz.append((7.22, 1.35))
+    wing_xz += _quad_bez((7.22, 1.35), (7.18, 2.92), (5.80, 3.12), 14)
     wing_xz.append((-6.80, 3.12))
-    wing_xz += _quad_bez((-6.80, 3.12), (-7.60, 2.60), (-7.60, 1.40), 8)
-    wing_xz.append((-7.60, -1.40))
-    wing_xz += _quad_bez((-7.60, -1.40), (-7.60, -2.60), (-6.80, -3.12), 8)
-    wings_raw = mk_extrude_y("fg_wings", wing_xz, 1.76, 2.34, bevel=0.075, bevel_segs=2, mat=m_pl)
+    wing_xz += _quad_bez((-6.80, 3.12), (-7.60, 2.65), (-7.60, 1.35), 14)
+    wing_xz.append((-7.60, -1.35))
+    wing_xz += _quad_bez((-7.60, -1.35), (-7.60, -2.65), (-6.80, -3.12), 14)
+    wings_raw = mk_extrude_y("fg_wings", wing_xz, 1.76, 2.34, bevel=0.11, bevel_segs=4, mat=m_pl)
 
-    # Raised ergonomic outer thumb-guard edge ribs along wing perimeters & upper chassis saddle recess
-    wing_lip_l = mk_box("fg_lipl", 11.80, 0.18, 0.28, [("t", -0.50, 2.25, -2.94)], m_gr, bevel=0.04)
-    wing_lip_r = mk_box("fg_lipr", 11.80, 0.18, 0.28, [("t", -0.50, 2.25,  2.94)], m_gr, bevel=0.04)
+    # Raised ergonomic outer thumb-guard edge ribs along wing perimeters
+    wing_lip_l = mk_box("fg_lipl", 11.80, 0.18, 0.28, [("t", -0.50, 2.25, -2.94)], m_gr, bevel=0.055, bevel_segs=3)
+    wing_lip_r = mk_box("fg_lipr", 11.80, 0.18, 0.28, [("t", -0.50, 2.25,  2.94)], m_gr, bevel=0.055, bevel_segs=3)
 
-    # Angled side-flank transition gussets welding wing underside smoothly into grip body (zero overhang shelf!)
+    # Smoothly blended side-flank transition gussets welding wing underside into grip body
     gusset_zy = [
         (-1.36, 0.72), ( 1.36, 0.72),
         ( 2.86, 1.84), (-2.86, 1.84),
     ]
-    gusset = mk_extrude_x("fg_gusset", gusset_zy, -6.90, 6.60, bevel=0.08, bevel_segs=2, mat=m_pl)
+    gusset = mk_extrude_x("fg_gusset", gusset_zy, -6.90, 6.60, bevel=0.12, bevel_segs=4, mat=m_pl)
 
-    # Molded forward hand-stop & rear index hook (Y min = -1.075 exact!)
-    hand_stop = mk_box("fg_hstop", 1.65, 1.25, 2.55, [("t",  5.80, -0.45, 0.0)], m_gr, bevel=0.12, bevel_segs=2)
-    rear_hook = mk_box("fg_rhook", 1.85, 1.05, 2.55, [("t", -6.20, -0.35, 0.0)], m_gr, bevel=0.12, bevel_segs=2)
+    # Molded ergonomic forward hand-stop & rear index hook (Y min = -1.075 exact!)
+    hand_stop = mk_box("fg_hstop", 1.65, 1.25, 2.55, [("t",  5.80, -0.45, 0.0)], m_gr, bevel=0.19, bevel_segs=4)
+    rear_hook = mk_box("fg_rhook", 1.85, 1.05, 2.55, [("t", -6.20, -0.35, 0.0)], m_gr, bevel=0.18, bevel_segs=4)
 
-    # 5 Contoured ergonomic lower palm grip ribs + side stippled grip panels
+    # 5 Contoured ergonomic lower palm grip ribs + side stippled rubber grip panels
     parts = [body, wings_raw, wing_lip_l, wing_lip_r, gusset, hand_stop, rear_hook]
     for i in range(5):
         rx = -4.20 + i * 2.10
-        parts.append(mk_box(f"fg_rib_{i}", 1.05, 0.56, 2.64, [("t", rx, -0.24, 0.0)], m_gr, bevel=0.08))
+        parts.append(mk_box(f"fg_rib_{i}", 1.05, 0.56, 2.64, [("t", rx, -0.24, 0.0)], m_gr, bevel=0.11, bevel_segs=3))
     for side in (-1.0, 1.0):
         st = "R" if side > 0 else "L"
-        parts.append(mk_box(f"fg_stip_{st}", 10.60, 0.88, 0.14, [("t", -0.20, 0.42, side * 1.34)], m_gr, bevel=0.03))
+        parts.append(mk_box(f"fg_stip_{st}", 10.60, 0.88, 0.16, [("t", -0.20, 0.42, side * 1.34)], m_gr, bevel=0.045, bevel_segs=3))
         for si, sx in enumerate((-4.4, 0.0, 4.4)):
             parts.append(mk_allen_socket_bolt(f"fg_scr_{st}_{si}", 0.18, 0.10, side, sx, 1.22, side * 1.82, m_ss, m_dk))
-        # Molded vent slots accents on wing top face
         for vi, vx in enumerate((-3.8, -0.8, 2.2)):
-            parts.append(mk_box(f"fg_vnt_{st}_{vi}", 2.00, 0.08, 0.42, [("t", vx, 2.31, side * 2.25)], m_ti, bevel=0.02))
+            parts.append(mk_box(f"fg_vnt_{st}_{vi}", 2.00, 0.08, 0.42, [("t", vx, 2.31, side * 2.25)], m_ti, bevel=0.025, bevel_segs=2))
 
-    # Cut internal chassis saddle slot along top so chassis belly seats inside cleanly
     fg_u = join_objects(parts, "r500_forend_grip")
-    return finish_part(fg_u, bevel_w=0.0, sharp_deg=36.0)
+    return finish_part(fg_u, bevel_w=0.0, sharp_deg=38.0, lock_flat_walls=False)
+
+
+def _mk_r500_ergo_grip_loft(name: str, mat_body: bpy.types.Material, mat_stip: bpy.types.Material) -> bpy.types.Object:
+    """True 3D C2 ergonomic rubberized AR-angle crossbow pistol grip loft with palm swell & finger contours.
+    Local space: X in [-2.54, +1.56], Y in [-6.38, +3.14], Z in [-1.01, +1.01] (strictly inside CSG_REF_BBOX)."""
+    n_y = 28
+    n_ring = 44
+    bm = bmesh.new()
+
+    def _station(t: float):
+        # t = 0 at top tang (Y = +3.14), t = 1 at butt heel (Y = -6.38)
+        y = 3.14 - t * 9.52
+        # Frontstrap ergonomic contour w/ trigger-finger undercut & 3 subtle finger swells
+        if t < 0.22:
+            s = t / 0.22
+            xf = 1.48 - 0.56 * (3 * s * s - 2 * s * s * s)
+        else:
+            s = (t - 0.22) / 0.78
+            xf = 0.92 - 0.74 * s
+            # 3 subtle tactile finger-groove swells along mid frontstrap
+            for tc, amp in ((0.38, 0.11), (0.56, 0.11), (0.74, 0.10)):
+                xf += amp * math.exp(-((t - tc) / 0.055) ** 2)
+        # Backstrap ergonomic sweep w/ flared beavertail top & palm arch
+        xb = -1.12 - 1.40 * (t ** 0.92) - 0.16 * math.sin(math.pi * min(1.0, max(0.0, (t - 0.14) / 0.72)))
+        xb = max(-2.54, xb)
+        # Lateral palm swell peaking cleanly at Z = +-1.01 around mid-grip (t ~ 0.48)
+        palm = math.sin(math.pi * min(1.0, max(0.0, (t - 0.06) / 0.88)))
+        hz = 0.82 + 0.19 * (palm ** 0.85)
+        if t > 0.92:
+            hz -= 0.05 * ((t - 0.92) / 0.08)
+        # Superellipse exponent (rounded organic oval cross-section)
+        exp_n = 2.45 if t < 0.14 else 2.25
+        return y, xf, xb, hz, exp_n
+
+    rings: list[list[bmesh.types.BMVert]] = []
+    for iy in range(n_y + 1):
+        t = iy / n_y
+        y, xf, xb, hz, exp_n = _station(t)
+        cx = 0.5 * (xf + xb)
+        rx = max(0.35, 0.5 * (xf - xb))
+        ring = []
+        for ir in range(n_ring):
+            th = (ir / n_ring) * 2.0 * math.pi
+            ct, st = math.cos(th), math.sin(th)
+            px = cx + rx * math.copysign(abs(ct) ** (2.0 / exp_n), ct)
+            pz = hz * math.copysign(abs(st) ** (2.0 / exp_n), st)
+            ring.append(bm.verts.new(t2b(px, y, pz)))
+        rings.append(ring)
+
+    # Side strip faces: assign textured rubberized stipple (mat_idx=1) to conformal mid-flanks
+    for iy in range(n_y):
+        t_mid = (iy + 0.5) / n_y
+        r0, r1 = rings[iy], rings[iy + 1]
+        for ir in range(n_ring):
+            ir_n = (ir + 1) % n_ring
+            f = bm.faces.new((r0[ir], r0[ir_n], r1[ir_n], r1[ir]))
+            th_mid = ((ir + 0.5) / n_ring) * 2.0 * math.pi
+            is_side_panel = (0.24 <= t_mid <= 0.86) and (abs(math.sin(th_mid)) > 0.48)
+            f.material_index = 1 if is_side_panel else 0
+
+    # Clean sealed top & bottom endcaps (fan to center)
+    y_top, xf_t, xb_t, _, _ = _station(0.0)
+    vc_top = bm.verts.new(t2b(0.5 * (xf_t + xb_t), y_top, 0.0))
+    for ir in range(n_ring):
+        ir_n = (ir + 1) % n_ring
+        bm.faces.new((rings[0][ir_n], rings[0][ir], vc_top)).material_index = 0
+
+    y_bot, xf_b, xb_b, _, _ = _station(1.0)
+    vc_bot = bm.verts.new(t2b(0.5 * (xf_b + xb_b), y_bot, 0.0))
+    for ir in range(n_ring):
+        ir_n = (ir + 1) % n_ring
+        bm.faces.new((rings[-1][ir], rings[-1][ir_n], vc_bot)).material_index = 0
+
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    obj = _bm_to_obj(name, bm, mat_body)
+    obj.data.materials.append(mat_stip)
+    return obj
 
 
 def build_r500_pistol_grip(mats: dict) -> bpy.types.Object:
-    """B-03: Ergonomic 18-Deg AR-Angle Bullpup Pistol Grip & 100% Continuous Welded Winter Trigger Guard.
+    """B-03: Ergonomic 18-Deg Contoured Rubberized Bullpup Pistol Grip & 100% Continuous Welded Winter Trigger Guard.
     assembledPos: [1.6, -4.8, 0]; local ref bbox: [-2.55, -6.40, -1.01] .. [4.05, 3.15, 1.01]."""
     m_pl = mats["CH_MatteCarbonPoly"]
     m_gr = mats["CH_GripStipple"]
@@ -2263,62 +2382,40 @@ def build_r500_pistol_grip(mats: dict) -> bpy.types.Object:
     m_ss = mats["CH_StainlessHardware"]
     m_dk = mats["CH_SlotDark"]
 
-    # Main ergonomic AR-angle grip profile (X in [-2.55, +1.65], Y in [-6.40, +3.15])
-    grip_xy: list[tuple[float, float]] = [(-1.10, 3.15), (1.50, 3.15)]
-    grip_xy += _quad_bez((1.50, 3.15), (1.65, 1.90), (0.95, 1.20), 8)
-    grip_xy += _quad_bez((0.95, 1.20), (0.85, -1.80), (0.25, -6.10), 10)
-    grip_xy += [(0.15, -6.38), (-2.55, -6.40)]
-    grip_xy += _quad_bez((-2.55, -6.40), (-2.25, -2.50), (-1.45, 1.50), 10)
-    grip_xy.append((-1.10, 3.15))
-    grip_body = mk_extrude_z("pg_body", grip_xy, -0.90, 0.90, bevel=0.14, bevel_segs=3, mat=m_pl)
+    # True 3D C2 ergonomic superellipse palm-swell grip loft w/ conformal rubber stipple panels
+    grip_body = _mk_r500_ergo_grip_loft("pg_body", m_pl, m_gr)
 
-    # Rounded ergonomic palm swell & recessed stippled grip scales (extends cleanly to Z = +-1.01)
-    palm_swell = mk_box("pg_swell", 2.18, 5.40, 2.02, [("rz", -0.26), ("t", -0.70, -1.90, 0.0)], m_gr, bevel=0.18, bevel_segs=3)
+    # Flared anodized titanium base cap at heel (Y min = -6.39 exact)
+    base_cap = mk_box("pg_bcap", 2.65, 0.36, 1.84, [("rz", -0.09), ("t", -1.20, -6.20, 0.0)], m_ti, bevel=0.085, bevel_segs=3)
 
-    # 3 subtle frontstrap finger-groove scallops + flared bottom base cap
-    finger_ridges = []
-    for fi, (fx, fy) in enumerate(((0.80, -0.65), (0.62, -2.30), (0.44, -3.95))):
-        finger_ridges.append(
-            mk_cyl(f"pg_fgr_{fi}", 0.18, 0.18, 1.56, "z", 16, [("t", fx, fy, 0.0)], m_pl, bevel=0.04)
-        )
-    base_cap = mk_box("pg_bcap", 2.65, 0.42, 1.88, [("rz", -0.10), ("t", -1.20, -6.18, 0.0)], m_ti, bevel=0.07)
-
-    # 100% CONTINUOUS SOLIDLY WELDED WINTER TRIGGER GUARD LOOP (Wave 3 QA Lesson: ZERO floating gaps!)
-    # Outer loop welded deep into grip frontstrap at X = +0.25..+1.10 and into upper chassis mount at Y = +2.68..+3.12!
+    # 100% CONTINUOUS SOLIDLY WELDED CURVED WINTER TRIGGER GUARD LOOP (ZERO floating gaps!)
     guard_outer_xy: list[tuple[float, float]] = [
         (0.25, 3.12), (4.05, 3.12), (4.05, 1.45),
     ]
-    guard_outer_xy += _quad_bez((4.05, 1.45), (3.95, 0.30), (2.70, 0.22), 10)
+    guard_outer_xy += _quad_bez((4.05, 1.45), (3.95, 0.28), (2.70, 0.22), 14)
     guard_outer_xy += [(0.25, 0.22)]
-    guard_outer = mk_extrude_z("pg_gout", guard_outer_xy, -0.70, 0.70, bevel=0.075, bevel_segs=2, mat=m_pl)
+    guard_outer = mk_extrude_z("pg_gout", guard_outer_xy, -0.70, 0.70, bevel=0.105, bevel_segs=4, mat=m_pl)
 
     # Cut inner finger opening (X in [+0.82, +3.55], Y in [+0.68, +2.68]) with smooth rounded front corner!
     guard_hole_xy: list[tuple[float, float]] = [
         (0.82, 2.68), (3.55, 2.68), (3.55, 1.50),
     ]
-    guard_hole_xy += _quad_bez((3.55, 1.50), (3.45, 0.72), (2.65, 0.68), 8)
+    guard_hole_xy += _quad_bez((3.55, 1.50), (3.45, 0.72), (2.65, 0.68), 14)
     guard_hole_xy += [(0.82, 0.68)]
-    guard_cutter = mk_flared_cutout_z("pg_ghole", guard_hole_xy, z_half_inner=0.70, flare=0.055, flare_depth=0.10, z_overhang=0.25, mat=m_pl)
+    guard_cutter = mk_flared_cutout_z("pg_ghole", guard_hole_xy, z_half_inner=0.70, flare=0.065, flare_depth=0.12, z_overhang=0.25, mat=m_pl)
     guard_loop = bool_subtract(guard_outer, [guard_cutter], solver="EXACT")
 
-    # Weld grip body + continuous guard loop into one airtight solid, then add tactile details & mounting screws
-    core = bool_union([grip_body, guard_loop], "pg_core", solver="EXACT")
-    parts = [core, palm_swell, base_cap, *finger_ridges]
+    parts = [grip_body, guard_loop, base_cap]
     for side in (-1.0, 1.0):
         st = "R" if side > 0 else "L"
-        parts.append(mk_allen_socket_bolt(f"pg_scr_{st}", 0.16, 0.08, side, 0.15, 2.35, side * 0.88, m_ss, m_dk))
-        # Backstrap vertical anti-slip serration ribs
-        for ri in range(5):
-            ry = -4.80 + ri * 1.15
-            rx = -2.35 + ri * 0.17
-            parts.append(mk_box(f"pg_bsr_{st}_{ri}", 0.22, 0.34, 0.32, [("t", rx, ry, side * 0.68)], m_gr, bevel=0.03))
+        parts.append(mk_allen_socket_bolt(f"pg_scr_{st}", 0.16, 0.08, side, 0.15, 2.35, side * 0.85, m_ss, m_dk))
 
     obj = join_objects(parts, "r500_pistol_grip")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=38.0, lock_flat_walls=False)
 
 
 def build_r500_buttstock(mats: dict) -> bpy.types.Object:
-    """B-04: Skeletonized Tactical Bullpup Buttstock, VersaDrive Clutch Bore & Ribbed Rubber Recoil Pad.
+    """B-04: Skeletonized Contoured Bullpup Buttstock, VersaDrive Clutch Bore & Ribbed Rubber Recoil Pad.
     assembledPos: [-27.8, -0.45, 0]; local ref bbox: [-4.195, -5.95, -1.62] .. [3.55, 2.605, 1.62]."""
     m_pl = mats["CH_MatteCarbonPoly"]
     m_gr = mats["CH_GripStipple"]
@@ -2327,48 +2424,48 @@ def build_r500_buttstock(mats: dict) -> bpy.types.Object:
     m_ss = mats["CH_StainlessHardware"]
     m_dk = mats["CH_SlotDark"]
 
-    # Main skeletonized stock polygon (X in [-3.40, +3.55], Y in [-5.85, +2.25], Z in [-1.56, +1.56])
-    stock_xy = [
-        (-3.40,  2.25),
-        ( 3.55,  2.25),
-        ( 3.55, -1.25),
-        (-0.50, -5.65),
-        (-3.40, -5.85),
-    ]
-    stock_raw = mk_extrude_z("bs_frame", stock_xy, -1.56, 1.56, bevel=0.10, bevel_segs=2, mat=m_pl)
-    clutch_arch = mk_box("bs_arch", 7.00, 0.65, 2.96, [("t", 0.05, 2.28, 0.0)], m_pl, bevel=0.08, bevel_segs=2)
+    # Smoothly contoured skeletonized tactical bullpup stock profile w/ Bezier heel & lower toe sweep
+    stock_xy: list[tuple[float, float]] = [(-3.40, 2.25), (3.55, 2.25), (3.55, -1.15)]
+    stock_xy += _quad_bez((3.55, -1.15), (3.50, -1.55), (3.12, -1.90), 8)
+    stock_xy += _quad_bez((3.12, -1.90), (1.35, -3.75), (-0.42, -5.58), 10)
+    stock_xy += _quad_bez((-0.42, -5.58), (-0.75, -5.85), (-1.28, -5.85), 8)
+    stock_xy.append((-3.40, -5.85))
+    stock_raw = mk_extrude_z("bs_frame", stock_xy, -1.56, 1.56, bevel=0.165, bevel_segs=4, mat=m_pl)
+    clutch_arch = mk_box("bs_arch", 7.00, 0.65, 2.96, [("t", 0.05, 2.28, 0.0)], m_pl, bevel=0.125, bevel_segs=4)
     stock_blank = bool_union([stock_raw, clutch_arch], "bs_blank", solver="EXACT")
 
-    # Smooth flared triangular weight-reduction cutout + exact Ø29mm VersaDrive clutch bore at Y=+1.00
-    tri_xy = [(-2.10, -0.82), (1.68, -0.82), (-1.82, -4.45)]
-    tri_cut = mk_flared_cutout_z("c_tri", tri_xy, z_half_inner=1.56, flare=0.095, flare_depth=0.18, z_overhang=0.35, mat=m_gr)
-    clutch_bore = mk_cyl("c_cbore", 1.44, 1.44, 8.20, "x", 36, [("t", 0.15, 1.00, 0.0)], m_dk)
+    # Smooth Bezier-filleted triangular CNC weight-reduction cutout + 48-seg VersaDrive clutch bore at Y=+1.00
+    tri_xy: list[tuple[float, float]] = []
+    tri_xy += _quad_bez((-2.08, -1.25), (-2.10, -0.82), (-1.65, -0.82), 6)
+    tri_xy += _quad_bez(( 1.15, -0.82), ( 1.68, -0.82), ( 1.32, -1.22), 6)
+    tri_xy += _quad_bez((-1.42, -4.05), (-1.82, -4.45), (-1.92, -3.95), 6)
+    tri_cut = mk_flared_cutout_z("c_tri", tri_xy, z_half_inner=1.56, flare=0.11, flare_depth=0.20, z_overhang=0.35, mat=m_gr)
+    clutch_bore = mk_cyl("c_cbore", 1.44, 1.44, 8.20, "x", 48, [("t", 0.15, 1.00, 0.0)], m_dk)
     stock_hollow = bool_subtract(stock_blank, [tri_cut, clutch_bore], solver="EXACT")
 
-    # Ribbed Sorbothane rubber recoil buttpad (X in [-4.195, -3.25], Y in [-5.95, +2.25], Z in [-1.62, +1.62])
-    pad_base = mk_box("bs_pad", 0.88, 8.20, 3.24, [("t", -3.72, -1.85, 0.0)], m_rb, bevel=0.13, bevel_segs=2)
+    # Ergonomic contoured ribbed Sorbothane rubber recoil buttpad (X in [-4.195, -3.25], Y in [-5.95, +2.25], Z in [-1.62, +1.62])
+    pad_base = mk_box("bs_pad", 0.88, 8.20, 3.24, [("t", -3.72, -1.85, 0.0)], m_rb, bevel=0.185, bevel_segs=4)
     pad_ribs = []
     for ri in range(8):
         ry = -5.10 + ri * 0.96
-        pad_ribs.append(mk_box(f"bs_prib_{ri}", 0.16, 0.44, 3.04, [("t", -4.115, ry, 0.0)], m_rb, bevel=0.045))
+        pad_ribs.append(mk_box(f"bs_prib_{ri}", 0.16, 0.44, 3.04, [("t", -4.115, ry, 0.0)], m_rb, bevel=0.055, bevel_segs=3))
 
     # Machined titanium VersaDrive clutch rear bezel collar & twin stainless QD sling swivel socket cups
     parts = [stock_hollow, pad_base, *pad_ribs]
-    bezel_out = mk_cyl("bs_bez_o", 1.54, 1.54, 0.36, "x", 36, [("t", -3.26, 1.00, 0.0)], m_ti, bevel=0.03)
-    bezel_in = mk_cyl("bs_bez_i", 1.41, 1.41, 0.56, "x", 36, [("t", -3.26, 1.00, 0.0)], m_dk)
+    bezel_out = mk_cyl("bs_bez_o", 1.54, 1.54, 0.36, "x", 48, [("t", -3.26, 1.00, 0.0)], m_ti, bevel=0.036, bevel_segs=3)
+    bezel_in = mk_cyl("bs_bez_i", 1.41, 1.41, 0.56, "x", 48, [("t", -3.26, 1.00, 0.0)], m_dk)
     parts.append(bool_subtract(bezel_out, [bezel_in], solver="EXACT"))
 
     for side in (-1.0, 1.0):
         st = "R" if side > 0 else "L"
-        qd_cup_o = mk_cyl(f"bs_qd_{st}", 0.42, 0.42, 0.14, "z", 22, [("t", -2.55, -4.85, side * 1.52)], m_ss, bevel=0.025)
-        qd_cup_i = mk_cyl(f"bs_qdi_{st}", 0.28, 0.28, 0.18, "z", 20, [("t", -2.55, -4.85, side * 1.56)], m_dk)
+        qd_cup_o = mk_cyl(f"bs_qd_{st}", 0.42, 0.42, 0.14, "z", 32, [("t", -2.55, -4.85, side * 1.52)], m_ss, bevel=0.028, bevel_segs=3)
+        qd_cup_i = mk_cyl(f"bs_qdi_{st}", 0.28, 0.28, 0.18, "z", 28, [("t", -2.55, -4.85, side * 1.56)], m_dk)
         parts.append(bool_subtract(qd_cup_o, [qd_cup_i], solver="EXACT"))
-        # Forward stock-to-chassis coupling Torx bolts
         parts.append(mk_allen_socket_bolt(f"bs_scr_{st}_0", 0.18, 0.10, side, 2.75, -0.55, side * 1.54, m_ss, m_dk))
         parts.append(mk_allen_socket_bolt(f"bs_scr_{st}_1", 0.18, 0.10, side, 2.75,  1.85, side * 1.48, m_ss, m_dk))
 
     obj = join_objects(parts, "r500_buttstock")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
 
 
 def build_r500_flight_rail(mats: dict) -> bpy.types.Object:
@@ -2507,26 +2604,24 @@ def _build_hexcoil_cam(mats: dict, side_sign: int, obj_name: str) -> bpy.types.O
     m_ss = mats["CM_PolishedSteel"]
     m_rb = mats["CM_StirrupRubber"]
 
-    n_pts = 56
+    n_pts = 80
     cam_pts: list[tuple[float, float]] = []
     trk_pts: list[tuple[float, float]] = []
     for i in range(n_pts):
         a = (i / n_pts) * 2.0 * math.pi
         r_out = 1.34 + 0.34 * math.cos(a - side_sign * 0.55) + 0.14 * math.sin(2.0 * a + 0.4)
         r_trk = 1.14 + 0.28 * math.cos(a - side_sign * 0.55) + 0.10 * math.sin(2.0 * a + 0.4)
-        # Note: -sin(a) matches Three.js extrudeAlongY (rotateX(-pi/2) maps shape.y -> -Z)!
         cam_pts.append((math.cos(a) * r_out, -math.sin(a) * r_out))
         trk_pts.append((math.cos(a) * r_trk, -math.sin(a) * r_trk))
 
     # Upper & lower copper-bronze eccentric main string-track flanges (Y in [+0.08..+0.24] & [-0.24..-0.08])
-    upper_flange = mk_extrude_y("cam_uf", cam_pts,  0.08,  0.24, bevel=0.024, bevel_segs=2, mat=m_cu)
-    lower_flange = mk_extrude_y("cam_lf", cam_pts, -0.24, -0.08, bevel=0.024, bevel_segs=2, mat=m_cu)
+    upper_flange = mk_extrude_y("cam_uf", cam_pts,  0.08,  0.24, bevel=0.028, bevel_segs=3, mat=m_cu)
+    lower_flange = mk_extrude_y("cam_lf", cam_pts, -0.24, -0.08, bevel=0.028, bevel_segs=3, mat=m_cu)
 
     # Recessed central golden-bronze eccentric bowstring track core (Y in [-0.09..+0.09])
-    track_core = mk_extrude_y("cam_trk", trk_pts, -0.09, 0.09, bevel=0.010, bevel_segs=1, mat=m_gd)
+    track_core = mk_extrude_y("cam_trk", trk_pts, -0.09, 0.09, bevel=0.012, bevel_segs=2, mat=m_gd)
 
     # Upper & lower 3-tier CNC machined helical cable take-up spools (Y in [+0.23..+0.60] & [-0.60..-0.23])
-    # Sculpted via mk_lathe_y with crisp twin deep cable V-grooves & stepped flanges!
     spool_u_prof = [
         (0.00, 0.23),
         (1.13, 0.23),
@@ -2542,49 +2637,53 @@ def _build_hexcoil_cam(mats: dict, side_sign: int, obj_name: str) -> bpy.types.O
         (0.00, 0.60),
     ]
     spool_l_prof = [(r, -y) for (r, y) in reversed(spool_u_prof)]
-    spool_u = mk_lathe_y("cam_spU", spool_u_prof, segs=44, xform=[("t", 0.08, 0.0, -side_sign * 0.08)], mat=m_gd)
-    spool_l = mk_lathe_y("cam_spL", spool_l_prof, segs=44, xform=[("t", 0.08, 0.0, -side_sign * 0.08)], mat=m_gd)
+    spool_u = mk_lathe_y("cam_spU", spool_u_prof, segs=60, xform=[("t", 0.08, 0.0, -side_sign * 0.08)], mat=m_gd)
+    spool_l = mk_lathe_y("cam_spL", spool_l_prof, segs=60, xform=[("t", 0.08, 0.0, -side_sign * 0.08)], mat=m_gd)
 
     # Central dark-titanium anodized hub bearing collar (exact Y in [-0.69, +0.69] matching CSG axle thrust washers!)
-    hub_collar = mk_cyl("cam_hub", 0.46, 0.46, 1.38, "y", 32, [], m_dk, bevel=0.025)
+    hub_collar = mk_cyl("cam_hub", 0.46, 0.46, 1.38, "y", 48, [], m_dk, bevel=0.028, bevel_segs=3)
 
     raw_cam = bool_union([upper_flange, lower_flange, track_core, spool_u, spool_l, hub_collar], "cam_raw", solver="EXACT")
 
     # Subtract central titanium cam-axle bore (r=0.28 > 0.26 axle!) + 5 sculpted CNC spider-spoke lightening windows!
     cutters = [
-        mk_cyl("c_axb", 0.28, 0.28, 1.90, "y", 28, [], m_dk),
+        mk_cyl("c_axb", 0.28, 0.28, 1.90, "y", 40, [], m_dk),
     ]
     for k in range(5):
         ang = (k / 5.0) * 2.0 * math.pi + 0.28
-        # Radial teardrop/oval CNC spoke cutout between hub (r=0.52) and cable drum groove root (r=0.88)
         r_mid = 0.72
         cx_s = math.cos(ang) * r_mid
         cz_s = -math.sin(ang) * r_mid
-        # Small angled pill cutout (stays strictly inside r < 0.88 so it never breaches cable groove wall!)
         cutters.append(
-            mk_cyl(f"c_spk_{k}", 0.145, 0.145, 1.50, "y", 18, [("t", cx_s, 0.0, cz_s)], m_dk)
+            mk_cyl(f"c_spk_{k}", 0.145, 0.145, 1.50, "y", 24, [("t", cx_s, 0.0, cz_s)], m_dk)
         )
-    # 2 Flanking outer eccentric-lobe lightening cutouts (leaving center copper crescent 100% solid for HEXCOIL 360 engraving!)
     for j, a_off in enumerate((-0.62, 0.62)):
         a_lobe = side_sign * 0.55 + a_off
         rl = 1.22
         cutters.append(
-            mk_cyl(f"c_lob_{j}", 0.11, 0.11, 0.62, "y", 16,
+            mk_cyl(f"c_lob_{j}", 0.11, 0.11, 0.62, "y", 22,
                    [("t", math.cos(a_lobe) * rl, 0.0, -math.sin(a_lobe) * rl)], m_dk)
         )
     machined = bool_subtract(raw_cam, cutters, solver="EXACT")
 
-    # Stainless draw-stop peg w/ rubber bumper collar + 4 stainless hub module alignment screws
+    # Precision stainless sealed ball-bearing outer raceway ring & 8 bearing retainer pins + draw-stop peg
     parts = [
         machined,
-        mk_cyl("cam_stop", 0.105, 0.105, 0.62, "y", 16, [("t", -0.88, 0.24, -side_sign * 0.55)], m_ss, bevel=0.015),
-        mk_cyl("cam_sbmp", 0.135, 0.135, 0.22, "y", 16, [("t", -0.88, 0.36, -side_sign * 0.55)], m_rb, bevel=0.02),
+        mk_cyl("cam_stop", 0.105, 0.105, 0.62, "y", 24, [("t", -0.88, 0.24, -side_sign * 0.55)], m_ss, bevel=0.015, bevel_segs=2),
+        mk_cyl("cam_sbmp", 0.135, 0.135, 0.22, "y", 24, [("t", -0.88, 0.36, -side_sign * 0.55)], m_rb, bevel=0.02, bevel_segs=2),
     ]
+    for y_end in (-0.675, 0.675):
+        for bi in range(8):
+            ba = bi * (2.0 * math.pi / 8.0)
+            parts.append(
+                mk_cyl(f"cam_brg_{y_end}_{bi}", 0.042, 0.042, 0.03, "y", 14,
+                       [("t", math.cos(ba) * 0.36, y_end, math.sin(ba) * 0.36)], m_ss, bevel=0.008)
+            )
     for mi in range(3):
         ma = mi * (2.0 * math.pi / 3.0) + 0.60
         parts.append(
-            mk_cyl(f"cam_ms_{mi}", 0.075, 0.075, 0.06, "y", 12,
-                   [("t", 0.08 + math.cos(ma) * 0.62, 0.60, -side_sign * 0.08 + math.sin(ma) * 0.62)], m_ss, bevel=0.01)
+            mk_cyl(f"cam_ms_{mi}", 0.075, 0.075, 0.06, "y", 18,
+                   [("t", 0.08 + math.cos(ma) * 0.62, 0.60, -side_sign * 0.08 + math.sin(ma) * 0.62)], m_ss, bevel=0.012)
         )
 
     obj = join_objects(parts, obj_name)
@@ -2857,11 +2956,16 @@ def build_r500_scope(mats: dict) -> bpy.types.Object:
         (1.84, -10.50),
         (2.04, -10.22),  # ocular bell outer wall (X in [-10.22 .. -6.50])
         (2.04,  -6.50),
+        (1.94,  -6.05),
+        (1.82,  -5.65),
         (1.78,  -5.40),
         (1.76,  -4.72),  # 300-550 FPS speed calibration collar (smooth cylindrical hero band!)
+        (1.62,  -4.62),
         (1.50,  -4.55),  # 30mm main tube
         (1.50,   4.20),
+        (1.58,   4.65),
         (1.68,   5.15),
+        (1.79,   6.20),
         (1.84,   7.55),  # flared 24mm objective bell (X in [+5.15 .. +12.60])
         (1.84,  12.62),
         (1.72,  12.80),
@@ -2869,19 +2973,19 @@ def build_r500_scope(mats: dict) -> bpy.types.Object:
         (1.55,  11.45),  # deep recessed sunshade inner lip
         (0.00,  11.45),
     ]
-    scope_shell = mk_lathe_x("sc_shell", tube_prof, segs=44, xform=[("t", 0.0, 0.70, 0.0)], mat=m_sc)
+    scope_shell = mk_lathe_x("sc_shell", tube_prof, segs=64, xform=[("t", 0.0, 0.70, 0.0)], mat=m_sc)
 
     # Rear rubber eye-relief diopter grip sleeve on fast-focus ocular rim
-    oc_rubber = mk_knurled_cyl("sc_ocrub", 2.06, 0.62, "x", flutes=36, depth=0.025,
+    oc_rubber = mk_knurled_cyl("sc_ocrub", 2.06, 0.62, "x", flutes=44, depth=0.025,
                                xform=[("t", -10.02, 0.70, 0.0)], mat=m_rb)
 
     # Speed-calibrated magnification dial ring (fluted CNC ring + ergonomic CNC throw lever)
-    mag_ring = mk_knurled_cyl("sc_magr", 2.09, 0.84, "x", flutes=28, depth=0.045,
+    mag_ring = mk_knurled_cyl("sc_magr", 2.09, 0.84, "x", flutes=36, depth=0.045,
                               xform=[("t", -5.85, 0.70, 0.0)], mat=m_kn)
-    mag_accent = mk_cyl("sc_macc", 1.82, 1.82, 0.10, "x", 36, [("t", -5.36, 0.70, 0.0)], m_br, bevel=0.015)
-    throw_lever = mk_box("sc_tlev", 0.44, 1.12, 0.34, [("rx", -0.35), ("t", -5.85, 2.40, 0.78)], m_kn, bevel=0.05)
+    mag_accent = mk_cyl("sc_macc", 1.82, 1.82, 0.10, "x", 56, [("t", -5.36, 0.70, 0.0)], m_br, bevel=0.015, bevel_segs=2)
+    throw_lever = mk_box("sc_tlev", 0.44, 1.12, 0.34, [("rx", -0.35), ("t", -5.85, 2.40, 0.78)], m_kn, bevel=0.065, bevel_segs=3)
 
-    # Curved convex meniscus Emerald-Sapphire Multi-Coated Objective & Ocular Lenses (STRICTLY FIREWALLED!)
+    # Curved convex meniscus Emerald-Amber Multi-Coated Objective & Ocular Lenses (STRICTLY FIREWALLED!)
     obj_lens_prof = [
         (0.00, 11.42),
         (1.48, 11.42),
@@ -2890,7 +2994,7 @@ def build_r500_scope(mats: dict) -> bpy.types.Object:
         (0.60, 11.78),
         (0.00, 11.81),
     ]
-    obj_lens = mk_lathe_x("sc_olen", obj_lens_prof, segs=36, xform=[("t", 0.0, 0.70, 0.0)], mat=m_ln)
+    obj_lens = mk_lathe_x("sc_olen", obj_lens_prof, segs=48, xform=[("t", 0.0, 0.70, 0.0)], mat=m_ln)
     oc_lens_prof = [
         (0.00, -10.36),
         (0.65, -10.33),
@@ -2899,26 +3003,26 @@ def build_r500_scope(mats: dict) -> bpy.types.Object:
         (1.62, -10.02),
         (0.00, -10.02),
     ]
-    oc_lens = mk_lathe_x("sc_clen", oc_lens_prof, segs=36, xform=[("t", 0.0, 0.70, 0.0)], mat=m_ln)
+    oc_lens = mk_lathe_x("sc_clen", oc_lens_prof, segs=48, xform=[("t", 0.0, 0.70, 0.0)], mat=m_ln)
 
     # Tactical center turret saddle (cleanly frames the 30mm r=1.50 tube with machined chamfers!)
-    turret_box = mk_box("sc_tbox", 2.25, 3.16, 3.16, [("t", 0.20, 0.70, 0.0)], m_sc, bevel=0.22, bevel_segs=3)
+    turret_box = mk_box("sc_tbox", 2.25, 3.16, 3.16, [("t", 0.20, 0.70, 0.0)], m_sc, bevel=0.26, bevel_segs=4)
 
     # Top 100-YD BDC Elevation Turret: smooth scale skirt FULLY ABOVE saddle crown (Y in [2.26..2.58], Hero Band 1b!) + bronze knurled cap (Y in [2.58..2.98])
-    elev_skirt = mk_cyl("sc_els", 0.78, 0.80, 0.36, "y", 36, [("t", 0.20, 2.41, 0.0)], m_sc, bevel=0.015)
-    elev_cap = mk_knurled_cyl("sc_elc", 0.80, 0.40, "y", flutes=26, depth=0.032,
+    elev_skirt = mk_cyl("sc_els", 0.78, 0.80, 0.36, "y", 48, [("t", 0.20, 2.41, 0.0)], m_sc, bevel=0.015, bevel_segs=2)
+    elev_cap = mk_knurled_cyl("sc_elc", 0.80, 0.40, "y", flutes=32, depth=0.032,
                               xform=[("t", 0.20, 2.78, 0.0)], mat=m_br)
     elev_screw = mk_allen_socket_bolt("sc_elsc", 0.20, 0.07, 1.0, 0.20, 2.98, 0.0, m_ss, m_dk, axis="y")
 
     # Right Windage Turret (Z in [+1.20..+2.15])
-    wind_skirt = mk_cyl("sc_wds", 0.74, 0.78, 0.48, "z", 32, [("t", 0.20, 0.70, 1.44)], m_sc, bevel=0.02)
-    wind_cap = mk_knurled_cyl("sc_wdc", 0.76, 0.48, "z", flutes=24, depth=0.030,
+    wind_skirt = mk_cyl("sc_wds", 0.74, 0.78, 0.48, "z", 44, [("t", 0.20, 0.70, 1.44)], m_sc, bevel=0.02, bevel_segs=2)
+    wind_cap = mk_knurled_cyl("sc_wdc", 0.76, 0.48, "z", flutes=30, depth=0.030,
                               xform=[("t", 0.20, 0.70, 1.91)], mat=m_kn)
 
     # Left 5-Step Red/Green Illumination Rheostat Dial (Z in [-2.19..-1.20])
-    ill_skirt = mk_cyl("sc_ils", 0.78, 0.82, 0.46, "z", 32, [("t", 0.20, 0.70, -1.44)], m_sc, bevel=0.02)
-    ill_accent = mk_cyl("sc_ila", 0.81, 0.81, 0.09, "z", 32, [("t", 0.20, 0.70, -1.69)], m_br, bevel=0.012)
-    ill_cap = mk_knurled_cyl("sc_ilc", 0.80, 0.46, "z", flutes=24, depth=0.030,
+    ill_skirt = mk_cyl("sc_ils", 0.78, 0.82, 0.46, "z", 44, [("t", 0.20, 0.70, -1.44)], m_sc, bevel=0.02, bevel_segs=2)
+    ill_accent = mk_cyl("sc_ila", 0.81, 0.81, 0.09, "z", 44, [("t", 0.20, 0.70, -1.69)], m_br, bevel=0.012, bevel_segs=2)
+    ill_cap = mk_knurled_cyl("sc_ilc", 0.80, 0.46, "z", flutes=30, depth=0.030,
                              xform=[("t", 0.20, 0.70, -1.96)], mat=m_kn)
 
     # Dual CNC tactical cantilever scope rings & stiffening bridge clamping onto Picatinny rail (local Y = -1.65)
@@ -2927,17 +3031,16 @@ def build_r500_scope(mats: dict) -> bpy.types.Object:
         obj_lens, oc_lens, turret_box, elev_skirt, elev_cap, elev_screw,
         wind_skirt, wind_cap, ill_skirt, ill_accent, ill_cap,
     ]
-    cantilever_bridge = mk_box("sc_cbg", 9.60, 0.58, 1.85, [("t", 0.20, -1.15, 0.0)], m_sc, bevel=0.05)
+    cantilever_bridge = mk_box("sc_cbg", 9.60, 0.58, 1.85, [("t", 0.20, -1.15, 0.0)], m_sc, bevel=0.065, bevel_segs=3)
     parts.append(cantilever_bridge)
 
     for ri, rx in enumerate((-3.80, 4.20)):
-        clamp_base = mk_box(f"sc_cb_{ri}", 1.65, 1.05, 2.65, [("t", rx, -1.25, 0.0)], m_sc, bevel=0.06)
-        ring_collar = mk_cyl(f"sc_rc_{ri}", 1.82, 1.82, 1.48, "x", 32, [("t", rx, 0.70, 0.0)], m_sc, bevel=0.04)
-        # Sculpted horizontal ring split tabs & 4 top stainless Torx ring screws per ring
-        split_tabs = mk_box(f"sc_st_{ri}", 1.44, 0.52, 4.02, [("t", rx, 0.70, 0.0)], m_kn, bevel=0.04)
-        neck_post = mk_box(f"sc_np_{ri}", 1.48, 1.55, 1.95, [("t", rx, -0.35, 0.0)], m_sc, bevel=0.05)
-        clamp_bolt = mk_cyl(f"sc_blt_{ri}", 0.22, 0.22, 2.96, "z", 16, [("t", rx, -1.35, 0.0)], m_ss, bevel=0.025)
-        clamp_nut = mk_cyl(f"sc_nut_{ri}", 0.32, 0.32, 0.26, "z", 6, [("t", rx, -1.35, -1.42)], m_kn, bevel=0.02)
+        clamp_base = mk_box(f"sc_cb_{ri}", 1.65, 1.05, 2.65, [("t", rx, -1.25, 0.0)], m_sc, bevel=0.08, bevel_segs=3)
+        ring_collar = mk_cyl(f"sc_rc_{ri}", 1.82, 1.82, 1.48, "x", 48, [("t", rx, 0.70, 0.0)], m_sc, bevel=0.048, bevel_segs=3)
+        split_tabs = mk_box(f"sc_st_{ri}", 1.44, 0.52, 4.02, [("t", rx, 0.70, 0.0)], m_kn, bevel=0.055, bevel_segs=3)
+        neck_post = mk_box(f"sc_np_{ri}", 1.48, 1.55, 1.95, [("t", rx, -0.35, 0.0)], m_sc, bevel=0.065, bevel_segs=3)
+        clamp_bolt = mk_cyl(f"sc_blt_{ri}", 0.22, 0.22, 2.96, "z", 24, [("t", rx, -1.35, 0.0)], m_ss, bevel=0.025, bevel_segs=2)
+        clamp_nut = mk_cyl(f"sc_nut_{ri}", 0.32, 0.32, 0.26, "z", 6, [("t", rx, -1.35, -1.42)], m_kn, bevel=0.025, bevel_segs=2)
         parts.extend([clamp_base, ring_collar, split_tabs, neck_post, clamp_bolt, clamp_nut])
         for s_z in (-1.0, 1.0):
             for dx in (-0.38, 0.38):
@@ -2974,25 +3077,24 @@ def build_r500_quiver_frame(mats: dict) -> bpy.types.Object:
     qd_pin = mk_cyl("qv_qdp", 0.15, 0.15, 1.05, "y", 16, [("t", 2.35, 1.42, -2.55)], m_ss, bevel=0.02)
 
     # Contoured hollow front 3-bolt broadhead protective hood (X in [+19.6..+27.0], Y in [-3.10..+1.90], Z in [-1.15..+1.995])
-    # Clean flat outer right flank at Z = +1.995 classified for molded RAVIN R500 Hero Band!
-    hood_outer = mk_box("qv_ho", 7.40, 5.00, 3.15, [("t", 23.30, -0.60, 0.42)], m_pl, bevel=0.16, bevel_segs=3)
-    hood_hollow = mk_box("qv_hi", 6.60, 4.20, 2.35, [("t", 22.50, -0.60, 0.42)], m_dk)
+    # Generous C2 sculpted corner rounding while preserving clean flat outer right flank at Z = +1.995 for molded RAVIN R500 Hero Band!
+    hood_outer = mk_box("qv_ho", 7.40, 5.00, 3.15, [("t", 23.30, -0.60, 0.42)], m_pl, bevel=0.34, bevel_segs=4)
+    hood_hollow = mk_box("qv_hi", 6.50, 4.10, 2.25, [("t", 22.45, -0.60, 0.42)], m_dk)
     hood_shroud = bool_subtract(hood_outer, [hood_hollow], solver="EXACT")
 
     # Internal high-density charcoal acoustic broadhead foam pad at far front of hood
-    acoustic_foam = mk_box("qv_foam", 1.10, 3.90, 2.10, [("t", 26.10, -0.60, 0.42)], m_fm, bevel=0.08)
+    acoustic_foam = mk_box("qv_foam", 1.10, 3.85, 2.05, [("t", 26.05, -0.60, 0.42)], m_fm, bevel=0.10, bevel_segs=3)
 
     # Front & rear sculpted 3-bolt flexible rubber gripper combs (X = -1.0 and X = -15.5)
-    # Fingers cleanly straddle reserve bolt slots at Y = +1.10, -0.45, -2.00!
     comb_parts = []
     for ci, cx in enumerate((-1.00, -15.50)):
-        comb_parts.append(mk_box(f"qv_cp_{ci}", 1.30, 4.50, 1.45, [("t", cx, -0.60, -0.45)], m_pl, bevel=0.08))
+        comb_parts.append(mk_box(f"qv_cp_{ci}", 1.30, 4.50, 1.45, [("t", cx, -0.60, -0.45)], m_pl, bevel=0.14, bevel_segs=3))
         for fi, fy in enumerate((1.62, 0.32, -1.22, -2.62)):
-            comb_parts.append(mk_box(f"qv_cf_{ci}_{fi}", 1.15, 0.36, 1.55, [("t", cx, fy, 0.35)], m_pl, bevel=0.05))
+            comb_parts.append(mk_box(f"qv_cf_{ci}_{fi}", 1.15, 0.36, 1.55, [("t", cx, fy, 0.35)], m_pl, bevel=0.075, bevel_segs=3))
         comb_parts.append(mk_allen_socket_bolt(f"qv_cs_{ci}", 0.16, 0.10, -1.0, cx, 0.05, -1.36, m_ss, m_dk))
 
     # Rear contoured protective rubber nock guard cap (X min = -26.005 exact!)
-    rear_cap = mk_box("qv_rcap", 0.85, 4.60, 2.55, [("t", -25.58, -0.60, 0.15)], m_pl, bevel=0.10, bevel_segs=2)
+    rear_cap = mk_box("qv_rcap", 0.85, 4.60, 2.55, [("t", -25.58, -0.60, 0.15)], m_pl, bevel=0.16, bevel_segs=4)
 
     obj = join_objects(
         [spine_bar, spine_rib, qd_arm, qd_neck, qd_lever, qd_pin, hood_shroud, acoustic_foam, *comb_parts, rear_cap],
@@ -3050,32 +3152,29 @@ def build_r500_carbon_bolt(mats: dict) -> bpy.types.Object:
         (0.36,  22.20),
         (0.00,  22.20),
     ]
-    shaft = mk_lathe_x("cb_shaft", shaft_prof, segs=32, mat=m_cb)
+    shaft = mk_lathe_x("cb_shaft", shaft_prof, segs=48, mat=m_cb)
 
     # Vivid Safety-Orange clip-on polymer half-moon nock with authentic string-locking U-notch ears (X in [-25.40..-24.40])
-    nock_collar = mk_cyl("cb_ncol", 0.38, 0.38, 0.65, "x", 24, [("t", -24.725, 0.0, 0.0)], m_or, bevel=0.025)
+    nock_collar = mk_cyl("cb_ncol", 0.38, 0.38, 0.65, "x", 36, [("t", -24.725, 0.0, 0.0)], m_or, bevel=0.028, bevel_segs=3)
     nock_xy = [
         (-25.05, -0.36), (-24.90, -0.36), (-24.90, 0.36), (-25.05, 0.36),
         (-25.40,  0.28), (-25.40,  0.14), (-25.12, 0.12), (-25.12, -0.12),
         (-25.40, -0.14), (-25.40, -0.28),
     ]
-    nock_ears = mk_extrude_z("cb_nears", nock_xy, -0.28, 0.28, bevel=0.02, bevel_segs=2, mat=m_or)
+    nock_ears = mk_extrude_z("cb_nears", nock_xy, -0.28, 0.28, bevel=0.024, bevel_segs=3, mat=m_or)
 
-    # 3 Aerodynamic 2" polymer fletching vanes (120 deg apart: 60 deg White, 180 deg Orange cock vane DOWN, 300 deg White)
-    vane_xy = [
-        (-23.40, 0.34),
-        (-22.20, 0.86),
-        (-18.50, 0.88),
-        (-18.20, 0.34),
-    ]
+    # 3 Aerodynamic 2" polymer helical-canted fletching vanes (120 deg apart: 60 deg White, 180 deg Orange cock vane DOWN, 300 deg White)
+    vane_xy: list[tuple[float, float]] = [(-23.40, 0.34)]
+    vane_xy += _quad_bez((-23.40, 0.34), (-22.65, 0.84), (-21.80, 0.87), 8)
+    vane_xy += _quad_bez((-21.80, 0.87), (-19.40, 0.88), (-18.48, 0.86), 6)
+    vane_xy.append((-18.20, 0.34))
     vanes = []
     for k in range(3):
         ang = (k * 2.0 * math.pi) / 3.0 + math.pi / 3.0
         v_mat = m_or if k == 1 else m_wh
-        v_base = mk_extrude_z(f"cb_vn_{k}", vane_xy, -0.032, 0.032, bevel=0.012, bevel_segs=2,
-                              xform=[("rx", ang)], mat=v_mat)
-        # Molded adhesive vane foot flange hugging carbon shaft radius cleanly
-        v_foot = mk_box(f"cb_vf_{k}", 5.20, 0.06, 0.11, [("t", -20.80, 0.36, 0.0), ("rx", ang)], v_mat, bevel=0.014)
+        v_base = mk_extrude_z(f"cb_vn_{k}", vane_xy, -0.032, 0.032, bevel=0.015, bevel_segs=2,
+                              xform=[("t", 20.80, 0.0, 0.0), ("ry", 0.018), ("t", -20.80, 0.0, 0.0), ("rx", ang)], mat=v_mat)
+        v_foot = mk_box(f"cb_vf_{k}", 5.20, 0.06, 0.11, [("t", -20.80, 0.36, 0.0), ("rx", ang)], v_mat, bevel=0.015, bevel_segs=2)
         vanes.extend([v_base, v_foot])
 
     # Brushed stainless half-out insert collar + gleaming mirror-beveled 3-blade vented 100-gr broadhead (X in [+21.6..+25.4])
@@ -3088,7 +3187,7 @@ def build_r500_carbon_bolt(mats: dict) -> bpy.types.Object:
         (0.24, 24.60),
         (0.00, 25.40),
     ]
-    broadhead_body = mk_lathe_x("cb_bhb", insert_prof, segs=24, mat=m_ss)
+    broadhead_body = mk_lathe_x("cb_bhb", insert_prof, segs=36, mat=m_ss)
 
     # 3 Mirror-beveled razor broadhead blades w/ triangular CNC vent cutouts
     blade_xy = [
@@ -3664,15 +3763,15 @@ def bake_atlas_suite(prefix: str, target_objs: list[bpy.types.Object], all_objs:
     _set_grid_isolated_layout(all_objs)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Base Color")
-    run_bake("albedo", "EMIT", samples=2, fill_color=(0.06, 0.065, 0.072, 1.0))
+    run_bake("albedo", "EMIT", samples=4, fill_color=(0.06, 0.065, 0.072, 1.0))
     _restore_bsdf(saved)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Roughness")
-    run_bake("roughness", "EMIT", samples=2, fill_color=(0.5, 0.5, 0.5, 1.0))
+    run_bake("roughness", "EMIT", samples=4, fill_color=(0.5, 0.5, 0.5, 1.0))
     _restore_bsdf(saved)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Metallic")
-    run_bake("metalness", "EMIT", samples=2, fill_color=(0.0, 0.0, 0.0, 1.0))
+    run_bake("metalness", "EMIT", samples=4, fill_color=(0.0, 0.0, 0.0, 1.0))
     _restore_bsdf(saved)
 
     run_bake("normal", "NORMAL", samples=BAKE_NORMAL_SAMPLES, fill_color=(0.5, 0.5, 1.0, 1.0), normal_op=True)
@@ -3761,14 +3860,6 @@ def verify_meshes(all_objs: list[bpy.types.Object]) -> dict:
 
 def export_draco_glb(all_objs: list[bpy.types.Object]):
     _set_identity_layout(all_objs)
-    for o in all_objs:
-        select_only([o], o)
-        mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
-        mod.quad_method = "BEAUTY"
-        mod.ngon_method = "BEAUTY"
-        mod.keep_custom_normals = True
-        bpy.ops.object.modifier_apply(modifier=mod.name)
-
     select_only(all_objs, all_objs[0])
     bpy.ops.export_scene.gltf(
         filepath=str(MODELS_OUT),
@@ -3957,6 +4048,9 @@ def main():
     unwrap_chassis_atlas(chassis_objs)
     unwrap_cams_mech_atlas(cams_mech_objs)
     unwrap_optic_bolt_atlas(optic_bolt_objs)
+
+    # Pre-bake triangulation with custom normal preservation so baked tangent normals match Draco export 100%!
+    _triangulate_keep_normals(all_objs)
 
     for label, group in (("chassis", chassis_objs), ("cams_mech", cams_mech_objs), ("optic_bolt", optic_bolt_objs)):
         tot_area = 0.0
