@@ -1,5 +1,6 @@
 import type { PenetrationOutcome } from '../../engine/physics/armorPenetration';
 import type { LanguageCode } from '../../narration/types';
+import type { TheaterPhase } from './armorPenetration3DMath';
 
 export interface ArmorPenetrationLocaleStrings {
   badge: string;
@@ -18,6 +19,27 @@ export interface ArmorPenetrationLocaleStrings {
   crossSectionTitle: string;
   rangeCurveTitle: string;
   layerTableTitle: string;
+  viewModes: {
+    groupAria: string;
+    theater3d: string;
+    schematic2d: string;
+    split: string;
+  };
+  theater: {
+    title: string;
+    play: string;
+    pause: string;
+    reset: string;
+    resetCamera: string;
+    speedLabel: string;
+    timelineAria: string;
+    liveVelocity: string;
+    liveCavity: string;
+    spallConeLabel: string;
+    orbitHint: string;
+    webglFallback: string;
+    phases: Record<TheaterPhase, string>;
+  };
   kpi: {
     outcome: string;
     velocity: string;
@@ -72,6 +94,34 @@ export const ARMOR_PENETRATION_STRINGS: Record<
     crossSectionTitle: '多材料装甲层截面穿深剖视图',
     rangeCurveTitle: '穿深随距离衰减曲线（500 – 3,500 m）',
     layerTableTitle: '各介质装甲抗弹等效拆解明细',
+    viewModes: {
+      groupAria: '切换穿甲可视化视图模式',
+      theater3d: '3D 剖视剧场',
+      schematic2d: '2D 原理剖图',
+      split: '3D + 2D 双屏',
+    },
+    theater: {
+      title: '1:1 3D 实时慢动作复合装甲穿甲剖视剧场',
+      play: '播放',
+      pause: '暂停',
+      reset: '重播',
+      resetCamera: '复位视角',
+      speedLabel: '慢动作倍速',
+      timelineAria: '穿甲慢动作时间轴',
+      liveVelocity: '瞬时存速',
+      liveCavity: '实时侵彻',
+      spallConeLabel: '崩落锥角',
+      orbitHint: '拖拽 3D 旋转 · 滚轮缩放',
+      webglFallback: 'WebGL 渲染上下文已暂停，请切换 2D 原理剖图或重新打开实验室',
+      phases: {
+        approach: '超高速接敌逼近',
+        era_detonation: 'ERA 爆反引爆 · 双飞板剪切',
+        penetration: '流体动力学高温侵彻',
+        perforation_spall: '背板穿透 · 车内高速崩落射流',
+        defeated_arrest: '复合甲成功拦截 · 弹芯耗尽',
+        ricochet_deflect: '大倾角滑移跳弹偏转',
+      },
+    },
     kpi: {
       outcome: '毁伤判定',
       velocity: '着靶存速',
@@ -131,6 +181,35 @@ export const ARMOR_PENETRATION_STRINGS: Record<
     crossSectionTitle: 'Multi-Layer Armor Cross-Section & Penetration Path',
     rangeCurveTitle: 'RHAe Penetration vs Range Curve (500 - 3,500 m)',
     layerTableTitle: 'Layer-by-Layer Armor Defeat Breakdown',
+    viewModes: {
+      groupAria: 'Armor penetration visualization mode',
+      theater3d: '3D Cutaway Theater',
+      schematic2d: '2D Schematic',
+      split: 'Split',
+    },
+    theater: {
+      title: '1:1 3D Slow-Motion Penetration Cutaway Theater',
+      play: 'Play',
+      pause: 'Pause',
+      reset: 'Reset',
+      resetCamera: 'Reset View',
+      speedLabel: 'Playback speed',
+      timelineAria: 'Penetration slow-motion timeline',
+      liveVelocity: 'Velocity',
+      liveCavity: 'Cavity',
+      spallConeLabel: 'Spall Cone',
+      orbitHint: 'Drag to Orbit · Scroll to Zoom',
+      webglFallback:
+        'WebGL context paused. Switch to 2D Schematic or reopen the lab.',
+      phases: {
+        approach: 'HYPERVELOCITY APPROACH',
+        era_detonation: 'ERA FLYER DETONATION',
+        penetration: 'HYDRODYNAMIC PENETRATION',
+        perforation_spall: 'PERFORATED · SPALL CONE',
+        defeated_arrest: 'DEFEATED · CORE ARRESTED',
+        ricochet_deflect: 'RICOCHET DEFLECTION',
+      },
+    },
     kpi: {
       outcome: 'Terminal Verdict',
       velocity: 'Impact Velocity',

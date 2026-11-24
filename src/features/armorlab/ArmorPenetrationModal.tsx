@@ -1,6 +1,9 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import {
+  Box,
+  Columns2,
   Crosshair,
+  Layers,
   RotateCcw,
   Shield,
   ShieldAlert,
@@ -21,11 +24,14 @@ import {
 } from '../../engine/physics/armorPenetration';
 import { useAppStore } from '../../store/useAppStore';
 import { ARMOR_PENETRATION_STRINGS } from './armorPenetrationStrings';
+import { ArmorPenetration3DScene } from './ArmorPenetration3DScene';
 import '../../styles/armor-penetration.css';
 
 export interface ArmorPenetrationModalProps {
   onClose: () => void;
 }
+
+export type ArmorLabViewMode = 'theater3d' | 'schematic2d' | 'split';
 
 const SVG_CURVE_W = 540;
 const SVG_CURVE_H = 176;
@@ -60,6 +66,7 @@ export const ArmorPenetrationModal: React.FC<ArmorPenetrationModalProps> = ({
   const [rangeM, setRangeM] = useState<number>(1500);
   const [obliquityDeg, setObliquityDeg] = useState<number>(15);
   const [eraEnabled, setEraEnabled] = useState<boolean>(true);
+  const [viewMode, setViewMode] = useState<ArmorLabViewMode>('theater3d');
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -157,6 +164,221 @@ export const ArmorPenetrationModal: React.FC<ArmorPenetrationModalProps> = ({
         : 'is-defeated';
 
   const zoneHasEra = result.zone.hasEra;
+
+  const schematicCard = (
+    <div className="armor-card">
+      <div className="armor-card-head">
+        <span className="armor-card-head-title">
+          <Shield size={13} aria-hidden="true" />
+          <span>{ui.crossSectionTitle}</span>
+        </span>
+      </div>
+      <svg
+        viewBox="0 0 540 165"
+        className="armor-cross-svg"
+        role="img"
+        aria-label={ui.crossSectionTitle}
+      >
+        <rect
+          x="0"
+          y="0"
+          width="540"
+          height="165"
+          rx="8"
+          fill="rgba(2, 6, 23, 0.55)"
+        />
+        {/* Draw armor stack proportionally */}
+        {layerRects.map(({ layer, x, w }, idx) => (
+          <g key={`${layer.nameEn}-${idx}`}>
+            <rect
+              x={x}
+              y={24}
+              width={w - 2}
+              height={116}
+              fill={layer.colorHex}
+              fillOpacity={layer.defeated ? 0.52 : 0.9}
+              stroke={
+                layer.defeated ? '#f87171' : 'rgba(226,232,240,0.4)'
+              }
+              strokeWidth={layer.isEra ? 1.5 : 1}
+            />
+            {layer.isEra && (
+              <line
+                x1={x + 2}
+                y1={30}
+                x2={x + w - 4}
+                y2={134}
+                stroke="rgba(255,255,255,0.28)"
+                strokeDasharray="3 3"
+              />
+            )}
+          </g>
+        ))}
+
+        {/* Incoming penetrator path */}
+        <line
+          x1="28"
+          y1={82 - Math.min(48, result.effectiveImpactAngleDeg * 0.55)}
+          x2={stackStartX}
+          y2="82"
+          stroke="#38bdf8"
+          strokeWidth="4"
+          strokeLinecap="round"
+        />
+
+        {/* Inside stack / spall / ricochet path */}
+        {result.outcome === 'ricochet' ? (
+          <line
+            x1={stackStartX}
+            y1="82"
+            x2={stackStartX - 65}
+            y2="20"
+            stroke="#22d3ee"
+            strokeWidth="3.5"
+            strokeDasharray="5 3"
+            strokeLinecap="round"
+          />
+        ) : (
+          <>
+            <line
+              x1={stackStartX}
+              y1="82"
+              x2={Math.min(478, rodTipX)}
+              y2="82"
+              stroke={
+                result.outcome === 'perforation' ? '#ef4444' : '#f59e0b'
+              }
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+            {result.outcome === 'perforation' && (
+              <>
+                <line
+                  x1={stackStartX + stackAvailW}
+                  y1="82"
+                  x2={495}
+                  y2="60"
+                  stroke="#fb7185"
+                  strokeWidth="1.5"
+                  strokeDasharray="3 2"
+                />
+                <line
+                  x1={stackStartX + stackAvailW}
+                  y1="82"
+                  x2={495}
+                  y2="104"
+                  stroke="#fb7185"
+                  strokeWidth="1.5"
+                  strokeDasharray="3 2"
+                />
+              </>
+            )}
+          </>
+        )}
+
+        <text
+          x="28"
+          y="151"
+          fill="#94a3b8"
+          fontSize="10"
+          fontFamily="monospace"
+        >
+          {result.projectile.code} ({result.effectiveImpactAngleDeg.toFixed(1)}°)
+        </text>
+        <text
+          x="442"
+          y="151"
+          fill="#94a3b8"
+          fontSize="10"
+          fontFamily="monospace"
+        >
+          {Math.round(result.effectiveRhaeMm)} mm RHAe
+        </text>
+      </svg>
+    </div>
+  );
+
+  const rangeCurveCard = (
+    <div className="armor-card">
+      <div className="armor-card-head">
+        <span>{ui.rangeCurveTitle}</span>
+        <div className="armor-curve-legend">
+          <span className="is-pen">{ui.curveLegend.penetration}</span>
+          <span className="is-req">{ui.curveLegend.targetReq}</span>
+        </div>
+      </div>
+      <svg
+        viewBox={`0 0 ${SVG_CURVE_W} ${SVG_CURVE_H}`}
+        className="armor-curve-svg"
+      >
+        {[0, 0.25, 0.5, 0.75, 1].map((frac) => {
+          const mm = Math.round(frac * maxCurveY);
+          const y = yForMm(mm);
+          return (
+            <g key={frac}>
+              <line
+                x1={PAD_L}
+                y1={y}
+                x2={SVG_CURVE_W - PAD_R}
+                y2={y}
+                stroke="rgba(148,163,184,0.16)"
+              />
+              <text
+                x={PAD_L - 6}
+                y={y + 3}
+                textAnchor="end"
+                fill="#94a3b8"
+                fontSize="9.5"
+                fontFamily="monospace"
+              >
+                {mm}
+              </text>
+            </g>
+          );
+        })}
+
+        {[500, 1000, 1500, 2000, 2500, 3000, 3500].map((r) => (
+          <text
+            key={r}
+            x={xForR(r)}
+            y={SVG_CURVE_H - 7}
+            textAnchor="middle"
+            fill="#94a3b8"
+            fontSize="9.5"
+            fontFamily="monospace"
+          >
+            {r}m
+          </text>
+        ))}
+
+        <line
+          x1={PAD_L}
+          y1={targetLineY}
+          x2={SVG_CURVE_W - PAD_R}
+          y2={targetLineY}
+          stroke="#f87171"
+          strokeWidth="1.5"
+          strokeDasharray="5 4"
+        />
+
+        <path
+          d={curvePath}
+          fill="none"
+          stroke="#38bdf8"
+          strokeWidth="2.4"
+        />
+
+        <circle
+          cx={xForR(result.rangeM)}
+          cy={yForMm(result.penetrationDepthRhaeMm)}
+          r={4.5}
+          fill={result.outcome === 'perforation' ? '#ef4444' : '#38bdf8'}
+          stroke="#0f172a"
+          strokeWidth="1.5"
+        />
+      </svg>
+    </div>
+  );
 
   return (
     <dialog
@@ -394,222 +616,94 @@ export const ArmorPenetrationModal: React.FC<ArmorPenetrationModalProps> = ({
               </div>
             </div>
 
-            <div className="armor-visual-grid">
-              {/* Cross-section SVG */}
-              <div className="armor-card">
-                <div className="armor-card-head">
-                  <Shield size={13} aria-hidden="true" />
-                  <span>{ui.crossSectionTitle}</span>
-                </div>
-                <svg
-                  viewBox="0 0 540 165"
-                  className="armor-cross-svg"
-                  role="img"
-                  aria-label={ui.crossSectionTitle}
+            {/* Stage View Mode Toggle: 3D Cutaway Theater / 2D Schematic / Split */}
+            <div className="armor-view-bar">
+              <span className="armor-view-bar-title">
+                {viewMode === 'schematic2d'
+                  ? ui.crossSectionTitle
+                  : ui.theater.title}
+              </span>
+              <div
+                className="armor-view-toggle"
+                role="tablist"
+                aria-label={ui.viewModes.groupAria}
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={viewMode === 'theater3d'}
+                  className={`armor-view-tab ${
+                    viewMode === 'theater3d' ? 'is-active' : ''
+                  }`}
+                  onClick={() => {
+                    playWorkbenchFoley('toggle_switch');
+                    setViewMode('theater3d');
+                  }}
                 >
-                  <rect
-                    x="0"
-                    y="0"
-                    width="540"
-                    height="165"
-                    rx="8"
-                    fill="rgba(2, 6, 23, 0.55)"
-                  />
-                  {/* Draw armor stack proportionally */}
-                  {layerRects.map(({ layer, x, w }, idx) => (
-                    <g key={`${layer.nameEn}-${idx}`}>
-                      <rect
-                        x={x}
-                        y={24}
-                        width={w - 2}
-                        height={116}
-                        fill={layer.colorHex}
-                        fillOpacity={layer.defeated ? 0.52 : 0.9}
-                        stroke={
-                          layer.defeated ? '#f87171' : 'rgba(226,232,240,0.4)'
-                        }
-                        strokeWidth={layer.isEra ? 1.5 : 1}
-                      />
-                      {layer.isEra && (
-                        <line
-                          x1={x + 2}
-                          y1={30}
-                          x2={x + w - 4}
-                          y2={134}
-                          stroke="rgba(255,255,255,0.28)"
-                          strokeDasharray="3 3"
-                        />
-                      )}
-                    </g>
-                  ))}
-
-                  {/* Incoming penetrator path */}
-                  <line
-                    x1="28"
-                    y1={82 - Math.min(48, result.effectiveImpactAngleDeg * 0.55)}
-                    x2={stackStartX}
-                    y2="82"
-                    stroke="#38bdf8"
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                  />
-
-                  {/* Inside stack / spall / ricochet path */}
-                  {result.outcome === 'ricochet' ? (
-                    <line
-                      x1={stackStartX}
-                      y1="82"
-                      x2={stackStartX - 65}
-                      y2="20"
-                      stroke="#22d3ee"
-                      strokeWidth="3.5"
-                      strokeDasharray="5 3"
-                      strokeLinecap="round"
-                    />
-                  ) : (
-                    <>
-                      <line
-                        x1={stackStartX}
-                        y1="82"
-                        x2={Math.min(478, rodTipX)}
-                        y2="82"
-                        stroke={
-                          result.outcome === 'perforation'
-                            ? '#ef4444'
-                            : '#f59e0b'
-                        }
-                        strokeWidth="5"
-                        strokeLinecap="round"
-                      />
-                      {result.outcome === 'perforation' && (
-                        <>
-                          <line
-                            x1={stackStartX + stackAvailW}
-                            y1="82"
-                            x2={495}
-                            y2="60"
-                            stroke="#fb7185"
-                            strokeWidth="1.5"
-                            strokeDasharray="3 2"
-                          />
-                          <line
-                            x1={stackStartX + stackAvailW}
-                            y1="82"
-                            x2={495}
-                            y2="104"
-                            stroke="#fb7185"
-                            strokeWidth="1.5"
-                            strokeDasharray="3 2"
-                          />
-                        </>
-                      )}
-                    </>
-                  )}
-
-                  <text
-                    x="28"
-                    y="151"
-                    fill="#94a3b8"
-                    fontSize="10"
-                    fontFamily="monospace"
-                  >
-                    {result.projectile.code} ({result.effectiveImpactAngleDeg.toFixed(1)}°)
-                  </text>
-                  <text
-                    x="442"
-                    y="151"
-                    fill="#94a3b8"
-                    fontSize="10"
-                    fontFamily="monospace"
-                  >
-                    {Math.round(result.effectiveRhaeMm)} mm RHAe
-                  </text>
-                </svg>
-              </div>
-
-              {/* Range-vs-Penetration Curve */}
-              <div className="armor-card">
-                <div className="armor-card-head">
-                  <span>{ui.rangeCurveTitle}</span>
-                  <div className="armor-curve-legend">
-                    <span className="is-pen">{ui.curveLegend.penetration}</span>
-                    <span className="is-req">{ui.curveLegend.targetReq}</span>
-                  </div>
-                </div>
-                <svg
-                  viewBox={`0 0 ${SVG_CURVE_W} ${SVG_CURVE_H}`}
-                  className="armor-curve-svg"
+                  <Box size={13} aria-hidden="true" />
+                  <span>{ui.viewModes.theater3d}</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={viewMode === 'schematic2d'}
+                  className={`armor-view-tab ${
+                    viewMode === 'schematic2d' ? 'is-active' : ''
+                  }`}
+                  onClick={() => {
+                    playWorkbenchFoley('toggle_switch');
+                    setViewMode('schematic2d');
+                  }}
                 >
-                  {[0, 0.25, 0.5, 0.75, 1].map((frac) => {
-                    const mm = Math.round(frac * maxCurveY);
-                    const y = yForMm(mm);
-                    return (
-                      <g key={frac}>
-                        <line
-                          x1={PAD_L}
-                          y1={y}
-                          x2={SVG_CURVE_W - PAD_R}
-                          y2={y}
-                          stroke="rgba(148,163,184,0.16)"
-                        />
-                        <text
-                          x={PAD_L - 6}
-                          y={y + 3}
-                          textAnchor="end"
-                          fill="#94a3b8"
-                          fontSize="9.5"
-                          fontFamily="monospace"
-                        >
-                          {mm}
-                        </text>
-                      </g>
-                    );
-                  })}
-
-                  {[500, 1000, 1500, 2000, 2500, 3000, 3500].map((r) => (
-                    <text
-                      key={r}
-                      x={xForR(r)}
-                      y={SVG_CURVE_H - 7}
-                      textAnchor="middle"
-                      fill="#94a3b8"
-                      fontSize="9.5"
-                      fontFamily="monospace"
-                    >
-                      {r}m
-                    </text>
-                  ))}
-
-                  <line
-                    x1={PAD_L}
-                    y1={targetLineY}
-                    x2={SVG_CURVE_W - PAD_R}
-                    y2={targetLineY}
-                    stroke="#f87171"
-                    strokeWidth="1.5"
-                    strokeDasharray="5 4"
-                  />
-
-                  <path
-                    d={curvePath}
-                    fill="none"
-                    stroke="#38bdf8"
-                    strokeWidth="2.4"
-                  />
-
-                  <circle
-                    cx={xForR(result.rangeM)}
-                    cy={yForMm(result.penetrationDepthRhaeMm)}
-                    r={4.5}
-                    fill={
-                      result.outcome === 'perforation' ? '#ef4444' : '#38bdf8'
-                    }
-                    stroke="#0f172a"
-                    strokeWidth="1.5"
-                  />
-                </svg>
+                  <Layers size={13} aria-hidden="true" />
+                  <span>{ui.viewModes.schematic2d}</span>
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={viewMode === 'split'}
+                  className={`armor-view-tab ${
+                    viewMode === 'split' ? 'is-active' : ''
+                  }`}
+                  onClick={() => {
+                    playWorkbenchFoley('toggle_switch');
+                    setViewMode('split');
+                  }}
+                >
+                  <Columns2 size={13} aria-hidden="true" />
+                  <span>{ui.viewModes.split}</span>
+                </button>
               </div>
             </div>
+
+            {/* Primary Visual Stage according to active viewMode */}
+            {viewMode === 'theater3d' && (
+              <>
+                <ArmorPenetration3DScene result={result} lang={lang} />
+                {rangeCurveCard}
+              </>
+            )}
+
+            {viewMode === 'schematic2d' && (
+              <div className="armor-visual-grid">
+                {schematicCard}
+                {rangeCurveCard}
+              </div>
+            )}
+
+            {viewMode === 'split' && (
+              <>
+                <div className="armor-split-stage">
+                  <ArmorPenetration3DScene
+                    result={result}
+                    lang={lang}
+                    compact
+                  />
+                  {schematicCard}
+                </div>
+                {rangeCurveCard}
+              </>
+            )}
 
             {/* Layer Breakdown Table */}
             <div className="armor-card">
