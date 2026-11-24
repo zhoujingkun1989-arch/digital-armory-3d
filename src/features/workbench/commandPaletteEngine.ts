@@ -1057,6 +1057,43 @@ export function buildCommandPaletteItems(
       },
     },
     {
+      id: 'lab:scale-wall',
+      group: 'labs',
+      icon: 'caliper',
+      title: UI_STRINGS[lang].workbench.scaleWallCmdTitle,
+      subtitle: UI_STRINGS[lang].workbench.scaleWallCmdSub,
+      statusBadge: state.scaleWallModalOpen ? str.modal.onBadge : '1:1',
+      statusTone: state.scaleWallModalOpen ? 'cyan' : 'amber',
+      isActive: state.scaleWallModalOpen,
+      primaryFields: [
+        UI_STRINGS[lang].workbench.scaleWallCmdTitle,
+        '1:1 True-Scale Museum Wall',
+        'Smithsonian True Scale Comparator',
+        '1:1 真实尺度对比墙',
+      ],
+      secondaryFields: [
+        'scale',
+        'wall',
+        '1:1',
+        'size',
+        'length',
+        'ruler',
+        'human',
+        'hand',
+        'smithsonian',
+        'compare',
+        '尺度',
+        '尺寸',
+        '比例',
+        '对比墙',
+        '身高',
+      ],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        useAppStore.getState().openScaleWallModal();
+      },
+    },
+    {
       id: 'lab:offline-museum',
       group: 'labs',
       icon: 'atlas',
@@ -1877,7 +1914,7 @@ export interface FilterCommandPaletteOptions {
 const DEFAULT_EMPTY_CAPS: Record<CommandPaletteGroupId, number> = {
   weapons: WEAPON_MANIFESTS.length,
   parts: 8,
-  labs: 9,
+  labs: 10,
   actions: 12,
 };
 

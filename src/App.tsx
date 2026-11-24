@@ -72,6 +72,9 @@ const LazyHistoryTimelineModal = lazy(
 const LazyOfflineMuseumModal = lazy(
   () => import('./features/offline/OfflineMuseumModal')
 );
+const LazyScaleWallModal = lazy(
+  () => import('./features/scalewall/ScaleWallModal')
+);
 const LazyKeyboardShortcutsModal = lazy(
   () => import('./features/workbench/KeyboardShortcutsModal')
 );
@@ -113,6 +116,8 @@ export const App: React.FC = () => {
   const closeTimelineModal = useAppStore((s) => s.closeTimelineModal);
   const offlineModalOpen = useAppStore((s) => s.offlineModalOpen);
   const closeOfflineModal = useAppStore((s) => s.closeOfflineModal);
+  const scaleWallModalOpen = useAppStore((s) => s.scaleWallModalOpen);
+  const closeScaleWallModal = useAppStore((s) => s.closeScaleWallModal);
   const keyboardShortcutsOpen = useKeyboardShortcutsModalOpen();
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const tankCrewActive = useTankCrewStore((s) => s.active);
@@ -312,10 +317,17 @@ export const App: React.FC = () => {
         </Suspense>
       )}
 
-      {/* Lazy-loaded PWA Offline Museum & KTX2 Pipeline Center (`WP-25a`) */}
+      {/* Lazy-loaded PWA Offline Museum & KTX2 Pipeline Center */}
       {offlineModalOpen && (
         <Suspense fallback={null}>
           <LazyOfflineMuseumModal onClose={closeOfflineModal} />
+        </Suspense>
+      )}
+
+      {/* Lazy-loaded Smithsonian 1:1 True-Scale Museum Wall */}
+      {scaleWallModalOpen && (
+        <Suspense fallback={null}>
+          <LazyScaleWallModal onClose={closeScaleWallModal} />
         </Suspense>
       )}
 

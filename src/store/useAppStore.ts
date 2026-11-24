@@ -276,6 +276,7 @@ export interface AppState {
   passportModalOpen: boolean;
   timelineModalOpen: boolean;
   offlineModalOpen: boolean;
+  scaleWallModalOpen: boolean;
   commandPaletteOpen: boolean;
   xrayShells: boolean;
   sectionCut: boolean;
@@ -426,6 +427,9 @@ export interface AppState {
   setOfflineModalOpen: (open: boolean) => void;
   openOfflineModal: () => void;
   closeOfflineModal: () => void;
+  setScaleWallModalOpen: (open: boolean) => void;
+  openScaleWallModal: () => void;
+  closeScaleWallModal: () => void;
   setCommandPaletteOpen: (open: boolean) => void;
   openCommandPalette: () => void;
   closeCommandPalette: () => void;
@@ -515,6 +519,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   passportModalOpen: false,
   timelineModalOpen: false,
   offlineModalOpen: false,
+  scaleWallModalOpen: false,
   commandPaletteOpen: false,
   xrayShells: false,
   sectionCut: false,
@@ -1459,6 +1464,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         textureModalOpen: false,
         monographModalOpen: false,
         posterShareModalOpen: false,
+        scaleWallModalOpen: false,
         commandPaletteOpen: false,
         hudHidden: false,
       };
@@ -1482,6 +1488,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         ? false
         : s.armorPenetrationModalOpen,
       passportModalOpen: directorReelModalOpen ? false : s.passportModalOpen,
+      scaleWallModalOpen: directorReelModalOpen ? false : s.scaleWallModalOpen,
       commandPaletteOpen: directorReelModalOpen
         ? false
         : s.commandPaletteOpen,
@@ -1503,6 +1510,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       directorReelModalOpen: passportModalOpen
         ? false
         : s.directorReelModalOpen,
+      scaleWallModalOpen: passportModalOpen ? false : s.scaleWallModalOpen,
       commandPaletteOpen: passportModalOpen ? false : s.commandPaletteOpen,
       hudHidden: passportModalOpen ? false : s.hudHidden,
     })),
@@ -1522,6 +1530,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         : s.directorReelModalOpen,
       passportModalOpen: timelineModalOpen ? false : s.passportModalOpen,
       offlineModalOpen: timelineModalOpen ? false : s.offlineModalOpen,
+      scaleWallModalOpen: timelineModalOpen ? false : s.scaleWallModalOpen,
       commandPaletteOpen: timelineModalOpen ? false : s.commandPaletteOpen,
       hudHidden: timelineModalOpen ? false : s.hudHidden,
     })),
@@ -1539,11 +1548,34 @@ export const useAppStore = create<AppState>((set, get) => ({
       directorReelModalOpen: offlineModalOpen ? false : s.directorReelModalOpen,
       passportModalOpen: offlineModalOpen ? false : s.passportModalOpen,
       timelineModalOpen: offlineModalOpen ? false : s.timelineModalOpen,
+      scaleWallModalOpen: offlineModalOpen ? false : s.scaleWallModalOpen,
       commandPaletteOpen: offlineModalOpen ? false : s.commandPaletteOpen,
       hudHidden: offlineModalOpen ? false : s.hudHidden,
     })),
   openOfflineModal: () => get().setOfflineModalOpen(true),
   closeOfflineModal: () => get().setOfflineModalOpen(false),
+  setScaleWallModalOpen: (scaleWallModalOpen) =>
+    set((s) => ({
+      scaleWallModalOpen,
+      textureModalOpen: scaleWallModalOpen ? false : s.textureModalOpen,
+      monographModalOpen: scaleWallModalOpen ? false : s.monographModalOpen,
+      posterShareModalOpen: scaleWallModalOpen
+        ? false
+        : s.posterShareModalOpen,
+      armorPenetrationModalOpen: scaleWallModalOpen
+        ? false
+        : s.armorPenetrationModalOpen,
+      directorReelModalOpen: scaleWallModalOpen
+        ? false
+        : s.directorReelModalOpen,
+      passportModalOpen: scaleWallModalOpen ? false : s.passportModalOpen,
+      timelineModalOpen: scaleWallModalOpen ? false : s.timelineModalOpen,
+      offlineModalOpen: scaleWallModalOpen ? false : s.offlineModalOpen,
+      commandPaletteOpen: scaleWallModalOpen ? false : s.commandPaletteOpen,
+      hudHidden: scaleWallModalOpen ? false : s.hudHidden,
+    })),
+  openScaleWallModal: () => get().setScaleWallModalOpen(true),
+  closeScaleWallModal: () => get().setScaleWallModalOpen(false),
   setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
   openCommandPalette: () => set({ commandPaletteOpen: true }),
   closeCommandPalette: () => set({ commandPaletteOpen: false }),
@@ -1931,6 +1963,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       passportModalOpen: false,
       timelineModalOpen: false,
       offlineModalOpen: false,
+      scaleWallModalOpen: false,
       commandPaletteOpen: false,
       selectedPartId: null,
       hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
