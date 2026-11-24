@@ -1094,6 +1094,43 @@ export function buildCommandPaletteItems(
       },
     },
     {
+      id: 'lab:recoil-lab',
+      group: 'labs',
+      icon: 'firing',
+      title: UI_STRINGS[lang].workbench.recoilLabCmdTitle,
+      subtitle: UI_STRINGS[lang].workbench.recoilLabCmdSub,
+      statusBadge: state.recoilLabOpen ? str.modal.onBadge : 'N·s',
+      statusTone: state.recoilLabOpen ? 'amber' : 'cyan',
+      isActive: state.recoilLabOpen,
+      primaryFields: [
+        UI_STRINGS[lang].workbench.recoilLabCmdTitle,
+        'Recoil Impulse Gas-Jet Momentum Muzzle Climb Lab',
+        '后坐冲量与枪口上跳实验室',
+        '后坐实验室',
+      ],
+      secondaryFields: [
+        'recoil',
+        'impulse',
+        'gas jet',
+        'muzzle climb',
+        'torque',
+        'momentum',
+        'brake',
+        'bore axis',
+        '后坐力',
+        '后坐',
+        '冲量',
+        '枪口上跳',
+        '制退器',
+        '力矩',
+        '动量',
+      ],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        useAppStore.getState().openRecoilLab();
+      },
+    },
+    {
       id: 'lab:offline-museum',
       group: 'labs',
       icon: 'atlas',
@@ -1914,7 +1951,7 @@ export interface FilterCommandPaletteOptions {
 const DEFAULT_EMPTY_CAPS: Record<CommandPaletteGroupId, number> = {
   weapons: WEAPON_MANIFESTS.length,
   parts: 8,
-  labs: 10,
+  labs: 11,
   actions: 12,
 };
 

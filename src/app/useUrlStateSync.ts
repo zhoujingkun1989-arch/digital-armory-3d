@@ -573,6 +573,8 @@ export function applyLocationToStore(searchOverride?: string): void {
     useAppStore.getState().openOfflineModal();
   } else if (rawPanel === 'scalewall') {
     useAppStore.getState().openScaleWallModal();
+  } else if (rawPanel === 'recoil') {
+    useAppStore.getState().openRecoilLab();
   } else if (rawPanel === 'crew') {
     const targetId = isTankWeapon(weaponId) ? weaponId : 'ztz99a';
     const st = useAppStore.getState();
@@ -587,8 +589,14 @@ export function applyLocationToStore(searchOverride?: string): void {
       crew.setTurretYawDeg(18);
       crew.setGunElevDeg(4.5, targetId);
     }
-  } else if (useAppStore.getState().scaleWallModalOpen) {
-    useAppStore.getState().closeScaleWallModal();
+  } else {
+    const liveModalState = useAppStore.getState();
+    if (liveModalState.scaleWallModalOpen) {
+      liveModalState.closeScaleWallModal();
+    }
+    if (liveModalState.recoilLabOpen) {
+      liveModalState.closeRecoilLab();
+    }
   }
 }
 
@@ -604,7 +612,8 @@ export function buildSearchString(
   baseSearch?: string,
   splitShowdownPair?: { weaponA: WeaponId; weaponB: WeaponId },
   workbenchDeepLink?: WorkbenchDeepLinkOptions,
-  scaleWallModalOpen?: boolean
+  scaleWallModalOpen?: boolean,
+  recoilLabOpen?: boolean
 ): string {
   const rawSearch =
     baseSearch ?? (typeof window !== 'undefined' ? window.location.search : '');
@@ -764,9 +773,11 @@ export function buildSearchString(
   }
   if (scaleWallModalOpen === true) {
     params.set('panel', 'scalewall');
+  } else if (recoilLabOpen === true) {
+    params.set('panel', 'recoil');
   } else if (
-    scaleWallModalOpen === false &&
-    params.get('panel') === 'scalewall'
+    (scaleWallModalOpen === false && params.get('panel') === 'scalewall') ||
+    (recoilLabOpen === false && params.get('panel') === 'recoil')
   ) {
     params.delete('panel');
   }
@@ -804,6 +815,7 @@ export function useUrlStateSync(): void {
   const splitShowdownWeaponA = useAppStore((s) => s.splitShowdownWeaponA);
   const splitShowdownWeaponB = useAppStore((s) => s.splitShowdownWeaponB);
   const scaleWallModalOpen = useAppStore((s) => s.scaleWallModalOpen);
+  const recoilLabOpen = useAppStore((s) => s.recoilLabOpen);
   const activeLoadout = useAttachmentStore((s) => s.loadouts[activeWeaponId]);
   const activeMuzzle: MuzzleAttachmentId = activeLoadout?.muzzle ?? 'none';
   const activeOptic: OpticAttachmentId = activeLoadout?.optic ?? 'none';
@@ -895,7 +907,8 @@ export function useUrlStateSync(): void {
       live.activeBallisticsCaliber !== activeBallisticsCaliber ||
       live.splitShowdownWeaponA !== splitShowdownWeaponA ||
       live.splitShowdownWeaponB !== splitShowdownWeaponB ||
-      live.scaleWallModalOpen !== scaleWallModalOpen
+      live.scaleWallModalOpen !== scaleWallModalOpen ||
+      live.recoilLabOpen !== recoilLabOpen
     ) {
       return;
     }
@@ -920,7 +933,8 @@ export function useUrlStateSync(): void {
         optic: activeOptic,
         selectedPartId,
       },
-      scaleWallModalOpen
+      scaleWallModalOpen,
+      recoilLabOpen
     );
     if (window.location.search === nextSearch) {
       prevScreenRef.current = screen;
@@ -953,5 +967,6 @@ export function useUrlStateSync(): void {
     splitShowdownWeaponA,
     splitShowdownWeaponB,
     scaleWallModalOpen,
+    recoilLabOpen,
   ]);
 }

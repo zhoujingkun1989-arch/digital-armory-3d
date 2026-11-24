@@ -128,6 +128,8 @@ export interface ShowcaseDictionary {
         desc: string;
         cta: (shortTag: string) => string;
       };
+      scaleWall: { badge: string; title: string; desc: string; cta: string };
+      recoilLab: { badge: string; title: string; desc: string; cta: string };
     };
   };
   metrics: readonly { val: string; lbl: string }[];
@@ -360,6 +362,18 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           title: '34/34 Cycles 17 图版 3D 绘本与图鉴',
           desc: '调用全馆 2880×1800 Cycles 印刷主图，一键排版双语儿童 3D 机械绘本与 DK 风格视觉百科。',
           cta: (tag) => `打印 ${tag} 17 图版图鉴`,
+        },
+        scaleWall: {
+          badge: '1:1 TRUE SCALE',
+          title: `1:1 真实尺度对比墙（全馆 ${VAULT_EXHIBIT_COUNT} 展品）`,
+          desc: '按毫米级绝对比例并排比对手枪、步枪、6.06m GAU-8 航炮、10m 主战坦克与 1.75m 人体参照。',
+          cta: '打开 1:1 尺度墙',
+        },
+        recoilLab: {
+          badge: 'RECOIL & TORQUE LAB',
+          title: '后坐冲量、燃气动量与枪口上跳实验室',
+          desc: '定量分解弹丸与火药燃气喷射动量、制退器反推减冲、120 点 F(t) 力波形与枪管轴线上跳力矩。',
+          cta: '启动后坐实验室',
         },
       },
     },
@@ -903,6 +917,18 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           title: '34/34 Cycles 17-Plate Monograph Print Studio',
           desc: 'Lay out 2880x1800 Cycles studio plates into bilingual 3D picture books and DK-style engineering encyclopedias.',
           cta: (tag) => `Print ${tag} Monograph`,
+        },
+        scaleWall: {
+          badge: '1:1 TRUE SCALE',
+          title: `1:1 True-Scale Museum Wall (All ${VAULT_EXHIBIT_COUNT} Exhibits)`,
+          desc: 'Compare pistols, rifles, the 6.06m GAU-8 cannon & 10m MBTs side-by-side in true millimeters against a 1.75m human silhouette.',
+          cta: 'Open 1:1 Scale Wall',
+        },
+        recoilLab: {
+          badge: 'RECOIL & TORQUE LAB',
+          title: 'Recoil Impulse, Gas-Jet & Muzzle-Climb Lab',
+          desc: 'Decompose projectile vs rocket gas-jet momentum, muzzle-brake counter-thrust, 120-pt F(t) waveforms & bore-axis climb torque.',
+          cta: 'Open Recoil Lab',
         },
       },
     },

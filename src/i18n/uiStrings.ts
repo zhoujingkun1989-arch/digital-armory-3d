@@ -246,6 +246,10 @@ export interface UiDictionary {
     scaleWallChipTitle: string;
     scaleWallCmdTitle: string;
     scaleWallCmdSub: string;
+    recoilLabChip: string;
+    recoilLabChipTitle: string;
+    recoilLabCmdTitle: string;
+    recoilLabCmdSub: string;
   };
   bom: {
     collapsedBtn: (count: number) => string;
@@ -1137,6 +1141,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       scaleWallCmdTitle: '1:1 真实尺度对比墙',
       scaleWallCmdSub:
         '按真实毫米比例并排对比全馆 34 款名枪、主战坦克、30mm 航炮与 1.75m 人体/手掌参照',
+      recoilLabChip: '后坐实验室',
+      recoilLabChipTitle:
+        '打开后坐冲量、火药燃气喷射动量与枪口上跳力矩物理实验室',
+      recoilLabCmdTitle: '后坐冲量与枪口上跳实验室',
+      recoilLabCmdSub:
+        '对比全馆 34 款展品弹丸与燃气动量、自由后坐能、枪口制退减冲与枪管轴线力矩波形',
     },
     bom: {
       collapsedBtn: (n) => `零件目录 (${n})`,
@@ -2155,6 +2165,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       scaleWallCmdTitle: '1:1 True-Scale Museum Wall',
       scaleWallCmdSub:
         'Compare all 34 firearms, 1:1 MBTs & 30mm GAU-8 at true millimeter scale with 1.75m human & hand references',
+      recoilLabChip: 'Recoil Lab',
+      recoilLabChipTitle:
+        'Open Recoil Impulse, Gas-Jet Momentum & Muzzle-Climb Torque Physics Lab',
+      recoilLabCmdTitle: 'Recoil Impulse & Muzzle-Climb Lab',
+      recoilLabCmdSub:
+        'Compare projectile vs rocket gas-jet momentum, muzzle-brake counter-thrust & bore-axis climb torque across all 34 exhibits',
     },
     bom: {
       collapsedBtn: (n) => `BOM Parts (${n})`,

@@ -696,6 +696,36 @@ export const ArmoryView: React.FC = () => {
             <GitCompareArrows size={13} aria-hidden="true" />
             <span>{lang === 'en' ? '3D Split' : '3D 同屏对比'}</span>
           </button>
+
+          <button
+            type="button"
+            className="toggle-chip"
+            data-testid="armory-scale-wall-btn"
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              closeMenus();
+              useAppStore.getState().openScaleWallModal();
+            }}
+            title={UI_STRINGS[lang].workbench.scaleWallChipTitle}
+          >
+            <Ruler size={13} aria-hidden="true" />
+            <span>{lang === 'en' ? '1:1 Scale Wall' : '1:1 真实尺度墙'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="toggle-chip"
+            data-testid="armory-recoil-lab-btn"
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              closeMenus();
+              useAppStore.getState().openRecoilLab();
+            }}
+            title={UI_STRINGS[lang].workbench.recoilLabChipTitle}
+          >
+            <Gauge size={13} aria-hidden="true" />
+            <span>{lang === 'en' ? 'Recoil Impulse Lab' : '后坐冲量实验室'}</span>
+          </button>
         </div>
       </div>
 
