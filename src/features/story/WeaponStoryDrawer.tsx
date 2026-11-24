@@ -21,11 +21,13 @@ import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
 import {
+  DOCUMENTARY_PLAYBACK_RATES,
   cycleNarrationPlaybackRate,
-  formatAudioTime,
+  formatAudioTimestamp,
   type NarrationTrack,
   playNarrationPlaylist,
   seekNarrationAudio,
+  setNarrationPlaybackRate,
   stopNarrationAudio,
   toggleActiveNarrationPlayPause,
   useNarrationAudioPlayer,
@@ -41,6 +43,12 @@ import {
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { LanguageSwitchPill } from './LanguageSwitchPill';
+
+const ACT_ROMAN_NUMERALS = ['I', 'II', 'III', 'IV'] as const;
+
+export function formatPlaybackRateLabel(rate: number): string {
+  return Math.abs(rate - 1) < 0.01 ? '1.0x' : `${rate}x`;
+}
 
 export interface WeaponStoryDrawerProps {
   forceOpen?: boolean;
@@ -195,6 +203,23 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
     }
   };
 
+  const handleScrubChange = (ratio01: number) => {
+    if (playlistTracks.length === 0) return;
+    if (isThisWeaponStoryActive) {
+      seekNarrationAudio(ratio01);
+    } else {
+      playNarrationPlaylist(playlistTracks, 0, ratio01);
+    }
+  };
+
+  const activeActIndex =
+    isThisWeaponStoryActive && localizedStory
+      ? localizedStory.acts.findIndex((a) => a.id === audio.activeActId)
+      : -1;
+  const scrubProgressPct = isThisWeaponStoryActive
+    ? Math.max(0, Math.min(100, audio.progress * 100))
+    : 0;
+
   const handleClose = () => {
     if (audio.activeKind === 'story') {
       stopNarrationAudio();
@@ -298,7 +323,7 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
             onClick={cycleNarrationPlaybackRate}
             title={ui.playbackRateTitle}
           >
-            {audio.playbackRate}x
+            {formatPlaybackRateLabel(audio.playbackRate)}
           </button>
 
           <button
@@ -339,14 +364,19 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
               max={1000}
               value={Math.round(audio.progress * 1000)}
               onChange={(e) =>
-                seekNarrationAudio(Number(e.target.value) / 1000)
+                handleScrubChange(Number(e.target.value) / 1000)
               }
               aria-label={audio.activeLabel ?? ui.badge}
               className="story-audio-slider"
+              style={
+                {
+                  '--story-scrub-pct': `${scrubProgressPct.toFixed(1)}%`,
+                } as React.CSSProperties
+              }
             />
             <span className="story-time-readout">
-              {formatAudioTime(audio.currentTime)} /{' '}
-              {formatAudioTime(audio.duration)}
+              {formatAudioTimestamp(audio.currentTime)} /{' '}
+              {formatAudioTimestamp(audio.duration)}
             </span>
           </div>
         )}
@@ -404,7 +434,7 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
         </div>
       </div>
 
-      {/* Sticky Audio Documentary Bar (when story bundle is loaded) */}
+      {/* Sticky BBC / Smithsonian Documentary Audio Bar */}
       {localizedStory && playlistTracks.length > 0 && (
         <div className="story-audio-dock">
           <div className="story-audio-top">
@@ -423,21 +453,65 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
               <span>{isStoryPlaying ? ui.pauseStory : ui.playFullStory}</span>
             </button>
 
-            <div className="story-chapter-pills">
-              {localizedStory.acts.map((act, idx) => {
-                const isActCurrent =
-                  isThisWeaponStoryActive && audio.activeActId === act.id;
+            <div
+              className="story-speed-group"
+              role="group"
+              aria-label={
+                lang === 'zh' ? '纪录片播速控制' : 'Documentary playback speed'
+              }
+            >
+              {DOCUMENTARY_PLAYBACK_RATES.map((rate) => {
+                const isSelected = Math.abs(audio.playbackRate - rate) < 0.02;
                 return (
                   <button
-                    key={act.id}
+                    key={rate}
                     type="button"
-                    className={`story-chapter-pill ${
-                      isActCurrent ? 'active' : ''
-                    }`}
-                    onClick={() => handleActClick(idx, act.id)}
-                    title={act.title}
+                    className={`story-speed-seg ${isSelected ? 'active' : ''}`}
+                    aria-pressed={isSelected}
+                    title={ui.playbackRateTitle}
+                    onClick={() => setNarrationPlaybackRate(rate)}
                   >
-                    <span>{act.actNumber}</span>
+                    {formatPlaybackRateLabel(rate)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 4-Act Visual Progress Rail (`Act I · II · III · IV`) */}
+          <div
+            className="story-act-rail"
+            role="list"
+            aria-label={
+              lang === 'zh'
+                ? '四幕纪录片章节进度轨'
+                : 'Four-act documentary progress rail'
+            }
+          >
+            {localizedStory.acts.map((act, idx) => {
+              const isActCurrent =
+                isThisWeaponStoryActive && audio.activeActId === act.id;
+              const isActDone = activeActIndex > idx;
+              const fillPct = isActDone
+                ? 100
+                : isActCurrent
+                  ? scrubProgressPct
+                  : 0;
+              const roman = ACT_ROMAN_NUMERALS[idx] ?? String(idx + 1);
+              return (
+                <button
+                  key={act.id}
+                  type="button"
+                  role="listitem"
+                  className={`story-act-rail-seg ${isActCurrent ? 'is-active' : ''} ${
+                    isActDone ? 'is-done' : ''
+                  }`}
+                  aria-current={isActCurrent ? 'step' : undefined}
+                  onClick={() => handleActClick(idx, act.id)}
+                  title={`${act.actNumber} · ${act.title}`}
+                >
+                  <span className="story-act-rail-head">
+                    <span className="story-act-rail-roman">Act {roman}</span>
                     {isActCurrent && audio.isPlaying && (
                       <span className="eq-bars" aria-hidden="true">
                         <i />
@@ -445,19 +519,68 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
                         <i />
                       </span>
                     )}
-                  </button>
-                );
-              })}
-            </div>
+                  </span>
+                  <span className="story-act-rail-bar" aria-hidden="true">
+                    <span
+                      className="story-act-rail-fill"
+                      style={{ width: `${fillPct.toFixed(1)}%` }}
+                    />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-            <button
-              type="button"
-              className="story-rate-btn"
-              onClick={cycleNarrationPlaybackRate}
-              title={ui.playbackRateTitle}
+          {/* Interactive Documentary Timeline Scrubber (`mm:ss / mm:ss`) */}
+          <div className="story-scrubber-row">
+            <Volume2
+              size={12}
+              className="story-vol-icon"
+              aria-hidden="true"
+            />
+            <span
+              className="story-now-playing"
+              title={
+                isThisWeaponStoryActive
+                  ? (audio.activeLabel ?? '')
+                  : localizedStory.acts[0]?.title ?? ''
+              }
             >
-              {audio.playbackRate}x
-            </button>
+              {isThisWeaponStoryActive
+                ? audio.activeLabel
+                : (localizedStory.acts[0]?.actNumber ?? ui.badge)}
+            </span>
+            <input
+              type="range"
+              min={0}
+              max={1000}
+              value={
+                isThisWeaponStoryActive ? Math.round(audio.progress * 1000) : 0
+              }
+              onChange={(e) =>
+                handleScrubChange(Number(e.target.value) / 1000)
+              }
+              aria-label={
+                lang === 'zh'
+                  ? '纪录片语音进度条'
+                  : 'Documentary narration seek scrubber'
+              }
+              className="story-audio-slider"
+              style={
+                {
+                  '--story-scrub-pct': `${scrubProgressPct.toFixed(1)}%`,
+                } as React.CSSProperties
+              }
+            />
+            <span className="story-time-readout">
+              {formatAudioTimestamp(
+                isThisWeaponStoryActive ? audio.currentTime : 0
+              )}{' '}
+              /{' '}
+              {formatAudioTimestamp(
+                isThisWeaponStoryActive ? audio.duration : 0
+              )}
+            </span>
           </div>
 
           <div className="story-director-row">
@@ -502,37 +625,6 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
               <span>{lang === 'zh' ? '录制短片' : 'Reel'}</span>
             </button>
           </div>
-
-          {isThisWeaponStoryActive && (
-            <div className="story-scrubber-row">
-              <Volume2
-                size={12}
-                className="story-vol-icon"
-                aria-hidden="true"
-              />
-              <span
-                className="story-now-playing"
-                title={audio.activeLabel ?? ''}
-              >
-                {audio.activeLabel}
-              </span>
-              <input
-                type="range"
-                min={0}
-                max={1000}
-                value={Math.round(audio.progress * 1000)}
-                onChange={(e) =>
-                  seekNarrationAudio(Number(e.target.value) / 1000)
-                }
-                aria-label={audio.activeLabel ?? ui.badge}
-                className="story-audio-slider"
-              />
-              <span className="story-time-readout">
-                {formatAudioTime(audio.currentTime)} /{' '}
-                {formatAudioTime(audio.duration)}
-              </span>
-            </div>
-          )}
         </div>
       )}
 

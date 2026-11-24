@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useSyncExternalStore } from 'react';
+import React, { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import {
   AlertTriangle,
   Award,
+  BookOpen,
   CheckCircle2,
   FastForward,
   Info,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 import { scheduleHudBoundsRefresh } from '../../engine/callout/hudBoundsCache';
 import {
+  computeExamAccuracyPct,
   formatExamDuration,
   nowExamMs,
   useArmorerExamStore,
@@ -75,9 +77,14 @@ export const FieldStripHud: React.FC = () => {
   const lang = useAppStore((s) => s.lang);
   const setFieldStripActive = useAppStore((s) => s.setFieldStripActive);
   const openPosterModal = useAppStore((s) => s.openPosterModal);
+  const openPassportModal = useAppStore((s) => s.openPassportModal);
+
+  const [hintPulsing, setHintPulsing] = useState(false);
+  const hintTimerRef = useRef<number | null>(null);
 
   const snap = useSyncExternalStore(
     fieldStripStore.subscribe,
+    fieldStripStore.getSnapshot,
     fieldStripStore.getSnapshot
   );
 
@@ -106,11 +113,28 @@ export const FieldStripHud: React.FC = () => {
 
   useEffect(() => {
     return () => {
+      if (hintTimerRef.current !== null && typeof window !== 'undefined') {
+        window.clearTimeout(hintTimerRef.current);
+      }
       if (useArmorerExamStore.getState().fieldStripExam.active) {
         useArmorerExamStore.getState().exitBlindFieldStrip(false);
       }
     };
   }, []);
+
+  const handleHighlightNextStep = () => {
+    fieldStripStore.triggerHint();
+    setHintPulsing(true);
+    if (typeof window !== 'undefined') {
+      if (hintTimerRef.current !== null) {
+        window.clearTimeout(hintTimerRef.current);
+      }
+      hintTimerRef.current = window.setTimeout(() => {
+        setHintPulsing(false);
+        hintTimerRef.current = null;
+      }, 1700);
+    }
+  };
 
   const plan = fieldStripStore.getActivePlan(activeWeaponId);
   const ui = UI_STRINGS[lang].fieldStrip;
@@ -138,6 +162,10 @@ export const FieldStripHud: React.FC = () => {
 
   const earnedRank = exam.rank ?? 'C';
   const rankMeta = exUi.ranks[earnedRank];
+  const examAccuracyPct = computeExamAccuracyPct(
+    exam.totalActions,
+    exam.mistakeCount
+  );
 
   return (
     <div className="field-strip-hud">
@@ -321,13 +349,14 @@ export const FieldStripHud: React.FC = () => {
 
               <button
                 type="button"
-                className="fs-ctrl-btn fs-hint-btn"
-                onClick={() => fieldStripStore.triggerHint()}
+                className={`fs-ctrl-btn fs-hint-btn ${hintPulsing ? 'is-hint-active' : ''}`}
+                onClick={handleHighlightNextStep}
                 disabled={!recommendedStep}
-                title={ui.hintTitle}
+                title={exUi.common.highlightNextTitle}
+                aria-label={exUi.common.highlightNextTitle}
               >
                 <Lightbulb size={13} aria-hidden="true" />
-                <span>{ui.hintBtn}</span>
+                <span>{exUi.common.highlightNextBtn}</span>
               </button>
 
               <button
@@ -380,17 +409,31 @@ export const FieldStripHud: React.FC = () => {
           >
             <div className="exam-cert-top-row">
               <div className="exam-cert-identity">
-                <div className={`exam-rank-medallion rank-${earnedRank}`}>
-                  {earnedRank}
+                <div
+                  className={`exam-qualification-seal rank-${earnedRank}`}
+                  aria-label={exUi.common.qualificationSealLabel(earnedRank)}
+                >
+                  <div className={`exam-rank-medallion rank-${earnedRank}`}>
+                    {earnedRank}
+                  </div>
+                  <span className="exam-seal-caption">
+                    {exUi.common.qualificationSealLabel(earnedRank)}
+                  </span>
                 </div>
                 <div className="exam-cert-titles">
                   <div className="exam-cert-overline">
-                    <span>{ui.certBadge}</span>
+                    <span>{exUi.fieldStrip.certBadge}</span>
                     {exam.isNewRecord && (
                       <span className="exam-new-record-pill">
                         {exUi.common.newRecordBadge}
                       </span>
                     )}
+                    <span className="exam-cert-summary-pill">
+                      {exUi.common.accuracySummary(
+                        examAccuracyPct,
+                        formatExamDuration(exam.elapsedMs)
+                      )}
+                    </span>
                   </div>
                   <strong className="exam-cert-main-heading">
                     {rankMeta.badgeLabel} · {exUi.fieldStrip.certTitle}
@@ -412,6 +455,15 @@ export const FieldStripHud: React.FC = () => {
               <div className="exam-cert-actions">
                 <button
                   type="button"
+                  className="exam-cert-passport-btn"
+                  title={exUi.common.openPassportTitle}
+                  onClick={openPassportModal}
+                >
+                  <BookOpen size={12} aria-hidden="true" />
+                  <span>{exUi.common.openPassportBtn}</span>
+                </button>
+                <button
+                  type="button"
                   className="exam-cert-share-btn"
                   title={ui.shareCertPosterTitle}
                   onClick={() =>
@@ -422,7 +474,7 @@ export const FieldStripHud: React.FC = () => {
                   }
                 >
                   <Share2 size={12} aria-hidden="true" />
-                  <span>{ui.shareCertPosterBtn}</span>
+                  <span>{exUi.common.sharePosterBtn}</span>
                 </button>
                 <button
                   type="button"
@@ -590,7 +642,9 @@ export const FieldStripHud: React.FC = () => {
                   type="button"
                   className={`fs-step-pill ${isStripped ? 'is-stripped' : ''} ${
                     isRecommended ? 'is-recommended' : ''
-                  } ${isBlocking ? 'is-blocking' : ''}`}
+                  } ${isRecommended && hintPulsing ? 'is-hint-pulsing' : ''} ${
+                    isBlocking ? 'is-blocking' : ''
+                  }`}
                   aria-pressed={isStripped}
                   title={`${step.orderLabel} · ${title} — ${instruction}`}
                   onClick={() =>
@@ -659,6 +713,38 @@ export const FieldStripHud: React.FC = () => {
               <div className="fs-guidance-text">
                 <strong>{ui.completedTitle}</strong>
                 <span>{ui.completedDesc}</span>
+              </div>
+              <div className="exam-guided-celebration-actions">
+                <button
+                  type="button"
+                  className="exam-cert-retry-btn"
+                  onClick={() => startBlindFieldStrip(activeWeaponId)}
+                >
+                  <Award size={12} aria-hidden="true" />
+                  <span>{exUi.common.guidedStartExamBtn}</span>
+                </button>
+                <button
+                  type="button"
+                  className="exam-cert-passport-btn"
+                  title={exUi.common.openPassportTitle}
+                  onClick={openPassportModal}
+                >
+                  <BookOpen size={12} aria-hidden="true" />
+                  <span>{exUi.common.openPassportBtn}</span>
+                </button>
+                <button
+                  type="button"
+                  className="exam-cert-share-btn"
+                  onClick={() =>
+                    openPosterModal({
+                      weaponId: activeWeaponId,
+                      armorerRank: examSummary.overallRank ?? undefined,
+                    })
+                  }
+                >
+                  <Share2 size={12} aria-hidden="true" />
+                  <span>{exUi.common.sharePosterBtn}</span>
+                </button>
               </div>
             </div>
           ) : recommendedStep ? (
