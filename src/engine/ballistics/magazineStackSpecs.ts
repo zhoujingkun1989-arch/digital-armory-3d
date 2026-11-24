@@ -2,17 +2,17 @@ import type { WeaponId } from '../../weapons/types';
 import { clamp01, seg, smoothstep01 } from '../kinematics/math';
 
 // ============================================================================
-// Museum-Grade Zero-GC 3D Full-Magazine Cartridge Stack Specifications
+// Museum-Grade Zero-GC 3D Full-Magazine Cartridge Stack Specifications (34 Exhibits)
 // ============================================================================
-// Defines CAD-accurate staggered double-column (and single-column / horizontal
-// 90° helical-turret) 3D cartridge stack paths across all 11 firearms:
-//  - Curved banana arc: `ak15` (7.62×39mm)
-//  - Straight-to-arc STANAG curve: `m4a1`, `scar` (5.56×45mm NATO)
-//  - Curved bullpup waffle arc: `aug` (5.56×45mm NATO)
-//  - Curved 9mm stamped steel arc: `mp5` (9×19mm)
-//  - Raked pistol grip columns: `g17` (-20°), `p320` (-18°), `deagle` (-15° single-stack)
-//  - Straight sniper box columns: `awm` (.338 LM), `m82a1` (.50 BMG)
-//  - Horizontal top double-stack + 90° helical feed ramp turret: `p90` (5.7×28mm)
+// Defines CAD-accurate staggered double-column, single-column, tubular, revolver,
+// en-bloc, belt-chute, caseless overhead, quiver, and 90° helical-turret 3D ammo
+// stacks across 27 instanced exhibits + 7 sculptural GLB heavy-ordnance/drum/belt
+// exhibits (`ztz99a`, `m1a2`, `leopard2a7`, `tiger1`, `mg42`, `thompson`, `gau8`):
+//  - Curved banana & STANAG arcs: `ak15`, `m4a1`, `scar`, `aug`, `mp5`, `an94` (15° canted)
+//  - Raked pistol grip columns: `g17` (-20°), `p320` (-18°), `m1911` (-18° single), `deagle` (-15° single), `p08` (-35°), `vector` (+66°)
+//  - Straight rifle & internal boxes: `awm`, `m82a1`, `k98k` (5-rd staggered), `garand` (8-rd en-bloc), `vss`
+//  - Tubular & rotary: `winchester1894` (.30-30), `rem870` (12ga), `benellim4` (12ga), `python` (.357 cylinder)
+//  - Overhead / helical / chute / archery: `p90`, `g11`, `m249`, `m134`, `lift33`, `r500`
 // ============================================================================
 
 export interface ReadonlyMagazineRoundSlot {
@@ -917,7 +917,7 @@ export const MAGAZINE_STACK_SPECS: Readonly<
       gripAngleRad: P08_GRIP_RAD,
       localXCenter: -0.02,
       localYSlot1: 4.58,
-      localYBottom: -1.55,
+      localYBottom: -2.18,
       topBodyRz: 0.06,
       bottomRz: -0.26,
       zHalf: 0.055,
@@ -1106,10 +1106,10 @@ export const MAGAZINE_STACK_SPECS: Readonly<
     },
     slots: [
       makeSlot(10.6, -1.25, 0.045, 0, 0, 0),
-      makeSlot(11.8, -1.25, -0.045, 0, 0, 0),
-      makeSlot(13.0, -1.25, 0.045, 0, 0, 0),
-      makeSlot(14.2, -1.25, -0.045, 0, 0, 0),
-      makeSlot(14.2, -1.25, -0.045, 0, 0, 0),
+      makeSlot(12.0, -1.25, -0.045, 0, 0, 0),
+      makeSlot(13.4, -1.25, 0.045, 0, 0, 0),
+      makeSlot(14.8, -1.25, -0.045, 0, 0, 0),
+      makeSlot(14.8, -1.25, -0.045, 0, 0, 0),
     ],
   },
   m1911: {
@@ -1212,7 +1212,66 @@ export const MAGAZINE_STACK_SPECS: Readonly<
   },
 };
 
-/** Maximum instanced capacity needed across all 27 exhibits (`roundCount + 1` replacement) */
+/**
+ * Exhibits whose ammunition stacks/drums/belts/autoloaders are sculpted natively inside
+ * their flagship Blender Draco GLB assemblies (`roundCount: 0` in instanced column table
+ * to avoid duplicate overlapping geometry while maintaining exact BOM part bindings).
+ */
+export interface SculpturalAmmoExhibitMeta {
+  readonly weaponId: WeaponId;
+  readonly capacityRounds: number;
+  readonly systemEn: string;
+  readonly systemZh: string;
+}
+
+export const SCULPTURAL_AMMO_EXHIBITS: Readonly<
+  Partial<Record<WeaponId, SculpturalAmmoExhibitMeta>>
+> = {
+  ztz99a: {
+    weaponId: 'ztz99a',
+    capacityRounds: 22,
+    systemEn: '22-Rd Floor Carousel Autoloader (125mm Separate-Loading)',
+    systemZh: '22 发底置转盘自动装弹机（125mm 分装式弹药）',
+  },
+  m1a2: {
+    weaponId: 'm1a2',
+    capacityRounds: 42,
+    systemEn: 'Turret Bustle Blast-Door Ready Rack (120mm NATO)',
+    systemZh: '隔爆泄压尾舱待发弹药架（120mm 整装弹）',
+  },
+  leopard2a7: {
+    weaponId: 'leopard2a7',
+    capacityRounds: 42,
+    systemEn: '15-Rd Bustle Ready Rack + 27-Rd Hull Stowage (120mm L/55A1)',
+    systemZh: '15 发尾舱待发架 + 27 发车体前部弹药库（120mm）',
+  },
+  tiger1: {
+    weaponId: 'tiger1',
+    capacityRounds: 92,
+    systemEn: '92-Rd Sponson & Hull Racks (88×571mmR PzGr. 39)',
+    systemZh: '92 发翼子板与车体侧甲弹药架（88mm 穿甲弹）',
+  },
+  mg42: {
+    weaponId: 'mg42',
+    capacityRounds: 50,
+    systemEn: '50-Rd Gurttrommel 34 Saddle Drum & Gurt 34 Steel Belt (7.92×57mm)',
+    systemZh: '50 发 Gurttrommel 34 侧挂弹鼓与 Gurt 34 金属弹链（7.92×57mm）',
+  },
+  thompson: {
+    weaponId: 'thompson',
+    capacityRounds: 50,
+    systemEn: '50-Rd L-Type Clockwork Spiral Drum (0.45 ACP)',
+    systemZh: '50 发 L 型发条蜗壳螺旋弹鼓（.45 ACP）',
+  },
+  gau8: {
+    weaponId: 'gau8',
+    capacityRounds: 1150,
+    systemEn: '1,150-Rd Closed-Loop Linkless Helical Drum & Chute (30×173mm)',
+    systemZh: '1,150 发闭环无链螺旋弹鼓与输弹导槽（30×173mm）',
+  },
+};
+
+/** Maximum instanced capacity needed across all 34 exhibits (`roundCount + 1` replacement) */
 export const MAX_MAGAZINE_STACK_INSTANCES = 48;
 
 /**

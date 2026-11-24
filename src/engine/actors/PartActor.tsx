@@ -24,6 +24,11 @@ import {
   isGlbDynamicSpringPart,
 } from '../geometry/glbAssetService';
 import { createMutablePose, evaluatePartPoseInto } from '../kinematics/math';
+import {
+  getCursorForPartHover,
+  interactiveActionStore,
+  isWeaponActionPart,
+} from '../interaction/InteractiveActionController';
 import { malfunctionStore } from '../malfunctions/malfunctionStore';
 import { isTankWeapon } from '../physics/armoryPhysics';
 import {
@@ -193,6 +198,62 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
 
 const _caliperWorldNormal = new THREE.Vector3(0, 1, 0);
 
+export interface InteractiveHandleSheenInput {
+  screen: string;
+  mode: string;
+  isHovered: boolean;
+  isDraggingThisHandle: boolean;
+  isActionPart: boolean;
+  isGhostByIsolate: boolean;
+  fieldStripActive: boolean;
+  caliperActive: boolean;
+  malfunctionActive: boolean;
+  isFiringPlaying: boolean;
+  explodeProgress: number;
+}
+
+/**
+ * Pure gating predicate for the subtle warm metallic sheen affordance cue on
+ * interactive 3D grab handles (slide / charging handle / bolt / lever / forend / breech).
+ * Active ONLY when hovered or dragged in paused firing mode or assembled press-check state
+ * (`explodeProgress < 0.05`) and never during field-strip, caliper, or malfunction modes.
+ */
+export function shouldShowInteractiveHandleSheen(
+  input: Readonly<InteractiveHandleSheenInput>
+): boolean {
+  if (!input.isActionPart) return false;
+  if (input.screen !== 'workbench') return false;
+  if (
+    input.isGhostByIsolate ||
+    input.fieldStripActive ||
+    input.caliperActive ||
+    input.malfunctionActive ||
+    input.isFiringPlaying
+  ) {
+    return false;
+  }
+  if (!input.isHovered && !input.isDraggingThisHandle) return false;
+  if (input.mode === 'firing') return true;
+  return input.mode === 'explode' && input.explodeProgress < 0.05;
+}
+
+const INTERACTIVE_HANDLE_SHEEN_HEX = 0xd99a4e;
+
+// Module-pooled scratch struct for Zero-GC useFrame sheen checks
+const _sheenQuery: InteractiveHandleSheenInput = {
+  screen: 'armory',
+  mode: 'explode',
+  isHovered: false,
+  isDraggingThisHandle: false,
+  isActionPart: false,
+  isGhostByIsolate: false,
+  fieldStripActive: false,
+  caliperActive: false,
+  malfunctionActive: false,
+  isFiringPlaying: false,
+  explodeProgress: 0,
+};
+
 export function sectionAwareMeshRaycast(
   this: THREE.Mesh,
   raycaster: THREE.Raycaster,
@@ -267,6 +328,10 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     const partRole = useMemo(
       () => resolvePartEngineeringRole(weaponId, part),
       [weaponId, part]
+    );
+    const isActionPart = useMemo(
+      () => isWeaponActionPart(weaponId, part.id),
+      [weaponId, part.id]
     );
 
     const isGlbAsset = geometry?.userData?.isGlbAsset === true;
@@ -591,10 +656,40 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
             mat.emissiveIntensity = 0.22;
           }
           hadTransientHighlightRef.current = true;
-        } else if (hadTransientHighlightRef.current) {
-          mat.emissive.set(baseEmissiveRef.current);
-          mat.emissiveIntensity = baseEmissiveIntensityRef.current;
-          hadTransientHighlightRef.current = false;
+        } else {
+          const hoveredNow = appState.hoveredPartId === part.id;
+          const draggingActionNow =
+            interactiveActionStore.getSnapshot().isDraggingAction;
+          _sheenQuery.screen = appState.screen;
+          _sheenQuery.mode = appState.mode;
+          _sheenQuery.isHovered = hoveredNow;
+          _sheenQuery.isDraggingThisHandle = draggingActionNow && hoveredNow;
+          _sheenQuery.isActionPart = isActionPart;
+          _sheenQuery.isGhostByIsolate =
+            appState.screen === 'workbench' &&
+            appState.isolateSelected &&
+            appState.selectedPartId !== null &&
+            appState.selectedPartId !== part.id;
+          _sheenQuery.fieldStripActive = appState.fieldStripActive;
+          _sheenQuery.caliperActive = appState.caliperActive;
+          _sheenQuery.malfunctionActive = appState.malfunctionActive;
+          _sheenQuery.isFiringPlaying = appState.isFiringPlaying;
+          _sheenQuery.explodeProgress = clock.animatedProgress;
+
+          if (shouldShowInteractiveHandleSheen(_sheenQuery)) {
+            mat.emissive.setHex(INTERACTIVE_HANDLE_SHEEN_HEX);
+            if (_sheenQuery.isDraggingThisHandle) {
+              mat.emissiveIntensity = 0.22;
+            } else {
+              const breathe = 0.5 + 0.5 * Math.sin(nowMs * 0.0055);
+              mat.emissiveIntensity = 0.11 + 0.065 * breathe;
+            }
+            hadTransientHighlightRef.current = true;
+          } else if (hadTransientHighlightRef.current) {
+            mat.emissive.set(baseEmissiveRef.current);
+            mat.emissiveIntensity = baseEmissiveIntensityRef.current;
+            hadTransientHighlightRef.current = false;
+          }
         }
       }
 
@@ -673,7 +768,14 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
         return;
       }
       hoverPart(part.id);
-      document.body.style.cursor = st.caliperActive ? 'crosshair' : 'pointer';
+      const explodeProgress = playbackClock.getState().animatedProgress;
+      const isDragging = interactiveActionStore.getSnapshot().isDraggingAction;
+      document.body.style.cursor = getCursorForPartHover(
+        st,
+        part.id,
+        explodeProgress,
+        isDragging
+      );
     };
 
     const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
@@ -707,7 +809,9 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       if (st.caliperActive) {
         caliperStore.clearTransientHover(part.id);
       }
-      document.body.style.cursor = 'auto';
+      if (!interactiveActionStore.getSnapshot().isDraggingAction) {
+        document.body.style.cursor = 'auto';
+      }
     };
 
     const handleClick = (e: ThreeEvent<MouseEvent>) => {
