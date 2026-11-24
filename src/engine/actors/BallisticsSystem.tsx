@@ -15,7 +15,12 @@ import {
 } from '../attachments/attachmentStore';
 import { playBrassCasingBounceSound } from '../audio/mechanicalSoundEngine';
 import { lockLinearTextureColorSpace } from '../materials/pbrManager';
-import { GasFlowVisualizer } from './GasFlowVisualizer';
+import {
+  GasFlowVisualizer,
+  createMutableInBoreDeflagrationSample,
+  inBoreColorTempToRgbInto,
+  writeInBoreDeflagrationSampleInto,
+} from './GasFlowVisualizer';
 import {
   SMOKE_WISP_POOL_SIZE,
   SPENT_CASING_POOL_SIZE,
@@ -2522,6 +2527,11 @@ export const CHAMBER_IGNITION_LIGHT_COLOR = '#ff9c42';
 export const CHAMBER_IGNITION_WINDOW_START = 0.04;
 export const CHAMBER_IGNITION_WINDOW_END = 0.24;
 
+// Zero-GC module-pooled scratch objects for Cycle 15A in-bore tracking bounce light
+const _ballisticsInBoreSample = createMutableInBoreDeflagrationSample();
+const _chamberLightColor = new THREE.Color(CHAMBER_IGNITION_LIGHT_COLOR);
+const _chamberDefaultColor = new THREE.Color(CHAMBER_IGNITION_LIGHT_COLOR);
+
 export type CaliberVfxTier =
   | 'archery'
   | 'pistol'
@@ -3231,7 +3241,8 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       state.screen === 'workbench' &&
       state.mode === 'firing' &&
       !state.malfunctionActive;
-    const f = playbackClock.getState().animatedFireProgress;
+    const clock = playbackClock.getState();
+    const f = clock.animatedFireProgress;
 
     const inp = _physicsInput;
     inp.weaponId = weaponId;
@@ -3284,7 +3295,8 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     const plugin = getLoadedWeaponPlugin(weaponId);
     if (!plugin) return;
 
-    const f = playbackClock.getState().animatedFireProgress;
+    const clock = playbackClock.getState();
+    const f = clock.animatedFireProgress;
     const curManifest = getWeaponManifest(weaponId);
     const curProfile = curManifest.caliberProfile;
     const curMeta = curManifest.workbenchMeta;
@@ -3420,12 +3432,54 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         isCutawayOrXray,
         Math.max(st.chamberFlashIntensity, p01)
       );
-      chamberLightRef.current.intensity = bounceIntensity;
-      chamberLightRef.current.position.set(
-        curMeta.chamberGlowPos[0] + muzzleShiftX * 0.65 + (isTank ? 4.0 : 0.3),
-        curMeta.chamberGlowPos[1],
-        curMeta.chamberGlowPos[2] + (isTank ? 16.0 : 1.15)
+      const isCutawayZ = state.sectionCut && state.sectionCutAxis === 'z';
+      writeInBoreDeflagrationSampleInto(
+        weaponId,
+        f,
+        isArchery ? 0 : p01,
+        isArchery ? 0 : ib.boreTravelRatio,
+        isCutawayZ,
+        _ballisticsInBoreSample,
+        clock.animatedProgress
       );
+      if (_ballisticsInBoreSample.active) {
+        const trackX = _ballisticsInBoreSample.columnActive
+          ? _ballisticsInBoreSample.columnStartX +
+            (_ballisticsInBoreSample.columnEndX -
+              _ballisticsInBoreSample.columnStartX) *
+              0.42
+          : _ballisticsInBoreSample.primerFlashX;
+        const zSide = state.sectionCutFlip ? -1 : 1;
+        const inBoreBoost =
+          calVfx.chamberBouncePeak *
+          Math.max(
+            _ballisticsInBoreSample.primerFlashIntensity01 * 0.95,
+            _ballisticsInBoreSample.columnIntensity01 * 0.85
+          );
+        chamberLightRef.current.intensity = Math.max(
+          bounceIntensity,
+          inBoreBoost
+        );
+        chamberLightRef.current.color.copy(
+          inBoreColorTempToRgbInto(
+            _ballisticsInBoreSample.colorTempK,
+            _chamberLightColor
+          )
+        );
+        chamberLightRef.current.position.set(
+          trackX + muzzleShiftX * 0.65,
+          _ballisticsInBoreSample.boreY,
+          _ballisticsInBoreSample.boreZ + zSide * (isTank ? 16.0 : 1.15)
+        );
+      } else {
+        chamberLightRef.current.intensity = bounceIntensity;
+        chamberLightRef.current.color.copy(_chamberDefaultColor);
+        chamberLightRef.current.position.set(
+          curMeta.chamberGlowPos[0] + muzzleShiftX * 0.65 + (isTank ? 4.0 : 0.3),
+          curMeta.chamberGlowPos[1],
+          curMeta.chamberGlowPos[2] + (isTank ? 16.0 : 1.15)
+        );
+      }
     }
 
     // 3b. Gas-block / piston port tap glow (driven by quantitative port pressure; also bore evacuator purge on MBTs)
@@ -3800,7 +3854,12 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       </group>
 
       {/* Supersonic Projectile Motion Trail / Aerodynamic Arrow Air-Wake */}
-      <mesh ref={streakMeshRef} visible={false} renderOrder={8}>
+      <mesh
+        ref={streakMeshRef}
+        visible={false}
+        userData={{ excludeFromGtao: true }}
+        renderOrder={8}
+      >
         <boxGeometry args={[1, 1, 1]} />
         <meshBasicMaterial
           color={isArcheryActive ? '#e2e8f0' : '#ea580c'}
@@ -3811,7 +3870,13 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       </mesh>
 
       {/* 3. Internal Chamber Ignition Glow */}
-      <mesh ref={chamberFlashRef} position={meta.chamberGlowPos} visible={false} renderOrder={9}>
+      <mesh
+        ref={chamberFlashRef}
+        position={meta.chamberGlowPos}
+        visible={false}
+        userData={{ excludeFromGtao: true }}
+        renderOrder={9}
+      >
         <sphereGeometry args={[0.52, 16, 12]} />
         <meshBasicMaterial
           color="#f97316"
@@ -3842,7 +3907,12 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       />
 
       {/* 3b. Gas-Block / Piston Port Tap Impulse Glow */}
-      <mesh ref={gasPortFlashRef} visible={false} renderOrder={9}>
+      <mesh
+        ref={gasPortFlashRef}
+        visible={false}
+        userData={{ excludeFromGtao: true }}
+        renderOrder={9}
+      >
         <sphereGeometry args={[0.48, 16, 12]} />
         <meshBasicMaterial
           color="#fb923c"
