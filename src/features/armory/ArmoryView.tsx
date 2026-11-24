@@ -54,6 +54,7 @@ import {
 import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { useBrowserFullscreen } from '../../app/useFullscreen';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import { WEAPON_RIFLING_SPECS } from '../../engine/ballistics/riflingSpecs';
 import { scheduleHudBoundsRefresh } from '../../engine/callout/hudBoundsCache';
 import {
   ARMORY_ENVIRONMENT_PRESETS,
@@ -328,7 +329,17 @@ export const ArmoryRackBayCard = React.memo<ArmoryRackBayCardProps>(
 );
 ArmoryRackBayCard.displayName = 'ArmoryRackBayCard';
 
-export const ArmoryView: React.FC = () => {
+export interface ArmoryViewProps {
+  /** Optional exhibit override for deterministic SSR/unit verification */
+  weaponIdOverride?: WeaponId;
+  /** Optional language override for deterministic SSR/unit verification */
+  langOverride?: LanguageCode;
+}
+
+export const ArmoryView: React.FC<ArmoryViewProps> = ({
+  weaponIdOverride,
+  langOverride,
+}) => {
   const [category, setCategory] = useState<ArmoryFilterKey>('all');
   const [plannedToast, setPlannedToast] = useState<string | null>(null);
   const [showdownRequest, setShowdownRequest] = useState<{
@@ -349,8 +360,10 @@ export const ArmoryView: React.FC = () => {
   const mobileDrawerRef = useRef<HTMLDivElement>(null);
   const mobileDrawerTitleId = useId();
 
-  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
-  const lang = useAppStore((s) => s.lang);
+  const storeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const storeLang = useAppStore((s) => s.lang);
+  const activeWeaponId = weaponIdOverride ?? storeWeaponId;
+  const lang = langOverride ?? storeLang;
   const storyOpen = useAppStore((s) => s.storyOpen);
   const toggleStoryOpen = useAppStore((s) => s.toggleStoryOpen);
   const setStoryOpen = useAppStore((s) => s.setStoryOpen);
@@ -1400,6 +1413,30 @@ export const ArmoryView: React.FC = () => {
               <span className="spec-k">{plaqueUi.mechanismLabel}</span>
               <span className="spec-v">{featuredDisplay.actionMechanism}</span>
             </div>
+            {WEAPON_RIFLING_SPECS[featuredWeapon.id].kind !== 'none' && (
+              <div
+                className="plaque-spec-cell full plaque-rifling-cell"
+                data-testid="armory-plaque-rifling-row"
+                data-rifling-kind={WEAPON_RIFLING_SPECS[featuredWeapon.id].kind}
+              >
+                <span className="spec-k plaque-rifling-head">
+                  <span>{lang === 'en' ? 'Bore & Rifling' : '膛线规格'}</span>
+                  <span className="plaque-rifling-meta">
+                    Ø{WEAPON_RIFLING_SPECS[featuredWeapon.id].boreDiameterMm} mm
+                    {WEAPON_RIFLING_SPECS[featuredWeapon.id].chromeLined
+                      ? lang === 'en'
+                        ? ' · Chrome'
+                        : ' · 镀铬'
+                      : ''}
+                  </span>
+                </span>
+                <span className="spec-v plaque-rifling-value">
+                  {lang === 'en'
+                    ? WEAPON_RIFLING_SPECS[featuredWeapon.id].labelEn
+                    : WEAPON_RIFLING_SPECS[featuredWeapon.id].labelZh}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="plaque-metrology-box">
