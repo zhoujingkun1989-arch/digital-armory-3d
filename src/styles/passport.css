@@ -760,16 +760,32 @@
 
   .passport-mastery-banner {
     flex-direction: column;
+    flex-wrap: nowrap;
     align-items: stretch;
-    padding: 10px 12px;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    gap: 11px;
+    padding: 12px 13px;
+  }
+
+  /* Reset desktop row flex-basis (280px) so column layout never reserves 280px of empty vertical air */
+  .passport-ring-cluster {
+    flex: 0 0 auto;
+    width: 100%;
+    gap: 12px;
   }
 
   .passport-next-drill-btn {
     width: 100%;
-    min-height: 36px;
+    min-height: 38px;
     min-width: 36px;
     white-space: normal;
     text-align: center;
+  }
+
+  .passport-all-clear-pill {
+    width: 100%;
+    justify-content: center;
   }
 
   .passport-filter-pill,
@@ -781,6 +797,37 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .passport-header {
+    padding: 13px 14px;
+    gap: 10px;
+  }
+
+  .passport-body {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .passport-mastery-banner {
+    gap: 10px;
+    padding: 11px 12px;
+  }
+
+  .passport-ring-wrap {
+    width: 68px;
+    height: 68px;
+  }
+
+  .passport-ring-center strong {
+    font-size: 14.5px;
+  }
+
+  .passport-next-drill-btn {
+    min-height: 40px;
+    padding: 8px 12px;
   }
 }
 

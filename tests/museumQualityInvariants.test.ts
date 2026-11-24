@@ -384,8 +384,8 @@ describe('Permanent Repository-Wide Museum Quality Invariants Gate', () => {
     });
   });
 
-  describe('6. 41/41 Flagship docs/screenshots/*.jpg On-Disk 1920×1080 JPEG Contract', () => {
-    it('verifies all 41 FLAGSHIP_DOC_SHOTS exist non-empty on disk at exact 1920×1080 JPEG dimensions', async () => {
+  describe('6. 43/43 Flagship docs/screenshots/*.jpg On-Disk 1920×1080 JPEG Contract', () => {
+    it('verifies all 43 FLAGSHIP_DOC_SHOTS exist non-empty on disk at exact 1920×1080 JPEG dimensions', async () => {
       const captureMod = (await import(
         pathToFileURL(
           path.join(REPO_ROOT, 'scripts', 'capture_flagship_docs_screenshots.mjs')
@@ -405,13 +405,13 @@ describe('Permanent Repository-Wide Museum Quality Invariants Gate', () => {
         ) => { width: number; height: number } | null;
       };
 
-      expect(captureMod.FLAGSHIP_DOC_SHOTS).toHaveLength(41);
+      expect(captureMod.FLAGSHIP_DOC_SHOTS).toHaveLength(43);
       expect(
         captureMod.FLAGSHIP_DOC_SHOTS.filter((s) => s.group === 'core')
       ).toHaveLength(5);
       expect(
         captureMod.FLAGSHIP_DOC_SHOTS.filter((s) => s.group === 'sculptures')
-      ).toHaveLength(25);
+      ).toHaveLength(27);
       expect(
         captureMod.FLAGSHIP_DOC_SHOTS.filter((s) => s.group === 'labs')
       ).toHaveLength(11);
