@@ -643,6 +643,7 @@ a {
     min-height: 48px;
   }
 
+  .armory-header .armory-halls-wrap,
   .armory-header .armory-halls-strip,
   .armory-header .armory-desktop-ctrl,
   .armory-header .armory-desktop-lang {
@@ -742,6 +743,26 @@ a {
 
   .top-bar .wb-mobile-actions {
     display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .top-bar .wb-mobile-actions .wb-mobile-cut-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    gap: 0;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    min-height: 40px;
+    border-radius: 9px;
+  }
+
+  .top-bar .wb-mobile-actions .wb-mobile-cut-btn svg {
+    margin: 0;
+    flex-shrink: 0;
   }
 
   .top-bar:not(.is-mobile-expanded) .toolbar-cluster-primary,
@@ -1136,12 +1157,9 @@ dialog::backdrop {
   .top-bar .lang-seg-btn,
   .armory-mobile-menu-btn,
   .armory-drawer-close-btn,
-  .wb-mobile-cut-btn,
   .wb-mobile-drawer-btn,
   .armory-quick-enter-btn,
   .armor-pen-reset-btn,
-  .armory-drawer-close-btn,
-  .wb-mobile-cut-btn,
   .armor-pen-close-btn,
   .armor-view-tab,
   .armor-theater-play-btn,
@@ -1178,7 +1196,6 @@ dialog::backdrop {
   }
 
   .armory-drawer-close-btn,
-  .wb-mobile-cut-btn,
   .armor-pen-close-btn,
   .armor-theater-icon-btn,
   .timeline-close-btn,
@@ -1195,6 +1212,21 @@ dialog::backdrop {
 }
 
 @media (max-width: 640px) {
+  .armory-header .armory-title-desktop,
+  .armory-header .armory-enter-desktop {
+    display: none;
+  }
+
+  .armory-header .armory-title-mobile,
+  .armory-header .armory-enter-mobile {
+    display: inline;
+  }
+
+  .armory-header .armory-quick-enter-btn {
+    padding-inline: 10px;
+    white-space: nowrap;
+  }
+
   .armory-filter-btn,
   .armory-actions-utility .armory-showcase-btn,
   .armory-actions-utility .armory-story-btn,
@@ -1227,7 +1259,6 @@ dialog::backdrop {
   .armory-showdown-btn,
   .armory-mobile-menu-btn,
   .armory-drawer-close-btn,
-  .wb-mobile-cut-btn,
   .wb-mobile-drawer-btn,
   .armory-quick-enter-btn,
   .armory-ctrl-chip,
@@ -1266,7 +1297,6 @@ dialog::backdrop {
 
   .armory-mobile-menu-btn,
   .armory-drawer-close-btn,
-  .wb-mobile-cut-btn,
   .wb-mobile-drawer-btn,
   .armory-quick-enter-btn,
   .plaque-primary-cta,

@@ -317,7 +317,6 @@ export const SplitShowdownOverlay: React.FC = () => {
             <span>{ui.backMatrix}</span>
           </button>
 
-          <StudioEnvironmentBar compact />
           <LanguageSwitchPill compact />
 
           <button
@@ -401,6 +400,10 @@ export const SplitShowdownOverlay: React.FC = () => {
         </div>
 
         <div className="split-topbar-right">
+          <div className="split-env-cluster-wrap">
+            <StudioEnvironmentBar compact />
+          </div>
+
           <button
             type="button"
             className={`split-btn ${linkedOrbit ? 'is-active' : ''}`}

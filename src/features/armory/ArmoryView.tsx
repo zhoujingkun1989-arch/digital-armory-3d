@@ -328,8 +328,10 @@ export const ArmoryView: React.FC = () => {
     null
   );
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false);
+  const [canScrollHallsRight, setCanScrollHallsRight] = useState<boolean>(true);
 
   const rackScrollRef = useRef<HTMLDivElement>(null);
+  const hallsScrollRef = useRef<HTMLDivElement>(null);
   const labsPopoverRef = useRef<HTMLDivElement>(null);
   const displayPopoverRef = useRef<HTMLDivElement>(null);
   const mobileDrawerRef = useRef<HTMLDivElement>(null);
@@ -469,6 +471,22 @@ export const ArmoryView: React.FC = () => {
   useEffect(() => {
     scheduleHudBoundsRefresh();
   }, [category, lang]);
+
+  useEffect(() => {
+    const el = hallsScrollRef.current;
+    if (!el) return;
+    const syncScrollCue = () => {
+      const remaining = el.scrollWidth - el.scrollLeft - el.clientWidth;
+      setCanScrollHallsRight(remaining > 6);
+    };
+    syncScrollCue();
+    el.addEventListener('scroll', syncScrollCue, { passive: true });
+    window.addEventListener('resize', syncScrollCue, { passive: true });
+    return () => {
+      el.removeEventListener('scroll', syncScrollCue);
+      window.removeEventListener('resize', syncScrollCue);
+    };
+  }, [lang]);
 
   // Armory keyboard shortcut `[S]` opens Mechanism Showdown without conflicting with `[M]` (SFX mute)
   useEffect(() => {
@@ -955,48 +973,73 @@ export const ArmoryView: React.FC = () => {
         <div className="brand-block armory-brand-block">
           <div className="brand-badge armory-vault-badge">DIGITAL ARMORY</div>
           <div className="armory-brand-titles">
-            <h1 className="brand-title">{ui.title}</h1>
+            <h1 className="brand-title">
+              <span className="armory-title-desktop">{ui.title}</span>
+              <span className="armory-title-mobile">{ui.mobileTitle}</span>
+            </h1>
             <p className="brand-sub">{ui.subtitle}</p>
           </div>
         </div>
 
-        {/* Compact Single-Row Scrollable Hall Category Tabs (Desktop > 1024px) */}
-        <div className="armory-halls-strip">
-          <div
-            className="armory-filter-pills"
-            role="tablist"
-            aria-label={ui.filterAria}
-          >
-            {CATEGORY_KEYS.map((key) => {
-              const count = categoryCounts[key];
-              if (count === 0 && key !== 'all' && category !== key) {
-                return null;
-              }
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  role="tab"
-                  aria-selected={category === key}
-                  className={`armory-filter-btn ${
-                    key === 'armor' || key === 'ordnance' ? 'is-armor-pill' : ''
-                  } ${category === key ? 'active' : ''}`}
-                  onClick={() => setCategory(key)}
-                >
-                  {(key === 'armor' || key === 'ordnance') && (
-                    <Shield
-                      size={11}
-                      className="filter-pill-icon"
-                      aria-hidden="true"
-                    />
-                  )}
-                  <span>
-                    {ui.categories[key]} ({count})
-                  </span>
-                </button>
-              );
-            })}
+        {/* Compact Single-Row Scrollable Hall Category Tabs (Desktop > 1024px) with right-edge scroll cue */}
+        <div className="armory-halls-wrap">
+          <div ref={hallsScrollRef} className="armory-halls-strip">
+            <div
+              className="armory-filter-pills"
+              role="tablist"
+              aria-label={ui.filterAria}
+            >
+              {CATEGORY_KEYS.map((key) => {
+                const count = categoryCounts[key];
+                if (count === 0 && key !== 'all' && category !== key) {
+                  return null;
+                }
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    role="tab"
+                    aria-selected={category === key}
+                    className={`armory-filter-btn ${
+                      key === 'armor' || key === 'ordnance'
+                        ? 'is-armor-pill'
+                        : ''
+                    } ${category === key ? 'active' : ''}`}
+                    onClick={() => setCategory(key)}
+                  >
+                    {(key === 'armor' || key === 'ordnance') && (
+                      <Shield
+                        size={11}
+                        className="filter-pill-icon"
+                        aria-hidden="true"
+                      />
+                    )}
+                    <span>
+                      {ui.categories[key]} ({count})
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
+
+          <button
+            type="button"
+            className={`armory-halls-scroll-cue ${
+              canScrollHallsRight ? '' : 'is-hidden'
+            }`}
+            aria-label={ui.hallsScrollMoreAria}
+            title={ui.hallsScrollMoreAria}
+            tabIndex={canScrollHallsRight ? 0 : -1}
+            onClick={() => {
+              hallsScrollRef.current?.scrollBy({
+                left: 260,
+                behavior: 'smooth',
+              });
+            }}
+          >
+            <ChevronRight size={13} aria-hidden="true" />
+          </button>
         </div>
 
         {/* Right Luxury Control Cluster: Cmd+K, Labs ▾, Display ▾, Lang, Inspect CTA (+ Mobile Drawer Trigger) */}
@@ -1134,7 +1177,12 @@ export const ArmoryView: React.FC = () => {
             onClick={() => enterWorkbench(featuredWeapon.id)}
           >
             <Wrench size={13} aria-hidden="true" />
-            <span>{ui.enterBenchBtn(shortWeaponTag)}</span>
+            <span className="armory-enter-desktop">
+              {ui.enterBenchBtn(shortWeaponTag)}
+            </span>
+            <span className="armory-enter-mobile">
+              {ui.mobileEnterBenchBtn}
+            </span>
             <ArrowRight size={13} aria-hidden="true" />
           </button>
         </div>

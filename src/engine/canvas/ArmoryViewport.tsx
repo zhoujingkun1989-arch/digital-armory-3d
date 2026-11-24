@@ -9,6 +9,7 @@ import { getLoadedWeaponPlugin, useWeaponPlugin } from '../../weapons/registry';
 import type {
   CameraPresetType,
   WeaponCameraMap,
+  WeaponId,
   WeaponScaleProfile,
 } from '../../weapons/types';
 import {
@@ -137,16 +138,42 @@ const _thermalSync: ArmoryThermalVisualState = {
   carbonFouling01: 0,
 };
 
+export const TALL_GRIP_PISTOL_IDS: ReadonlySet<WeaponId> = new Set<WeaponId>([
+  'p08',
+  'deagle',
+  'm1911',
+  'g17',
+  'p320',
+  'python',
+]);
+export const TALL_GRIP_CT_EXTRA_CLEARANCE_CM = 1.4;
+export const WORKBENCH_ENTRY_EASE_DURATION_S = 0.55;
+
+/**
+ * Deterministic cubic ease-out (`1 - (1 - u)^3`) for smooth ~0.55s
+ * Armory / Showcase -> Workbench camera and perspective view-offset easing.
+ */
+export function evaluateCameraEaseProgress(
+  elapsedS: number,
+  durationS = WORKBENCH_ENTRY_EASE_DURATION_S
+): number {
+  if (durationS <= 0) return 1;
+  const u = Math.min(1, Math.max(0, elapsedS / durationS));
+  const inv = 1 - u;
+  return 1 - inv * inv * inv;
+}
+
 /**
  * Computes a scale-aware negative camera/target Y shift when Workbench live CT
  * `.live-section-bar` is visible above `TimelineDock`, lifting the exhibit (~11%
- * of visible frame height) so pistol grips (P08/M1911/G17/Deagle/P320) and lower
- * silhouettes sit cleanly above the bottom CT control bar with zero HUD collision.
+ * of visible frame height, plus `+1.4 cm` extra clearance for tall-grip pistols)
+ * so P08/M1911/G17/Deagle/P320/Python grips sit cleanly above the bottom CT bar.
  */
 export function computeWorkbenchSectionBarOffsetY(
   scaleProfile: WeaponScaleProfile,
   preset: CameraPresetType,
-  sectionCutActive: boolean
+  sectionCutActive: boolean,
+  weaponId?: WeaponId | string | null
 ): number {
   if (!sectionCutActive || preset === 'top' || preset === 'armory_showcase') {
     return 0;
@@ -161,8 +188,13 @@ export function computeWorkbenchSectionBarOffsetY(
   if (scaleProfile === 'compound_bow' || scaleProfile === 'rifle') {
     return isClose ? -1.7 : -2.8;
   }
-  // Pistols, revolvers, SMGs & compact platforms (p08, m1911, g17, deagle, p320, etc.)
-  return isClose ? -1.65 : -2.35;
+  // Pistols, revolvers, SMGs & compact platforms (p08, m1911, g17, deagle, p320, python)
+  const baseLift = isClose ? -1.65 : -2.35;
+  const tallGripExtra =
+    weaponId && TALL_GRIP_PISTOL_IDS.has(weaponId as WeaponId)
+      ? -TALL_GRIP_CT_EXTRA_CLEARANCE_CM
+      : 0;
+  return baseLift + tallGripExtra;
 }
 
 function applyWorkbenchFraming(
@@ -173,7 +205,8 @@ function applyWorkbenchFraming(
   aspect: number,
   goalTarget: THREE.Vector3,
   goalPos: THREE.Vector3,
-  sectionCutActive = false
+  sectionCutActive = false,
+  weaponId?: WeaponId
 ): void {
   const isFixedClosePreset =
     preset === 'cutaway_focus' || preset === 'firing_view';
@@ -218,7 +251,8 @@ function applyWorkbenchFraming(
   const sectionBarOffsetY = computeWorkbenchSectionBarOffsetY(
     scaleProfile,
     preset,
-    sectionCutActive
+    sectionCutActive,
+    weaponId
   );
   const finalXShift = isFixedClosePreset ? 0 : xShift;
   const finalYShift =
@@ -248,14 +282,48 @@ const DisassemblyRig: React.FC = () => {
   const hasSnappedInitialRef = useRef<boolean>(false);
   const userOrbitedRef = useRef<boolean>(false);
   const lastFramedTRef = useRef<number>(0);
+  const prevScreenRef = useRef<AppScreen>(useAppStore.getState().screen);
 
-  // Cartesian fly-to state for Workbench presets & part inspection focus
+  // Zero-GC perspective view-offset easing (smoothly dissolves Armory plaque offset on Workbench entry)
+  const viewOffsetRef = useRef<{
+    active: boolean;
+    curX: number;
+    curY: number;
+    startX: number;
+    startY: number;
+    goalX: number;
+    goalY: number;
+    elapsed: number;
+    duration: number;
+  }>({
+    active: false,
+    curX: 0,
+    curY: 0,
+    startX: 0,
+    startY: 0,
+    goalX: 0,
+    goalY: 0,
+    elapsed: 0,
+    duration: WORKBENCH_ENTRY_EASE_DURATION_S,
+  });
+
+  // Cartesian fly-to state for Workbench presets, smooth 0.55s Armory->Workbench hero ease & part focus
   const flyRef = useRef<{
     active: boolean;
+    timed: boolean;
+    elapsed: number;
+    duration: number;
+    startPos: THREE.Vector3;
+    startTarget: THREE.Vector3;
     goalPos: THREE.Vector3;
     goalTarget: THREE.Vector3;
   }>({
     active: false,
+    timed: false,
+    elapsed: 0,
+    duration: WORKBENCH_ENTRY_EASE_DURATION_S,
+    startPos: new THREE.Vector3(14.5, 2.2, 54.0),
+    startTarget: new THREE.Vector3(3.2, -5.2, 0),
     goalPos: new THREE.Vector3(14.5, 2.2, 54.0),
     goalTarget: new THREE.Vector3(3.2, -5.2, 0),
   });
@@ -345,7 +413,12 @@ const DisassemblyRig: React.FC = () => {
 
     const perspCam = camera as THREE.PerspectiveCamera;
     perspCam.clearViewOffset();
+    viewOffsetRef.current.active = false;
+    viewOffsetRef.current.curX = 0;
+    viewOffsetRef.current.curY = 0;
+    prevScreenRef.current = 'cartridges';
     turntableRigRef.current.active = false;
+    flyRef.current.timed = false;
     userOrbitedRef.current = false;
 
     const aspect = Math.max(0.45, size.width / Math.max(1, size.height));
@@ -407,6 +480,7 @@ const DisassemblyRig: React.FC = () => {
       screen !== 'armory' &&
       screen !== 'workbench'
     ) {
+      prevScreenRef.current = screen;
       return;
     }
     const manifest = getWeaponManifest(activeWeaponId);
@@ -443,6 +517,11 @@ const DisassemblyRig: React.FC = () => {
         size.width,
         size.height
       );
+      viewOffsetRef.current.active = false;
+      viewOffsetRef.current.curX = tf.viewOffsetX;
+      viewOffsetRef.current.curY = tf.viewOffsetY;
+      viewOffsetRef.current.goalX = tf.viewOffsetX;
+      viewOffsetRef.current.goalY = tf.viewOffsetY;
 
       turntableRigRef.current.goalTarget.set(
         tf.targetX,
@@ -452,6 +531,7 @@ const DisassemblyRig: React.FC = () => {
       turntableRigRef.current.goalHorizRadius = tf.horizRadius;
       turntableRigRef.current.goalOffsetY = tf.offsetY;
       flyRef.current.active = false;
+      flyRef.current.timed = false;
 
       if (!hasSnappedInitialRef.current && controlsRef.current) {
         controlsRef.current.target.copy(turntableRigRef.current.goalTarget);
@@ -466,8 +546,13 @@ const DisassemblyRig: React.FC = () => {
       } else {
         turntableRigRef.current.active = true;
       }
+      prevScreenRef.current = screen;
     } else {
-      perspCam.clearViewOffset();
+      const enteringFromHero =
+        screen === 'workbench' &&
+        (prevScreenRef.current === 'armory' ||
+          prevScreenRef.current === 'showcase');
+      prevScreenRef.current = screen;
       turntableRigRef.current.active = false;
 
       applyWorkbenchFraming(
@@ -478,16 +563,51 @@ const DisassemblyRig: React.FC = () => {
         aspect,
         flyRef.current.goalTarget,
         flyRef.current.goalPos,
-        screen === 'workbench' && sectionCut
+        screen === 'workbench' && sectionCut,
+        activeWeaponId
       );
 
       if (!hasSnappedInitialRef.current && controlsRef.current) {
+        perspCam.clearViewOffset();
+        viewOffsetRef.current.active = false;
+        viewOffsetRef.current.curX = 0;
+        viewOffsetRef.current.curY = 0;
         camera.position.copy(flyRef.current.goalPos);
         controlsRef.current.target.copy(flyRef.current.goalTarget);
         controlsRef.current.update();
         flyRef.current.active = false;
+        flyRef.current.timed = false;
         hasSnappedInitialRef.current = true;
+      } else if (enteringFromHero && controlsRef.current) {
+        // Smooth ~0.55s cubic ease-out for both camera orbit & Armory plaque view-offset
+        const vo = viewOffsetRef.current;
+        if (Math.abs(vo.curX) > 0.25 || Math.abs(vo.curY) > 0.25) {
+          vo.startX = vo.curX;
+          vo.startY = vo.curY;
+          vo.goalX = 0;
+          vo.goalY = 0;
+          vo.elapsed = 0;
+          vo.duration = WORKBENCH_ENTRY_EASE_DURATION_S;
+          vo.active = true;
+        } else {
+          vo.curX = 0;
+          vo.curY = 0;
+          vo.active = false;
+          perspCam.clearViewOffset();
+        }
+        flyRef.current.startPos.copy(camera.position);
+        flyRef.current.startTarget.copy(controlsRef.current.target);
+        flyRef.current.elapsed = 0;
+        flyRef.current.duration = WORKBENCH_ENTRY_EASE_DURATION_S;
+        flyRef.current.timed = true;
+        flyRef.current.active = true;
       } else {
+        if (!viewOffsetRef.current.active) {
+          perspCam.clearViewOffset();
+          viewOffsetRef.current.curX = 0;
+          viewOffsetRef.current.curY = 0;
+        }
+        flyRef.current.timed = false;
         flyRef.current.active = true;
       }
     }
@@ -530,6 +650,7 @@ const DisassemblyRig: React.FC = () => {
         ty + 18,
         rz + dirZ * 420
       );
+      flyRef.current.timed = false;
       flyRef.current.active = true;
     } else if (tankCrewStation === 'interior') {
       flyRef.current.goalPos.set(
@@ -538,6 +659,7 @@ const DisassemblyRig: React.FC = () => {
         rz - dirZ * 140 + 68
       );
       flyRef.current.goalTarget.set(rx + dirX * 65, ty - 5, rz + dirZ * 65);
+      flyRef.current.timed = false;
       flyRef.current.active = true;
     }
   }, [screen, tankCrewActive, tankCrewStation, activeWeaponId]);
@@ -572,6 +694,11 @@ const DisassemblyRig: React.FC = () => {
       size.width,
       size.height
     );
+    viewOffsetRef.current.active = false;
+    viewOffsetRef.current.curX = tf.viewOffsetX;
+    viewOffsetRef.current.curY = tf.viewOffsetY;
+    viewOffsetRef.current.goalX = tf.viewOffsetX;
+    viewOffsetRef.current.goalY = tf.viewOffsetY;
     turntableRigRef.current.goalTarget.set(tf.targetX, tf.targetY, tf.targetZ);
     turntableRigRef.current.goalHorizRadius = tf.horizRadius;
     turntableRigRef.current.goalOffsetY = tf.offsetY;
@@ -672,6 +799,7 @@ const DisassemblyRig: React.FC = () => {
                 : 14.5;
 
     turntableRigRef.current.active = false;
+    flyRef.current.timed = false;
     flyRef.current.goalTarget.copy(_focusWorldCenter);
     flyRef.current.goalPos
       .copy(_focusWorldCenter)
@@ -764,9 +892,11 @@ const DisassemblyRig: React.FC = () => {
           aspect,
           flyRef.current.goalTarget,
           flyRef.current.goalPos,
-          state.sectionCut
+          state.sectionCut,
+          state.activeWeaponId
         );
         lastFramedTRef.current = nextAnimatedT;
+        flyRef.current.timed = false;
         flyRef.current.active = true;
       }
     }
@@ -826,6 +956,34 @@ const DisassemblyRig: React.FC = () => {
       playbackClock.setAnimatedFireProgress(0);
     }
 
+    // 4a. Smoothly dissolve Armory plaque view-offset over ~0.55s on Workbench entry (Zero-GC)
+    if (viewOffsetRef.current.active) {
+      const vo = viewOffsetRef.current;
+      vo.elapsed += dt;
+      const eased = evaluateCameraEaseProgress(vo.elapsed, vo.duration);
+      vo.curX = THREE.MathUtils.lerp(vo.startX, vo.goalX, eased);
+      vo.curY = THREE.MathUtils.lerp(vo.startY, vo.goalY, eased);
+      const perspCam = camera as THREE.PerspectiveCamera;
+      if (
+        eased >= 1 ||
+        (Math.abs(vo.curX) < 0.25 && Math.abs(vo.curY) < 0.25)
+      ) {
+        vo.curX = 0;
+        vo.curY = 0;
+        vo.active = false;
+        perspCam.clearViewOffset();
+      } else if (size.width > 0 && size.height > 0) {
+        perspCam.setViewOffset(
+          size.width,
+          size.height,
+          vo.curX,
+          vo.curY,
+          size.width,
+          size.height
+        );
+      }
+    }
+
     // 4. Initial snap + smooth cylindrical turntable framing (Showcase/Armory) or Cartesian fly-to (Workbench / Cartridge Lab)
     const onTurntable =
       state.screen === 'showcase' || state.screen === 'armory';
@@ -847,6 +1005,7 @@ const DisassemblyRig: React.FC = () => {
         controlsRef.current.target.copy(flyRef.current.goalTarget);
         controlsRef.current.update();
         flyRef.current.active = false;
+        flyRef.current.timed = false;
       }
       hasSnappedInitialRef.current = true;
     } else if (
@@ -886,20 +1045,43 @@ const DisassemblyRig: React.FC = () => {
         turntableRigRef.current.active = false;
       }
     } else if (flyRef.current.active && controlsRef.current) {
-      camera.position.lerp(flyRef.current.goalPos, 1 - Math.exp(-6.0 * dt));
-      controlsRef.current.target.lerp(
-        flyRef.current.goalTarget,
-        1 - Math.exp(-6.5 * dt)
-      );
-      controlsRef.current.update();
+      if (flyRef.current.timed) {
+        flyRef.current.elapsed += dt;
+        const eased = evaluateCameraEaseProgress(
+          flyRef.current.elapsed,
+          flyRef.current.duration
+        );
+        camera.position.lerpVectors(
+          flyRef.current.startPos,
+          flyRef.current.goalPos,
+          eased
+        );
+        controlsRef.current.target.lerpVectors(
+          flyRef.current.startTarget,
+          flyRef.current.goalTarget,
+          eased
+        );
+        controlsRef.current.update();
+        if (eased >= 1) {
+          flyRef.current.active = false;
+          flyRef.current.timed = false;
+        }
+      } else {
+        camera.position.lerp(flyRef.current.goalPos, 1 - Math.exp(-6.0 * dt));
+        controlsRef.current.target.lerp(
+          flyRef.current.goalTarget,
+          1 - Math.exp(-6.5 * dt)
+        );
+        controlsRef.current.update();
 
-      if (
-        camera.position.distanceTo(flyRef.current.goalPos) <
-          (isTankScale ? 0.6 : 0.08) &&
-        controlsRef.current.target.distanceTo(flyRef.current.goalTarget) <
-          (isTankScale ? 0.4 : 0.05)
-      ) {
-        flyRef.current.active = false;
+        if (
+          camera.position.distanceTo(flyRef.current.goalPos) <
+            (isTankScale ? 0.6 : 0.08) &&
+          controlsRef.current.target.distanceTo(flyRef.current.goalTarget) <
+            (isTankScale ? 0.4 : 0.05)
+        ) {
+          flyRef.current.active = false;
+        }
       }
     }
 
@@ -970,6 +1152,7 @@ const DisassemblyRig: React.FC = () => {
         maxDistance={isTankScale ? 3200 : isTankOrdnanceGallery ? 950 : 520}
         onStart={() => {
           flyRef.current.active = false;
+          flyRef.current.timed = false;
           turntableRigRef.current.active = false;
           userOrbitedRef.current = true;
           const st = useAppStore.getState();

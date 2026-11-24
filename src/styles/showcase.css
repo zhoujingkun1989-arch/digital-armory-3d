@@ -153,6 +153,10 @@
     box-shadow 0.16s ease;
 }
 
+.showcase-launch-compact {
+  display: none;
+}
+
 .showcase-launch-pill:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 26px rgba(2, 132, 199, 0.48);
@@ -222,11 +226,11 @@
 }
 
 .showcase-hero-sub {
-  max-width: 920px;
+  max-width: 780px;
   margin: 0 auto 10px;
-  font-size: clamp(12px, 1.02vw, 14px);
+  font-size: clamp(12.5px, 1.04vw, 14.5px);
   line-height: 1.5;
-  text-wrap: pretty;
+  text-wrap: balance;
   color: #cbd5e1;
 }
 
@@ -2078,6 +2082,50 @@
 }
 
 @media (max-width: 640px) {
+  /* Prevent sticky mobile nav right-edge CTA clipping (`390px` fit with breathing room) */
+  .showcase-nav {
+    padding: 7px 10px;
+  }
+
+  .showcase-nav-inner {
+    gap: 6px;
+  }
+
+  .showcase-brand {
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .showcase-brand-badge {
+    padding: 3.5px 7px;
+    font-size: 9.5px;
+    letter-spacing: 0.04em;
+  }
+
+  .showcase-brand-ver,
+  .showcase-gh-pill {
+    display: none;
+  }
+
+  .showcase-nav-actions {
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .showcase-launch-pill {
+    padding: 6px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .showcase-launch-full {
+    display: none;
+  }
+
+  .showcase-launch-compact {
+    display: inline;
+  }
+
   .labs-bento-grid {
     grid-template-columns: 1fr;
   }
@@ -2094,11 +2142,16 @@
 
   .showcase-eyebrow {
     font-size: 9px;
-    padding: 2.5px 9px;
+    line-height: 1.35;
+    padding: 3px 10px;
+    border-radius: 12px;
     max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    text-align: center;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .showcase-hero-title {

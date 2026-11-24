@@ -17,9 +17,9 @@
     display: none;
   }
 
-  /* Compact single-row mobile topbar so Slot A upper 3D pane stays unobstructed */
+  /* Compact single-row mobile topbar (<= 52px) so Slot A upper 3D pane & Plaque A stay unobstructed */
   .split-topbar {
-    padding: 6px 10px;
+    padding: 4px 8px;
     gap: 6px;
     flex-direction: column;
     align-items: stretch;
@@ -30,11 +30,27 @@
     justify-content: flex-start;
     gap: 6px;
     flex-wrap: nowrap;
+    min-height: 40px;
+  }
+
+  .split-topbar-left .split-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+    min-height: 36px;
   }
 
   .split-topbar:not(.is-mobile-expanded) .split-topbar-center,
-  .split-topbar:not(.is-mobile-expanded) .split-topbar-right {
+  .split-topbar:not(.is-mobile-expanded) .split-topbar-right,
+  .split-topbar:not(.is-mobile-expanded) .studio-env-cluster {
     display: none;
+  }
+
+  .split-topbar.is-mobile-expanded .split-env-cluster-wrap {
+    flex: 1 1 100%;
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.14);
   }
 
   .split-topbar.is-mobile-expanded .split-topbar-center,
@@ -132,7 +148,8 @@
     width: calc(100vw - 16px);
   }
 
-  .split-drag-hint {
+  .split-drag-hint,
+  .split-dock-hint {
     display: none;
   }
 }
