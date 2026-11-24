@@ -55,9 +55,12 @@ import {
   createMutableCameraPose3D,
   createMutableMachConeState,
   createMutableProjectilePose3D,
+  createMutableRangeImpactBurstState,
+  createMutableRangeSparkParticle,
   createMutableTargetCamPipRect,
   evaluateGelCavityPulse01,
   evaluateRangeCameraPoseInto,
+  evaluateRangeSparkParticleInto,
   evaluateSteelPendulumAngle,
   evaluateWindFlagFlutterOffset,
   FIRING_LINE_HEIGHT_M,
@@ -67,13 +70,17 @@ import {
   GROUPING_STRING_SHOT_COUNT,
   RANGE_AIM_MODES,
   RANGE_CAMERA_MODES,
+  RANGE_IMPACT_SPARK_COUNT,
   RANGE_SPEED_OPTIONS,
   RANGE_TARGET_TYPES,
+  resolveRange3DThemePalette,
   sampleProjectilePoseAtTimeInto,
   writeMachGradientColorRGB,
+  writeRangeImpactBurstStateInto,
   type GroupingShotResult,
   type ProjectilePose3D,
   type Range3DPoint,
+  type Range3DThemePalette,
   type RangeAimMode,
   type RangeCameraMode,
   type RangeGroupingResult,
@@ -143,6 +150,8 @@ const _machConeScratch = createMutableMachConeState();
 const _camPoseScratch = createMutableCameraPose3D();
 const _pipPoseScratch = createMutableCameraPose3D();
 const _pipRectScratch = createMutableTargetCamPipRect();
+const _impactBurstScratch = createMutableRangeImpactBurstState();
+const _rangeSparkScratch = createMutableRangeSparkParticle();
 const _camGoalPos = new THREE.Vector3();
 const _camGoalLook = new THREE.Vector3();
 const _eulerScratch = new THREE.Euler(0, 0, 0, 'YZX');
@@ -150,47 +159,18 @@ const _sparkDummy = new THREE.Object3D();
 const _tracerDummy = new THREE.Object3D();
 const _chipDummy = new THREE.Object3D();
 const _tmpColor = new THREE.Color();
+const _sparkWhiteGold = new THREE.Color('#fffbeb');
+const _sparkAmberTail = new THREE.Color('#f59e0b');
+const _sparkFlirWhite = new THREE.Color('#ffffff');
 const _upAxis = new THREE.Vector3(0, 1, 0);
 const _xAxis = new THREE.Vector3(1, 0, 0);
 
-const SPARK_COUNT_MAX = 48;
 const MAX_PERSISTENT_CHIPS = 25;
 const FLAG_SEGMENTS = 10;
 const FLAG_LENGTH_M = 2.65;
 const FLAG_HEIGHT_M = 0.72;
 /** High-visibility proving-ground yardage gates along the 1,000m firing corridor */
 const PROVING_GROUND_GATE_MARKERS_M = [100, 300, 600, 1000] as const;
-
-// Deterministic spark burst velocities for AR500 steel impact
-interface SparkSeed {
-  vx: number;
-  vy: number;
-  vz: number;
-  lifeS: number;
-  size: number;
-}
-
-const SPARK_SEEDS: readonly SparkSeed[] = (() => {
-  const out: SparkSeed[] = [];
-  let s = 0x91e10da5;
-  const nextRand = () => {
-    s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
-    return s / 0xffffffff;
-  };
-  for (let i = 0; i < SPARK_COUNT_MAX; i++) {
-    const theta = nextRand() * Math.PI * 2;
-    const speed = 3.2 + nextRand() * 11.5;
-    const backBias = -(0.8 + nextRand() * 3.6);
-    out.push({
-      vx: backBias,
-      vy: Math.sin(theta) * speed * 0.72 + 1.5 + nextRand() * 2.0,
-      vz: Math.cos(theta) * speed,
-      lifeS: 0.22 + nextRand() * 0.48,
-      size: 0.007 + nextRand() * 0.009,
-    });
-  }
-  return out;
-})();
 
 // 9-pellet 00 Buckshot normalized rosette offsets
 const BUCKSHOT_OFFSETS: readonly [number, number][] = [
@@ -654,7 +634,7 @@ function createProvingGroundTerrainTextures(): {
  * Caller owns `.dispose()`.
  */
 function createAtmosphericSkyTexture(
-  isLightTheme: boolean,
+  rangeTheme: Range3DThemePalette,
   flirActive: boolean
 ): THREE.CanvasTexture | null {
   if (typeof document === 'undefined') return null;
@@ -671,20 +651,13 @@ function createAtmosphericSkyTexture(
     grad.addColorStop(0.51, '#26364b');
     grad.addColorStop(0.56, '#1b2636');
     grad.addColorStop(1.0, '#0d141f');
-  } else if (isLightTheme) {
-    grad.addColorStop(0.0, '#1d5696');
-    grad.addColorStop(0.28, '#5394cc');
-    grad.addColorStop(0.45, '#a8cde9');
-    grad.addColorStop(0.5, '#ead8c0');
-    grad.addColorStop(0.54, '#cbb190');
-    grad.addColorStop(1.0, '#8d755a');
   } else {
-    grad.addColorStop(0.0, '#070e1c');
-    grad.addColorStop(0.28, '#10203a');
-    grad.addColorStop(0.45, '#243a59');
-    grad.addColorStop(0.5, '#4c5163');
-    grad.addColorStop(0.54, '#2a3344');
-    grad.addColorStop(1.0, '#121826');
+    grad.addColorStop(0.0, rangeTheme.skyZenithHex);
+    grad.addColorStop(0.28, rangeTheme.skyUpperHex);
+    grad.addColorStop(0.45, rangeTheme.skyMidHex);
+    grad.addColorStop(0.5, rangeTheme.skyHorizonHex);
+    grad.addColorStop(0.54, rangeTheme.skyLowerHex);
+    grad.addColorStop(1.0, rangeTheme.skyGroundHex);
   }
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, 512, 512);
@@ -692,10 +665,10 @@ function createAtmosphericSkyTexture(
   // Subtle solar / twilight atmospheric scatter glow above the downrange horizon
   if (!flirActive) {
     const sunGrad = ctx.createRadialGradient(340, 232, 6, 340, 232, 118);
-    if (isLightTheme) {
-      sunGrad.addColorStop(0, 'rgba(255, 251, 235, 0.72)');
-      sunGrad.addColorStop(0.35, 'rgba(254, 240, 200, 0.28)');
-      sunGrad.addColorStop(1, 'rgba(254, 240, 200, 0)');
+    if (rangeTheme.isAlpineDaylight) {
+      sunGrad.addColorStop(0, 'rgba(255, 253, 245, 0.78)');
+      sunGrad.addColorStop(0.35, 'rgba(224, 242, 254, 0.34)');
+      sunGrad.addColorStop(1, 'rgba(224, 242, 254, 0)');
     } else {
       sunGrad.addColorStop(0, 'rgba(251, 191, 36, 0.34)');
       sunGrad.addColorStop(0.4, 'rgba(245, 158, 11, 0.12)');
@@ -1648,11 +1621,14 @@ const ProjectileVisualMesh: React.FC<{
 const TargetArrayRig: React.FC<{
   traj: RangeTrajectory3D;
   flirActive: boolean;
+  isAlpineDaylight: boolean;
   simRef: React.MutableRefObject<SimClockState>;
-}> = ({ traj, flirActive, simRef }) => {
+}> = ({ traj, flirActive, isAlpineDaylight, simRef }) => {
   const pendulumRef = useRef<THREE.Group>(null);
   const impactHotspotRef = useRef<THREE.Mesh>(null);
   const sparksMeshRef = useRef<THREE.InstancedMesh>(null);
+  const bermDustRef = useRef<THREE.Mesh>(null);
+  const gelVaporRef = useRef<THREE.Mesh>(null);
   const chipsSplashRef = useRef<THREE.InstancedMesh>(null);
   const chipsCoreRef = useRef<THREE.InstancedMesh>(null);
   const acousticRingRef = useRef<THREE.Mesh>(null);
@@ -1665,6 +1641,77 @@ const TargetArrayRig: React.FC<{
       gongFaceTex?.dispose();
     };
   }, [gongFaceTex]);
+
+  // Cycle 17C: Pre-allocated GPU assets for 28-spark AR500 burst, berm dust plume & gelatin entry vapor flash
+  const impactBurstAssets = useMemo(() => {
+    const sparkGeo = new THREE.BoxGeometry(1, 1, 1);
+    const sparkMat = new THREE.MeshBasicMaterial({
+      color: '#ffffff',
+      transparent: true,
+      opacity: 0.96,
+      depthWrite: false,
+      blending:
+        flirActive || !isAlpineDaylight
+          ? THREE.AdditiveBlending
+          : THREE.NormalBlending,
+    });
+    const bermDustGeo = new THREE.SphereGeometry(1, 16, 12);
+    const bermDustMat = new THREE.MeshBasicMaterial({
+      color: flirActive
+        ? '#94a3b8'
+        : isAlpineDaylight
+          ? '#cbd5e1'
+          : '#d6c7ae',
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+    });
+    const gelVaporGeo = new THREE.ConeGeometry(1, 1, 18, 1, true);
+    // Apex at gel front face (x = 0), opening outward toward -X (`rotateZ(-PI/2)` maps -Y -> -X)
+    gelVaporGeo.translate(0, -0.5, 0);
+    gelVaporGeo.rotateZ(-Math.PI / 2);
+    const gelVaporMat = new THREE.MeshBasicMaterial({
+      color: flirActive ? '#f8fafc' : '#e0f2fe',
+      transparent: true,
+      opacity: 0,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+    });
+    return {
+      sparkGeo,
+      sparkMat,
+      bermDustGeo,
+      bermDustMat,
+      gelVaporGeo,
+      gelVaporMat,
+    };
+  }, [flirActive, isAlpineDaylight]);
+
+  useEffect(() => {
+    return () => {
+      impactBurstAssets.sparkGeo.dispose();
+      impactBurstAssets.sparkMat.dispose();
+      impactBurstAssets.bermDustGeo.dispose();
+      impactBurstAssets.bermDustMat.dispose();
+      impactBurstAssets.gelVaporGeo.dispose();
+      impactBurstAssets.gelVaporMat.dispose();
+    };
+  }, [impactBurstAssets]);
+
+  // Pre-seed 28 spark instanceColor entries before first draw so USE_INSTANCING_COLOR compiles cleanly
+  useEffect(() => {
+    const mesh = sparksMeshRef.current;
+    if (!mesh) return;
+    _sparkDummy.position.set(0, -50, 0);
+    _sparkDummy.scale.setScalar(0.0001);
+    _sparkDummy.updateMatrix();
+    for (let i = 0; i < RANGE_IMPACT_SPARK_COUNT; i++) {
+      mesh.setMatrixAt(i, _sparkDummy.matrix);
+      mesh.setColorAt(i, _sparkWhiteGold);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  }, [impactBurstAssets]);
 
   const isArmor = traj.spec.category === 'armor';
   const plateR = traj.steelImpact.plateRadiusM;
@@ -1827,41 +1874,133 @@ const TargetArrayRig: React.FC<{
       }
     }
 
-    // 3. Incandescent Steel Impact Sparks Burst (Zero-GC InstancedMesh)
-    if (sparksMeshRef.current) {
-      const activeSparks =
-        hasHitTime && traj.targetType === 'steel_gong' && traj.steelImpact.hit
-          ? traj.steelImpact.sparkCount
-          : 0;
-      const hitBaseY = traj.targetCenterY + impactOffsetYM;
-      const hitBaseZ = traj.targetCenterZ + impactOffsetZM;
+    // 3. Cycle 17C: 28-Spark AR500 Impact Burst, Berm Dust Plume & Gel Entry Vapor Flash (Zero-GC)
+    const isGelTarget = traj.targetType === 'ballistic_gel';
+    let burstImpactTimeS = traj.totalFlightTimeS;
+    let burstHit = isGelTarget ? traj.gelCavity.hit : traj.steelImpact.hit;
+    let hitBaseY = traj.targetCenterY + impactOffsetYM;
+    let hitBaseZ = traj.targetCenterZ + impactOffsetZM;
+    if (st.activeString) {
+      const shots = st.activeString.shots;
+      burstHit = false;
+      for (let i = shots.length - 1; i >= 0; i--) {
+        const sh = shots[i];
+        if (sh.hit && st.simTimeS >= sh.impactTimeS) {
+          burstImpactTimeS = sh.impactTimeS;
+          burstHit = true;
+          hitBaseY = traj.targetCenterY + sh.offsetYCm / 100;
+          hitBaseZ = traj.targetCenterZ + sh.offsetZCm / 100;
+          break;
+        }
+      }
+    }
 
-      for (let i = 0; i < SPARK_COUNT_MAX; i++) {
-        if (i >= activeSparks || postT > SPARK_SEEDS[i].lifeS) {
-          _sparkDummy.position.set(0, -50, 0);
-          _sparkDummy.scale.setScalar(0.0001);
+    writeRangeImpactBurstStateInto(
+      st.simTimeS,
+      burstHit ? burstImpactTimeS : Number.POSITIVE_INFINITY,
+      isGelTarget,
+      _impactBurstScratch
+    );
+
+    if (sparksMeshRef.current) {
+      const showSparks =
+        !isGelTarget &&
+        _impactBurstScratch.active &&
+        _impactBurstScratch.sparkIntensity01 > 0.005;
+      sparksMeshRef.current.visible = showSparks;
+      if (showSparks) {
+        for (let i = 0; i < RANGE_IMPACT_SPARK_COUNT; i++) {
+          evaluateRangeSparkParticleInto(
+            _impactBurstScratch,
+            traj.targetCenterX,
+            hitBaseY,
+            hitBaseZ,
+            i,
+            isArmor,
+            _rangeSparkScratch
+          );
+          if (!_rangeSparkScratch.visible) {
+            _sparkDummy.position.set(0, -50, 0);
+            _sparkDummy.scale.setScalar(0.0001);
+            _sparkDummy.updateMatrix();
+            sparksMeshRef.current.setMatrixAt(i, _sparkDummy.matrix);
+            continue;
+          }
+          _sparkDummy.position.set(
+            _rangeSparkScratch.x,
+            _rangeSparkScratch.y,
+            _rangeSparkScratch.z
+          );
+          _sparkDummy.rotation.set(
+            0,
+            _rangeSparkScratch.rotY,
+            _rangeSparkScratch.rotZ,
+            'YXZ'
+          );
+          _sparkDummy.scale.set(
+            _rangeSparkScratch.scaleX,
+            _rangeSparkScratch.scaleY,
+            _rangeSparkScratch.scaleZ
+          );
           _sparkDummy.updateMatrix();
           sparksMeshRef.current.setMatrixAt(i, _sparkDummy.matrix);
-          continue;
-        }
-        const seed = SPARK_SEEDS[i];
-        const ageNorm = postT / seed.lifeS;
-        const drag = 1 - ageNorm * 0.35;
-        const sx = traj.targetCenterX - 0.06 + seed.vx * postT * drag;
-        const sy = Math.max(
-          0.05,
-          hitBaseY + seed.vy * postT - 0.5 * 9.81 * postT * postT
-        );
-        const sz = hitBaseZ + seed.vz * postT * drag;
-        const szScale = seed.size * (1 - ageNorm * 0.75) * (isArmor ? 2.4 : 1);
 
-        _sparkDummy.position.set(sx, sy, sz);
-        _sparkDummy.scale.set(szScale * 8.5, szScale, szScale);
-        _sparkDummy.rotation.set(0, 0, Math.atan2(seed.vy - 9.81 * postT, seed.vx));
-        _sparkDummy.updateMatrix();
-        sparksMeshRef.current.setMatrixAt(i, _sparkDummy.matrix);
+          if (flirActive) {
+            _tmpColor.copy(_sparkFlirWhite);
+          } else {
+            _tmpColor.lerpColors(
+              _sparkAmberTail,
+              _sparkWhiteGold,
+              _rangeSparkScratch.heat01
+            );
+          }
+          sparksMeshRef.current.setColorAt(i, _tmpColor);
+        }
+        sparksMeshRef.current.instanceMatrix.needsUpdate = true;
+        if (sparksMeshRef.current.instanceColor) {
+          sparksMeshRef.current.instanceColor.needsUpdate = true;
+        }
       }
-      sparksMeshRef.current.instanceMatrix.needsUpdate = true;
+    }
+
+    if (bermDustRef.current) {
+      const showDust =
+        !isGelTarget &&
+        _impactBurstScratch.active &&
+        _impactBurstScratch.bermDustIntensity01 > 0.005;
+      bermDustRef.current.visible = showDust;
+      if (showDust) {
+        const dustBase = isArmor ? 2.1 : 0.62;
+        const dustScale =
+          dustBase * (0.45 + 1.35 * _impactBurstScratch.bermDustProgress01);
+        bermDustRef.current.position.set(
+          traj.targetCenterX + (isArmor ? 1.4 : 0.55),
+          0.18 + dustScale * 0.42,
+          hitBaseZ
+        );
+        bermDustRef.current.scale.set(
+          dustScale * 1.2,
+          dustScale * 0.78,
+          dustScale * 1.15
+        );
+        const dMat = bermDustRef.current.material as THREE.MeshBasicMaterial;
+        dMat.opacity = _impactBurstScratch.bermDustIntensity01 * 0.34;
+      }
+    }
+
+    if (gelVaporRef.current) {
+      const showVapor =
+        isGelTarget &&
+        _impactBurstScratch.active &&
+        _impactBurstScratch.gelVaporIntensity01 > 0.005;
+      gelVaporRef.current.visible = showVapor;
+      if (showVapor) {
+        const vR = (isArmor ? 0.48 : 0.22) * (0.25 + _impactBurstScratch.gelVaporScale01);
+        const vL = (isArmor ? 0.55 : 0.26) * (0.2 + _impactBurstScratch.gelVaporScale01);
+        gelVaporRef.current.scale.set(vL, vR, vR);
+        const vMat = gelVaporRef.current.material as THREE.MeshBasicMaterial;
+        vMat.opacity = _impactBurstScratch.gelVaporIntensity01 * 0.52;
+      }
     }
 
     // 4. Acoustic Sound-Return Wavefront Ring Racing Back at 343 m/s
@@ -1931,15 +2070,29 @@ const TargetArrayRig: React.FC<{
         />
       </mesh>
 
-      {/* Sparks InstancedMesh (World-space positioned) */}
+      {/* Cycle 17C: 28 Golden-White AR500 Impact Sparks InstancedMesh (World-space positioned) */}
       <instancedMesh
         ref={sparksMeshRef}
-        args={[undefined, undefined, SPARK_COUNT_MAX]}
+        name="RangeSteelImpactSparks"
+        args={[
+          impactBurstAssets.sparkGeo,
+          impactBurstAssets.sparkMat,
+          RANGE_IMPACT_SPARK_COUNT,
+        ]}
+        visible={false}
         frustumCulled={false}
-      >
-        <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color={flirActive ? '#ffffff' : '#fde047'} />
-      </instancedMesh>
+        renderOrder={11}
+      />
+
+      {/* Cycle 17C: Downrange Berm Impact Dust Plume behind AR500 Steel Gong */}
+      <mesh
+        ref={bermDustRef}
+        name="RangeBermDustPlume"
+        geometry={impactBurstAssets.bermDustGeo}
+        material={impactBurstAssets.bermDustMat}
+        visible={false}
+        renderOrder={9}
+      />
 
       {/* Main Target Array Positioned at (targetCenterX, 0, 0) */}
       <group position={[traj.targetCenterX, 0, 0]}>
@@ -2196,6 +2349,17 @@ const TargetArrayRig: React.FC<{
                   opacity={0.82}
                 />
               </mesh>
+
+              {/* Cycle 17C: Translucent Gelatin Entry Vapor / Mist Shock Flash */}
+              <mesh
+                ref={gelVaporRef}
+                name="RangeGelEntryVaporFlash"
+                position={[-0.02, 0, 0]}
+                geometry={impactBurstAssets.gelVaporGeo}
+                material={impactBurstAssets.gelVaporMat}
+                visible={false}
+                renderOrder={12}
+              />
             </group>
           </group>
         )}
@@ -2377,6 +2541,12 @@ const TargetCamPipRenderer: React.FC<{
   ribbonMeshRef: React.RefObject<THREE.Mesh | null>;
 }> = ({ traj, simRef, ribbonMeshRef }) => {
   const pipCamRef = useRef<THREE.PerspectiveCamera | null>(null);
+  useEffect(() => {
+    pipCamRef.current = new THREE.PerspectiveCamera(26, 1.6, 0.08, 420);
+    return () => {
+      pipCamRef.current = null;
+    };
+  }, []);
 
   useFrame((state) => {
     const { gl, scene, camera, size } = state;
@@ -2392,13 +2562,10 @@ const TargetCamPipRenderer: React.FC<{
 
     // Pass 2: Bottom-Right Live Target-Cam / Spotter PIP Inset
     const st = simRef.current;
-    if (st.targetCamPipEnabled && st.cameraMode !== 'spotter_flir') {
+    const pipCam = pipCamRef.current;
+    if (pipCam && st.targetCamPipEnabled && st.cameraMode !== 'spotter_flir') {
       const rect = computeTargetCamPipRectInto(cssW, cssH, _pipRectScratch);
       if (rect.visible) {
-        if (!pipCamRef.current) {
-          pipCamRef.current = new THREE.PerspectiveCamera(26, 1.6, 0.08, 420);
-        }
-        const pipCam = pipCamRef.current;
         computeTargetCamPoseInto(
           traj.targetCenterX,
           traj.targetCenterY,
@@ -2461,7 +2628,7 @@ const Range3DWorld: React.FC<{
   maxRangeM: number;
   signedCrosswindMps: number;
   windClockHours: number;
-  isLightTheme: boolean;
+  rangeTheme: Range3DThemePalette;
   cameraMode: RangeCameraMode;
   flirActive: boolean;
   simRef: React.MutableRefObject<SimClockState>;
@@ -2476,7 +2643,7 @@ const Range3DWorld: React.FC<{
   maxRangeM,
   signedCrosswindMps,
   windClockHours,
-  isLightTheme,
+  rangeTheme,
   cameraMode,
   flirActive,
   simRef,
@@ -2592,8 +2759,8 @@ const Range3DWorld: React.FC<{
   }, [terrainTextures]);
 
   const skyDomeTex = useMemo(
-    () => createAtmosphericSkyTexture(isLightTheme, flirActive),
-    [isLightTheme, flirActive]
+    () => createAtmosphericSkyTexture(rangeTheme, flirActive),
+    [rangeTheme, flirActive]
   );
   useEffect(() => {
     return () => {
@@ -2680,16 +2847,10 @@ const Range3DWorld: React.FC<{
     }
   });
 
-  const skyHex = flirActive
-    ? '#161f2c'
-    : isLightTheme
-      ? '#c7dff2'
-      : '#162033';
-  const fogHex = flirActive
-    ? '#1b2636'
-    : isLightTheme
-      ? '#d9e7f3'
-      : '#26344a';
+  const skyHex = flirActive ? '#161f2c' : rangeTheme.backgroundHex;
+  const fogHex = flirActive ? '#1b2636' : rangeTheme.fogHex;
+  const fogNear = flirActive ? 480 : rangeTheme.fogNear;
+  const fogFar = flirActive ? 1620 : rangeTheme.fogFar;
 
   return (
     <>
@@ -2703,7 +2864,7 @@ const Range3DWorld: React.FC<{
         onFrameTelemetry={onFrameTelemetry}
       />
       <color attach="background" args={[skyHex]} />
-      <fog attach="fog" args={[fogHex, 480, 1620]} />
+      <fog attach="fog" args={[fogHex, fogNear, fogFar]} />
 
       {/* Atmospheric Horizon Sky Gradient Dome */}
       {skyDomeTex && (
@@ -2718,23 +2879,23 @@ const Range3DWorld: React.FC<{
         </mesh>
       )}
 
-      {/* Proving Ground Desert / Alpine Lighting */}
+      {/* Proving Ground Desert / Alpine Lighting (Synced with Blueprint Daylight & Dark Twilight) */}
       <hemisphereLight
         args={[
-          flirActive ? '#7488a3' : isLightTheme ? '#e0f2fe' : '#94a3b8',
-          flirActive ? '#263447' : '#8c6947',
-          flirActive ? 1.15 : isLightTheme ? 1.15 : 0.92,
+          flirActive ? '#7488a3' : rangeTheme.hemiSkyHex,
+          flirActive ? '#263447' : rangeTheme.hemiGroundHex,
+          flirActive ? 1.15 : rangeTheme.hemiIntensity,
         ]}
       />
       <directionalLight
         position={[240, 260, 180]}
-        intensity={flirActive ? 0.95 : isLightTheme ? 1.85 : 1.75}
-        color={flirActive ? '#e2e8f0' : '#fff7ed'}
+        intensity={flirActive ? 0.95 : rangeTheme.sunKeyIntensity}
+        color={flirActive ? '#e2e8f0' : rangeTheme.sunKeyHex}
       />
       <directionalLight
         position={[-120, 95, -140]}
-        intensity={flirActive ? 0.55 : 0.55}
-        color={flirActive ? '#8da1bc' : '#bae6fd'}
+        intensity={flirActive ? 0.55 : rangeTheme.fillLightIntensity}
+        color={flirActive ? '#8da1bc' : rangeTheme.fillLightHex}
       />
 
       {/* Free OrbitControls (active strictly in Range Overview mode) */}
@@ -2752,10 +2913,10 @@ const Range3DWorld: React.FC<{
       <mesh geometry={terrainGeo} receiveShadow>
         <meshStandardMaterial
           vertexColors={!flirActive}
-          color={flirActive ? '#2d3c52' : '#ffffff'}
+          color={flirActive ? '#2d3c52' : rangeTheme.terrainTintHex}
           map={flirActive ? null : terrainTextures?.albedoTex ?? undefined}
           bumpMap={terrainTextures?.bumpTex ?? undefined}
-          bumpScale={flirActive ? 0.42 : 0.72}
+          bumpScale={flirActive ? 0.42 : rangeTheme.terrainBumpScale}
           emissive={flirActive ? '#17212f' : '#000000'}
           emissiveIntensity={flirActive ? 0.52 : 0}
           roughness={flirActive ? 0.88 : 0.94}
@@ -2772,9 +2933,9 @@ const Range3DWorld: React.FC<{
         >
           <planeGeometry args={[maxRangeM + 20, 0.28]} />
           <meshBasicMaterial
-            color={flirActive ? '#475569' : '#f59e0b'}
+            color={flirActive ? '#475569' : rangeTheme.laneCurbHex}
             transparent
-            opacity={flirActive ? 0.35 : 0.42}
+            opacity={flirActive ? 0.35 : rangeTheme.laneCurbOpacity}
           />
         </mesh>
       ))}
@@ -2981,7 +3142,12 @@ const Range3DWorld: React.FC<{
       )}
 
       {/* Target Array (AR500 Steel Gong OR Translucent Ballistic Gel Block) */}
-      <TargetArrayRig traj={traj} flirActive={flirActive} simRef={simRef} />
+      <TargetArrayRig
+        traj={traj}
+        flirActive={flirActive}
+        isAlpineDaylight={rangeTheme.isAlpineDaylight}
+        simRef={simRef}
+      />
 
       {/* Animated Spinning 3D Projectile / Arrow / APFSDS Dart */}
       <ProjectileVisualMesh
@@ -3025,6 +3191,16 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
   );
 
   const globalSfxMuted = useAppStore((s) => s.sfxMuted);
+  const environmentPreset = useAppStore((s) => s.environmentPreset);
+  const rangeTheme = useMemo(
+    () =>
+      resolveRange3DThemePalette(
+        environmentPreset === 'blueprint_daylight' || isLightTheme
+          ? 'blueprint_daylight'
+          : environmentPreset
+      ),
+    [environmentPreset, isLightTheme]
+  );
   const ui = EXTERNAL_BALLISTICS_STRINGS[lang];
   const isZh = lang === 'zh';
 
@@ -3685,7 +3861,7 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
                 maxRangeM={maxRangeM}
                 signedCrosswindMps={signedCrosswindMps}
                 windClockHours={windClockHours}
-                isLightTheme={isLightTheme}
+                rangeTheme={rangeTheme}
                 cameraMode={cameraMode}
                 flirActive={flirActive}
                 simRef={simRef}
