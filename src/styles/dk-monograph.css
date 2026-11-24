@@ -1776,6 +1776,15 @@
   color: var(--dk-crimson);
 }
 
+/* Mobile / Tablet Screen-Only Preview Guard (keeps @media print 100% untouched) */
+@media screen and (max-width: 768px) {
+  .monograph-preview-sheets .dk-monograph {
+    max-width: 100%;
+    overflow-x: hidden;
+    gap: 14px;
+  }
+}
+
 /* ==========================================================================
    PRINT MEDIA OVERRIDES — Exact Physical Millimeter Zero-Overflow Press Rules
    ========================================================================== */

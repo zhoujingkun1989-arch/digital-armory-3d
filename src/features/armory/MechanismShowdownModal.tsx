@@ -315,6 +315,30 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
     setSectionCut(true);
   };
 
+  const handleLaunchSplit3d = (pairA: string, pairB: string) => {
+    playWorkbenchFoley('preset_detent');
+    if (isWeaponId(pairA)) {
+      preloadWeaponPlugin(pairA);
+      preloadWeaponNarration(pairA);
+    }
+    if (isWeaponId(pairB)) {
+      preloadWeaponPlugin(pairB);
+      preloadWeaponNarration(pairB);
+    }
+    onClose();
+    openSplitShowdown(pairA, pairB);
+    setSectionCut(true);
+  };
+
+  const split3dCtaLabel =
+    lang === 'zh'
+      ? '启动双屏 3D 剖视对决'
+      : 'Launch Linked 3D Split Cutaway';
+  const split3dQuickTitle = (label: string) =>
+    lang === 'zh'
+      ? `直接启动「${label}」双屏 3D 实心剖视对决`
+      : `Launch linked 3D split cutaway for ${label}`;
+
   const handleSvgPointerMove = (e: React.PointerEvent<SVGSVGElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     if (rect.width <= 0) return;
@@ -542,15 +566,12 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
             <button
               type="button"
               className="sd-mode-tab sd-split3d-cta"
+              data-testid="sd-header-split3d-cta"
               title={SPLIT_SHOWDOWN_STRINGS[lang].matrixLaunchTitle}
-              onClick={() => {
-                playWorkbenchFoley('preset_detent');
-                onClose();
-                openSplitShowdown(weaponAId, weaponBId);
-              }}
+              onClick={() => handleLaunchSplit3d(weaponAId, weaponBId)}
             >
               <GitCompareArrows size={13} aria-hidden="true" />
-              <span>{SPLIT_SHOWDOWN_STRINGS[lang].matrixLaunchBtn}</span>
+              <span>{split3dCtaLabel}</span>
             </button>
 
           <LanguageSwitchPill compact />
@@ -607,17 +628,29 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
 
               <div className="sd-staging-right">
                 <span className="sd-staging-hint">{ui.stagingHint}</span>
-                <button
-                  type="button"
-                  className="sd-launch-showdown-btn"
-                  onClick={() => {
-                    playWorkbenchFoley('preset_detent');
-                    setViewMode('showdown');
-                  }}
-                >
-                  <Scale size={14} aria-hidden="true" />
-                  <span>{ui.openShowdownCta}</span>
-                </button>
+                <div className="sd-staging-actions">
+                  <button
+                    type="button"
+                    className="sd-launch-showdown-btn"
+                    onClick={() => {
+                      playWorkbenchFoley('preset_detent');
+                      setViewMode('showdown');
+                    }}
+                  >
+                    <Scale size={14} aria-hidden="true" />
+                    <span>{ui.openShowdownCta}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="sd-launch-split3d-btn"
+                    data-testid="sd-staging-split3d-cta"
+                    title={SPLIT_SHOWDOWN_STRINGS[lang].matrixLaunchTitle}
+                    onClick={() => handleLaunchSplit3d(weaponAId, weaponBId)}
+                  >
+                    <Scissors size={13} aria-hidden="true" />
+                    <span>{split3dCtaLabel}</span>
+                  </button>
+                </div>
               </div>
             </section>
 
@@ -802,18 +835,35 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
                   {rivalryPresets.map((preset) => {
                     const isActive = activeRivalry?.id === preset.id;
                     return (
-                      <button
+                      <div
                         key={preset.id}
-                        type="button"
-                        className={`sd-preset-pill ${isActive ? 'active' : ''}`}
-                        onClick={() => {
-                          playWorkbenchFoley('preset_detent');
-                          setWeaponAId(preset.weaponA);
-                          setWeaponBId(preset.weaponB);
-                        }}
+                        className={`sd-preset-item ${isActive ? 'active' : ''}`}
                       >
-                        {preset.pillLabel}
-                      </button>
+                        <button
+                          type="button"
+                          className={`sd-preset-pill ${isActive ? 'active' : ''}`}
+                          onClick={() => {
+                            playWorkbenchFoley('preset_detent');
+                            setWeaponAId(preset.weaponA);
+                            setWeaponBId(preset.weaponB);
+                          }}
+                        >
+                          {preset.pillLabel}
+                        </button>
+                        <button
+                          type="button"
+                          className="sd-preset-split3d-btn"
+                          data-testid={`sd-preset-split3d-${preset.id}`}
+                          aria-label={split3dQuickTitle(preset.pillLabel)}
+                          title={split3dQuickTitle(preset.pillLabel)}
+                          onClick={() =>
+                            handleLaunchSplit3d(preset.weaponA, preset.weaponB)
+                          }
+                        >
+                          <Scissors size={10} aria-hidden="true" />
+                          <span>3D</span>
+                        </button>
+                      </div>
                     );
                   })}
                 </div>
@@ -864,25 +914,42 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
               </div>
             </section>
 
-            {/* Rivalry Thesis / Synthesized Lineage Summary Banner */}
+            {/* Rivalry Thesis / Synthesized Lineage Summary Banner + 1-Click 3D Split Cutaway */}
             <div className="sd-verdict-banner">
-              <div className="sd-verdict-head">
-                <Zap size={13} className="sd-verdict-icon" aria-hidden="true" />
-                <strong>
+              <div className="sd-verdict-copy">
+                <div className="sd-verdict-head">
+                  <Zap
+                    size={13}
+                    className="sd-verdict-icon"
+                    aria-hidden="true"
+                  />
+                  <strong>
+                    {activeRivalry
+                      ? activeRivalry.headline
+                      : lang === 'zh'
+                        ? `${profileA.shortLabel} vs ${profileB.shortLabel} · 三维机械谱系共有 ${diffAxisCount} 项异构分流 / ${3 - diffAxisCount} 项同源架构`
+                        : `${profileA.shortLabel} vs ${profileB.shortLabel} · ${diffAxisCount} Divergent / ${3 - diffAxisCount} Shared Mechanical Axes`}
+                  </strong>
+                </div>
+                <p className="sd-verdict-body">
                   {activeRivalry
-                    ? activeRivalry.headline
+                    ? activeRivalry.verdict
                     : lang === 'zh'
-                      ? `${profileA.shortLabel} vs ${profileB.shortLabel} · 三维机械谱系共有 ${diffAxisCount} 项异构分流 / ${3 - diffAxisCount} 项同源架构`
-                      : `${profileA.shortLabel} vs ${profileB.shortLabel} · ${diffAxisCount} Divergent / ${3 - diffAxisCount} Shared Mechanical Axes`}
-                </strong>
+                      ? `${profileA.shortLabel} 采用「${profileA.driveFamilyTitle} + ${profileA.lockingFamilyTitle} + ${profileA.feedFamilyTitle}」，而 ${profileB.shortLabel} 采用「${profileB.driveFamilyTitle} + ${profileB.lockingFamilyTitle} + ${profileB.feedFamilyTitle}」。`
+                      : `${profileA.shortLabel} pairs ${profileA.driveFamilyTitle}, ${profileA.lockingFamilyTitle}, and ${profileA.feedFamilyTitle}, whereas ${profileB.shortLabel} pairs ${profileB.driveFamilyTitle}, ${profileB.lockingFamilyTitle}, and ${profileB.feedFamilyTitle}.`}
+                </p>
               </div>
-              <p className="sd-verdict-body">
-                {activeRivalry
-                  ? activeRivalry.verdict
-                  : lang === 'zh'
-                    ? `${profileA.shortLabel} 采用「${profileA.driveFamilyTitle} + ${profileA.lockingFamilyTitle} + ${profileA.feedFamilyTitle}」，而 ${profileB.shortLabel} 采用「${profileB.driveFamilyTitle} + ${profileB.lockingFamilyTitle} + ${profileB.feedFamilyTitle}」。`
-                    : `${profileA.shortLabel} pairs ${profileA.driveFamilyTitle}, ${profileA.lockingFamilyTitle}, and ${profileA.feedFamilyTitle}, whereas ${profileB.shortLabel} pairs ${profileB.driveFamilyTitle}, ${profileB.lockingFamilyTitle}, and ${profileB.feedFamilyTitle}.`}
-              </p>
+
+              <button
+                type="button"
+                className="sd-verdict-split3d-cta"
+                data-testid="sd-active-split3d-cta"
+                title={SPLIT_SHOWDOWN_STRINGS[lang].matrixLaunchTitle}
+                onClick={() => handleLaunchSplit3d(weaponAId, weaponBId)}
+              >
+                <GitCompareArrows size={14} aria-hidden="true" />
+                <span>{split3dCtaLabel}</span>
+              </button>
             </div>
 
             {/* Side-by-Side Exhibit Hero Cards */}

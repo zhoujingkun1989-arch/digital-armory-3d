@@ -382,9 +382,10 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
     if (!container) return;
 
     const recalc = () => {
-      const availableW = Math.max(320, container.clientWidth - 44);
+      const pad = container.clientWidth <= 768 ? 20 : 44;
+      const availableW = Math.max(240, container.clientWidth - pad);
       const targetSheetPx = printGeometry.sheetWidthMm * CSS_PX_PER_MM;
-      const nextScale = Math.min(1, Math.max(0.32, availableW / targetSheetPx));
+      const nextScale = Math.min(1, Math.max(0.18, availableW / targetSheetPx));
       setPreviewScale(Number(nextScale.toFixed(4)));
     };
 
@@ -860,7 +861,7 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
           </div>
         </div>
 
-        {/* Second Toolbar Row: 19-Exhibit Selector + DK/Pro/Kids Style + Edition + Layout + Quality + Bleed + Callsign */}
+        {/* Second Toolbar Row: 34-Exhibit Selector + DK/Pro/Kids Style + Edition + Layout + Quality + Bleed + Callsign */}
         <div className="monograph-studio-controls">
           <div
             className="ms-weapon-strip"

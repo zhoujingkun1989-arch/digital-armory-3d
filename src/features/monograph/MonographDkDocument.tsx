@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { UI_STRINGS } from '../../i18n/uiStrings';
+import { getWeaponManifest } from '../../weapons/manifests';
 import { getExhibitClassification } from '../armory/mechanismShowdownSpecs';
 import {
   assembleDkEditorialPack,
@@ -305,9 +306,21 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
 }) => {
   const { lang } = dossier;
   const isZh = lang === 'zh';
+  const isOrdnance =
+    getWeaponManifest(dossier.weaponId).catalog.category === 'ordnance';
   const ui = UI_STRINGS[lang].monograph;
-  const domain = getMonographDomainLabels(lang, dossier.isArchery, dossier.isTank);
-  const dk = getDkEncyclopediaStrings(lang, dossier.isArchery, dossier.isTank);
+  const domain = getMonographDomainLabels(
+    lang,
+    dossier.isArchery,
+    dossier.isTank,
+    isOrdnance
+  );
+  const dk = getDkEncyclopediaStrings(
+    lang,
+    dossier.isArchery,
+    dossier.isTank,
+    isOrdnance
+  );
 
   const editorial = useMemo(() => assembleDkEditorialPack(dossier), [dossier]);
 
