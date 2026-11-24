@@ -14,6 +14,7 @@ import {
   getWeaponAttachmentLoadout,
 } from '../attachments/attachmentStore';
 import { playBrassCasingBounceSound } from '../audio/mechanicalSoundEngine';
+import { lockLinearTextureColorSpace } from '../materials/pbrManager';
 import { GasFlowVisualizer } from './GasFlowVisualizer';
 import {
   SMOKE_WISP_POOL_SIZE,
@@ -2732,9 +2733,117 @@ export const WeaponRecoilGroup: React.FC<
 };
 
 // ============================================================================
-// World-space persistent FX: rigid-body spent brass on the mat + smoke wisps
-// (kept OUTSIDE any recoil group so resting brass never jitters with the gun)
+// World-space persistent FX: rigid-body spent brass on the mat + contact shadows
+// + smoke wisps (kept OUTSIDE any recoil group so resting brass never jitters)
 // ============================================================================
+
+export interface BrassContactShadowSample {
+  /** Projected shadow disc world Y (`floorY + 0.03`) */
+  y: number;
+  /** Height-attenuated soft contact-shadow opacity (0..0.62) */
+  opacity: number;
+  /** Elliptical shadow length along casing yaw axis (cm) */
+  scaleX: number;
+  /** Elliptical shadow width across casing diameter (cm) */
+  scaleZ: number;
+}
+
+const _brassShadowScratch: BrassContactShadowSample = {
+  y: 0,
+  opacity: 0,
+  scaleX: 1,
+  scaleZ: 1,
+};
+
+/**
+ * Zero-GC evaluator writing the projected contact-shadow elliptical disc state
+ * for an active spent brass casing into `out`.
+ */
+export function writeBrassContactShadowSampleInto(
+  floorY: number,
+  py: number,
+  caseLengthCm: number,
+  caseDiameterCm: number,
+  pitchRad: number,
+  out: BrassContactShadowSample
+): BrassContactShadowSample {
+  const heightCm = Math.max(0, py - floorY);
+  const decayScaleCm = Math.max(11.5, caseLengthCm * 2.4);
+  const normH = Math.min(heightCm / decayScaleCm, 6);
+  const opacity = 0.62 * Math.exp(-normH);
+  const penumbraSpread = 1 + Math.min(heightCm, decayScaleCm * 2.5) * (0.55 / decayScaleCm);
+  const cosPitch = Math.max(0.45, Math.abs(Math.cos(pitchRad)));
+  const footprintLen = Math.max(0.45, caseLengthCm) * (0.55 + 0.85 * cosPitch);
+  const footprintDia = Math.max(0.28, caseDiameterCm) * 1.85;
+
+  out.y = floorY + 0.03;
+  out.opacity = opacity > 0.005 ? opacity : 0;
+  out.scaleX = footprintLen * penumbraSpread;
+  out.scaleZ = footprintDia * penumbraSpread;
+  return out;
+}
+
+/**
+ * Pure helper computing the grounded contact shadow disc parameters directly
+ * beneath a bouncing or resting spent brass casing.
+ */
+export function computeBrassContactShadowSample(
+  floorY: number,
+  py: number,
+  caseLengthCm = 2.4,
+  caseDiameterCm = 0.55,
+  pitchRad = 0
+): BrassContactShadowSample {
+  return writeBrassContactShadowSampleInto(
+    floorY,
+    py,
+    caseLengthCm,
+    caseDiameterCm,
+    pitchRad,
+    { y: 0, opacity: 0, scaleX: 1, scaleZ: 1 }
+  );
+}
+
+/**
+ * Paints a soft radial elliptical alpha mask (linear greyscale `0..255` for
+ * `MeshBasicMaterial.alphaMap`) onto a 2D canvas context.
+ */
+export function paintBrassContactShadowAlpha(
+  ctx: CanvasRenderingContext2D,
+  size: number
+): void {
+  const half = size * 0.5;
+  ctx.fillStyle = 'rgb(0,0,0)';
+  ctx.fillRect(0, 0, size, size);
+  const grad = ctx.createRadialGradient(half, half, 0, half, half, half);
+  grad.addColorStop(0, 'rgb(255,255,255)');
+  grad.addColorStop(0.28, 'rgb(218,218,218)');
+  grad.addColorStop(0.58, 'rgb(104,104,104)');
+  grad.addColorStop(0.84, 'rgb(24,24,24)');
+  grad.addColorStop(1, 'rgb(0,0,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, size, size);
+}
+
+function createBrassContactShadowTexture(): THREE.CanvasTexture | null {
+  if (typeof document === 'undefined' || typeof document.createElement !== 'function') {
+    return null;
+  }
+  const size = 64;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  paintBrassContactShadowAlpha(ctx, size);
+  const tex = new THREE.CanvasTexture(canvas);
+  lockLinearTextureColorSpace(tex);
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  tex.generateMipmaps = true;
+  tex.needsUpdate = true;
+  return tex;
+}
 
 export const ArmoryWorldFx: React.FC = () => {
   const screen = useAppStore((s) => s.screen);
@@ -2745,10 +2854,21 @@ export const ArmoryWorldFx: React.FC = () => {
   const casingPrimerRefs = useRef<(THREE.Mesh | null)[]>([]);
   const casingSootRefs = useRef<(THREE.Mesh | null)[]>([]);
   const casingMatRefs = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
+  const casingShadowRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const casingShadowMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
   const smokeMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
   const smokeMatRefs = useRef<(THREE.ShaderMaterial | null)[]>([]);
 
   const smokeGeo = useMemo(() => new THREE.IcosahedronGeometry(1, 2), []);
+  const casingShadowGeo = useMemo(() => {
+    const geo = new THREE.PlaneGeometry(1, 1, 1, 1);
+    geo.rotateX(-Math.PI / 2);
+    return geo;
+  }, []);
+  const casingShadowAlphaTex = useMemo(
+    () => createBrassContactShadowTexture(),
+    []
+  );
   const smokeShaderArgs = useMemo(
     () =>
       SMOKE_SLOTS.map(
@@ -2771,17 +2891,26 @@ export const ArmoryWorldFx: React.FC = () => {
   useEffect(() => {
     return () => {
       smokeGeo.dispose();
+      casingShadowGeo.dispose();
+      casingShadowAlphaTex?.dispose();
     };
-  }, [smokeGeo]);
+  }, [smokeGeo, casingShadowGeo, casingShadowAlphaTex]);
 
   useFrame(() => {
     const casings = getSpentCasingPool();
     for (let i = 0; i < casings.length; i++) {
       const c = casings[i];
       const grp = casingGroupRefs.current[i];
-      if (!grp) continue;
+      const shadowMesh = casingShadowRefs.current[i];
+      if (!grp) {
+        if (shadowMesh) shadowMesh.visible = false;
+        continue;
+      }
       grp.visible = c.active;
-      if (!c.active) continue;
+      if (!c.active) {
+        if (shadowMesh) shadowMesh.visible = false;
+        continue;
+      }
       const bundle = getCaliberGeometries(c.caliber);
       const mesh = casingMeshRefs.current[i];
       if (mesh && mesh.geometry !== bundle.caseGeo) {
@@ -2798,6 +2927,34 @@ export const ArmoryWorldFx: React.FC = () => {
       grp.scale.setScalar(c.scale);
       const mat = casingMatRefs.current[i];
       if (mat) mat.emissiveIntensity = c.heat01 * 0.85;
+
+      // Grounded elliptical contact shadow disc projected onto `c.floorY + 0.03`
+      if (shadowMesh) {
+        const bb = bundle.caseGeo.boundingBox;
+        const localLen = bb ? bb.max.x - bb.min.x : 2.2;
+        const localDia = bb ? bb.max.z - bb.min.z : 0.55;
+        writeBrassContactShadowSampleInto(
+          c.floorY,
+          c.py,
+          localLen * c.scale,
+          localDia * c.scale,
+          c.rz,
+          _brassShadowScratch
+        );
+        const showShadow = _brassShadowScratch.opacity > 0.005;
+        shadowMesh.visible = showShadow;
+        if (showShadow) {
+          shadowMesh.position.set(c.px, _brassShadowScratch.y, c.pz);
+          shadowMesh.rotation.set(0, c.ry, 0);
+          shadowMesh.scale.set(
+            _brassShadowScratch.scaleX,
+            1,
+            _brassShadowScratch.scaleZ
+          );
+          const sMat = casingShadowMatRefs.current[i];
+          if (sMat) sMat.opacity = _brassShadowScratch.opacity;
+        }
+      }
     }
 
     const wisps = getSmokeWispPool();
@@ -2829,6 +2986,31 @@ export const ArmoryWorldFx: React.FC = () => {
 
   return (
     <group>
+      {CASING_SLOTS.map((i) => (
+        <mesh
+          key={`casing-shadow-${i}`}
+          ref={(el) => {
+            casingShadowRefs.current[i] = el;
+          }}
+          geometry={casingShadowGeo}
+          raycast={noSmokeRaycast}
+          userData={{ excludeFromGtao: true }}
+          visible={false}
+          renderOrder={1}
+        >
+          <meshBasicMaterial
+            ref={(el) => {
+              casingShadowMatRefs.current[i] = el;
+            }}
+            color="#05070b"
+            alphaMap={casingShadowAlphaTex}
+            transparent
+            opacity={0}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+
       {CASING_SLOTS.map((i) => (
         <group
           key={`casing-${i}`}

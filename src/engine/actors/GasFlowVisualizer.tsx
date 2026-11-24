@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { getLoadedWeaponPlugin } from '../../weapons/registry';
+import type { WeaponId } from '../../weapons/types';
 import {
   MUZZLE_ATTACHMENT_SPECS,
   getWeaponAttachmentMountProfile,
@@ -18,6 +19,7 @@ import {
   computeGasPortUncoverF,
   createInternalBallisticsSample,
   evaluateInternalBallisticsInto,
+  getArmoryPhysicsState,
   getWeaponFiringTiming,
 } from '../physics/armoryPhysics';
 
@@ -26,11 +28,409 @@ const SUPP_VORTEX_SLOTS = [0, 1, 2, 3, 4] as const;
 const BRAKE_JET_SLOTS = [0, 1, 2, 3] as const;
 const FH_PRONG_SLOTS = [0, 1, 2] as const;
 const BREECH_WISP_SLOTS = [0, 1, 2] as const;
+const THERMAL_MIRAGE_SLOTS = [0, 1, 2, 3] as const;
 const BRAKE_SWEEP_RAD = (32 * Math.PI) / 180;
 const noRaycast = (): null => null;
 
+// Floor surface offsets matching GunsmithStageMat (`HEAVY_ARMOR_HANGAR_SPEC.topOffsetYCm` & `TAKEDOWN_MAT_SPEC.thicknessCm`)
+const HEAVY_HANGAR_FLOOR_OFFSET_Y = 1.0;
+const TAKEDOWN_MAT_FLOOR_OFFSET_Y = 0.45;
+
+export const THERMAL_MIRAGE_HEAT_THRESHOLD = 0.22;
+export const THERMAL_MIRAGE_RIBBON_COUNT = THERMAL_MIRAGE_SLOTS.length;
+
+export interface MuzzleShockwaveSample {
+  active: boolean;
+  radiusCm: number;
+  opacity: number;
+  floorY: number;
+  /** Secondary trailing outer ground-dust wave radius (cm) */
+  dustRadiusCm: number;
+  /** Secondary trailing outer ground-dust wave opacity */
+  dustOpacity: number;
+  /** Normalized progression 0..1 across the shockwave window */
+  progress01: number;
+  /** Longitudinal center offset ahead of muzzle exit (cm) */
+  centerOffsetXCm: number;
+}
+
+export interface ThermalMirageSample {
+  active: boolean;
+  opacity: number;
+  riseSpeed: number;
+  swayAmplitudeCm: number;
+}
+
+interface MuzzleShockwaveProfile {
+  startF: number;
+  endF: number;
+  minRadiusCm: number;
+  maxRadiusCm: number;
+  peakOpacity: number;
+  dustPeakOpacity: number;
+  centerOffsetXCm: number;
+  isHeavyHangar: boolean;
+}
+
+const MUZZLE_SHOCKWAVE_PROFILES: Partial<
+  Record<WeaponId, MuzzleShockwaveProfile>
+> = {
+  // 1:1 125mm / 120mm Main Battle Tanks — 140..520 cm supersonic overpressure sweep across concrete hangar
+  ztz99a: {
+    startF: 0.22,
+    endF: 0.68,
+    minRadiusCm: 140,
+    maxRadiusCm: 520,
+    peakOpacity: 0.62,
+    dustPeakOpacity: 0.34,
+    centerOffsetXCm: 95,
+    isHeavyHangar: true,
+  },
+  m1a2: {
+    startF: 0.22,
+    endF: 0.68,
+    minRadiusCm: 140,
+    maxRadiusCm: 520,
+    peakOpacity: 0.62,
+    dustPeakOpacity: 0.34,
+    centerOffsetXCm: 95,
+    isHeavyHangar: true,
+  },
+  leopard2a7: {
+    startF: 0.22,
+    endF: 0.68,
+    minRadiusCm: 140,
+    maxRadiusCm: 520,
+    peakOpacity: 0.62,
+    dustPeakOpacity: 0.34,
+    centerOffsetXCm: 95,
+    isHeavyHangar: true,
+  },
+  // WWII 88mm KwK 36 L/56 heavy tank
+  tiger1: {
+    startF: 0.24,
+    endF: 0.68,
+    minRadiusCm: 120,
+    maxRadiusCm: 430,
+    peakOpacity: 0.56,
+    dustPeakOpacity: 0.3,
+    centerOffsetXCm: 75,
+    isHeavyHangar: true,
+  },
+  // 30×173mm GAU-8/A rotary autocannon on concrete hangar bay
+  gau8: {
+    startF: 0.22,
+    endF: 0.64,
+    minRadiusCm: 72,
+    maxRadiusCm: 255,
+    peakOpacity: 0.48,
+    dustPeakOpacity: 0.26,
+    centerOffsetXCm: 48,
+    isHeavyHangar: true,
+  },
+  // .50 BMG anti-materiel rifle — crisp benchtop blast wave across gunsmith mat
+  m82a1: {
+    startF: 0.22,
+    endF: 0.66,
+    minRadiusCm: 14,
+    maxRadiusCm: 56,
+    peakOpacity: 0.46,
+    dustPeakOpacity: 0.24,
+    centerOffsetXCm: 8,
+    isHeavyHangar: false,
+  },
+  // .338 Lapua Magnum sniper rifle — crisp benchtop overpressure ripple
+  awm: {
+    startF: 0.35,
+    endF: 0.68,
+    minRadiusCm: 11,
+    maxRadiusCm: 42,
+    peakOpacity: 0.36,
+    dustPeakOpacity: 0.19,
+    centerOffsetXCm: 6,
+    isHeavyHangar: false,
+  },
+  // High-pressure full-power 7.92mm / .30-06 rifles — subtle bench dust ripple
+  mg42: {
+    startF: 0.31,
+    endF: 0.66,
+    minRadiusCm: 9,
+    maxRadiusCm: 32,
+    peakOpacity: 0.28,
+    dustPeakOpacity: 0.15,
+    centerOffsetXCm: 5,
+    isHeavyHangar: false,
+  },
+  garand: {
+    startF: 0.23,
+    endF: 0.62,
+    minRadiusCm: 8,
+    maxRadiusCm: 28,
+    peakOpacity: 0.24,
+    dustPeakOpacity: 0.13,
+    centerOffsetXCm: 4.5,
+    isHeavyHangar: false,
+  },
+  k98k: {
+    startF: 0.27,
+    endF: 0.64,
+    minRadiusCm: 8,
+    maxRadiusCm: 28,
+    peakOpacity: 0.24,
+    dustPeakOpacity: 0.13,
+    centerOffsetXCm: 4.5,
+    isHeavyHangar: false,
+  },
+};
+
+function smoothstep01(edge0: number, edge1: number, x: number): number {
+  const t = clamp01((x - edge0) / Math.max(1e-5, edge1 - edge0));
+  return t * t * (3 - 2 * t);
+}
+
+/**
+ * Zero-GC evaluator writing the ground-plane supersonic muzzle overpressure
+ * shockwave ring & outer dust wave state into `out`.
+ */
+export function writeMuzzleShockwaveSampleInto(
+  weaponId: WeaponId,
+  fireProgress: number,
+  out: MuzzleShockwaveSample
+): MuzzleShockwaveSample {
+  const manifest = getWeaponManifest(weaponId);
+  const isHeavyFloor =
+    manifest.workbenchMeta.scaleProfile === 'main_battle_tank';
+  const floorY =
+    manifest.workbenchMeta.gridY +
+    (isHeavyFloor ? HEAVY_HANGAR_FLOOR_OFFSET_Y : TAKEDOWN_MAT_FLOOR_OFFSET_Y);
+
+  out.floorY = floorY;
+  out.active = false;
+  out.radiusCm = 0;
+  out.opacity = 0;
+  out.dustRadiusCm = 0;
+  out.dustOpacity = 0;
+  out.progress01 = 0;
+  out.centerOffsetXCm = 0;
+
+  if ((weaponId as string) === 'lift33' || (weaponId as string) === 'r500') {
+    return out;
+  }
+  const prof = MUZZLE_SHOCKWAVE_PROFILES[weaponId];
+  if (!prof || !Number.isFinite(fireProgress) || fireProgress <= 0) {
+    return out;
+  }
+  if (fireProgress < prof.startF || fireProgress > prof.endF) {
+    return out;
+  }
+
+  const u = clamp01((fireProgress - prof.startF) / (prof.endF - prof.startF));
+  if (u <= 0 || u >= 1) {
+    return out;
+  }
+
+  // Sedov-Taylor blast front deceleration: rapid supersonic slap tapering as energy spreads ~1/r^2
+  const expandCurve = 1 - Math.pow(1 - u, 2.15);
+  const radiusCm =
+    prof.minRadiusCm + (prof.maxRadiusCm - prof.minRadiusCm) * expandCurve;
+
+  // Sharp pressure wavefront onset followed by smooth 1/r acoustic-overpressure decay
+  const onset = smoothstep01(0, 0.1, u);
+  const decay = Math.pow(1 - u, 1.35);
+  const opacity = prof.peakOpacity * onset * decay;
+
+  // Secondary ground dust / displaced bench grit wave lags slightly behind the shock crest
+  const dustExpand = 1 - Math.pow(1 - u, 1.55);
+  const dustRadiusCm =
+    prof.minRadiusCm * 0.85 +
+    (prof.maxRadiusCm * 1.14 - prof.minRadiusCm * 0.85) * dustExpand;
+  const dustOnset = smoothstep01(0.04, 0.22, u);
+  const dustDecay = Math.pow(1 - u, 1.1);
+  const dustOpacity = prof.dustPeakOpacity * dustOnset * dustDecay;
+
+  out.active = opacity > 0.004 || dustOpacity > 0.004;
+  out.radiusCm = out.active ? radiusCm : 0;
+  out.opacity = out.active ? opacity : 0;
+  out.dustRadiusCm = out.active ? dustRadiusCm : 0;
+  out.dustOpacity = out.active ? dustOpacity : 0;
+  out.progress01 = u;
+  out.centerOffsetXCm = prof.centerOffsetXCm;
+  return out;
+}
+
+/**
+ * Pure helper computing the ground-plane supersonic muzzle overpressure
+ * shockwave sample for a given exhibit & normalized `fireProgress`.
+ */
+export function computeMuzzleShockwaveSample(
+  weaponId: WeaponId,
+  fireProgress: number
+): MuzzleShockwaveSample {
+  const out: MuzzleShockwaveSample = {
+    active: false,
+    radiusCm: 0,
+    opacity: 0,
+    floorY: 0,
+    dustRadiusCm: 0,
+    dustOpacity: 0,
+    progress01: 0,
+    centerOffsetXCm: 0,
+  };
+  return writeMuzzleShockwaveSampleInto(weaponId, fireProgress, out);
+}
+
+/**
+ * Zero-GC evaluator writing hot-barrel convective thermal mirage shimmer
+ * state into `out`. Strictly inactive at `barrelHeat01 <= 0.22` and on archery.
+ */
+export function writeThermalMirageSampleInto(
+  weaponId: WeaponId,
+  barrelHeat01: number,
+  out: ThermalMirageSample
+): ThermalMirageSample {
+  out.active = false;
+  out.opacity = 0;
+  out.riseSpeed = 0;
+  out.swayAmplitudeCm = 0;
+
+  if (
+    (weaponId as string) === 'lift33' ||
+    (weaponId as string) === 'r500' ||
+    !Number.isFinite(barrelHeat01) ||
+    barrelHeat01 <= THERMAL_MIRAGE_HEAT_THRESHOLD
+  ) {
+    return out;
+  }
+
+  const heatNorm = clamp01(
+    (barrelHeat01 - THERMAL_MIRAGE_HEAT_THRESHOLD) /
+      (1 - THERMAL_MIRAGE_HEAT_THRESHOLD)
+  );
+  const manifest = getWeaponManifest(weaponId);
+  const isTank = manifest.workbenchMeta.scaleProfile === 'main_battle_tank';
+
+  out.active = true;
+  out.opacity = 0.055 + 0.165 * Math.pow(heatNorm, 0.85);
+  out.riseSpeed = 1.1 + 1.25 * heatNorm;
+  out.swayAmplitudeCm = (isTank ? 12.0 : 0.45) * (0.65 + 0.55 * heatNorm);
+  return out;
+}
+
+/**
+ * Pure helper computing hot-barrel convective thermal mirage shimmer state.
+ */
+export function computeThermalMirageSample(
+  weaponId: WeaponId,
+  barrelHeat01: number
+): ThermalMirageSample {
+  const out: ThermalMirageSample = {
+    active: false,
+    opacity: 0,
+    riseSpeed: 0,
+    swayAmplitudeCm: 0,
+  };
+  return writeThermalMirageSampleInto(weaponId, barrelHeat01, out);
+}
+
+const SHOCKWAVE_RING_VERT_GLSL = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const SHOCKWAVE_RING_FRAG_GLSL = /* glsl */ `
+  uniform vec3 uColor;
+  uniform float uOpacity;
+  uniform float uProgress;
+  uniform float uRingCenter;
+  uniform float uRingWidth;
+  uniform float uTurbulence;
+  varying vec2 vUv;
+
+  void main() {
+    vec2 p = vUv * 2.0 - 1.0;
+    float r = length(p);
+    if (r >= 0.995) discard;
+    float ang = atan(p.y, p.x);
+
+    // Subtle organic supersonic Mach-cone / ground-dust angular break-up
+    float jitter =
+      sin(ang * 9.0 + uProgress * 4.5) * 0.022 +
+      sin(ang * 17.0 - uProgress * 7.2) * 0.014 +
+      cos(ang * 25.0 + uProgress * 3.1) * 0.009;
+    float rMod = r + jitter * uTurbulence;
+
+    float d = abs(rMod - uRingCenter);
+    float band = exp(-pow(d / max(uRingWidth, 0.02), 2.0));
+    // Soft trailing wake inside the shock crest
+    float wake = smoothstep(uRingCenter - uRingWidth * 3.4, uRingCenter, rMod) *
+                 (1.0 - smoothstep(uRingCenter, uRingCenter + uRingWidth * 0.65, rMod)) * 0.34;
+    float edgeFade = 1.0 - smoothstep(0.88, 0.99, r);
+    float angularMod = 1.0 - uTurbulence * 0.22 * (0.5 + 0.5 * sin(ang * 13.0 - uProgress * 5.0));
+
+    float alpha = clamp((band + wake) * edgeFade * angularMod * uOpacity, 0.0, 0.85);
+    if (alpha <= 0.003) discard;
+
+    gl_FragColor = vec4(uColor, alpha);
+  }
+`;
+
+const THERMAL_MIRAGE_VERT_GLSL = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const THERMAL_MIRAGE_FRAG_GLSL = /* glsl */ `
+  uniform float uTime;
+  uniform float uOpacity;
+  uniform float uPhase;
+  uniform vec3 uWarmColor;
+  uniform vec3 uCoolColor;
+  varying vec2 vUv;
+
+  void main() {
+    // Smooth horizontal & vertical convective envelope (zero rectangular borders)
+    float maskX = smoothstep(0.0, 0.24, vUv.x) * smoothstep(1.0, 0.76, vUv.x);
+    float maskY = smoothstep(0.0, 0.16, vUv.y) * smoothstep(1.0, 0.22, vUv.y);
+
+    // Rising buoyant refractive shear filaments
+    float sway = sin(vUv.y * 7.5 - uTime * 3.6 + uPhase) * 0.14 +
+                 sin(vUv.y * 13.0 - uTime * 5.4 + uPhase * 1.7) * 0.06;
+    float w1 = 0.5 + 0.5 * sin((vUv.x + sway) * 18.0 + uPhase * 2.3);
+    float w2 = 0.5 + 0.5 * sin((vUv.x - sway * 0.8) * 29.0 - uTime * 2.2 + uPhase);
+    float filaments = pow(clamp(w1 * 0.62 + w2 * 0.38, 0.0, 1.0), 1.65);
+
+    float alpha = maskX * maskY * (0.35 + 0.65 * filaments) * uOpacity;
+    if (alpha <= 0.0025) discard;
+
+    vec3 col = mix(uWarmColor, uCoolColor, smoothstep(0.05, 0.72, vUv.y));
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
 // Module-pooled Zero-GC math & color scratch objects (never allocate in useFrame)
 const _sample = createInternalBallisticsSample('556_nato');
+const _shockSample: MuzzleShockwaveSample = {
+  active: false,
+  radiusCm: 0,
+  opacity: 0,
+  floorY: 0,
+  dustRadiusCm: 0,
+  dustOpacity: 0,
+  progress01: 0,
+  centerOffsetXCm: 0,
+};
+const _mirageSample: ThermalMirageSample = {
+  active: false,
+  opacity: 0,
+  riseSpeed: 0,
+  swayAmplitudeCm: 0,
+};
 const _upAxis = new THREE.Vector3(0, 1, 0);
 const _dirVec = new THREE.Vector3();
 const _posVec = new THREE.Vector3();
@@ -68,6 +468,10 @@ const COL_SEALED_RING = new THREE.Color('#fbbf24');
 const COL_SAFE_UNLOCK = new THREE.Color('#10b981');
 const COL_BREECH_WISP_WARM = new THREE.Color('#e2c9a6');
 const COL_BREECH_WISP_COOL = new THREE.Color('#b8c4d4');
+const COL_SHOCK_WAVE = new THREE.Color('#e8dcc6');
+const COL_SHOCK_DUST = new THREE.Color('#a89b86');
+const COL_MIRAGE_WARM = new THREE.Color('#f4d6a8');
+const COL_MIRAGE_COOL = new THREE.Color('#cbd5e1');
 
 function clamp01(x: number): number {
   if (!(x > 0)) return 0;
@@ -91,6 +495,12 @@ export const GasFlowVisualizer: React.FC = () => {
   const gasFlowVisible = useAppStore((s) => s.gasFlowVisible);
 
   const rootRef = useRef<THREE.Group>(null);
+  const gasGroupRef = useRef<THREE.Group>(null);
+  const shockwaveGroupRef = useRef<THREE.Group>(null);
+  const shockPrimaryRef = useRef<THREE.Mesh>(null);
+  const shockDustRef = useRef<THREE.Mesh>(null);
+  const mirageGroupRef = useRef<THREE.Group>(null);
+  const mirageMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
   const boreOuterRef = useRef<THREE.Mesh>(null);
   const boreOuterMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const boreCoreRef = useRef<THREE.Mesh>(null);
@@ -135,6 +545,80 @@ export const GasFlowVisualizer: React.FC = () => {
   const breechWispRefs = useRef<(THREE.Mesh | null)[]>([]);
   const breechWispMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
 
+  // Pre-allocated ground-shockwave & hot-barrel thermal mirage materials (explicitly disposed on unmount)
+  const shockPrimaryMat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: SHOCKWAVE_RING_VERT_GLSL,
+        fragmentShader: SHOCKWAVE_RING_FRAG_GLSL,
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        uniforms: {
+          uColor: { value: COL_SHOCK_WAVE.clone() },
+          uOpacity: { value: 0 },
+          uProgress: { value: 0 },
+          uRingCenter: { value: 0.84 },
+          uRingWidth: { value: 0.065 },
+          uTurbulence: { value: 0.72 },
+        },
+      }),
+    []
+  );
+
+  const shockDustMat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: SHOCKWAVE_RING_VERT_GLSL,
+        fragmentShader: SHOCKWAVE_RING_FRAG_GLSL,
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        uniforms: {
+          uColor: { value: COL_SHOCK_DUST.clone() },
+          uOpacity: { value: 0 },
+          uProgress: { value: 0 },
+          uRingCenter: { value: 0.72 },
+          uRingWidth: { value: 0.14 },
+          uTurbulence: { value: 1.0 },
+        },
+      }),
+    []
+  );
+
+  const mirageMats = useMemo(
+    () =>
+      THERMAL_MIRAGE_SLOTS.map(
+        (i) =>
+          new THREE.ShaderMaterial({
+            vertexShader: THERMAL_MIRAGE_VERT_GLSL,
+            fragmentShader: THERMAL_MIRAGE_FRAG_GLSL,
+            transparent: true,
+            depthWrite: false,
+            side: THREE.DoubleSide,
+            uniforms: {
+              uTime: { value: 0 },
+              uOpacity: { value: 0 },
+              uPhase: { value: i * 1.57 + 0.35 },
+              uWarmColor: { value: COL_MIRAGE_WARM.clone() },
+              uCoolColor: { value: COL_MIRAGE_COOL.clone() },
+            },
+          })
+      ),
+    []
+  );
+
+  useEffect(
+    () => () => {
+      shockPrimaryMat.dispose();
+      shockDustMat.dispose();
+      for (let i = 0; i < mirageMats.length; i++) {
+        mirageMats[i].dispose();
+      }
+    },
+    [shockPrimaryMat, shockDustMat, mirageMats]
+  );
+
   useEffect(() => {
     const inst = chevronsRef.current;
     if (!inst) return;
@@ -151,11 +635,7 @@ export const GasFlowVisualizer: React.FC = () => {
     if (!root) return;
 
     const appState = useAppStore.getState();
-    if (
-      appState.mode !== 'firing' ||
-      !appState.gasFlowVisible ||
-      appState.screen !== 'workbench'
-    ) {
+    if (appState.mode !== 'firing' || appState.screen !== 'workbench') {
       root.visible = false;
       return;
     }
@@ -171,14 +651,125 @@ export const GasFlowVisualizer: React.FC = () => {
         weaponId as keyof typeof WEAPON_GAS_MANIFOLD_PROFILES
       ];
     const f = playbackClock.getState().animatedFireProgress;
+    const phys = getArmoryPhysicsState();
+    const isHeavyPlatform =
+      manifest.workbenchMeta.scaleProfile === 'main_battle_tank';
+
+    // --- Cycle 9B.1: Supersonic ground-plane muzzle overpressure shockwave ring + dust wave ---
+    writeMuzzleShockwaveSampleInto(weaponId, f, _shockSample);
+    const shockVisible = _shockSample.active;
+    const shockGroup = shockwaveGroupRef.current;
+    if (shockGroup) {
+      shockGroup.visible = shockVisible;
+      if (shockVisible) {
+        const wx = manifold.muzzleX + _shockSample.centerOffsetXCm;
+        const wy = _shockSample.floorY + (isHeavyPlatform ? 0.55 : 0.08);
+
+        // Counter-transform ancestor WeaponRecoilGroup so the ground ring stays dead-flat on the floor
+        const recoilParent = root.parent?.parent;
+        if (
+          recoilParent &&
+          (recoilParent.rotation.z !== 0 ||
+            recoilParent.position.x !== 0 ||
+            recoilParent.position.y !== 0)
+        ) {
+          const th = recoilParent.rotation.z;
+          const cosT = Math.cos(th);
+          const sinT = Math.sin(th);
+          const dx = wx - recoilParent.position.x;
+          const dy = wy - recoilParent.position.y;
+          shockGroup.position.set(
+            dx * cosT + dy * sinT,
+            -dx * sinT + dy * cosT,
+            0
+          );
+          shockGroup.rotation.set(0, 0, -th);
+        } else {
+          shockGroup.position.set(wx, wy, 0);
+          shockGroup.rotation.set(0, 0, 0);
+        }
+
+        if (shockPrimaryRef.current) {
+          shockPrimaryRef.current.scale.set(
+            _shockSample.radiusCm,
+            _shockSample.radiusCm,
+            1
+          );
+          const pMat = shockPrimaryRef.current.material as THREE.ShaderMaterial;
+          pMat.uniforms.uOpacity.value = _shockSample.opacity;
+          pMat.uniforms.uProgress.value = _shockSample.progress01;
+        }
+        if (shockDustRef.current) {
+          shockDustRef.current.scale.set(
+            _shockSample.dustRadiusCm,
+            _shockSample.dustRadiusCm,
+            1
+          );
+          const dMat = shockDustRef.current.material as THREE.ShaderMaterial;
+          dMat.uniforms.uOpacity.value = _shockSample.dustOpacity;
+          dMat.uniforms.uProgress.value = _shockSample.progress01;
+        }
+      }
+    }
+
+    // --- Cycle 9B.2: Hot-barrel convective thermal mirage shimmer ribbons (barrelHeat01 > 0.22) ---
+    writeThermalMirageSampleInto(weaponId, phys.barrelHeat01, _mirageSample);
+    const mirageVisible = _mirageSample.active;
+    const mirageGroup = mirageGroupRef.current;
+    if (mirageGroup) {
+      mirageGroup.visible = mirageVisible;
+      if (mirageVisible) {
+        const boreSpan = Math.max(4.0, manifold.muzzleX - manifold.chamberX);
+        const barrelTopY = manifold.boreY + (isHeavyPlatform ? 14.0 : 1.15);
+        const ribbonH = isHeavyPlatform ? 64.0 : 4.2;
+        const ribbonW = Math.max(
+          isHeavyPlatform ? 48.0 : 4.5,
+          boreSpan * 0.28
+        );
+        const elapsed = state.clock.elapsedTime;
+        const simTime = elapsed * _mirageSample.riseSpeed;
+
+        for (let i = 0; i < THERMAL_MIRAGE_SLOTS.length; i++) {
+          const mMesh = mirageMeshRefs.current[i];
+          if (!mMesh) continue;
+          const mMat = mMesh.material as THREE.ShaderMaterial;
+          const frac = (i + 0.5) / THERMAL_MIRAGE_SLOTS.length;
+          const rx = manifold.chamberX + boreSpan * (0.14 + 0.76 * frac);
+          const wavePhase = simTime + i * 1.65;
+          const bobY = Math.sin(wavePhase) * (isHeavyPlatform ? 5.2 : 0.32);
+          const swayZ =
+            Math.sin(wavePhase * 0.78 + i * 2.1) *
+            _mirageSample.swayAmplitudeCm;
+          const yaw =
+            (i % 2 === 0 ? 0.28 : -0.28) + Math.sin(wavePhase * 0.45) * 0.07;
+
+          mMesh.position.set(rx, barrelTopY + ribbonH * 0.44 + bobY, swayZ);
+          mMesh.rotation.set(0, yaw, 0);
+          mMesh.scale.set(ribbonW, ribbonH, 1);
+
+          mMat.uniforms.uTime.value = simTime;
+          mMat.uniforms.uOpacity.value =
+            _mirageSample.opacity * (0.82 + 0.18 * Math.sin(wavePhase * 1.1));
+        }
+      }
+    }
+
+    const gasGroup = gasGroupRef.current;
+    if (!appState.gasFlowVisible) {
+      if (gasGroup) gasGroup.visible = false;
+      root.visible = shockVisible || mirageVisible;
+      return;
+    }
 
     if (isArchery) {
       const isBow = (weaponId as string) === 'lift33';
       const exitF = isBow ? 0.5 : 0.48;
       if (f < 0.015 || f > 0.66) {
+        if (gasGroup) gasGroup.visible = false;
         root.visible = false;
         return;
       }
+      if (gasGroup) gasGroup.visible = true;
       root.visible = true;
 
       // Elastic draw displacement & kinetic release ratio
@@ -405,9 +996,11 @@ export const GasFlowVisualizer: React.FC = () => {
 
     const blowdownEndF = Math.min(0.95, _sample.safeUnlockF + 0.11);
     if (f < timing.ignitionF || f > blowdownEndF) {
-      root.visible = false;
+      if (gasGroup) gasGroup.visible = false;
+      root.visible = shockVisible || mirageVisible;
       return;
     }
+    if (gasGroup) gasGroup.visible = true;
     root.visible = true;
 
     const isTank = manifest.workbenchMeta.scaleProfile === 'main_battle_tank';
@@ -1144,12 +1737,67 @@ export const GasFlowVisualizer: React.FC = () => {
     }
   });
 
-  if (mode !== 'firing' || !gasFlowVisible) {
+  if (mode !== 'firing') {
     return null;
   }
 
   return (
     <group ref={rootRef} name="WP05GasFlowVisualizer" visible={false}>
+      {/* Cycle 9B.1: Supersonic ground-plane muzzle overpressure shockwave ring + outer dust wave */}
+      <group
+        ref={shockwaveGroupRef}
+        name="MuzzleGroundShockwave"
+        visible={false}
+      >
+        <mesh
+          ref={shockPrimaryRef}
+          rotation={[-Math.PI / 2, 0, 0]}
+          material={shockPrimaryMat}
+          frustumCulled={false}
+          raycast={noRaycast}
+          userData={{ excludeFromGtao: true }}
+          renderOrder={12}
+        >
+          <planeGeometry args={[2, 2, 1, 1]} />
+        </mesh>
+        <mesh
+          ref={shockDustRef}
+          position={[0, -0.02, 0]}
+          rotation={[-Math.PI / 2, 0, 0]}
+          material={shockDustMat}
+          frustumCulled={false}
+          raycast={noRaycast}
+          userData={{ excludeFromGtao: true }}
+          renderOrder={11}
+        >
+          <planeGeometry args={[2, 2, 1, 1]} />
+        </mesh>
+      </group>
+
+      {/* Cycle 9B.2: Hot-barrel rising thermal convection mirage shimmer ribbons */}
+      <group
+        ref={mirageGroupRef}
+        name="HotBarrelThermalMirage"
+        visible={false}
+      >
+        {THERMAL_MIRAGE_SLOTS.map((i) => (
+          <mesh
+            key={`thermal-mirage-${i}`}
+            ref={(el) => {
+              mirageMeshRefs.current[i] = el;
+            }}
+            material={mirageMats[i]}
+            frustumCulled={false}
+            raycast={noRaycast}
+            userData={{ excludeFromGtao: true }}
+            renderOrder={13}
+          >
+            <planeGeometry args={[1, 1, 1, 1]} />
+          </mesh>
+        ))}
+      </group>
+
+      <group ref={gasGroupRef} name="PropellantGasFlowSubgroup" visible={false}>
       {/* Bore propellant expansion sheath */}
       <mesh
         ref={boreOuterRef}
@@ -1503,6 +2151,7 @@ export const GasFlowVisualizer: React.FC = () => {
           blending={THREE.AdditiveBlending}
         />
       </instancedMesh>
+      </group>
     </group>
   );
 };
