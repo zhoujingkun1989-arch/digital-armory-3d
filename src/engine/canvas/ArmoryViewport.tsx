@@ -158,6 +158,7 @@ export const TALL_GRIP_FIRING_CT_EXTRA_CLEARANCE_CM = 1.0;
 export const PORTRAIT_PHONE_ASPECT_MAX = 0.65;
 export const PORTRAIT_PHONE_DISTANCE_MULT = 1.29;
 export const PORTRAIT_PHONE_LONG_RIFLE_EXTRA_MULT = 1.065;
+export const PORTRAIT_PHONE_ASSEMBLED_RIFLE_PULLBACK = 1.075;
 export const PORTRAIT_PHONE_LONG_RIFLE_IDS: ReadonlySet<WeaponId> =
   new Set<WeaponId>([
     'ak15',
@@ -182,19 +183,26 @@ export const WORKBENCH_ENTRY_EASE_DURATION_S = 0.55;
  * (`aspect < 0.65`, e.g. 390×844), plus an extra +6.5% (`~1.374x`) pull-back
  * for long rifles (`> 90 cm` envelope such as AK-15M1, M4A1, K98k, M1 Garand,
  * M82A1, AWM, MG 42, SCAR-L, Benelli M4, Remington 870, Winchester 1894,
- * VSS, AN-94, and M249) so long muzzle brakes clear the right edge by >= 12px
- * while keeping desktop & tablet framing untouched (`1.0`).
+ * VSS, AN-94, and M249) — plus an additional +4.5% (`~1.436x`) in default
+ * assembled (`mode === 'explode'` at `0%`) portrait view so long muzzle brakes
+ * clear the right edge comfortably on `390×844` while desktop & tablet stay `1.0`.
  */
 export function computePortraitPhoneDistanceMultiplier(
   aspect: number,
-  weaponId?: WeaponId | string | null
+  weaponId?: WeaponId | string | null,
+  isAssembledDefault = false
 ): number {
   if (!Number.isFinite(aspect) || aspect <= 0) return 1.0;
   if (aspect >= PORTRAIT_PHONE_ASPECT_MAX) return 1.0;
   if (weaponId && PORTRAIT_PHONE_LONG_RIFLE_IDS.has(weaponId as WeaponId)) {
+    const assembledPullback = isAssembledDefault
+      ? PORTRAIT_PHONE_ASSEMBLED_RIFLE_PULLBACK
+      : 1.0;
     return Number(
       (
-        PORTRAIT_PHONE_DISTANCE_MULT * PORTRAIT_PHONE_LONG_RIFLE_EXTRA_MULT
+        PORTRAIT_PHONE_DISTANCE_MULT *
+        PORTRAIT_PHONE_LONG_RIFLE_EXTRA_MULT *
+        assembledPullback
       ).toFixed(4)
     );
   }
@@ -369,8 +377,19 @@ function applyWorkbenchFraming(
   const baseScale = isFixedClosePreset
     ? Math.max(1, 1.08 / aspect)
     : Math.max(vertScale, horizScale);
+  const isAssembledDefault = !isFiringMode && !isFixedClosePreset && t < 0.05;
+  const isPortraitAssembledLongRifle =
+    isAssembledDefault &&
+    aspect < PORTRAIT_PHONE_ASPECT_MAX &&
+    !!weaponId &&
+    PORTRAIT_PHONE_LONG_RIFLE_IDS.has(weaponId);
   const scale =
-    baseScale * computePortraitPhoneDistanceMultiplier(aspect, weaponId);
+    baseScale *
+    computePortraitPhoneDistanceMultiplier(
+      aspect,
+      weaponId,
+      isAssembledDefault
+    );
 
   const sectionBarOffsetY = computeWorkbenchSectionBarOffsetY(
     scaleProfile,
@@ -379,7 +398,9 @@ function applyWorkbenchFraming(
     weaponId,
     isFiringMode
   );
-  const finalXShift = isFixedClosePreset ? 0 : xShift;
+  const finalXShift =
+    (isFixedClosePreset ? 0 : xShift) +
+    (isPortraitAssembledLongRifle ? 1.8 : 0);
   const finalYShift =
     (isFixedClosePreset ? 0 : yShift) + sectionBarOffsetY;
   const zSign = mirrorZ ? -1 : 1;
