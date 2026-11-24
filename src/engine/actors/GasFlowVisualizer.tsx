@@ -135,7 +135,7 @@ const ROTARY_BLUR_PROFILES: Partial<Record<WeaponId, RotaryBlurProfile>> = {
     radiusCm: 10.8,
     lengthCm: 216.0,
     centerX: 198.0,
-    peakOpacity: 0.36,
+    peakOpacity: 0.44,
   },
   // GE / Dillon Aero M134D Minigun: 3,000 RPM nominal across 6 barrels (500 cluster RPM = 52.36 rad/s),
   // exposed 22" barrel bundle X ∈ [3.6, 45.2] cm, pitch R=2.65 cm + tube R=0.84 cm -> halo R=3.65 cm
@@ -145,7 +145,7 @@ const ROTARY_BLUR_PROFILES: Partial<Record<WeaponId, RotaryBlurProfile>> = {
     radiusCm: 3.65,
     lengthCm: 41.6,
     centerX: 24.4,
-    peakOpacity: 0.34,
+    peakOpacity: 0.42,
   },
 };
 
@@ -747,6 +747,36 @@ export function computeInBoreDeflagrationSample(
 }
 
 /**
+ * Syncs Cycle 15A in-bore propellant deflagration plasma front flush to the live 3D
+ * projectile base (`bulletX - baseInsetCm`) during in-bore acceleration (`fireProgress <= muzzleExitF`),
+ * eliminating any visual gap between the expanding propellant plasma and the copper bullet
+ * boat-tail or 120mm/125mm APFSDS sabot obturator band.
+ */
+export function resolveLiveInBoreTravelRatio(
+  bulletX: number | null,
+  chamberX: number,
+  muzzleX: number,
+  fallbackBoreTravelRatio: number,
+  fireProgress: number,
+  muzzleExitF: number,
+  baseInsetCm = 0
+): number {
+  if (!Number.isFinite(fireProgress) || fireProgress <= 0) {
+    return 0;
+  }
+  if (fireProgress > muzzleExitF) {
+    return 1;
+  }
+  const span = muzzleX - chamberX;
+  if (bulletX !== null && Number.isFinite(bulletX) && span > 1e-4) {
+    const baseX = bulletX - Math.max(0, baseInsetCm);
+    const liveRatio = clamp01((baseX - chamberX) / span);
+    return Math.max(liveRatio, clamp01(fallbackBoreTravelRatio) * 0.6);
+  }
+  return clamp01(fallbackBoreTravelRatio);
+}
+
+/**
  * Zero-GC evaluator writing Cycle 19A.1 High-RPM rotary barrel-cluster motion-blur
  * sweep halo state into `out`.
  * Strictly active ONLY for `gau8` & `m134` when `isFiring === true && fireProgress > 0.04`,
@@ -1049,10 +1079,10 @@ const IN_BORE_PLASMA_FRAG_GLSL = /* glsl */ `
 
     float coreMix = clamp(coreProfile * (0.45 + 0.55 * uPressure) * axialGlow, 0.0, 1.0);
     vec3 col = mix(uEdgeColor, uCoreColor, coreMix);
-    float alpha = clamp(axialMask * (0.28 + 0.72 * coreProfile) * turbulence * uIntensity * 0.82, 0.0, 0.88);
+    float alpha = clamp(axialMask * (0.34 + 0.66 * coreProfile) * turbulence * uIntensity * 0.94, 0.0, 0.95);
     if (alpha <= 0.004) discard;
 
-    gl_FragColor = vec4(col * (1.0 + 0.35 * coreMix * uPressure), alpha);
+    gl_FragColor = vec4(col * (1.1 + 0.42 * coreMix * uPressure), alpha);
   }
 `;
 
@@ -1144,20 +1174,22 @@ const ROTARY_BLUR_HALO_FRAG_GLSL = /* glsl */ `
 
     // Grazing cylindrical Fresnel rim emphasizes metallic spin envelope while keeping center transparent
     float ndotv = abs(dot(normalize(vViewNormal), normalize(vViewDir)));
-    float fresnel = pow(1.0 - clamp(ndotv, 0.0, 1.0), 1.45);
-    float silhouetteWeight = 0.34 + 0.66 * fresnel;
+    float fresnel = pow(1.0 - clamp(ndotv, 0.0, 1.0), 1.25);
+    float silhouetteWeight = 0.46 + 0.54 * fresnel;
+    float glintBand = pow(clamp(primaryWave * 0.65 + microStreak * 0.35, 0.0, 1.0), 1.8);
 
     // Subtle dull-cherry thermal glow concentrated along mid-forward heated barrel span
     float thermalAxial = smoothstep(0.14, 0.86, vUv.y);
     float heatMix = clamp(uHeatTint * (0.38 + 0.62 * thermalAxial), 0.0, 1.0);
-    vec3 metalCol = mix(uCoolColor, uHighlightColor, clamp(fresnel * 0.7 + microStreak * 0.3, 0.0, 1.0));
+    vec3 metalCol = mix(uCoolColor, uHighlightColor, clamp(fresnel * 0.65 + glintBand * 0.55, 0.0, 1.0));
     vec3 col = mix(metalCol, uHeatColor, heatMix * 0.78);
+    col += uHighlightColor * (0.22 * fresnel + 0.2 * glintBand);
     col += uHeatColor * heatMix * (0.28 + 0.32 * primaryWave);
 
     float alpha = clamp(
-      axialMask * axialRipple * streakPattern * silhouetteWeight * uOpacity,
+      axialMask * axialRipple * streakPattern * silhouetteWeight * (1.0 + 0.32 * glintBand) * uOpacity,
       0.0,
-      0.65
+      0.74
     );
     if (alpha <= 0.003) discard;
 
@@ -1192,20 +1224,23 @@ const TANK_EVAC_PUFF_FRAG_GLSL = /* glsl */ `
   varying vec3 vViewDir;
 
   void main() {
-    // Center-weighted volumetric falloff eliminates spherical silhouette edges from every angle
+    // Deeply feathered center-weighted volumetric falloff eliminates spherical/oval edges
     float ndotv = abs(dot(normalize(vViewNormal), normalize(vViewDir)));
-    float softCore = pow(clamp(ndotv, 0.0, 1.0), 1.45);
+    float softCore = pow(clamp(ndotv, 0.0, 1.0), 2.05);
 
-    // Organic buoyant turbulent smoke billows
-    float w1 = 0.5 + 0.5 * sin(vUv.x * 12.56637 + uProgress * 4.2 + uPhase);
-    float w2 = 0.5 + 0.5 * cos(vUv.y * 9.42478 - uProgress * 5.6 + uPhase * 1.7);
-    float w3 = 0.5 + 0.5 * sin((vUv.x + vUv.y) * 15.70796 - uProgress * 3.8);
-    float billow = 0.52 + 0.48 * (w1 * 0.45 + w2 * 0.35 + w3 * 0.20);
+    // Multi-octave organic curl-turbulence wispy gunsmoke breakup (strict edge0 < edge1)
+    float a = vUv.x * 6.2831853;
+    float b = vUv.y * 6.2831853;
+    float w1 = 0.5 + 0.5 * sin(a * 2.0 + sin(b * 2.0 + uPhase) * 1.4 + uProgress * 4.5);
+    float w2 = 0.5 + 0.5 * cos(b * 3.0 - cos(a * 3.0 - uPhase * 1.3) * 1.2 - uProgress * 6.2);
+    float w3 = 0.5 + 0.5 * sin((a + b) * 4.0 - uProgress * 5.1 + uPhase * 2.1);
+    float fbm = w1 * 0.48 + w2 * 0.32 + w3 * 0.20;
+    float wisps = smoothstep(0.18, 0.86, fbm);
 
-    float alpha = clamp(softCore * billow * uOpacity, 0.0, 0.52);
+    float alpha = clamp(softCore * wisps * uOpacity, 0.0, 0.46);
     if (alpha <= 0.003) discard;
 
-    float coolMix = clamp(uProgress * 1.15 + (1.0 - ndotv) * 0.35, 0.0, 1.0);
+    float coolMix = clamp(uProgress * 1.15 + (1.0 - ndotv) * 0.4, 0.0, 1.0);
     vec3 col = mix(uWarmColor, uCoolColor, coolMix);
     gl_FragColor = vec4(col, alpha);
   }
@@ -1786,11 +1821,37 @@ export const GasFlowVisualizer: React.FC = () => {
     }
     const isCutawayZ = appState.sectionCut && appState.sectionCutAxis === 'z';
     const explodeT = playbackClock.getState().animatedProgress;
+    let syncedBoreTravel = isArchery ? 0 : _sample.boreTravelRatio;
+    if (!isArchery && isCutawayZ && f > 0) {
+      const loadedPlugin = getLoadedWeaponPlugin(weaponId);
+      if (loadedPlugin) {
+        const bState = loadedPlugin.computeBallisticsState(f);
+        if (bState.bulletVisible) {
+          const baseInset =
+            caliber === '120mm_apfsds' || caliber === '125mm_apfsds'
+              ? 9.4
+              : caliber === '88mm_pzgr39'
+                ? 14.0
+                : caliber === '30x173_gau8'
+                  ? 4.2
+                  : 0.55;
+          syncedBoreTravel = resolveLiveInBoreTravelRatio(
+            bState.bulletPos[0],
+            manifold.chamberX,
+            manifold.muzzleX,
+            _sample.boreTravelRatio,
+            f,
+            timing.muzzleExitF,
+            baseInset
+          );
+        }
+      }
+    }
     writeInBoreDeflagrationSampleInto(
       weaponId,
       f,
       isArchery ? 0 : _sample.pressure01,
-      isArchery ? 0 : _sample.boreTravelRatio,
+      syncedBoreTravel,
       isCutawayZ,
       _inBoreSample,
       explodeT
@@ -1969,14 +2030,14 @@ export const GasFlowVisualizer: React.FC = () => {
             pMesh.scale.set(rad * 1.32, rad * 0.96, rad * 1.05);
             pMesh.rotation.set(localIdx * 0.7, uSlot * 0.8, 0.22);
           } else {
-            // Subtle pressurized scavenging wisps curling above & forward from bore evacuator / brake collar
-            const fwdX = 6 + uSlot * (44 + localIdx * 10);
-            const liftY = evacR * 0.78 + 8 + uSlot * (48 + localIdx * 11);
-            const spreadZ = zSign * (evacR * 0.45 + uSlot * 16);
-            const rad = (10 + 18 * _tankEvacSample.plumeScale) * (0.82 + localIdx * 0.1);
+            // Subtle pressurized scavenging wisps curling flush from bore evacuator / brake collar
+            const fwdX = 14 + uSlot * (62 + localIdx * 14);
+            const liftY = evacR * 0.28 + 3 + uSlot * (38 + localIdx * 10);
+            const spreadZ = zSign * (evacR * 0.35 + uSlot * 14);
+            const rad = (11 + 18 * _tankEvacSample.plumeScale) * (0.85 + localIdx * 0.12);
             pMesh.position.set(evacOriginX + fwdX, boreY + liftY, spreadZ);
-            pMesh.scale.set(rad * 1.24, rad * 0.94, rad);
-            pMesh.rotation.set(localIdx * 0.9, -uSlot * 0.7, -0.18);
+            pMesh.scale.set(rad * 1.85, rad * 0.78, rad * 0.95);
+            pMesh.rotation.set(localIdx * 0.9, -uSlot * 0.55, 0.14);
           }
           const pMat = pMesh.material as THREE.ShaderMaterial;
           pMat.uniforms.uOpacity.value =
