@@ -300,8 +300,11 @@ describe('Cycle 11B.3 — Zero-GC useFrame, Dirty-Gating, Mount Wiring & GPU Dis
     expect(guideUseFrame.length).toBeGreaterThan(200);
     expect(guideUseFrame).not.toMatch(/\bnew THREE\./);
 
-    // Dirty-gated buffer updates + explicit disposal + GTAO exclusion
+    // Dirty-gated buffer updates + conditional remount invalidation + explicit disposal + GTAO exclusion
     expect(guideSrc).toContain('Math.abs(p - lastProgressRef.current) > 1e-4');
+    expect(guideSrc).toContain('const meshRemounted = dots !== lastDotsMeshRef.current');
+    expect(guideSrc).toContain('const selectedChanged = st.selectedPartId !== lastSelectedIdRef.current');
+    expect(guideSrc).toContain('[activeWeaponId, maxParts, screen, mode, fieldStripActive, sectionCut]');
     expect(guideSrc).toContain('resources.baseGeo.dispose()');
     expect(guideSrc).toContain('resources.hlGeo.dispose()');
     expect(guideSrc).toContain('resources.dotGeo.dispose()');

@@ -336,9 +336,11 @@ export const ExplodeAxisGuide: React.FC = () => {
 
   const lastProgressRef = useRef<number>(-1);
   const lastFocusIdRef = useRef<string | null | undefined>(undefined);
+  const lastSelectedIdRef = useRef<string | null | undefined>(undefined);
   const lastGeoVersionRef = useRef<number>(-1);
   const lastEnvRef = useRef<ArmoryEnvironmentPreset | null>(null);
   const lastHiddenMaskRef = useRef<number>(-1);
+  const lastDotsMeshRef = useRef<THREE.InstancedMesh | null>(null);
 
   // Pre-allocate base & highlight line geometries + anchor dot sphere once per weapon plugin
   const resources = useMemo(() => {
@@ -406,10 +408,12 @@ export const ExplodeAxisGuide: React.FC = () => {
   useEffect(() => {
     lastProgressRef.current = -1;
     lastFocusIdRef.current = undefined;
+    lastSelectedIdRef.current = undefined;
     lastGeoVersionRef.current = -1;
     lastEnvRef.current = null;
     lastHiddenMaskRef.current = -1;
-  }, [activeWeaponId, maxParts]);
+    lastDotsMeshRef.current = null;
+  }, [activeWeaponId, maxParts, screen, mode, fieldStripActive, sectionCut]);
 
   useEffect(() => {
     return () => {
@@ -456,23 +460,25 @@ export const ExplodeAxisGuide: React.FC = () => {
       (hg.magazine ? 8 : 0) |
       (st.isolateSelected ? 16 : 0);
 
-    const progressChanged = Math.abs(p - lastProgressRef.current) > 1e-4;
-    const focusChanged = focusPartId !== lastFocusIdRef.current;
-    const geoChanged = geoStatus.version !== lastGeoVersionRef.current;
-    const envChanged = st.environmentPreset !== lastEnvRef.current;
-    const hiddenChanged = hiddenMask !== lastHiddenMaskRef.current;
-
     const baseLines = baseLinesRef.current;
     const hlLines = highlightLineRef.current;
     const dots = anchorDotsRef.current;
     if (!baseLines || !hlLines || !dots) return;
+
+    const meshRemounted = dots !== lastDotsMeshRef.current;
+    const progressChanged = Math.abs(p - lastProgressRef.current) > 1e-4;
+    const focusChanged = focusPartId !== lastFocusIdRef.current;
+    const selectedChanged = st.selectedPartId !== lastSelectedIdRef.current;
+    const geoChanged = geoStatus.version !== lastGeoVersionRef.current;
+    const envChanged = st.environmentPreset !== lastEnvRef.current;
+    const hiddenChanged = hiddenMask !== lastHiddenMaskRef.current;
 
     const baseMat = baseLines.material as THREE.LineDashedMaterial;
     const hlMat = hlLines.material as THREE.LineDashedMaterial;
     const dotMat = dots.material as THREE.MeshBasicMaterial;
 
     const pal = getExplodeGuidePalette(st.environmentPreset);
-    if (envChanged || progressChanged) {
+    if (meshRemounted || envChanged || progressChanged) {
       baseMat.color.set(pal.baseColor);
       baseMat.opacity = vis.baseOpacity;
       baseMat.dashSize = scaleSpec.dashSize;
@@ -487,8 +493,10 @@ export const ExplodeAxisGuide: React.FC = () => {
     }
 
     if (
+      !meshRemounted &&
       !progressChanged &&
       !focusChanged &&
+      !selectedChanged &&
       !geoChanged &&
       !envChanged &&
       !hiddenChanged
@@ -496,8 +504,10 @@ export const ExplodeAxisGuide: React.FC = () => {
       return;
     }
 
+    lastDotsMeshRef.current = dots;
     lastProgressRef.current = p;
     lastFocusIdRef.current = focusPartId;
+    lastSelectedIdRef.current = st.selectedPartId;
     lastGeoVersionRef.current = geoStatus.version;
     lastEnvRef.current = st.environmentPreset;
     lastHiddenMaskRef.current = hiddenMask;
@@ -649,6 +659,7 @@ export const ExplodeAxisGuide: React.FC = () => {
         ref={baseLinesRef}
         geometry={resources.baseGeo}
         material={resources.baseMat}
+        visible={false}
         frustumCulled={false}
         raycast={noopRaycast}
         renderOrder={9}
@@ -660,6 +671,7 @@ export const ExplodeAxisGuide: React.FC = () => {
         ref={highlightLineRef}
         geometry={resources.hlGeo}
         material={resources.hlMat}
+        visible={false}
         frustumCulled={false}
         raycast={noopRaycast}
         renderOrder={13}
@@ -671,6 +683,7 @@ export const ExplodeAxisGuide: React.FC = () => {
         key={`${activeWeaponId}-${maxParts}`}
         ref={anchorDotsRef}
         args={[resources.dotGeo, resources.dotMat, maxParts]}
+        visible={false}
         frustumCulled={false}
         raycast={noopRaycast}
         renderOrder={10}
