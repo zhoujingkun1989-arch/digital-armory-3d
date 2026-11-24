@@ -118,6 +118,7 @@ function canUseSpeechSynthesis(): boolean {
   return (
     typeof window !== 'undefined' &&
     'speechSynthesis' in window &&
+    typeof window.speechSynthesis?.speak === 'function' &&
     typeof SpeechSynthesisUtterance !== 'undefined'
   );
 }
@@ -351,9 +352,49 @@ function ensureAudioElement(): HTMLAudioElement | null {
 }
 
 function startQueueIndex(index: number, initialSeekRatio = 0): void {
-  const el = ensureAudioElement();
   const track = trackQueue[index];
-  if (!el || !track) return;
+  if (!track) return;
+
+  const trimmedUrl = track.relativeUrl?.trim() ?? '';
+  if (!trimmedUrl) {
+    pendingSeekRatio = null;
+    cancelSpeechFallback();
+    if (audioEl) {
+      audioEl.pause();
+      audioEl.removeAttribute('src');
+    }
+
+    emitSnapshot({
+      isPlaying: false,
+      isLoading: false,
+      hasError: false,
+      activeKey: track.key,
+      activeKind: track.kind,
+      activeActId: track.actId ?? null,
+      activePartId: track.partId ?? null,
+      activeLabel: track.label,
+      queueLength: trackQueue.length,
+      queueIndex: index,
+      currentTime: 0,
+      duration: 0,
+      progress: 0,
+    });
+
+    if (canUseSpeechSynthesis()) {
+      const started = startSpeechFallback(track);
+      if (!started) {
+        emitSnapshot({
+          isPlaying: false,
+          isLoading: false,
+          hasError: false,
+        });
+      }
+    }
+    return;
+  }
+
+  const el = ensureAudioElement();
+  if (!el) return;
 
   const clampedRatio =
     initialSeekRatio > 0 ? Math.max(0, Math.min(0.99, initialSeekRatio)) : 0;
@@ -361,7 +402,7 @@ function startQueueIndex(index: number, initialSeekRatio = 0): void {
 
   cancelSpeechFallback();
   el.pause();
-  el.src = resolveAssetUrl(track.relativeUrl);
+  el.src = resolveAssetUrl(trimmedUrl);
   el.playbackRate = currentSnapshot.playbackRate;
   el.currentTime = 0;
 
@@ -408,8 +449,8 @@ export function playNarrationPlaylist(
 }
 
 export function playOrToggleNarrationTrack(track: NarrationTrack): void {
-  const el = ensureAudioElement();
-  if (!el) return;
+  const hasAudioUrl = Boolean(track.relativeUrl?.trim());
+  if (hasAudioUrl && !ensureAudioElement()) return;
 
   if (currentSnapshot.activeKey === track.key) {
     if (currentSnapshot.hasError) {
@@ -426,8 +467,7 @@ export function playOrToggleNarrationTrack(track: NarrationTrack): void {
 }
 
 export function toggleActiveNarrationPlayPause(): void {
-  const el = ensureAudioElement();
-  if (!el || !currentSnapshot.activeKey) return;
+  if (!currentSnapshot.activeKey) return;
 
   if (usingSpeechFallback && canUseSpeechSynthesis()) {
     if (currentSnapshot.isPlaying) {
@@ -447,14 +487,23 @@ export function toggleActiveNarrationPlayPause(): void {
     return;
   }
 
+  const activeTrack = trackQueue[currentSnapshot.queueIndex];
+  if (activeTrack && !activeTrack.relativeUrl?.trim()) {
+    startQueueIndex(currentSnapshot.queueIndex);
+    return;
+  }
+
+  const el = ensureAudioElement();
+  if (!el) return;
+
   if (currentSnapshot.isPlaying) {
     el.pause();
     emitSnapshot({ isPlaying: false });
   } else {
     el.playbackRate = currentSnapshot.playbackRate;
     void el.play().catch(() => {
-      const activeTrack = trackQueue[currentSnapshot.queueIndex];
-      if (activeTrack && el.error && startSpeechFallback(activeTrack)) {
+      const currentTrack = trackQueue[currentSnapshot.queueIndex];
+      if (currentTrack && el.error && startSpeechFallback(currentTrack)) {
         return;
       }
       emitSnapshot({ isPlaying: false });
@@ -467,8 +516,10 @@ export function stopNarrationAudio(): void {
   cancelSpeechFallback();
   if (audioEl) {
     audioEl.pause();
-    audioEl.removeAttribute('src');
-    audioEl.load();
+    if (audioEl.hasAttribute?.('src') || audioEl.src) {
+      audioEl.removeAttribute('src');
+      audioEl.load();
+    }
   }
   trackQueue = [];
   emitSnapshot({
