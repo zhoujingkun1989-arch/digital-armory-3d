@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "spas12",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "Franchi SPAS-12 Dual-Mode Shotgun",
+    "subtitle": "Convertible Short-Stroke Gas Semi-Auto & Manual Pump Combat Shotgun",
+    "originCountry": "Italy",
+    "weaponType": "Dual-Mode Semi-Auto / Pump Shotgun",
+    "categoryLabel": "Combat Shotgun",
+    "actionMechanism": "Selectable Short-Stroke Annular Gas Semi-Auto & Manual Pump-Action",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "The iconic Italian Franchi SPAS-12 switches instantaneously between short-stroke gas semi-automatic fire for full-power buckshot and manual pump operation for low-pressure baton or tear-gas shells, wrapped in a perforated steel heatshield and top-folding hook stock.",
+    "highlights": [
+      "Selectable gas semi-auto and manual pump modes handle both buckshot and less-lethal loads",
+      "Signature perforated steel heatshield and top-folding stock with forearm support hook",
+      "Magazine cutoff button enables rapid single-shell chambering of slugs",
+      "Alloy receiver with steel locking block accepts duckbill horizontal dispersion chokes"
+    ],
+    "workbenchTitle": "Franchi SPAS-12 Dual-Mode Shotgun 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Selectable Short-Stroke Annular Gas Semi-Auto & Manual Pump-Action",
+    "cutawayLabel": "Breech & Action Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on Franchi SPAS-12 Dual-Mode Shotgun to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Short-Stroke Pulse",
+    "rateOfFire": "240 RPM (4 rds/sec semi-auto)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Franchi SPAS-12 Dual-Mode Shotgun (1979) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 1,041 mm (710 mm folded)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Sear",
+        "title": "Phase 1 · SPAS-12 Trigger Release & Ignition Drive",
+        "description": "Pulling the trigger disengages the sear, freeing the spring-driven hammer or striker to impact the 12 Gauge (70mm / 2.75\") primer."
+      },
+      "phase_2": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · 74 MPa Chamber Pressure Rise",
+        "description": "The propellant charge ignites inside the locked chamber, driving peak pressure to 74 MPa while sealing the cartridge case against the breech."
+      },
+      "phase_3": {
+        "shortLabel": "Bore Acceleration",
+        "title": "Phase 3 · 546 mm Barrel Engraving & Acceleration",
+        "description": "The projectile engages the smooth bore and accelerates to 400 m/s (3050 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Short-Stroke Pulse",
+        "title": "Phase 4 · Short-Stroke Pulse & Operating Impulse",
+        "description": "Once chamber pressure decays safely, independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver."
+      },
+      "phase_5": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Spent Case Extraction & Ejection",
+        "description": "The extractor pulls the fired brass clear of the chamber and pivots it out the ejection port while the recoil spring compresses."
+      },
+      "phase_6": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Next-Round Stripping & Breech Lockup",
+        "description": "Driven forward by the recoil spring, the breech strips the next round from the 8-round supply and locks solidly into battery."
+      },
+      "phase_7": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Disconnector Handoff & Sear Reset",
+        "description": "Releasing the trigger hands control cleanly back to the primary sear, leaving the SPAS-12 staged for its 240 RPM (4 rds/sec semi-auto) cadence."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "弗兰奇 SPAS-12 双模式战术霰弹枪：1979 年机械传奇与工程剖析",
+      "deck": "意大利弗兰奇 SPAS-12（特种用途自动霰弹枪）通过护木前方的锁钮瞬间切换导气半自动与手动泵动模式：发射全威力鹿弹时可达 4 发/秒，发射低压催泪弹或橡皮弹时则切入手动泵动确保绝不卡弹。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1975–1979",
+          "title": "时代召唤与研发立项：SPAS-12 的诞生背景",
+          "paragraphs": [
+            "1979 年问世的 弗兰奇 SPAS-12 双模式战术霰弹枪 由意大利路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）主导研制，定位为经典的气动半自动/泵动双模式霰弹枪。1979 年问世的 SPAS-12 虽然总产量仅约 37,000 支，却凭借极具工业科幻感的穿孔散热罩与顶折钢托成为二十世纪最具辨识度的经典战斗霰弹枪。",
+            "意大利弗兰奇 SPAS-12（特种用途自动霰弹枪）通过护木前方的锁钮瞬间切换导气半自动与手动泵动模式：发射全威力鹿弹时可达 4 发/秒，发射低压催泪弹或橡皮弹时则切入手动泵动确保绝不卡弹。 整件装备总长 1,041 mm（折叠 710 mm）、空重 4.4 kg，成为同期霰弹枪领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。1979 年，意大利路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）推出了划时代的弗兰奇 SPAS-12 双模式战术霰弹枪。1979 年问世的 SPAS-12 虽然总产量仅约 37,000 支，却凭借极具工业科幻感的穿孔散热罩与顶折钢托成为二十世纪最具辨识度的经典战斗霰弹枪。 它的核心设计聚焦于独创导气半自动与手动泵动双模式机构，兼顾高速火力与特种低压弹药，奠定了其在霰弹枪发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "spas12_receiver",
+          "focusPartLabel": "主体机匣与闭锁承力框架"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1979",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "弗兰奇 SPAS-12 双模式战术霰弹枪 的机械灵魂在于其「短行程环形导气半自动 / 手动泵动一键切换 · 顶折钢托」结构体系。在发射工作循环中，独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用硬质阳极氧化铝合金、氮化钢与高强度聚合物精加工而成。标志性穿孔冲压钢散热护罩与顶折金属骨架枪托配前臂单手托钩，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。弗兰奇 SPAS-12 双模式战术霰弹枪 采用短行程环形导气半自动 / 手动泵动一键切换 · 顶折钢托。在每个击发周期中，独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。借助硬质阳极氧化铝合金、氮化钢与高强度聚合物工艺与高强度配合，实现了标志性穿孔冲压钢散热护罩与顶折金属骨架枪托配前臂单手托钩。",
+          "audioUrl": "",
+          "focusPartId": "spas12_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1979–1982",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 12 Gauge (70mm / 2.75\") 弹药规格与 546 mm（21.5 in 镀铬滑膛枪管 · 标志性穿孔散热护罩），最高工作膛压约 74 MPa，可赋予弹头 400 m/s 的出膛初速与 3,050 J 动能，有效作用距离达 45 米。",
+            "内膛技术特点方面，18.5 mm 内壁镀铬滑膛管，可加装鸭嘴式水平散射喉缩器。同时，弹仓截断按钮允许在管状弹仓满弹状态下快速单发换装独头弹，令其在 240 发/分（半自动 4 发/秒） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 546 毫米身管与 12 Gauge (70mm / 2.75\") 口径，弗兰奇 SPAS-12 双模式战术霰弹枪 实现了每秒 400 米的初速与 45 米有效射程。18.5 mm 内壁镀铬滑膛管，可加装鸭嘴式水平散射喉缩器，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "spas12_barrel",
+          "focusPartLabel": "546mm 精密内膛枪管总成"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1994–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 8 发容量的枪管下方管状内置弹仓与 38 mm 膛轴设计，弗兰奇 SPAS-12 双模式战术霰弹枪 将单发后坐冲量控制在 22.2 N·s 水平。铝合金机匣内嵌精钢闭锁滑块，可外接 12 号鸭嘴型水平扇面喉缩。",
+            "如今在数字兵器库 3D 百年展厅（BAY-76）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 8 发容量的枪管下方管状内置弹仓与出色的整体工效，铝合金机匣内嵌精钢闭锁滑块，可外接 12 号鸭嘴型水平扇面喉缩。欢迎在 BAY-76 展位亲手切开剖面、逐件拆解，感受 弗兰奇 SPAS-12 双模式战术霰弹枪 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "spas12_mag_body",
+          "focusPartLabel": "枪管下方管状内置弹仓"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-76",
+          "summary": "短行程环形导气半自动 / 手动泵动一键切换 · 顶折钢托；独创导气半自动与手动泵动双模式机构，兼顾高速火力与特种低压弹药。",
+          "focusPartId": "spas12_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "400 m/s",
+          "summary": "546 mm（21.5 in 镀铬滑膛枪管 · 标志性穿孔散热护罩），18.5 mm 内壁镀铬滑膛管，可加装鸭嘴式水平散射喉缩器。",
+          "focusPartId": "spas12_barrel",
+          "focusPartLabel": "546mm 精密内膛枪管总成"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "8 rds",
+          "summary": "弹仓截断按钮允许在管状弹仓满弹状态下快速单发换装独头弹；铝合金机匣内嵌精钢闭锁滑块，可外接 12 号鸭嘴型水平扇面喉缩。",
+          "focusPartId": "spas12_mag_body",
+          "focusPartLabel": "枪管下方管状内置弹仓"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1975",
+          "title": "战术指标与概念构型",
+          "detail": "意大利提出新一代气动半自动/泵动双模式霰弹枪战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "1979",
+          "title": "SPAS-12 正式定型投产",
+          "detail": "路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）完成 FRANCHI SPAS-12 DUAL-MODE 定型，采用短行程环形导气半自动 / 手动泵动一键切换 · 顶折钢托架构。"
+        },
+        {
+          "year": "1982",
+          "title": "实战部署与工艺演进",
+          "detail": "独创导气半自动与手动泵动双模式机构，兼顾高速火力与特种低压弹药，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "1994",
+          "title": "工程典范与历史传承",
+          "detail": "1979 年问世的 SPAS-12 虽然总产量仅约 37,000 支，却凭借极具工业科幻感的穿孔散热罩与顶折钢托成为二十世纪最具辨识度的经典战斗霰弹枪。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-76）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Franchi SPAS-12 Dual-Mode Shotgun: The 1979 Mechanical Legend",
+      "deck": "The iconic Italian Franchi SPAS-12 switches instantaneously between short-stroke gas semi-automatic fire for full-power buckshot and manual pump operation for low-pressure baton or tear-gas shells, wrapped in a perforated steel heatshield and top-folding hook stock. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-76.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1975–1979",
+          "title": "Origins & Operational Mandate of the SPAS-12",
+          "paragraphs": [
+            "Introduced in 1979 by Luigi Franchi S.p.A. in Italy, the Franchi SPAS-12 Dual-Mode Shotgun emerged as a defining Dual-Mode Semi-Auto / Pump Shotgun. Despite only ~37,000 units produced between 1979 and 2000, the SPAS-12’s perforated heatshield and top-folding stock made it an enduring icon of tactical firearm engineering.",
+            "The iconic Italian Franchi SPAS-12 switches instantaneously between short-stroke gas semi-automatic fire for full-power buckshot and manual pump operation for low-pressure baton or tear-gas shells, wrapped in a perforated steel heatshield and top-folding hook stock. Measuring 1,041 mm (710 mm folded) at an unloaded weight of 4.4 kg, it reshaped expectations across the Combat Shotgun class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 1979, Luigi Franchi S.p.A. of Italy introduced the Franchi SPAS-12 Dual-Mode Shotgun. Despite only ~37,000 units produced between 1979 and 2000, the SPAS-12’s perforated heatshield and top-folding stock made it an enduring icon of tactical firearm engineering. Anchored by its hallmark design trait — Selectable gas semi-auto and manual pump modes handle both buckshot and less-lethal loads — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "spas12_receiver",
+          "focusPartLabel": "Primary Receiver & Lock Housing"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1979",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the Franchi SPAS-12 Dual-Mode Shotgun sits its Selectable Short-Stroke Annular Gas Semi-Auto & Manual Pump-Action. Throughout every firing cycle, independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver, containing 74 MPa of operating pressure safely.",
+            "Constructed in hard-coat anodized aluminum, nitrided steel, and reinforced polymer, the assembly achieves durable field tolerances. Notably, Signature perforated steel heatshield and top-folding stock with forearm support hook, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The Franchi SPAS-12 Dual-Mode Shotgun relies on Selectable Short-Stroke Annular Gas Semi-Auto & Manual Pump-Action. During each cycle, independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver. Machined from hard-coat anodized aluminum, nitrided steel, and reinforced polymer, it delivers standout engineering reliability: Signature perforated steel heatshield and top-folding stock with forearm support hook.",
+          "audioUrl": "",
+          "focusPartId": "spas12_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1979–1982",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 12 Gauge (70mm / 2.75\") with 546 mm (21.5 in Chrome-Lined Smoothbore · Perforated Heatshield), the Franchi SPAS-12 Dual-Mode Shotgun develops 400 m/s muzzle velocity and 3,050 J of kinetic energy for effective engagement out to 45 meters.",
+            "Internally, 18.5 mm chrome-lined smoothbore accepting specialized horizontal diverter chokes. Combined with its 240 RPM (4 rds/sec semi-auto) tempo, Magazine cutoff button enables rapid single-shell chambering of slugs, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 12 Gauge (70mm / 2.75\") through its 546 millimeter bore, the Franchi SPAS-12 Dual-Mode Shotgun achieves 400 meters per second and 45 meters of effective reach. 18.5 mm chrome-lined smoothbore accepting specialized horizontal diverter chokes.",
+          "audioUrl": "",
+          "focusPartId": "spas12_barrel",
+          "focusPartLabel": "546mm Precision Rifled Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "1994–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 8-round under-barrel tubular magazine with a 38 mm bore-axis height, the platform manages 22.2 N-s of recoil impulse cleanly. Alloy receiver with steel locking block accepts duckbill horizontal dispersion chokes.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-76), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 8-round under-barrel tubular magazine with disciplined recoil geometry, Alloy receiver with steel locking block accepts duckbill horizontal dispersion chokes. Explore BAY-76 in live section cut and exploded disassembly to study every working link of the Franchi SPAS-12 Dual-Mode Shotgun.",
+          "audioUrl": "",
+          "focusPartId": "spas12_mag_body",
+          "focusPartLabel": "Under-Barrel Tubular Magazine"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-76",
+          "summary": "Selectable Short-Stroke Annular Gas Semi-Auto & Manual Pump-Action — Selectable gas semi-auto and manual pump modes handle both buckshot and less-lethal loads.",
+          "focusPartId": "spas12_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "400 m/s",
+          "summary": "546 mm (21.5 in Chrome-Lined Smoothbore · Perforated Heatshield); 18.5 mm chrome-lined smoothbore accepting specialized horizontal diverter chokes.",
+          "focusPartId": "spas12_barrel",
+          "focusPartLabel": "546mm Precision Rifled Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "8 rds",
+          "summary": "Magazine cutoff button enables rapid single-shell chambering of slugs; Alloy receiver with steel locking block accepts duckbill horizontal dispersion chokes.",
+          "focusPartId": "spas12_mag_body",
+          "focusPartLabel": "Under-Barrel Tubular Magazine"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1975",
+          "title": "Operational Requirement Defined",
+          "detail": "Italy ordnance planners established specifications for a new Dual-Mode Semi-Auto / Pump Shotgun class."
+        },
+        {
+          "year": "1979",
+          "title": "SPAS-12 Official Introduction",
+          "detail": "Luigi Franchi S.p.A. finalized FRANCHI SPAS-12 DUAL-MODE around Selectable Short-Stroke Annular Gas Semi-Auto & Manual Pump-Action."
+        },
+        {
+          "year": "1982",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Selectable gas semi-auto and manual pump modes handle both buckshot and less-lethal loads, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "1994",
+          "title": "Enduring Historical Influence",
+          "detail": "Despite only ~37,000 units produced between 1979 and 2000, the SPAS-12’s perforated heatshield and top-folding stock made it an enduring icon of tactical firearm engineering."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-76)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "spas12_receiver": {
+      "partId": "spas12_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Primary Receiver",
+      "zh": {
+        "roleTag": "核心机构基准与耐压承力",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（U-01）的主体机匣与闭锁承力框架，隶属 20 件套标准装配体系，负责核心机构基准与耐压承力。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：独创导气半自动与手动泵动双模式机构，兼顾高速火力与特种低压弹药。",
+        "audioScript": "U-01，主体机匣与闭锁承力框架。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担核心机构基准与耐压承力职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Core Structural Chassis",
+        "overview": "Primary Receiver & Lock Housing (U-01) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated core structural chassis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Selectable gas semi-auto and manual pump modes handle both buckshot and less-lethal loads.",
+        "audioScript": "U-01, Primary Receiver & Lock Housing. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles core structural chassis. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_barrel": {
+      "partId": "spas12_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "546mm Precision Barrel",
+      "zh": {
+        "roleTag": "密闭高压燃气并赋予弹头自旋",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（U-02）的546mm 精密内膛枪管总成，隶属 20 件套标准装配体系，负责密闭高压燃气并赋予弹头自旋。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性穿孔冲压钢散热护罩与顶折金属骨架枪托配前臂单手托钩。",
+        "audioScript": "U-02，546mm 精密内膛枪管总成。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担密闭高压燃气并赋予弹头自旋职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Pressure Vessel & Spin Axis",
+        "overview": "546mm Precision Rifled Barrel (U-02) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated pressure vessel & spin axis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Signature perforated steel heatshield and top-folding stock with forearm support hook.",
+        "audioScript": "U-02, 546mm Precision Rifled Barrel. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles pressure vessel & spin axis. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_muzzle": {
+      "partId": "spas12_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Ventilated Muzzle Shroud",
+      "zh": {
+        "roleTag": "散热防护与膛口稳控",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（U-03）的多孔散热护筒与膛口防跳口，隶属 20 件套标准装配体系，负责散热防护与膛口稳控。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：弹仓截断按钮允许在管状弹仓满弹状态下快速单发换装独头弹。",
+        "audioScript": "U-03，多孔散热护筒与膛口防跳口。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担散热防护与膛口稳控职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Thermal Shield & Brake",
+        "overview": "Perforated Shroud & Compensator (U-03) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated thermal shield & brake node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Magazine cutoff button enables rapid single-shell chambering of slugs.",
+        "audioScript": "U-03, Perforated Shroud & Compensator. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles thermal shield & brake. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_bolt_carrier": {
+      "partId": "spas12_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Bolt Carrier Group",
+      "zh": {
+        "roleTag": "驱动解锁、后坐与复位循环",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（U-04）的枪机框与拉机操作传动组，隶属 20 件套标准装配体系，负责驱动解锁、后坐与复位循环。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "designHighlight": "工程亮点呼应整枪特征：铝合金机匣内嵌精钢闭锁滑块，可外接 12 号鸭嘴型水平扇面喉缩。",
+        "audioScript": "U-04，枪机框与拉机操作传动组。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担驱动解锁、后坐与复位循环职能。在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Cycling Actuator",
+        "overview": "Bolt Carrier & Operating Group (U-04) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated primary cycling actuator node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Alloy receiver with steel locking block accepts duckbill horizontal dispersion chokes.",
+        "audioScript": "U-04, Bolt Carrier & Operating Group. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles primary cycling actuator. Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_bolt": {
+      "partId": "spas12_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Locking Bolt Head",
+      "zh": {
+        "roleTag": "刚性闭锁膛压并可靠抽壳",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（U-05）的高强度闭锁枪机头与抽壳钩，隶属 20 件套标准装配体系，负责刚性闭锁膛压并可靠抽壳。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "designHighlight": "工程亮点呼应整枪特征：独创导气半自动与手动泵动双模式机构，兼顾高速火力与特种低压弹药。",
+        "audioScript": "U-05，高强度闭锁枪机头与抽壳钩。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担刚性闭锁膛压并可靠抽壳职能。在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Breech Lock & Case Extraction",
+        "overview": "Hardened Locking Bolt & Extractor (U-05) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated breech lock & case extraction node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Selectable gas semi-auto and manual pump modes handle both buckshot and less-lethal loads.",
+        "audioScript": "U-05, Hardened Locking Bolt & Extractor. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles breech lock & case extraction. Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_recoil_spring": {
+      "partId": "spas12_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Helical Recoil Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（U-06）的主复进螺旋弹簧总成，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动 4 发/秒） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性穿孔冲压钢散热护罩与顶折金属骨架枪托配前臂单手托钩。",
+        "audioScript": "U-06，主复进螺旋弹簧总成。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动 4 发/秒） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main Helical Recoil Spring (U-06) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (4 rds/sec semi-auto) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Signature perforated steel heatshield and top-folding stock with forearm support hook.",
+        "audioScript": "U-06, Main Helical Recoil Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (4 rds/sec semi-auto) timing.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_handguard": {
+      "partId": "spas12_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Tactical Handguard",
+      "zh": {
+        "roleTag": "隔绝枪管高温并提供稳定握持",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（F-01）的散热隔热战术前护木，隶属 20 件套标准装配体系，负责隔绝枪管高温并提供稳定握持。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：弹仓截断按钮允许在管状弹仓满弹状态下快速单发换装独头弹。",
+        "audioScript": "F-01，散热隔热战术前护木。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担隔绝枪管高温并提供稳定握持职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Thermal Shield & Support Hand",
+        "overview": "Ventilated Tactical Handguard (F-01) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated thermal shield & support hand node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Magazine cutoff button enables rapid single-shell chambering of slugs.",
+        "audioScript": "F-01, Ventilated Tactical Handguard. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles thermal shield & support hand. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_stock": {
+      "partId": "spas12_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Tactical Buttstock",
+      "zh": {
+        "roleTag": "直线传导后坐并支撑贴腮瞄准",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（F-02）的高刚度战术抵肩枪托，隶属 20 件套标准装配体系，负责直线传导后坐并支撑贴腮瞄准。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：铝合金机匣内嵌精钢闭锁滑块，可外接 12 号鸭嘴型水平扇面喉缩。",
+        "audioScript": "F-02，高刚度战术抵肩枪托。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担直线传导后坐并支撑贴腮瞄准职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Transfer & Cheek Weld",
+        "overview": "Tactical Ergonomic Buttstock (F-02) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated recoil transfer & cheek weld node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Alloy receiver with steel locking block accepts duckbill horizontal dispersion chokes.",
+        "audioScript": "F-02, Tactical Ergonomic Buttstock. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles recoil transfer & cheek weld. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_grip": {
+      "partId": "spas12_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ergonomic Main Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（F-03）的人体工学防滑主握把，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：独创导气半自动与手动泵动双模式机构，兼顾高速火力与特种低压弹药。",
+        "audioScript": "F-03，人体工学防滑主握把。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担锁定手腕角度优化扳机控枪职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Ergonomic Textured Main Grip (F-03) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Selectable gas semi-auto and manual pump modes handle both buckshot and less-lethal loads.",
+        "audioScript": "F-03, Ergonomic Textured Main Grip. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles wrist alignment & control. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_optic": {
+      "partId": "spas12_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Adjustable Iron Sights",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（F-04）的可调机械准星照门组，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性穿孔冲压钢散热护罩与顶折金属骨架枪托配前臂单手托钩。",
+        "audioScript": "F-04，可调机械准星照门组。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担建立精准弹道瞄准基线职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Adjustable Iron Sight Assembly (F-04) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Signature perforated steel heatshield and top-folding stock with forearm support hook.",
+        "audioScript": "F-04, Adjustable Iron Sight Assembly. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles ballistic sightline datum. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_gas_system": {
+      "partId": "spas12_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Gas & Recoil System",
+      "zh": {
+        "roleTag": "定量调控自动循环能量平衡",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（F-05）的导气活塞/缓冲传动调节组件，隶属 20 件套标准装配体系，负责定量调控自动循环能量平衡。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "designHighlight": "工程亮点呼应整枪特征：弹仓截断按钮允许在管状弹仓满弹状态下快速单发换装独头弹。",
+        "audioScript": "F-05，导气活塞/缓冲传动调节组件。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担定量调控自动循环能量平衡职能。在击发循环中承担核心联动：独立短行程活塞瞬时脉冲撞击枪机框，将热负荷与振源隔离在机匣前方。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Operating Energy Regulation",
+        "overview": "Gas Drive / Recoil Buffer System (F-05) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated operating energy regulation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Magazine cutoff button enables rapid single-shell chambering of slugs.",
+        "audioScript": "F-05, Gas Drive / Recoil Buffer System. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles operating energy regulation. Drives the core operating sequence: independent short-stroke piston delivers a clean impulse while isolating heat forward of the receiver.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_mount_rail": {
+      "partId": "spas12_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：铝合金机匣内嵌精钢闭锁滑块，可外接 12 号鸭嘴型水平扇面喉缩。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担提供稳固依托与模块化拓展职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Alloy receiver with steel locking block accepts duckbill horizontal dispersion chokes.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles modular support & optics base. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_trigger": {
+      "partId": "spas12_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：独创导气半自动与手动泵动双模式机构，兼顾高速火力与特种低压弹药。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担清晰干脆释放阻铁启动击发职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Selectable gas semi-auto and manual pump modes handle both buckshot and less-lethal loads.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles crisp firing release input. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_hammer": {
+      "partId": "spas12_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Hammer / Striker Unit",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（T-02）的硬化击锤/平移击针击发组件，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性穿孔冲压钢散热护罩与顶折金属骨架枪托配前臂单手托钩。",
+        "audioScript": "T-02，硬化击锤/平移击针击发组件。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担高速释放储能精确击发底火/弓弦职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Hardened Hammer / Striker Unit (T-02) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Signature perforated steel heatshield and top-folding stock with forearm support hook.",
+        "audioScript": "T-02, Hardened Hammer / Striker Unit. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles high-speed ignition impactor. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_hammer_spring": {
+      "partId": "spas12_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动 4 发/秒） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：弹仓截断按钮允许在管状弹仓满弹状态下快速单发换装独头弹。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动 4 发/秒） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (4 rds/sec semi-auto) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Magazine cutoff button enables rapid single-shell chambering of slugs.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (4 rds/sec semi-auto) timing.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_selector": {
+      "partId": "spas12_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：铝合金机匣内嵌精钢闭锁滑块，可外接 12 号鸭嘴型水平扇面喉缩。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担可靠锁止扳机阻铁并切换射态职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Alloy receiver with steel locking block accepts duckbill horizontal dispersion chokes.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles safety interlock & mode control. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_mag_body": {
+      "partId": "spas12_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Tubular Magazine",
+      "zh": {
+        "roleTag": "轴向串联储存弹药",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（M-01）的枪管下方管状内置弹仓，隶属 20 件套标准装配体系，负责轴向串联储存弹药。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：独创导气半自动与手动泵动双模式机构，兼顾高速火力与特种低压弹药。",
+        "audioScript": "M-01，枪管下方管状内置弹仓。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担轴向串联储存弹药职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Inline Tubular Storage",
+        "overview": "Under-Barrel Tubular Magazine (M-01) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated inline tubular storage node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Selectable gas semi-auto and manual pump modes handle both buckshot and less-lethal loads.",
+        "audioScript": "M-01, Under-Barrel Tubular Magazine. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles inline tubular storage. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_follower": {
+      "partId": "spas12_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Shell Follower & Lifter",
+      "zh": {
+        "roleTag": "推弹入托板并抬升至弹膛口",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（M-02）的高可见度圆柱托弹塞与托弹板，隶属 20 件套标准装配体系，负责推弹入托板并抬升至弹膛口。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性穿孔冲压钢散热护罩与顶折金属骨架枪托配前臂单手托钩。",
+        "audioScript": "M-02，高可见度圆柱托弹塞与托弹板。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担推弹入托板并抬升至弹膛口职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Shell Feed & Elevation",
+        "overview": "High-Vis Shell Follower & Lifter (M-02) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated shell feed & elevation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Signature perforated steel heatshield and top-folding stock with forearm support hook.",
+        "audioScript": "M-02, High-Vis Shell Follower & Lifter. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles shell feed & elevation. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_mag_spring": {
+      "partId": "spas12_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Tube Magazine Spring",
+      "zh": {
+        "roleTag": "稳定推送重型霰弹/步枪弹",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（M-03）的长行程螺旋管仓托弹簧，隶属 20 件套标准装配体系，负责稳定推送重型霰弹/步枪弹。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动 4 发/秒） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：弹仓截断按钮允许在管状弹仓满弹状态下快速单发换装独头弹。",
+        "audioScript": "M-03，长行程螺旋管仓托弹簧。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担稳定推送重型霰弹/步枪弹职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 240 发/分（半自动 4 发/秒） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Axial Tube Feed Force",
+        "overview": "Long Helical Tube Mag Spring (M-03) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated axial tube feed force node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (4 rds/sec semi-auto) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Magazine cutoff button enables rapid single-shell chambering of slugs.",
+        "audioScript": "M-03, Long Helical Tube Mag Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles axial tube feed force. Stores and returns cyclic elastic energy via live coil compression to maintain 240 RPM (4 rds/sec semi-auto) timing.",
+        "audioUrl": ""
+      }
+    },
+    "spas12_mag_base": {
+      "partId": "spas12_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Mag Tube End Cap",
+      "zh": {
+        "roleTag": "封固管仓并兼锁枪管前环",
+        "overview": "弗兰奇 SPAS-12 双模式战术霰弹枪（M-04）的管仓前端旋盖与背带环座，隶属 20 件套标准装配体系，负责封固管仓并兼锁枪管前环。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1979年代路易吉·弗兰奇兵工厂（Luigi Franchi S.p.A.）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：铝合金机匣内嵌精钢闭锁滑块，可外接 12 号鸭嘴型水平扇面喉缩。",
+        "audioScript": "M-04，管仓前端旋盖与背带环座。作为 弗兰奇 SPAS-12 双模式战术霰弹枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担封固管仓并兼锁枪管前环职能。与相邻模块保持精密基准配合，协同支撑 12 Gauge (70mm / 2.75\") 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Tube Seal & Barrel Lock",
+        "overview": "Magazine Tube End Cap & Stud (M-04) of the Franchi SPAS-12 Dual-Mode Shotgun, serving as the dedicated tube seal & barrel lock node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Luigi Franchi S.p.A. service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Alloy receiver with steel locking block accepts duckbill horizontal dispersion chokes.",
+        "audioScript": "M-04, Magazine Tube End Cap & Stud. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the Franchi SPAS-12 Dual-Mode Shotgun, this component handles tube seal & barrel lock. Maintains datum alignment with adjacent SPAS-12 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

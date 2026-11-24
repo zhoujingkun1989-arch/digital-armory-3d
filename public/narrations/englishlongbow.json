@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "englishlongbow",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "Medieval English Yew Warbow",
+    "subtitle": "Self-Yew D-Section Longbow — Agincourt Heavy Bodkin Artillery",
+    "originCountry": "Kingdom of England",
+    "weaponType": "Self-Yew Medieval Warbow",
+    "categoryLabel": "Archery & Crossbow",
+    "actionMechanism": "Monolithic Self-Yew Composite Wood Physics (Tension Sapwood + Compression Heartwood)",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Carved from a single stave of European yew into a classic D-section profile, the English warbow exploits nature’s own bi-layer composite—high-tension pale sapwood on the back and compression-resistant reddish heartwood on the belly—to launch heavy bodkin war arrows across 270 meters.",
+    "highlights": [
+      "Yew sapwood back and heartwood belly form a natural bi-layer composite spring",
+      "Turned cow-horn nocks reinforce stave tips against 150 lbf linen bowstring shear",
+      "Pure linear Hookean draw curve contrasts directly with 80% compound let-off cams",
+      "Relies on Archer’s Paradox dynamic shaft flex to clear the monolithic stave"
+    ],
+    "workbenchTitle": "Medieval English Yew Warbow 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Monolithic Self-Yew Composite Wood Physics (Tension Sapwood + Compression Heartwood)",
+    "cutawayLabel": "Riser & Launch Rail Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on Medieval English Yew Warbow to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Yew Stave Release",
+    "rateOfFire": "10–12 arrows/min (trained archer)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Medieval English Yew Warbow (1415) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 1,960 mm (77 in Monolithic Stave)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Draw & Load",
+        "title": "Phase 1 · Warbow 1415 Energy Draw & Nocking",
+        "description": "Drawing the bowstring stores elastic potential energy across the 762 mm power stroke of the Medieval English Yew Warbow limbs."
+      },
+      "phase_2": {
+        "shortLabel": "Full Anchor",
+        "title": "Phase 2 · Peak Tension & Mechanical Anchor",
+        "description": "At full draw, heartwood compression and sapwood tension unwind simultaneously to drive a heavy bodkin arrow, holding the 30\" Heavy Bodkin Ash War Arrow (~1,150 gr) projectile aligned on the launch datum."
+      },
+      "phase_3": {
+        "shortLabel": "Sear Release",
+        "title": "Phase 3 · Crisp Trigger / Finger Release",
+        "description": "Disengaging the latch frees the taut bowstring cleanly without lateral torque, initiating forward energy transfer."
+      },
+      "phase_4": {
+        "shortLabel": "Limb Unwind",
+        "title": "Phase 4 · Elastic Limb Recovery & Acceleration",
+        "description": "Stored strain energy unwinds rapidly along the rail, accelerating the projectile toward 62 m/s."
+      },
+      "phase_5": {
+        "shortLabel": "Launch Exit",
+        "title": "Phase 5 · Rest Clearance & Fletching Spin",
+        "description": "The shaft clears the launcher with 143 J of kinetic energy as helical fletching initiates aerodynamic stabilization."
+      },
+      "phase_6": {
+        "shortLabel": "String Damping",
+        "title": "Phase 6 · Brace-Height Stop & Vibration Decay",
+        "description": "String stops and riser dampeners absorb residual oscillation cleanly to preserve quiet acoustic discipline."
+      },
+      "phase_7": {
+        "shortLabel": "Reset & Nock",
+        "title": "Phase 7 · Safety Engagement & Next-Shot Prep",
+        "description": "The release assembly resets automatically, preparing the Warbow 1415 for the next precision launch out to 270 m."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "中世纪英格兰紫杉长弓（阿金库尔重战弓）：1415 年机械传奇与工程剖析",
+      "deck": "中世纪英格兰紫杉长弓以整根欧洲紫杉削制出经典 D 形截面：弓背保留淡色高抗拉边材、弓腹利用红褐色高抗压心材，形成天然双层复合材料，满弓 150 磅抛射重型穿甲锥头箭（Bodkin）覆压 270 米战线。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1390–1415",
+          "title": "时代召唤与研发立项：Warbow 1415 的诞生背景",
+          "paragraphs": [
+            "1415 年问世的 中世纪英格兰紫杉长弓（阿金库尔重战弓） 由英格兰王国英格兰皇家制弓工坊（Royal Bowyers）主导研制，定位为经典的单体紫杉重型战弓。1415 年阿金库尔战役中，约 5,000 名英格兰长弓手每分钟倾泻数万支重箭，而 1545 年“玛丽·罗斯”号沉船打捞出的 137 张紫杉战弓证实其真实拉力高达 110–185 磅。",
+            "中世纪英格兰紫杉长弓以整根欧洲紫杉削制出经典 D 形截面：弓背保留淡色高抗拉边材、弓腹利用红褐色高抗压心材，形成天然双层复合材料，满弓 150 磅抛射重型穿甲锥头箭（Bodkin）覆压 270 米战线。 整件装备总长 1,960 mm（77 in 整木弓身）、空重 0.95 kg，成为同期冷兵弓弩领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。1415 年，英格兰王国英格兰皇家制弓工坊（Royal Bowyers）推出了划时代的中世纪英格兰紫杉长弓（阿金库尔重战弓）。1415 年阿金库尔战役中，约 5,000 名英格兰长弓手每分钟倾泻数万支重箭，而 1545 年“玛丽·罗斯”号沉船打捞出的 137 张紫杉战弓证实其真实拉力高达 110–185 磅。 它的核心设计聚焦于紫杉边材抗拉 + 心材抗压构成天然双层复合材料力学结构，奠定了其在冷兵弓弩发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "englishlongbow_receiver",
+          "focusPartLabel": "中段弓把握持核心区"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1415",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "中世纪英格兰紫杉长弓（阿金库尔重战弓） 的机械灵魂在于其「单体欧洲紫杉心边材复合弹性（抗拉边材 + 抗压心材）」结构体系。在发射工作循环中，紫杉木心材受压、边材受拉协同储能在撒放瞬间将重箭推向抛物弹道，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用自然风干紫杉木心材/边材复合层压坯料精加工而成。两端镶嵌牛角弦槽（Horn Nocks）承受 150 lbf 亚麻弓弦剪切力，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。中世纪英格兰紫杉长弓（阿金库尔重战弓） 采用单体欧洲紫杉心边材复合弹性（抗拉边材 + 抗压心材）。在每个击发周期中，紫杉木心材受压、边材受拉协同储能在撒放瞬间将重箭推向抛物弹道。借助自然风干紫杉木心材/边材复合层压坯料工艺与高强度配合，实现了两端镶嵌牛角弦槽（Horn Nocks）承受 150 lbf 亚麻弓弦剪切力。",
+          "audioUrl": "",
+          "focusPartId": "englishlongbow_bolt",
+          "focusPartLabel": "主弓弦与同步分弦缆绳"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1415–1423",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 30\" Heavy Bodkin Ash War Arrow (~1,150 gr) 弹药规格与 762 mm 拉距（30 in · 150 lbf / 667 N 满弓拉力），最高工作膛压约 0.4 MPa，可赋予弹头 62 m/s 的出膛初速与 143 J 动能，有效作用距离达 270 米。",
+            "内膛技术特点方面，无机械滑轮与箭台，全靠弓手脊背肌肉直拉与鹅羽三片稳流。同时，零省力凸轮线性胡克储能曲线，直接对比现代复合弓 80% 省力比，令其在 10–12 箭/分（训练有素战弓手） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 762 毫米身管与 30\" Heavy Bodkin Ash War Arrow (~1,150 gr) 口径，中世纪英格兰紫杉长弓（阿金库尔重战弓） 实现了每秒 62 米的初速与 270 米有效射程。无机械滑轮与箭台，全靠弓手脊背肌肉直拉与鹅羽三片稳流，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "englishlongbow_barrel",
+          "focusPartLabel": "上下对称紫杉木弹性弓臂"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1430–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 12 发容量的箭壶本体与碳纤箭矢组与 180 mm 膛轴设计，中世纪英格兰紫杉长弓（阿金库尔重战弓） 将单发后坐冲量控制在 4.6 N·s 水平。依靠弓手悖论（Archer’s Paradox）绕柱弯曲飞出并保持高存能。",
+            "如今在数字兵器库 3D 百年展厅（BAY-93）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 12 发容量的箭壶本体与碳纤箭矢组与出色的整体工效，依靠弓手悖论（Archer’s Paradox）绕柱弯曲飞出并保持高存能。欢迎在 BAY-93 展位亲手切开剖面、逐件拆解，感受 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "englishlongbow_mag_body",
+          "focusPartLabel": "箭壶本体与碳纤箭矢组"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-93",
+          "summary": "单体欧洲紫杉心边材复合弹性（抗拉边材 + 抗压心材）；紫杉边材抗拉 + 心材抗压构成天然双层复合材料力学结构。",
+          "focusPartId": "englishlongbow_bolt",
+          "focusPartLabel": "主弓弦与同步分弦缆绳"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "62 m/s",
+          "summary": "762 mm 拉距（30 in · 150 lbf / 667 N 满弓拉力），无机械滑轮与箭台，全靠弓手脊背肌肉直拉与鹅羽三片稳流。",
+          "focusPartId": "englishlongbow_barrel",
+          "focusPartLabel": "上下对称紫杉木弹性弓臂"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "12 rds",
+          "summary": "零省力凸轮线性胡克储能曲线，直接对比现代复合弓 80% 省力比；依靠弓手悖论（Archer’s Paradox）绕柱弯曲飞出并保持高存能。",
+          "focusPartId": "englishlongbow_mag_body",
+          "focusPartLabel": "箭壶本体与碳纤箭矢组"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1390",
+          "title": "战术指标与概念构型",
+          "detail": "英格兰王国提出新一代单体紫杉重型战弓战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "1415",
+          "title": "Warbow 1415 正式定型投产",
+          "detail": "英格兰皇家制弓工坊（Royal Bowyers）完成 AGINCOURT YEW WARBOW 定型，采用单体欧洲紫杉心边材复合弹性（抗拉边材 + 抗压心材）架构。"
+        },
+        {
+          "year": "1423",
+          "title": "实战部署与工艺演进",
+          "detail": "紫杉边材抗拉 + 心材抗压构成天然双层复合材料力学结构，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "1430",
+          "title": "工程典范与历史传承",
+          "detail": "1415 年阿金库尔战役中，约 5,000 名英格兰长弓手每分钟倾泻数万支重箭，而 1545 年“玛丽·罗斯”号沉船打捞出的 137 张紫杉战弓证实其真实拉力高达 110–185 磅。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-93）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Medieval English Yew Warbow: The 1415 Mechanical Legend",
+      "deck": "Carved from a single stave of European yew into a classic D-section profile, the English warbow exploits nature’s own bi-layer composite—high-tension pale sapwood on the back and compression-resistant reddish heartwood on the belly—to launch heavy bodkin war arrows across 270 meters. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-93.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1390–1415",
+          "title": "Origins & Operational Mandate of the Warbow 1415",
+          "paragraphs": [
+            "Introduced in 1415 by English Royal Bowyers in Kingdom of England, the Medieval English Yew Warbow emerged as a defining Self-Yew Medieval Warbow. At Agincourt in 1415 English longbowmen loosed tens of thousands of war arrows per minute; 137 yew bows recovered from the 1545 wreck of the Mary Rose confirmed draw weights of 110–185 lbf.",
+            "Carved from a single stave of European yew into a classic D-section profile, the English warbow exploits nature’s own bi-layer composite—high-tension pale sapwood on the back and compression-resistant reddish heartwood on the belly—to launch heavy bodkin war arrows across 270 meters. Measuring 1,960 mm (77 in Monolithic Stave) at an unloaded weight of 0.95 kg, it reshaped expectations across the Archery & Crossbow class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 1415, English Royal Bowyers of Kingdom of England introduced the Medieval English Yew Warbow. At Agincourt in 1415 English longbowmen loosed tens of thousands of war arrows per minute; 137 yew bows recovered from the 1545 wreck of the Mary Rose confirmed draw weights of 110–185 lbf. Anchored by its hallmark design trait — Yew sapwood back and heartwood belly form a natural bi-layer composite spring — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "englishlongbow_receiver",
+          "focusPartLabel": "Central Yew Bow Handle"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1415",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the Medieval English Yew Warbow sits its Monolithic Self-Yew Composite Wood Physics (Tension Sapwood + Compression Heartwood). Throughout every firing cycle, heartwood compression and sapwood tension unwind simultaneously to drive a heavy bodkin arrow, containing 0.4 MPa of operating pressure safely.",
+            "Constructed in seasoned heartwood-and-sapwood European yew laminate, the assembly achieves durable field tolerances. Notably, Turned cow-horn nocks reinforce stave tips against 150 lbf linen bowstring shear, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The Medieval English Yew Warbow relies on Monolithic Self-Yew Composite Wood Physics (Tension Sapwood + Compression Heartwood). During each cycle, heartwood compression and sapwood tension unwind simultaneously to drive a heavy bodkin arrow. Machined from seasoned heartwood-and-sapwood European yew laminate, it delivers standout engineering reliability: Turned cow-horn nocks reinforce stave tips against 150 lbf linen bowstring shear.",
+          "audioUrl": "",
+          "focusPartId": "englishlongbow_bolt",
+          "focusPartLabel": "Main Bowstring & Power Cables"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1415–1423",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 30\" Heavy Bodkin Ash War Arrow (~1,150 gr) with 762 mm Draw (30 in · 150 lbf / 667 N Full Draw), the Medieval English Yew Warbow develops 62 m/s muzzle velocity and 143 J of kinetic energy for effective engagement out to 270 meters.",
+            "Internally, Zero cams or rest; arrow clears stave via archer’s paradox and goose-feather fletching. Combined with its 10–12 arrows/min (trained archer) tempo, Pure linear Hookean draw curve contrasts directly with 80% compound let-off cams, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 30\" Heavy Bodkin Ash War Arrow (~1,150 gr) through its 762 millimeter bore, the Medieval English Yew Warbow achieves 62 meters per second and 270 meters of effective reach. Zero cams or rest; arrow clears stave via archer’s paradox and goose-feather fletching.",
+          "audioUrl": "",
+          "focusPartId": "englishlongbow_barrel",
+          "focusPartLabel": "Tapered Yew Self-Bow Limbs"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "1430–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 12-round quiver body & arrow assembly with a 180 mm bore-axis height, the platform manages 4.6 N-s of recoil impulse cleanly. Relies on Archer’s Paradox dynamic shaft flex to clear the monolithic stave.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-93), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 12-round quiver body & arrow assembly with disciplined recoil geometry, Relies on Archer’s Paradox dynamic shaft flex to clear the monolithic stave. Explore BAY-93 in live section cut and exploded disassembly to study every working link of the Medieval English Yew Warbow.",
+          "audioUrl": "",
+          "focusPartId": "englishlongbow_mag_body",
+          "focusPartLabel": "Quiver Body & Arrow Assembly"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-93",
+          "summary": "Monolithic Self-Yew Composite Wood Physics (Tension Sapwood + Compression Heartwood) — Yew sapwood back and heartwood belly form a natural bi-layer composite spring.",
+          "focusPartId": "englishlongbow_bolt",
+          "focusPartLabel": "Main Bowstring & Power Cables"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "62 m/s",
+          "summary": "762 mm Draw (30 in · 150 lbf / 667 N Full Draw); Zero cams or rest; arrow clears stave via archer’s paradox and goose-feather fletching.",
+          "focusPartId": "englishlongbow_barrel",
+          "focusPartLabel": "Tapered Yew Self-Bow Limbs"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "12 rds",
+          "summary": "Pure linear Hookean draw curve contrasts directly with 80% compound let-off cams; Relies on Archer’s Paradox dynamic shaft flex to clear the monolithic stave.",
+          "focusPartId": "englishlongbow_mag_body",
+          "focusPartLabel": "Quiver Body & Arrow Assembly"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1390",
+          "title": "Operational Requirement Defined",
+          "detail": "Kingdom of England ordnance planners established specifications for a new Self-Yew Medieval Warbow class."
+        },
+        {
+          "year": "1415",
+          "title": "Warbow 1415 Official Introduction",
+          "detail": "English Royal Bowyers finalized AGINCOURT YEW WARBOW around Monolithic Self-Yew Composite Wood Physics (Tension Sapwood + Compression Heartwood)."
+        },
+        {
+          "year": "1423",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Yew sapwood back and heartwood belly form a natural bi-layer composite spring, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "1430",
+          "title": "Enduring Historical Influence",
+          "detail": "At Agincourt in 1415 English longbowmen loosed tens of thousands of war arrows per minute; 137 yew bows recovered from the 1545 wreck of the Mary Rose confirmed draw weights of 110–185 lbf."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-93)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "englishlongbow_receiver": {
+      "partId": "englishlongbow_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Yew Bow Handle",
+      "zh": {
+        "roleTag": "拉距载荷承力主骨架",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（U-01）的中段弓把握持核心区，隶属 20 件套标准装配体系，负责拉距载荷承力主骨架。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：紫杉边材抗拉 + 心材抗压构成天然双层复合材料力学结构。",
+        "audioScript": "U-01，中段弓把握持核心区。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担拉距载荷承力主骨架职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Structural Backbone",
+        "overview": "Central Yew Bow Handle (U-01) of the Medieval English Yew Warbow, serving as the dedicated primary structural backbone node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Yew sapwood back and heartwood belly form a natural bi-layer composite spring.",
+        "audioScript": "U-01, Central Yew Bow Handle. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles primary structural backbone. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_barrel": {
+      "partId": "englishlongbow_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "Tapered Yew Limbs",
+      "zh": {
+        "roleTag": "弹性势能储存与瞬时释放",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（U-02）的上下对称紫杉木弹性弓臂，隶属 20 件套标准装配体系，负责弹性势能储存与瞬时释放。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：两端镶嵌牛角弦槽（Horn Nocks）承受 150 lbf 亚麻弓弦剪切力。",
+        "audioScript": "U-02，上下对称紫杉木弹性弓臂。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担弹性势能储存与瞬时释放职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Elastic Potential Energy Store",
+        "overview": "Tapered Yew Self-Bow Limbs (U-02) of the Medieval English Yew Warbow, serving as the dedicated elastic potential energy store node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Turned cow-horn nocks reinforce stave tips against 150 lbf linen bowstring shear.",
+        "audioScript": "U-02, Tapered Yew Self-Bow Limbs. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles elastic potential energy store. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_muzzle": {
+      "partId": "englishlongbow_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Horn Tip Nocks",
+      "zh": {
+        "roleTag": "弦梢定位与撒放导向",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（U-03）的弓梢牛角弦槽组件，隶属 20 件套标准装配体系，负责弦梢定位与撒放导向。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：零省力凸轮线性胡克储能曲线，直接对比现代复合弓 80% 省力比。",
+        "audioScript": "U-03，弓梢牛角弦槽组件。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担弦梢定位与撒放导向职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Launch Alignment Interface",
+        "overview": "Horn Tip Nocks Assembly (U-03) of the Medieval English Yew Warbow, serving as the dedicated launch alignment interface node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pure linear Hookean draw curve contrasts directly with 80% compound let-off cams.",
+        "audioScript": "U-03, Horn Tip Nocks Assembly. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles launch alignment interface. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_bolt_carrier": {
+      "partId": "englishlongbow_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Warbow Arrow Assembly",
+      "zh": {
+        "roleTag": "拉距力学转换与能量加速",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（U-04）的400gr 碳纤维/白蜡木猎箭本体，隶属 20 件套标准装配体系，负责拉距力学转换与能量加速。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：紫杉木心材受压、边材受拉协同储能在撒放瞬间将重箭推向抛物弹道。",
+        "designHighlight": "工程亮点呼应整枪特征：依靠弓手悖论（Archer’s Paradox）绕柱弯曲飞出并保持高存能。",
+        "audioScript": "U-04，400gr 碳纤维/白蜡木猎箭本体。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担拉距力学转换与能量加速职能。在击发循环中承担核心联动：紫杉木心材受压、边材受拉协同储能在撒放瞬间将重箭推向抛物弹道。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Mechanical Advantage Drive",
+        "overview": "Heavy Warbow Arrow Assembly (U-04) of the Medieval English Yew Warbow, serving as the dedicated mechanical advantage drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: heartwood compression and sapwood tension unwind simultaneously to drive a heavy bodkin arrow.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Relies on Archer’s Paradox dynamic shaft flex to clear the monolithic stave.",
+        "audioScript": "U-04, Heavy Warbow Arrow Assembly. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles mechanical advantage drive. Drives the core operating sequence: heartwood compression and sapwood tension unwind simultaneously to drive a heavy bodkin arrow.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_bolt": {
+      "partId": "englishlongbow_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Bowstring & Cables",
+      "zh": {
+        "roleTag": "传递弓片张力直推箭尾",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（U-05）的主弓弦与同步分弦缆绳，隶属 20 件套标准装配体系，负责传递弓片张力直推箭尾。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：紫杉木心材受压、边材受拉协同储能在撒放瞬间将重箭推向抛物弹道。",
+        "designHighlight": "工程亮点呼应整枪特征：紫杉边材抗拉 + 心材抗压构成天然双层复合材料力学结构。",
+        "audioScript": "U-05，主弓弦与同步分弦缆绳。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担传递弓片张力直推箭尾职能。在击发循环中承担核心联动：紫杉木心材受压、边材受拉协同储能在撒放瞬间将重箭推向抛物弹道。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Direct Launch Drive String",
+        "overview": "Main Bowstring & Power Cables (U-05) of the Medieval English Yew Warbow, serving as the dedicated direct launch drive string node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: heartwood compression and sapwood tension unwind simultaneously to drive a heavy bodkin arrow.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Yew sapwood back and heartwood belly form a natural bi-layer composite spring.",
+        "audioScript": "U-05, Main Bowstring & Power Cables. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles direct launch drive string. Drives the core operating sequence: heartwood compression and sapwood tension unwind simultaneously to drive a heavy bodkin arrow.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_recoil_spring": {
+      "partId": "englishlongbow_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "String Tension Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（U-06）的弓弦储能张力缓冲单元，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10–12 箭/分（训练有素战弓手） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：两端镶嵌牛角弦槽（Horn Nocks）承受 150 lbf 亚麻弓弦剪切力。",
+        "audioScript": "U-06，弓弦储能张力缓冲单元。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10–12 箭/分（训练有素战弓手） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "String Tension Return Assembly (U-06) of the Medieval English Yew Warbow, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 10–12 arrows/min (trained archer) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Turned cow-horn nocks reinforce stave tips against 150 lbf linen bowstring shear.",
+        "audioScript": "U-06, String Tension Return Assembly. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Medieval English Yew Warbow, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 10–12 arrows/min (trained archer) timing.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_handguard": {
+      "partId": "englishlongbow_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Limb Pocket & Forend",
+      "zh": {
+        "roleTag": "稳定弓片夹角并防护握持手",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（F-01）的箭道护手板与弓片减震支座，隶属 20 件套标准装配体系，负责稳定弓片夹角并防护握持手。",
+        "craftAndMaterial": "采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：零省力凸轮线性胡克储能曲线，直接对比现代复合弓 80% 省力比。",
+        "audioScript": "F-01，箭道护手板与弓片减震支座。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，主要承担稳定弓片夹角并防护握持手职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Limb Alignment & Guard",
+        "overview": "Limb Pocket & Forend Guard (F-01) of the Medieval English Yew Warbow, serving as the dedicated limb alignment & guard node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from oil-finished selected hardwood paired with steel reinforcement ferrules to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pure linear Hookean draw curve contrasts directly with 80% compound let-off cams.",
+        "audioScript": "F-01, Limb Pocket & Forend Guard. Crafted from oil-finished selected hardwood paired with steel reinforcement ferrules for the Medieval English Yew Warbow, this component handles limb alignment & guard. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_stock": {
+      "partId": "englishlongbow_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Hardwood Buttstock",
+      "zh": {
+        "roleTag": "直线传导后坐并支撑贴腮瞄准",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（F-02）的经典实木抵肩枪托，隶属 20 件套标准装配体系，负责直线传导后坐并支撑贴腮瞄准。",
+        "craftAndMaterial": "采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：依靠弓手悖论（Archer’s Paradox）绕柱弯曲飞出并保持高存能。",
+        "audioScript": "F-02，经典实木抵肩枪托。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，主要承担直线传导后坐并支撑贴腮瞄准职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Transfer & Cheek Weld",
+        "overview": "Classic Hardwood Buttstock (F-02) of the Medieval English Yew Warbow, serving as the dedicated recoil transfer & cheek weld node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from oil-finished selected hardwood paired with steel reinforcement ferrules to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Relies on Archer’s Paradox dynamic shaft flex to clear the monolithic stave.",
+        "audioScript": "F-02, Classic Hardwood Buttstock. Crafted from oil-finished selected hardwood paired with steel reinforcement ferrules for the Medieval English Yew Warbow, this component handles recoil transfer & cheek weld. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_grip": {
+      "partId": "englishlongbow_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Checkered Wood Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（F-03）的刻纹实木握把组件，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：紫杉边材抗拉 + 心材抗压构成天然双层复合材料力学结构。",
+        "audioScript": "F-03，刻纹实木握把组件。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，主要承担锁定手腕角度优化扳机控枪职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Checkered Hardwood Pistol Grip (F-03) of the Medieval English Yew Warbow, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from oil-finished selected hardwood paired with steel reinforcement ferrules to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Yew sapwood back and heartwood belly form a natural bi-layer composite spring.",
+        "audioScript": "F-03, Checkered Hardwood Pistol Grip. Crafted from oil-finished selected hardwood paired with steel reinforcement ferrules for the Medieval English Yew Warbow, this component handles wrist alignment & control. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_optic": {
+      "partId": "englishlongbow_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Adjustable Iron Sights",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（F-04）的可调机械准星照门组，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：两端镶嵌牛角弦槽（Horn Nocks）承受 150 lbf 亚麻弓弦剪切力。",
+        "audioScript": "F-04，可调机械准星照门组。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担建立精准弹道瞄准基线职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Adjustable Iron Sight Assembly (F-04) of the Medieval English Yew Warbow, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Turned cow-horn nocks reinforce stave tips against 150 lbf linen bowstring shear.",
+        "audioScript": "F-04, Adjustable Iron Sight Assembly. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles ballistic sightline datum. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_gas_system": {
+      "partId": "englishlongbow_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Cable Guard & Tiller",
+      "zh": {
+        "roleTag": "隔离箭羽干涉并精调拉力曲线",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（F-05）的分弦滑杆与弓片张力调节座，隶属 20 件套标准装配体系，负责隔离箭羽干涉并精调拉力曲线。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：紫杉木心材受压、边材受拉协同储能在撒放瞬间将重箭推向抛物弹道。",
+        "designHighlight": "工程亮点呼应整枪特征：零省力凸轮线性胡克储能曲线，直接对比现代复合弓 80% 省力比。",
+        "audioScript": "F-05，分弦滑杆与弓片张力调节座。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担隔离箭羽干涉并精调拉力曲线职能。在击发循环中承担核心联动：紫杉木心材受压、边材受拉协同储能在撒放瞬间将重箭推向抛物弹道。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Fletching Clearance & Tune",
+        "overview": "Cable Guard & Draw-Weight Tiller (F-05) of the Medieval English Yew Warbow, serving as the dedicated fletching clearance & tune node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: heartwood compression and sapwood tension unwind simultaneously to drive a heavy bodkin arrow.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pure linear Hookean draw curve contrasts directly with 80% compound let-off cams.",
+        "audioScript": "F-05, Cable Guard & Draw-Weight Tiller. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles fletching clearance & tune. Drives the core operating sequence: heartwood compression and sapwood tension unwind simultaneously to drive a heavy bodkin arrow.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_mount_rail": {
+      "partId": "englishlongbow_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：依靠弓手悖论（Archer’s Paradox）绕柱弯曲飞出并保持高存能。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担提供稳固依托与模块化拓展职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the Medieval English Yew Warbow, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Relies on Archer’s Paradox dynamic shaft flex to clear the monolithic stave.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles modular support & optics base. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_trigger": {
+      "partId": "englishlongbow_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：紫杉边材抗拉 + 心材抗压构成天然双层复合材料力学结构。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担清晰干脆释放阻铁启动击发职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the Medieval English Yew Warbow, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Yew sapwood back and heartwood belly form a natural bi-layer composite spring.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles crisp firing release input. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_hammer": {
+      "partId": "englishlongbow_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Release Sear Jaw",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（T-02）的防空放撒放钳口棘爪，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：两端镶嵌牛角弦槽（Horn Nocks）承受 150 lbf 亚麻弓弦剪切力。",
+        "audioScript": "T-02，防空放撒放钳口棘爪。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担高速释放储能精确击发底火/弓弦职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Anti-Dry-Fire Release Sear Jaw (T-02) of the Medieval English Yew Warbow, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Turned cow-horn nocks reinforce stave tips against 150 lbf linen bowstring shear.",
+        "audioScript": "T-02, Anti-Dry-Fire Release Sear Jaw. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles high-speed ignition impactor. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_hammer_spring": {
+      "partId": "englishlongbow_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10–12 箭/分（训练有素战弓手） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：零省力凸轮线性胡克储能曲线，直接对比现代复合弓 80% 省力比。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10–12 箭/分（训练有素战弓手） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the Medieval English Yew Warbow, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 10–12 arrows/min (trained archer) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pure linear Hookean draw curve contrasts directly with 80% compound let-off cams.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Medieval English Yew Warbow, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 10–12 arrows/min (trained archer) timing.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_selector": {
+      "partId": "englishlongbow_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：依靠弓手悖论（Archer’s Paradox）绕柱弯曲飞出并保持高存能。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担可靠锁止扳机阻铁并切换射态职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the Medieval English Yew Warbow, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Relies on Archer’s Paradox dynamic shaft flex to clear the monolithic stave.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles safety interlock & mode control. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_mag_body": {
+      "partId": "englishlongbow_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Quiver & Arrow Set",
+      "zh": {
+        "roleTag": "箭矢随身携带储槽",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（M-01）的箭壶本体与碳纤箭矢组，隶属 20 件套标准装配体系，负责箭矢随身携带储槽。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：紫杉边材抗拉 + 心材抗压构成天然双层复合材料力学结构。",
+        "audioScript": "M-01，箭壶本体与碳纤箭矢组。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担箭矢随身携带储槽职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Arrow Carry & Indexing",
+        "overview": "Quiver Body & Arrow Assembly (M-01) of the Medieval English Yew Warbow, serving as the dedicated arrow carry & indexing node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Yew sapwood back and heartwood belly form a natural bi-layer composite spring.",
+        "audioScript": "M-01, Quiver Body & Arrow Assembly. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles arrow carry & indexing. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_follower": {
+      "partId": "englishlongbow_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Arrow Retention Clip",
+      "zh": {
+        "roleTag": "静音防松动夹持箭杆",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（M-02）的减震卡箭夹与箭尾定位卡，隶属 20 件套标准装配体系，负责静音防松动夹持箭杆。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：两端镶嵌牛角弦槽（Horn Nocks）承受 150 lbf 亚麻弓弦剪切力。",
+        "audioScript": "M-02，减震卡箭夹与箭尾定位卡。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担静音防松动夹持箭杆职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Silent Shaft Retention",
+        "overview": "Vibration-Damped Arrow Gripper (M-02) of the Medieval English Yew Warbow, serving as the dedicated silent shaft retention node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Turned cow-horn nocks reinforce stave tips against 150 lbf linen bowstring shear.",
+        "audioScript": "M-02, Vibration-Damped Arrow Gripper. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles silent shaft retention. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_mag_spring": {
+      "partId": "englishlongbow_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Quiver Lock Spring",
+      "zh": {
+        "roleTag": "箭壶防脱弹性锁定",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（M-03）的快拆箭壶弹性卡紧簧，隶属 20 件套标准装配体系，负责箭壶防脱弹性锁定。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10–12 箭/分（训练有素战弓手） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：零省力凸轮线性胡克储能曲线，直接对比现代复合弓 80% 省力比。",
+        "audioScript": "M-03，快拆箭壶弹性卡紧簧。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担箭壶防脱弹性锁定职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 10–12 箭/分（训练有素战弓手） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Quick-Detach Tension",
+        "overview": "Quiver Quick-Lock Spring (M-03) of the Medieval English Yew Warbow, serving as the dedicated quick-detach tension node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 10–12 arrows/min (trained archer) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Pure linear Hookean draw curve contrasts directly with 80% compound let-off cams.",
+        "audioScript": "M-03, Quiver Quick-Lock Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Medieval English Yew Warbow, this component handles quick-detach tension. Stores and returns cyclic elastic energy via live coil compression to maintain 10–12 arrows/min (trained archer) timing.",
+        "audioUrl": ""
+      }
+    },
+    "englishlongbow_mag_base": {
+      "partId": "englishlongbow_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Broadhead Hood",
+      "zh": {
+        "roleTag": "锋利猎箭头安全包覆",
+        "overview": "中世纪英格兰紫杉长弓（阿金库尔重战弓）（M-04）的防护箭头罩与配重底盖，隶属 20 件套标准装配体系，负责锋利猎箭头安全包覆。",
+        "craftAndMaterial": "采用自然风干紫杉木心材/边材复合层压坯料制造，表面按1415年代英格兰皇家制弓工坊（Royal Bowyers）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "designHighlight": "工程亮点呼应整枪特征：依靠弓手悖论（Archer’s Paradox）绕柱弯曲飞出并保持高存能。",
+        "audioScript": "M-04，防护箭头罩与配重底盖。作为 中世纪英格兰紫杉长弓（阿金库尔重战弓） 的关键构件，它采用自然风干紫杉木心材/边材复合层压坯料制造，主要承担锋利猎箭头安全包覆职能。在 762 mm 拉距与撒放瞬间保持几何同心度，将能量平稳传递至箭矢。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Broadhead Tip Guard",
+        "overview": "Broadhead Shield Hood (M-04) of the Medieval English Yew Warbow, serving as the dedicated broadhead tip guard node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from seasoned heartwood-and-sapwood European yew laminate to English Royal Bowyers service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Relies on Archer’s Paradox dynamic shaft flex to clear the monolithic stave.",
+        "audioScript": "M-04, Broadhead Shield Hood. Crafted from seasoned heartwood-and-sapwood European yew laminate for the Medieval English Yew Warbow, this component handles broadhead tip guard. Preserves geometric alignment across the 762 mm power stroke for consistent arrow launch.",
+        "audioUrl": ""
+      }
+    }
+  }
+}
