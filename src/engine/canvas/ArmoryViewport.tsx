@@ -23,6 +23,7 @@ import {
   CartridgeCutawayStage,
 } from '../actors/CartridgeCutawayStage';
 import { ExhibitionTurntable } from '../actors/ExhibitionTurntable';
+import { ExplodeAxisGuide } from '../actors/ExplodeAxisGuide';
 import { MagazineAmmoStack } from '../actors/MagazineAmmoStack';
 import { MalfunctionActor } from '../actors/MalfunctionActor';
 import { PartActor } from '../actors/PartActor';
@@ -1318,6 +1319,7 @@ const DisassemblyRig: React.FC = () => {
                   />
                 ))}
                 <MagazineAmmoStack />
+                <ExplodeAxisGuide />
                 <RiflingBoreActor />
                 <AttachmentActor />
                 <BallisticsSystem worldFx={false} />
