@@ -345,3 +345,16 @@
   border-color: rgba(52, 211, 153, 0.55);
   color: #6ee7b7;
 }
+
+@media (max-width: 768px) {
+  /* WCAG 2.1 AA Mobile Touch-Target Parity (>= 32px min dimension on 390x844) */
+  .offline-btn,
+  .offline-close-btn,
+  .offline-item-btn {
+    min-height: 34px;
+    min-width: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

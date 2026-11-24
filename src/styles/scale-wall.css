@@ -640,6 +640,18 @@
   flex-shrink: 0;
 }
 
+.sw-dim-callout.is-label-inside {
+  position: absolute;
+  top: 50%;
+  right: calc(100% - var(--sw-bar-pct, 100%) + 10px);
+  transform: translateY(-50%);
+  z-index: 2;
+  background: rgba(2, 6, 23, 0.88);
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 3px 12px rgba(2, 6, 23, 0.55);
+  backdrop-filter: blur(6px);
+}
+
 .sw-dim-callout span {
   font-size: 9px;
   color: #94a3b8;
@@ -648,6 +660,12 @@
 :is([data-theme='light'], .theme-light) .sw-dim-callout {
   background: rgba(255, 255, 255, 0.92);
   border-color: #cbd5e1;
+}
+
+:is([data-theme='light'], .theme-light) .sw-dim-callout.is-label-inside {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(2, 132, 199, 0.42);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.14);
 }
 
 :is([data-theme='light'], .theme-light) .sw-dim-callout span {
@@ -965,5 +983,19 @@
 
   .sw-picker-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* WCAG 2.1 AA Mobile Touch-Target Parity (>= 32px min dimension on 390x844) */
+  .sw-split-cta,
+  .sw-seg-btn,
+  .sw-inspect-btn,
+  .sw-remove-btn,
+  .sw-pick-chip {
+    min-height: 34px;
+    min-width: 34px;
+  }
+
+  .sw-remove-btn {
+    justify-content: center;
   }
 }

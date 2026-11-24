@@ -903,6 +903,18 @@
   }
 }
 
+@media (max-width: 768px) {
+  /* WCAG 2.1 AA Mobile Touch-Target Parity (>= 32px min dimension on 390x844) */
+  .armor-theater-cam-btn,
+  .armor-theater-speed-btn {
+    min-height: 34px;
+    min-width: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .armor-pen-dialog,
   .armor-pen-dialog *,

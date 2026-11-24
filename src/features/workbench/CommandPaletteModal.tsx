@@ -326,6 +326,11 @@ const CommandPaletteDialogBody: React.FC = () => {
             type="text"
             className="cmdk-search-input"
             role="combobox"
+            aria-label={
+              lang === 'zh'
+                ? '搜索 34 款馆藏、854 个零件或博物馆实验室'
+                : 'Search 34 exhibits, 854 parts, or museum labs'
+            }
             aria-expanded="true"
             aria-controls={LISTBOX_ID}
             aria-autocomplete="list"

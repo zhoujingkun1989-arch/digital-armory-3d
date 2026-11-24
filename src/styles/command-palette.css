@@ -999,6 +999,17 @@
   }
 }
 
+@media (max-width: 768px) {
+  .cmdk-esc-btn,
+  .cmdk-clear-btn {
+    min-height: 34px;
+    min-width: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 @media (max-width: 640px) {
   .workbench-popover-menu {
     position: fixed;

@@ -1846,6 +1846,19 @@
   color: #0369a1;
 }
 
+@media (max-width: 768px) {
+  /* WCAG 2.1 AA Mobile Touch-Target Parity (>= 32px min dimension on 390x844) */
+  .eb-reset-btn,
+  .eb-range3d-string5-btn,
+  .eb-quick-zero-btn,
+  .eb-spin-toggle-btn,
+  .eb-controls-toggle-btn,
+  .eb-weapon-link-pill {
+    min-height: 34px;
+    min-width: 34px;
+  }
+}
+
 @media (max-width: 640px) {
   .eb-stability-pill {
     white-space: normal;
