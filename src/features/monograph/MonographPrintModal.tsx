@@ -24,6 +24,11 @@ import {
   X,
 } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import {
+  type RiflingKind,
+  WEAPON_RIFLING_SPECS,
+} from '../../engine/ballistics/riflingSpecs';
+import { getGlossaryTermsForWeapon } from '../../engine/encyclopedia/engineeringGlossary';
 import { useWeaponGeometries } from '../../engine/geometry/geometryService';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { getLocalizedShortWeaponLabel } from '../../i18n/weaponFallbacks';
@@ -31,11 +36,12 @@ import {
   preloadWeaponNarration,
   useWeaponNarration,
 } from '../../narration/narrationService';
+import type { LanguageCode } from '../../narration/types';
 import {
   type MonographModalLaunchOptions,
   useAppStore,
 } from '../../store/useAppStore';
-import { WEAPON_MANIFESTS } from '../../weapons/manifests';
+import { getWeaponManifest, WEAPON_MANIFESTS } from '../../weapons/manifests';
 import { preloadWeaponPlugin, useWeaponPlugin } from '../../weapons/registry';
 import type { WeaponId } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
@@ -234,6 +240,194 @@ function waitWithTimeout<T>(promise: Promise<T>, ms: number): Promise<T | void> 
   ]);
 }
 
+export interface MonographGlossaryPrinciple {
+  readonly id: string;
+  readonly term: string;
+  readonly summary: string;
+}
+
+export interface MonographTechnicalAddendum {
+  readonly weaponId: WeaponId;
+  readonly lang: LanguageCode;
+  readonly bayCode: string;
+  readonly isArchery: boolean;
+  readonly riflingKind: RiflingKind;
+  readonly eyebrow: string;
+  readonly sectionAriaLabel: string;
+  readonly boreSectionHeading: string;
+  readonly principlesHeading: string;
+  readonly profileBadge: string;
+  readonly boreSpecLabel: string;
+  readonly boreDiameterText: string;
+  readonly twistOrPropulsionText: string;
+  readonly linerOrTrackText: string;
+  readonly principles: readonly MonographGlossaryPrinciple[];
+}
+
+/**
+ * Pure archival technical-data composer for Monograph Studio spreads & print sheets.
+ * Sources authoritative 34-exhibit barrel rifling specs (`WEAPON_RIFLING_SPECS`)
+ * and top 2 bilingual engineering principles (`getGlossaryTermsForWeapon`), handling
+ * unbarreled archery exhibits (`lift33`, `r500`) with Compound/Helical Cam propulsion copy.
+ */
+export function buildMonographTechnicalAddendum(
+  weaponId: WeaponId,
+  lang: LanguageCode
+): MonographTechnicalAddendum {
+  const manifest = getWeaponManifest(weaponId);
+  const spec = WEAPON_RIFLING_SPECS[weaponId];
+  const isZh = lang === 'zh';
+  const isArchery = spec.kind === 'none';
+
+  const principles: MonographGlossaryPrinciple[] = getGlossaryTermsForWeapon(
+    weaponId
+  )
+    .slice(0, 2)
+    .map((term) => ({
+      id: term.id,
+      term: isZh ? term.termZh : term.termEn,
+      summary: isZh ? term.summaryZh : term.summaryEn,
+    }));
+
+  const boreSpecLabel = isZh ? spec.labelZh : spec.labelEn;
+
+  if (isArchery) {
+    const isCrossbow = weaponId === 'r500';
+    return {
+      weaponId,
+      lang,
+      bayCode: manifest.catalog.bayCode,
+      isArchery: true,
+      riflingKind: 'none',
+      eyebrow: isZh
+        ? '典藏推进机构与机械原理附页 · 无膛线储能弓弩'
+        : 'ARCHIVAL PROPULSION & MECHANICAL DOSSIER · NON-RIFLED ARCHERY',
+      sectionAriaLabel: isZh
+        ? '展品凸轮推进规格与核心机械原理附页'
+        : 'Exhibit cam propulsion specification and engineering principles dossier',
+      boreSectionHeading: isZh
+        ? '复合凸轮推进与箭道规格'
+        : 'COMPOUND CAM PROPULSION & FLIGHT TRACK',
+      principlesHeading: isZh
+        ? '核心机械原理条目'
+        : 'KEY ENGINEERING PRINCIPLES',
+      profileBadge: isCrossbow
+        ? isZh
+          ? '螺旋凸轮推进 · 无膛线'
+          : 'HELICAL-CAM PROPULSION · UNBARRELED'
+        : isZh
+          ? '复合凸轮推进 · 无膛线'
+          : 'COMPOUND CAM PROPULSION · UNBARRELED',
+      boreSpecLabel,
+      boreDiameterText: isZh
+        ? '无枪管膛线 · 碳纤维箭矢推进'
+        : 'Unbarreled · Carbon Arrow / Bolt Propulsion',
+      twistOrPropulsionText: isCrossbow
+        ? isZh
+          ? 'HexCoil 360° 螺旋偏心凸轮 · 500 FPS 动能释放'
+          : 'HexCoil 360° Helical Compound Cams · 500 FPS Release'
+        : isZh
+          ? 'SwitchWeight 偏心双复合凸轮 · 80% 省力比'
+          : 'SwitchWeight Dual Compound Cams · 80% Let-Off',
+      linerOrTrackText: isCrossbow
+        ? isZh
+          ? 'Trac-Trigger 零摩擦悬浮箭轨'
+          : 'Frictionless Trac-Trigger Suspended Flight Track'
+        : isZh
+          ? '下落式开放箭台 · 离弦零接触导向'
+          : 'Drop-Away Open Arrow Rest · Zero-Fletch Clearance',
+      principles,
+    };
+  }
+
+  const twistDirLabel = isZh
+    ? spec.direction === 'LH'
+      ? '左旋'
+      : '右旋'
+    : spec.direction;
+
+  let profileBadge: string;
+  let twistOrPropulsionText: string;
+  let linerOrTrackText: string;
+
+  if (spec.kind === 'polygonal') {
+    profileBadge = isZh
+      ? `多边形膛线 · ${spec.grooves} 边 ${twistDirLabel}`
+      : `POLYGONAL RIFLING · ${spec.grooves}-SIDED ${spec.direction}`;
+    twistOrPropulsionText = isZh
+      ? `缠距 1:${spec.twistInches}" (${spec.twistMm} mm) ${twistDirLabel}`
+      : `Twist 1:${spec.twistInches}" (${spec.twistMm} mm) ${spec.direction}`;
+    linerOrTrackText = spec.chromeLined
+      ? isZh
+        ? '浮膛镀铬内膛 · 气密防烧蚀'
+        : 'Hard-Chrome Lined Bore · Gas-Seal Profile'
+      : isZh
+        ? '冷锻氮化特种钢内膛'
+        : 'Cold-Forged Nitrided Ordnance Steel Bore';
+  } else if (spec.kind === 'smoothbore') {
+    profileBadge = isZh
+      ? `硬铬滑膛 · Ø ${spec.boreDiameterMm.toFixed(1)} mm`
+      : `HARD-CHROME SMOOTHBORE · Ø ${spec.boreDiameterMm.toFixed(1)} mm`;
+    twistOrPropulsionText =
+      spec.boreDiameterMm >= 100
+        ? isZh
+          ? '零缠距滑膛 · 尾翼稳定脱壳穿甲弹'
+          : 'Zero-Twist Smoothbore · Fin-Stabilized APFSDS'
+        : isZh
+          ? '直筒滑膛 · 鹿弹与独头弹通用'
+          : 'Cylinder Smoothbore · Buckshot & Rifled Slug';
+    linerOrTrackText = spec.chromeLined
+      ? isZh
+        ? '自紧/珩磨全膛硬铬防烧蚀内壁'
+        : 'Autofrettaged / Honed Hard-Chrome Liner'
+      : isZh
+        ? '精密珩磨合金钢内膛'
+        : 'Precision-Honed Ordnance Alloy Bore';
+  } else {
+    profileBadge = isZh
+      ? `精密线膛 · ${spec.grooves} 槽 ${twistDirLabel}`
+      : `CUT-RIFLED · ${spec.grooves}-GROOVE ${spec.direction}`;
+    twistOrPropulsionText = isZh
+      ? `缠距 1:${spec.twistInches}" (${spec.twistMm} mm) ${twistDirLabel}`
+      : `Twist 1:${spec.twistInches}" (${spec.twistMm} mm) ${spec.direction}`;
+    linerOrTrackText = spec.chromeLined
+      ? isZh
+        ? '全膛硬铬防烧蚀镀层'
+        : 'Hard-Chrome Anti-Erosion Bore Liner'
+      : isZh
+        ? '精锻铬钼钒特种炮管钢'
+        : 'Precision Cr-Mo-V Ordnance Barrel Steel';
+  }
+
+  return {
+    weaponId,
+    lang,
+    bayCode: manifest.catalog.bayCode,
+    isArchery: false,
+    riflingKind: spec.kind,
+    eyebrow: isZh
+      ? '典藏内膛膛线与核心机械原理附页 · 博物馆技术档案'
+      : 'ARCHIVAL BORE RIFLING & MECHANICAL DOSSIER · MUSEUM TECHNICAL PLATE',
+    sectionAriaLabel: isZh
+      ? '展品膛线内膛规格与核心机械原理附页'
+      : 'Exhibit barrel rifling specification and engineering principles dossier',
+    boreSectionHeading: isZh
+      ? '身管内膛与膛线工程规格'
+      : 'BORE PROFILE & RIFLING SPECIFICATION',
+    principlesHeading: isZh
+      ? '核心机械原理条目'
+      : 'KEY ENGINEERING PRINCIPLES',
+    profileBadge,
+    boreSpecLabel,
+    boreDiameterText: isZh
+      ? `标称内径 Ø ${spec.boreDiameterMm.toFixed(1)} mm`
+      : `Nominal Bore Ø ${spec.boreDiameterMm.toFixed(1)} mm`,
+    twistOrPropulsionText,
+    linerOrTrackText,
+    principles,
+  };
+}
+
 export interface MonographPrintModalProps {
   forceOpen?: boolean;
 }
@@ -321,6 +515,11 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
 
   const ui = UI_STRINGS[lang].monograph;
   const shortTag = getLocalizedShortWeaponLabel(weaponId, lang);
+
+  const technicalAddendum = useMemo(
+    () => buildMonographTechnicalAddendum(weaponId, lang),
+    [weaponId, lang]
+  );
 
   const printGeometry = useMemo(
     () => computeMonographPrintGeometry(styleMode, layoutMode, pageMode, prepress),
@@ -898,7 +1097,11 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
 
           <div className="ms-options-cluster">
             {/* Style Mode Switcher: DK Visual Encyclopedia | Pro Dossier | Kids Picture Book */}
-            <div className="ms-seg-group" role="group" aria-label="Book Style">
+            <div
+              className="ms-seg-group"
+              role="group"
+              aria-label={lang === 'zh' ? '画册装帧风格' : 'Book Style'}
+            >
               <button
                 type="button"
                 className={`ms-seg-btn ${
@@ -938,7 +1141,11 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
             </div>
 
             {/* Edition Palette Switcher: DK Pure White | Blueprint Bright | Obsidian Dark */}
-            <div className="ms-seg-group" role="group" aria-label="Edition">
+            <div
+              className="ms-seg-group"
+              role="group"
+              aria-label={lang === 'zh' ? '纸张与配色版本' : 'Edition Palette'}
+            >
               <button
                 type="button"
                 className={`ms-seg-btn ${
@@ -988,7 +1195,11 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
 
             {/* Layout Geometry Switcher (DK Encyclopedia: A3 Spread vs A4 Portrait) */}
             {isDkMode && (
-              <div className="ms-seg-group" role="group" aria-label="Layout">
+              <div
+                className="ms-seg-group"
+                role="group"
+                aria-label={lang === 'zh' ? '跨页排版幅面' : 'Layout Geometry'}
+              >
                 <button
                   type="button"
                   className={`ms-seg-btn ${
@@ -1023,7 +1234,11 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
             )}
 
             {/* Page Density Switcher */}
-            <div className="ms-seg-group" role="group" aria-label="Pages">
+            <div
+              className="ms-seg-group"
+              role="group"
+              aria-label={lang === 'zh' ? '页数密度' : 'Page Density'}
+            >
               <button
                 type="button"
                 className={`ms-seg-btn ${pageMode === 'full_8p' ? 'active' : ''}`}
@@ -1051,7 +1266,11 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
             </div>
 
             {/* Capture Resolution Quality Switcher */}
-            <div className="ms-seg-group" role="group" aria-label="Quality">
+            <div
+              className="ms-seg-group"
+              role="group"
+              aria-label={lang === 'zh' ? '图版渲染清晰度' : 'Capture Quality'}
+            >
               <button
                 type="button"
                 className={`ms-seg-btn ${
@@ -1138,6 +1357,11 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
               className="ms-cp-progress"
               max={captureState.totalPlates}
               value={captureState.completedPlates}
+              aria-label={
+                lang === 'zh'
+                  ? '离屏 17 图版渲染进度'
+                  : 'Offscreen 17-plate render progress'
+              }
             />
           </div>
         )}
@@ -1145,12 +1369,28 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
         {/* Scrollable WYSIWYG Preview Stage */}
         <div ref={previewScrollRef} className="monograph-preview-stage">
           {/* Quick Spread / Page Jump Rail */}
-          <div className="ms-page-jump-rail">
+          <nav
+            className="ms-page-jump-rail"
+            aria-label={
+              lang === 'zh'
+                ? '版面快速跳转导航'
+                : 'Spread and page jump navigation'
+            }
+          >
             {Array.from({ length: jumpCount }, (_, i) => i + 1).map((idx) => (
               <button
                 key={idx}
                 type="button"
                 className="ms-page-jump-pill"
+                aria-label={
+                  isSpreadMode
+                    ? lang === 'zh'
+                      ? `跳转至第 ${idx} 跨页（第 ${idx * 2 - 1} 至 ${idx * 2} 页）`
+                      : `Jump to Spread ${idx} (Pages ${idx * 2 - 1} to ${idx * 2})`
+                    : lang === 'zh'
+                      ? `跳转至第 ${idx} 页`
+                      : `Jump to Page ${idx}`
+                }
                 onClick={() => scrollToPreviewSheet(idx)}
               >
                 {isSpreadMode ? `S${idx} (P${idx * 2 - 1}-${idx * 2})` : `P${idx}`}
@@ -1159,7 +1399,66 @@ export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
             <span className="ms-print-tip-inline">
               {isSpreadMode ? ui.printHintDkSpread : ui.printHint}
             </span>
-          </div>
+          </nav>
+
+          {/* Archival Copperplate Rifling & Engineering Principles Technical Strip */}
+          <section
+            className={`dk-technical-addendum ${
+              technicalAddendum.isArchery ? 'is-archery' : `is-${technicalAddendum.riflingKind}`
+            }`}
+            data-testid="monograph-rifling-glossary-strip"
+            aria-label={technicalAddendum.sectionAriaLabel}
+          >
+            <div className="dk-ta-header">
+              <div className="dk-ta-header-left">
+                <span className="dk-ta-bay">{technicalAddendum.bayCode}</span>
+                <span className="dk-ta-eyebrow">
+                  {technicalAddendum.eyebrow}
+                </span>
+              </div>
+              <span className="dk-ta-badge">
+                {technicalAddendum.profileBadge}
+              </span>
+            </div>
+
+            <div className="dk-ta-grid">
+              <div className="dk-ta-bore-card">
+                <span className="dk-ta-subhead">
+                  {technicalAddendum.boreSectionHeading}
+                </span>
+                <p className="dk-ta-spec-line">
+                  {technicalAddendum.boreSpecLabel}
+                </p>
+                <div className="dk-ta-meta-pills">
+                  <span className="dk-ta-meta-pill">
+                    {technicalAddendum.boreDiameterText}
+                  </span>
+                  <span className="dk-ta-meta-pill">
+                    {technicalAddendum.twistOrPropulsionText}
+                  </span>
+                  <span className="dk-ta-meta-pill">
+                    {technicalAddendum.linerOrTrackText}
+                  </span>
+                </div>
+              </div>
+
+              <div className="dk-ta-principles-col">
+                <span className="dk-ta-subhead">
+                  {technicalAddendum.principlesHeading}
+                </span>
+                <div className="dk-ta-principle-list">
+                  {technicalAddendum.principles.map((item) => (
+                    <article key={item.id} className="dk-ta-principle-card">
+                      <strong className="dk-ta-principle-term">
+                        {item.term}
+                      </strong>
+                      <p className="dk-ta-principle-summary">{item.summary}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
 
           <div
             className="monograph-preview-sheets"

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useId, useRef } from 'react';
 import {
   Activity,
   AlertTriangle,
+  BookOpen,
   CheckCircle2,
   FlaskConical,
   Gauge,
@@ -14,6 +15,7 @@ import {
 import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { playbackClock } from '../../engine/clock/playbackClock';
+import { getGlossaryTermsForWeapon } from '../../engine/encyclopedia/engineeringGlossary';
 import {
   createInternalBallisticsSample,
   evaluateInternalBallisticsInto,
@@ -294,6 +296,35 @@ const CausalitySandboxModal: React.FC = () => {
     : null;
 
   const marginGauges = computeMechanicalMarginGauges(evaluation);
+  const primaryPrinciple = getGlossaryTermsForWeapon(activeWeaponId)[0] ?? null;
+
+  const gasPortLabel = archery ? ui.sliders.gasPortArchery : ui.sliders.gasPort;
+  const recoilSpringLabel = archery
+    ? ui.sliders.recoilSpringArchery
+    : ui.sliders.recoilSpring;
+  const boltMassLabel = archery
+    ? ui.sliders.boltMassArchery
+    : ui.sliders.boltMass;
+  const powderLoadLabel = archery
+    ? ui.sliders.powderLoadArchery
+    : ui.sliders.powderLoad;
+
+  const gasPortValueText =
+    lang === 'zh'
+      ? `${Math.round(gasPortScale * 100)}% ${archery ? '凸轮储能' : '导气流量'}（${gasPortScale.toFixed(2)}×）`
+      : `${Math.round(gasPortScale * 100)}% ${archery ? 'cam energy' : 'gas port flow'} (${gasPortScale.toFixed(2)}x factory)`;
+  const recoilSpringValueText =
+    lang === 'zh'
+      ? `${Math.round(recoilSpringKScale * 100)}% 弹簧刚度（${recoilSpringKScale.toFixed(2)}×）`
+      : `${Math.round(recoilSpringKScale * 100)}% spring rate (${recoilSpringKScale.toFixed(2)}x factory)`;
+  const boltMassValueText =
+    lang === 'zh'
+      ? `${Math.round(boltMassScale * 100)}% ${archery ? '箭矢质量' : '枪机质量'}（${boltMassScale.toFixed(2)}×）`
+      : `${Math.round(boltMassScale * 100)}% ${archery ? 'arrow mass' : 'bolt carrier mass'} (${boltMassScale.toFixed(2)}x factory)`;
+  const powderLoadValueText =
+    lang === 'zh'
+      ? `峰值膛压 ${evaluation.modifiedPeakMPa.toFixed(1)} MPa（${Math.round(powderLoadScale * 100)}% ${archery ? '拉力峰值' : '装药量'}）`
+      : `Peak pressure ${evaluation.modifiedPeakMPa.toFixed(1)} MPa (${Math.round(powderLoadScale * 100)}% ${archery ? 'draw load' : 'charge'})`;
 
   const handleRunExperiment = useCallback(
     (exp: CausalityExperimentSpec) => {
@@ -362,6 +393,12 @@ const CausalitySandboxModal: React.FC = () => {
             className={`causality-icon-btn ${
               mode === 'firing' && isFiringPlaying ? 'is-playing' : ''
             }`}
+            aria-label={
+              mode === 'firing' && isFiringPlaying
+                ? ui.pauseFiring
+                : ui.playFiring
+            }
+            aria-pressed={mode === 'firing' && isFiringPlaying}
             title={
               mode === 'firing' && isFiringPlaying
                 ? ui.pauseFiring
@@ -386,6 +423,7 @@ const CausalitySandboxModal: React.FC = () => {
           <button
             type="button"
             className="causality-icon-btn"
+            aria-label={ui.reset}
             title={ui.reset}
             onClick={() => {
               playWorkbenchFoley('preset_detent');
@@ -414,6 +452,28 @@ const CausalitySandboxModal: React.FC = () => {
       <p className="causality-sub">
         {archery ? ui.archerySubtitle : ui.subtitle}
       </p>
+
+      {primaryPrinciple && (
+        <div
+          className="causality-principle-context"
+          data-testid="causality-principle-context"
+        >
+          <div className="causality-principle-head">
+            <BookOpen size={11} aria-hidden="true" />
+            <span className="causality-principle-kicker">
+              {lang === 'zh' ? '当前机构核心原理' : 'ACTIVE MECHANISM PRINCIPLE'}
+            </span>
+            <strong>
+              {lang === 'zh' ? primaryPrinciple.termZh : primaryPrinciple.termEn}
+            </strong>
+          </div>
+          <p className="causality-principle-summary">
+            {lang === 'zh'
+              ? primaryPrinciple.summaryZh
+              : primaryPrinciple.summaryEn}
+          </p>
+        </div>
+      )}
 
       {/* Ciechanowski-Grade Guided Physics Experiments */}
       <div className="causality-experiments-section">
@@ -524,6 +584,7 @@ const CausalitySandboxModal: React.FC = () => {
             <button
               key={id}
               type="button"
+              aria-pressed={active}
               className={`causality-preset-pill ${active ? 'is-active' : ''}`}
               title={item.hint}
               onClick={() => {
@@ -543,13 +604,13 @@ const CausalitySandboxModal: React.FC = () => {
       <div className="causality-sliders-grid">
         <label className="causality-slider-row">
           <div className="causality-slider-meta">
-            <span>
-              {archery ? ui.sliders.gasPortArchery : ui.sliders.gasPort}
-            </span>
+            <span>{gasPortLabel}</span>
             <strong className="tabular">{gasPortScale.toFixed(2)}×</strong>
           </div>
           <input
             type="range"
+            aria-label={gasPortLabel}
+            aria-valuetext={gasPortValueText}
             min={0.6}
             max={1.5}
             step={0.02}
@@ -563,17 +624,15 @@ const CausalitySandboxModal: React.FC = () => {
 
         <label className="causality-slider-row">
           <div className="causality-slider-meta">
-            <span>
-              {archery
-                ? ui.sliders.recoilSpringArchery
-                : ui.sliders.recoilSpring}
-            </span>
+            <span>{recoilSpringLabel}</span>
             <strong className="tabular">
               {recoilSpringKScale.toFixed(2)}×
             </strong>
           </div>
           <input
             type="range"
+            aria-label={recoilSpringLabel}
+            aria-valuetext={recoilSpringValueText}
             min={0.55}
             max={1.7}
             step={0.02}
@@ -587,13 +646,13 @@ const CausalitySandboxModal: React.FC = () => {
 
         <label className="causality-slider-row">
           <div className="causality-slider-meta">
-            <span>
-              {archery ? ui.sliders.boltMassArchery : ui.sliders.boltMass}
-            </span>
+            <span>{boltMassLabel}</span>
             <strong className="tabular">{boltMassScale.toFixed(2)}×</strong>
           </div>
           <input
             type="range"
+            aria-label={boltMassLabel}
+            aria-valuetext={boltMassValueText}
             min={0.65}
             max={1.65}
             step={0.02}
@@ -607,13 +666,13 @@ const CausalitySandboxModal: React.FC = () => {
 
         <label className="causality-slider-row">
           <div className="causality-slider-meta">
-            <span>
-              {archery ? ui.sliders.powderLoadArchery : ui.sliders.powderLoad}
-            </span>
+            <span>{powderLoadLabel}</span>
             <strong className="tabular">{powderLoadScale.toFixed(2)}×</strong>
           </div>
           <input
             type="range"
+            aria-label={powderLoadLabel}
+            aria-valuetext={powderLoadValueText}
             min={0.75}
             max={1.35}
             step={0.01}
@@ -662,7 +721,12 @@ const CausalitySandboxModal: React.FC = () => {
         </div>
       </div>
 
-      <div className={`causality-diagnostic-banner ${diagClass}`}>
+      <div
+        className={`causality-diagnostic-banner ${diagClass}`}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         <div className="causality-diag-head">
           {evaluation.status === 'nominal' ? (
             <CheckCircle2 size={14} aria-hidden="true" />

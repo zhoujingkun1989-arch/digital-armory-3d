@@ -1776,6 +1776,181 @@
   color: var(--dk-crimson);
 }
 
+/* ==========================================================================
+   ARCHIVAL TECHNICAL-DATA STRIP — Bore Rifling & Engineering Principles Dossier
+   ========================================================================== */
+.dk-technical-addendum {
+  max-width: 1180px;
+  margin: 0 auto 16px;
+  padding: 12px 15px 13px;
+  border-radius: 10px;
+  background: linear-gradient(
+    180deg,
+    rgba(17, 25, 39, 0.94) 0%,
+    rgba(12, 19, 31, 0.96) 100%
+  );
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  border-top: 2.5px solid #b91c1c;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
+  color: #f1f5f9;
+  box-sizing: border-box;
+}
+
+.dk-ta-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding-bottom: 9px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.dk-ta-header-left {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.dk-ta-bay {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(185, 28, 28, 0.22);
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  color: #fecaca;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-ta-eyebrow {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  color: #fbbf24;
+  text-transform: uppercase;
+}
+
+.dk-ta-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.14);
+  border: 1px solid rgba(56, 189, 248, 0.38);
+  color: #7dd3fc;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-technical-addendum.is-archery .dk-ta-badge {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(52, 211, 153, 0.44);
+  color: #6ee7b7;
+}
+
+.dk-technical-addendum.is-smoothbore .dk-ta-badge {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(251, 191, 36, 0.44);
+  color: #fde68a;
+}
+
+.dk-ta-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.55fr);
+  gap: 12px 16px;
+  align-items: start;
+}
+
+.dk-ta-bore-card,
+.dk-ta-principles-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.dk-ta-subhead {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 9.8px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+.dk-ta-spec-line {
+  margin: 0;
+  font-family: var(--dk-font-serif, 'Noto Serif SC', Georgia, serif);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #f8fafc;
+}
+
+.dk-ta-meta-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.dk-ta-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: rgba(30, 41, 59, 0.82);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  color: #e2e8f0;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-ta-principle-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.dk-ta-principle-card {
+  padding: 8px 10px;
+  border-radius: 7px;
+  background: rgba(15, 23, 42, 0.68);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-left: 2.5px solid #d97706;
+  min-width: 0;
+}
+
+.dk-ta-principle-term {
+  display: block;
+  margin-bottom: 3px;
+  font-family: var(--dk-font-serif, 'Noto Serif SC', Georgia, serif);
+  font-size: 12px;
+  font-weight: 800;
+  color: #fef3c7;
+}
+
+.dk-ta-principle-summary {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.48;
+  color: #cbd5e1;
+}
+
 /* Blueprint Daylight (`[data-theme='light']`) Screen-Only Preview Elevation (keeps @media print 100% untouched) */
 @media screen {
   :is([data-theme='light'], .theme-light) .dk-monograph {
@@ -1802,14 +1977,159 @@
   :is([data-theme='light'], .theme-light) .dk-spread-gutter::after {
     background: rgba(15, 23, 42, 0.18);
   }
+
+  :is([data-theme='light'], .theme-light) .dk-technical-addendum {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border-color: rgba(15, 23, 42, 0.22);
+    border-top-color: #b91c1c;
+    box-shadow: 0 10px 26px rgba(15, 23, 42, 0.12);
+    color: #0f172a;
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-ta-header {
+    border-bottom-color: rgba(15, 23, 42, 0.16);
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-ta-bay {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #991b1b;
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-ta-eyebrow {
+    color: #92400e;
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-ta-badge {
+    background: #e0f2fe;
+    border-color: #7dd3fc;
+    color: #075985;
+  }
+
+  :is([data-theme='light'], .theme-light)
+    .dk-technical-addendum.is-archery
+    .dk-ta-badge {
+    background: #d1fae5;
+    border-color: #6ee7b7;
+    color: #065f46;
+  }
+
+  :is([data-theme='light'], .theme-light)
+    .dk-technical-addendum.is-smoothbore
+    .dk-ta-badge {
+    background: #fef3c7;
+    border-color: #fcd34d;
+    color: #92400e;
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-ta-subhead {
+    color: #475569;
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-ta-spec-line {
+    color: #0f172a;
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-ta-meta-pill {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: #1e293b;
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-ta-principle-card {
+    background: #ffffff;
+    border-color: #cbd5e1;
+    border-left-color: #b45309;
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-ta-principle-term {
+    color: #0f172a;
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-ta-principle-summary {
+    color: #334155;
+  }
 }
 
-/* Mobile / Tablet Screen-Only Preview Guard (keeps @media print 100% untouched) */
+/* Mobile / Tablet Screen-Only Preview Guard & WCAG 2.1 AA Touch Targets (keeps @media print 100% untouched) */
 @media screen and (max-width: 768px) {
+  .monograph-dialog {
+    width: calc(100vw - 12px);
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .monograph-studio-header,
+  .monograph-studio-controls,
+  .monograph-preview-stage {
+    max-width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .ms-options-cluster {
+    gap: 6px;
+  }
+
+  .ms-seg-group {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  .ms-seg-btn,
+  .ms-weapon-pill,
+  .ms-prepress-toggle,
+  .ms-page-jump-pill,
+  .ms-reshoot-btn,
+  .ms-print-primary-btn,
+  .ms-close-btn,
+  .monograph-dialog .lang-seg-btn {
+    min-height: 34px;
+    min-block-size: 34px;
+    min-width: 34px;
+    min-inline-size: 34px;
+  }
+
+  .ms-callsign-field {
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+
+  .ms-callsign-input {
+    flex: 1 1 100%;
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    min-height: 36px;
+  }
+
+  .dk-technical-addendum {
+    padding: 10px 12px;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .dk-ta-grid,
+  .dk-ta-principle-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .monograph-preview-sheets .dk-monograph {
     max-width: 100%;
     overflow-x: hidden;
     gap: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .monograph-dialog *,
+  .dk-technical-addendum * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
 
@@ -1852,5 +2172,44 @@
   .dk-spread-sheet.has-bleed .dk-sheet-trim-area,
   .dk-page-sheet.has-bleed .dk-sheet-trim-area {
     outline: none !important;
+  }
+
+  .dk-technical-addendum {
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: 0.6pt solid #111827 !important;
+    border-top: 1.4pt solid #111827 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .dk-ta-header {
+    border-bottom: 0.6pt solid #111827 !important;
+  }
+
+  .dk-ta-bay,
+  .dk-ta-badge,
+  .dk-ta-meta-pill {
+    background: #f8fafc !important;
+    color: #111827 !important;
+    border: 0.5pt solid #475569 !important;
+  }
+
+  .dk-ta-eyebrow,
+  .dk-ta-subhead,
+  .dk-ta-spec-line,
+  .dk-ta-principle-term,
+  .dk-ta-principle-summary {
+    color: #111827 !important;
+  }
+
+  .dk-ta-principle-card {
+    background: #ffffff !important;
+    border: 0.45pt solid #94a3b8 !important;
+    border-left: 1.5pt solid #991b1b !important;
   }
 }
