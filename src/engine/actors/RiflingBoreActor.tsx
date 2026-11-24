@@ -15,7 +15,9 @@ import { getArmoryPhysicsState } from '../physics/armoryPhysics';
 import {
   SECTION_CUT_PLANES,
   type SectionCutAxis,
+  setSectionCapDaylightMode,
 } from './StencilSectionCap';
+import type { ArmoryStudioLightingPreset } from '../materials/armoryShader';
 
 // ============================================================================
 // Digital Armory 3D — Zero-GC Cutaway Helical Barrel Rifling & Chamber Throat
@@ -34,12 +36,121 @@ const TEXTURE_SIZE = 256;
 
 const noRiflingRaycast = () => null;
 
-// Pre-allocated Zero-GC color scratch objects shared by useFrame
-const _chromeBaseColor = new THREE.Color('#dde5ee');
-const _steelBaseColor = new THREE.Color('#9ea8b4');
+export interface RiflingDaylightTuning {
+  /** Multiplier applied to bore liner `envMapIntensity` (tames full-sphere daylight IBL washout) */
+  readonly boreEnvMapMultiplier: number;
+  /** Multiplier applied to chamber throat `envMapIntensity` */
+  readonly throatEnvMapMultiplier: number;
+  /** Additive roughness shift on bore liner for crisp land-crest vs groove-valley contrast */
+  readonly boreRoughnessDelta: number;
+  /** Additive roughness shift on chamber throat/leade cone */
+  readonly throatRoughnessDelta: number;
+  /** Tangent-space normal relief scale (`1.35` dark -> deeper milled groove contrast in daylight) */
+  readonly normalScale: number;
+  /** Base chrome-lined bore tint hex */
+  readonly boreTintHexChrome: string;
+  /** Base bare-steel bore tint hex */
+  readonly boreTintHexSteel: string;
+  /** Base chrome chamber throat tint hex */
+  readonly throatTintHexChrome: string;
+  /** Base copper-washed chamber throat tint hex */
+  readonly throatTintHexCopper: string;
+}
+
+export const RIFLING_DAYLIGHT_PRESETS: Readonly<
+  Record<ArmoryStudioLightingPreset, RiflingDaylightTuning>
+> = Object.freeze({
+  tactical_vault: Object.freeze({
+    boreEnvMapMultiplier: 1.0,
+    throatEnvMapMultiplier: 1.0,
+    boreRoughnessDelta: 0.0,
+    throatRoughnessDelta: 0.0,
+    normalScale: 1.35,
+    boreTintHexChrome: '#dde5ee',
+    boreTintHexSteel: '#9ea8b4',
+    throatTintHexChrome: '#c8ccd2',
+    throatTintHexCopper: '#b88966',
+  }),
+  gunsmith_bench: Object.freeze({
+    boreEnvMapMultiplier: 0.92,
+    throatEnvMapMultiplier: 0.92,
+    boreRoughnessDelta: 0.02,
+    throatRoughnessDelta: 0.02,
+    normalScale: 1.48,
+    boreTintHexChrome: '#d4dee8',
+    boreTintHexSteel: '#929da9',
+    throatTintHexChrome: '#bec4cc',
+    throatTintHexCopper: '#ad7f5c',
+  }),
+  blueprint_daylight: Object.freeze({
+    boreEnvMapMultiplier: 0.6,
+    throatEnvMapMultiplier: 0.64,
+    boreRoughnessDelta: 0.07,
+    throatRoughnessDelta: 0.05,
+    normalScale: 1.9,
+    boreTintHexChrome: '#b4c6dc',
+    boreTintHexSteel: '#6c7c92',
+    throatTintHexChrome: '#9db0c6',
+    throatTintHexCopper: '#96633e',
+  }),
+});
+
+/** Zero-GC lookup returning frozen rifling bore studio contrast calibration. */
+export function resolveRiflingDaylightTuning(
+  environmentPreset: ArmoryStudioLightingPreset
+): RiflingDaylightTuning {
+  return (
+    RIFLING_DAYLIGHT_PRESETS[environmentPreset] ??
+    RIFLING_DAYLIGHT_PRESETS.tactical_vault
+  );
+}
+
+// Pre-allocated Zero-GC color scratch objects shared by useFrame across all 3 studio presets
+const _chromeBaseColors: Record<ArmoryStudioLightingPreset, THREE.Color> = {
+  tactical_vault: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.tactical_vault.boreTintHexChrome
+  ),
+  gunsmith_bench: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.gunsmith_bench.boreTintHexChrome
+  ),
+  blueprint_daylight: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.blueprint_daylight.boreTintHexChrome
+  ),
+};
+const _steelBaseColors: Record<ArmoryStudioLightingPreset, THREE.Color> = {
+  tactical_vault: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.tactical_vault.boreTintHexSteel
+  ),
+  gunsmith_bench: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.gunsmith_bench.boreTintHexSteel
+  ),
+  blueprint_daylight: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.blueprint_daylight.boreTintHexSteel
+  ),
+};
+const _throatChromeColors: Record<ArmoryStudioLightingPreset, THREE.Color> = {
+  tactical_vault: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.tactical_vault.throatTintHexChrome
+  ),
+  gunsmith_bench: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.gunsmith_bench.throatTintHexChrome
+  ),
+  blueprint_daylight: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.blueprint_daylight.throatTintHexChrome
+  ),
+};
+const _throatCopperColors: Record<ArmoryStudioLightingPreset, THREE.Color> = {
+  tactical_vault: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.tactical_vault.throatTintHexCopper
+  ),
+  gunsmith_bench: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.gunsmith_bench.throatTintHexCopper
+  ),
+  blueprint_daylight: new THREE.Color(
+    RIFLING_DAYLIGHT_PRESETS.blueprint_daylight.throatTintHexCopper
+  ),
+};
 const _fouledBoreColor = new THREE.Color('#3c3936');
-const _throatCopperBase = new THREE.Color('#b88966');
-const _throatChromeBase = new THREE.Color('#c8ccd2');
 const _throatFouledColor = new THREE.Color('#342d28');
 const _throatEmissiveHot = new THREE.Color('#ff6a1a');
 const _boreEmissiveHot = new THREE.Color('#d9480f');
@@ -315,9 +426,16 @@ export const RiflingBoreActor: React.FC<RiflingBoreActorProps> = ({
   isSplitView = false,
 }) => {
   const storeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const environmentPreset = useAppStore((s) => s.environmentPreset);
   const weaponId = weaponIdOverride ?? storeWeaponId;
   const spec = getWeaponRiflingSpec(weaponId);
   const bounds = useMemo(() => computeRiflingBoreBounds(weaponId), [weaponId]);
+  const studioTuning = resolveRiflingDaylightTuning(environmentPreset);
+
+  // Sync StencilSectionCap Blueprint Daylight drafting-ink mode unconditionally (incl. archery exhibits)
+  useEffect(() => {
+    setSectionCapDaylightMode(environmentPreset === 'blueprint_daylight');
+  }, [environmentPreset]);
 
   const groupRef = useRef<THREE.Group>(null);
   const boreMatRef = useRef<THREE.MeshStandardMaterial | null>(null);
@@ -404,12 +522,35 @@ export const RiflingBoreActor: React.FC<RiflingBoreActorProps> = ({
     };
   }, [bounds, spec]);
 
-  // Zero-GC 60Hz visibility, flip orientation & firing thermal/fouling modulation
+  // Direct live-toggle material calibration (avoids stale R3F Vector2 prop refs on `[Vault] <-> [Blueprint]`)
+  useEffect(() => {
+    const boreMat = boreMatRef.current;
+    const throatMat = throatMatRef.current;
+    if (!boreMat || !throatMat) return;
+    const baseBoreEnv = spec.chromeLined ? 1.85 : 1.55;
+    const baseBoreRough = spec.chromeLined ? 0.22 : 0.3;
+    const baseThroatRough = spec.chromeLined ? 0.26 : 0.34;
+    boreMat.envMapIntensity = baseBoreEnv * studioTuning.boreEnvMapMultiplier;
+    boreMat.roughness = Math.min(
+      0.95,
+      baseBoreRough + studioTuning.boreRoughnessDelta
+    );
+    boreMat.normalScale.set(studioTuning.normalScale, studioTuning.normalScale);
+    throatMat.envMapIntensity = 1.45 * studioTuning.throatEnvMapMultiplier;
+    throatMat.roughness = Math.min(
+      0.95,
+      baseThroatRough + studioTuning.throatRoughnessDelta
+    );
+  }, [studioTuning, spec.chromeLined, bounds]);
+
+  // Zero-GC 60Hz visibility, flip orientation, studio contrast & firing thermal/fouling modulation
   useFrame(() => {
+    const st = useAppStore.getState();
+    setSectionCapDaylightMode(st.environmentPreset === 'blueprint_daylight');
+
     const grp = groupRef.current;
     if (!grp || !bounds) return;
 
-    const st = useAppStore.getState();
     const explodeT = playbackClock.getState().animatedProgress;
     const visible = shouldShowRiflingBore({
       sectionCut: st.sectionCut,
@@ -426,10 +567,24 @@ export const RiflingBoreActor: React.FC<RiflingBoreActorProps> = ({
     // Rigid 180° X rotation flips concave trough into z >= 0 facing -Z while preserving RH/LH chirality
     grp.rotation.x = st.sectionCutFlip ? Math.PI : 0;
 
-    // Subtle real-time throat heat-tint & carbon-fouling darkening during firing bursts
+    // Live studio contrast calibration + real-time throat heat-tint & carbon-fouling darkening
     const boreMat = boreMatRef.current;
     const throatMat = throatMatRef.current;
     if (!boreMat || !throatMat) return;
+
+    const preset = st.environmentPreset;
+    const tuning = resolveRiflingDaylightTuning(preset);
+    const baseBoreEnv = spec.chromeLined ? 1.85 : 1.55;
+    const baseBoreRough = spec.chromeLined ? 0.22 : 0.3;
+    const baseThroatRough = spec.chromeLined ? 0.26 : 0.34;
+    boreMat.envMapIntensity = baseBoreEnv * tuning.boreEnvMapMultiplier;
+    boreMat.roughness = Math.min(0.95, baseBoreRough + tuning.boreRoughnessDelta);
+    boreMat.normalScale.set(tuning.normalScale, tuning.normalScale);
+    throatMat.envMapIntensity = 1.45 * tuning.throatEnvMapMultiplier;
+    throatMat.roughness = Math.min(
+      0.95,
+      baseThroatRough + tuning.throatRoughnessDelta
+    );
 
     const phys = getArmoryPhysicsState();
     const applyLiveThermal =
@@ -437,7 +592,9 @@ export const RiflingBoreActor: React.FC<RiflingBoreActorProps> = ({
     const heat = applyLiveThermal ? phys.barrelHeat01 : 0;
     const fouling = applyLiveThermal ? phys.carbonFouling01 : 0;
 
-    const boreBase = spec.chromeLined ? _chromeBaseColor : _steelBaseColor;
+    const boreBase = spec.chromeLined
+      ? (_chromeBaseColors[preset] ?? _chromeBaseColors.tactical_vault)
+      : (_steelBaseColors[preset] ?? _steelBaseColors.tactical_vault);
     boreMat.color.copy(boreBase).lerp(_fouledBoreColor, fouling * 0.42);
     if (heat > 0.08) {
       const hGlow = Math.min(1, (heat - 0.08) / 0.92);
@@ -447,7 +604,9 @@ export const RiflingBoreActor: React.FC<RiflingBoreActorProps> = ({
       boreMat.emissiveIntensity = 0;
     }
 
-    const throatBase = spec.chromeLined ? _throatChromeBase : _throatCopperBase;
+    const throatBase = spec.chromeLined
+      ? (_throatChromeColors[preset] ?? _throatChromeColors.tactical_vault)
+      : (_throatCopperColors[preset] ?? _throatCopperColors.tactical_vault);
     throatMat.color.copy(throatBase).lerp(_throatFouledColor, fouling * 0.56);
     if (heat > 0.05) {
       const thGlow = Math.min(1, (heat - 0.05) / 0.95);
@@ -480,10 +639,19 @@ export const RiflingBoreActor: React.FC<RiflingBoreActorProps> = ({
       >
         <meshStandardMaterial
           ref={boreMatRef}
-          color={spec.chromeLined ? '#dde5ee' : '#9ea8b4'}
+          color={
+            spec.chromeLined
+              ? studioTuning.boreTintHexChrome
+              : studioTuning.boreTintHexSteel
+          }
           metalness={spec.chromeLined ? 0.92 : 0.86}
-          roughness={spec.chromeLined ? 0.22 : 0.30}
-          envMapIntensity={spec.chromeLined ? 1.85 : 1.55}
+          roughness={Math.min(
+            0.95,
+            (spec.chromeLined ? 0.22 : 0.3) + studioTuning.boreRoughnessDelta
+          )}
+          envMapIntensity={
+            (spec.chromeLined ? 1.85 : 1.55) * studioTuning.boreEnvMapMultiplier
+          }
           side={THREE.BackSide}
           polygonOffset
           polygonOffsetFactor={-1}
@@ -502,10 +670,17 @@ export const RiflingBoreActor: React.FC<RiflingBoreActorProps> = ({
       >
         <meshStandardMaterial
           ref={throatMatRef}
-          color={spec.chromeLined ? '#c8ccd2' : '#b88966'}
+          color={
+            spec.chromeLined
+              ? studioTuning.throatTintHexChrome
+              : studioTuning.throatTintHexCopper
+          }
           metalness={spec.chromeLined ? 0.88 : 0.84}
-          roughness={spec.chromeLined ? 0.26 : 0.34}
-          envMapIntensity={1.45}
+          roughness={Math.min(
+            0.95,
+            (spec.chromeLined ? 0.26 : 0.34) + studioTuning.throatRoughnessDelta
+          )}
+          envMapIntensity={1.45 * studioTuning.throatEnvMapMultiplier}
           side={THREE.BackSide}
           polygonOffset
           polygonOffsetFactor={-1}
