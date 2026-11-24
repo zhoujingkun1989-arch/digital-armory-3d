@@ -302,6 +302,9 @@ export interface ArmoryShaderUniforms {
   uArmorDetailNormal: { value: THREE.Texture | null };
   uArmorDetailRoughness: { value: THREE.Texture | null };
   uHasArmorDetail: { value: number };
+  uCuratorSpot: { value: number };
+  uCuratorDim: { value: number };
+  uCuratorRimColor: { value: THREE.Color };
 }
 
 /** Module-shared constant uniforms (identical across every armory material). */
@@ -429,6 +432,9 @@ export function createArmoryShaderUniforms(
     uArmorDetailNormal: { value: null },
     uArmorDetailRoughness: { value: null },
     uHasArmorDetail: { value: 0 },
+    uCuratorSpot: { value: 0 },
+    uCuratorDim: { value: 1 },
+    uCuratorRimColor: { value: new THREE.Color(CURATOR_SPOTLIGHT_RIM_DARK) },
   };
 }
 
@@ -445,8 +451,12 @@ export interface ArmoryShaderFeatures {
   triplanarMap?: boolean;
 }
 
-export const ARMORY_SHADER_VERSION = 9;
+export const ARMORY_SHADER_VERSION = 10;
 export const ARMORY_CNC_BEVEL_GLINT_MARKER = 'armoryCncBevelGlint';
+export const ARMORY_CURATOR_SPOT_MARKER = 'armoryCuratorSpot';
+export const CURATOR_SPOTLIGHT_RIM_DARK = '#ffe8c2';
+export const CURATOR_SPOTLIGHT_RIM_DAYLIGHT = '#0284c7';
+export const CURATOR_SPOTLIGHT_DIM_MIN = 0.55;
 
 /** Metallic ordnance-steel materials that receive CNC machined-edge bevel rim glint. */
 export const CNC_BEVEL_GLINT_MATERIALS: ReadonlySet<MaterialKind> = new Set<MaterialKind>([
@@ -564,6 +574,9 @@ uniform vec3 uHeatAmber;
 uniform sampler2D uArmorDetailNormal;
 uniform sampler2D uArmorDetailRoughness;
 uniform float uHasArmorDetail;
+uniform float uCuratorSpot;
+uniform float uCuratorDim;
+uniform vec3 uCuratorRimColor;
 varying float vArmoryCurvature;
 varying vec3 vArmoryObjPos;
 varying vec3 vArmoryObjNormal;
@@ -1178,6 +1191,27 @@ const FRAGMENT_AOMAP_AND_OPTICAL_AR = /* glsl */ `
     reflectedLight.indirectSpecular += armoryCncBevelGlint;
     reflectedLight.directSpecular +=
       reflectedLight.directSpecular * armoryBevelTint * ( 0.24 * armoryBevelRim );
+  }
+
+  // --- Smithsonian Museum Pin-Spot Fresnel Rim & Documentary Depth Emphasis ---
+  // Both branches short-circuit at rest (uCuratorDim == 1.0 && uCuratorSpot == 0.0) for zero baseline drift.
+  if ( uCuratorDim < 0.999 ) {
+    float armoryCuratorDim = clamp( uCuratorDim, 0.55, 1.0 );
+    float armoryCuratorSpecDim = mix( 1.0, armoryCuratorDim, 0.55 );
+    reflectedLight.directDiffuse *= armoryCuratorDim;
+    reflectedLight.indirectDiffuse *= armoryCuratorDim;
+    reflectedLight.directSpecular *= armoryCuratorSpecDim;
+    reflectedLight.indirectSpecular *= armoryCuratorSpecDim;
+  }
+  if ( uCuratorSpot > 0.001 ) {
+    float armoryCuratorDotNV = saturate( dot( geometryNormal, geometryViewDir ) );
+    float armoryCuratorF1 = clamp( 1.0 - armoryCuratorDotNV, 0.0, 1.0 );
+    float armoryCuratorRim = smoothstep( 0.18, 0.92, armoryCuratorF1 ) * ( armoryCuratorF1 * armoryCuratorF1 * armoryCuratorF1 );
+    float armoryCuratorWeight = clamp( uCuratorSpot, 0.0, 1.0 );
+    vec3 armoryCuratorSpot = uCuratorRimColor * ( armoryCuratorRim * armoryCuratorWeight * 0.46 );
+    reflectedLight.indirectSpecular += armoryCuratorSpot;
+    reflectedLight.directSpecular +=
+      reflectedLight.directSpecular * uCuratorRimColor * ( 0.14 * armoryCuratorRim * armoryCuratorWeight );
   }
 }
 #endif

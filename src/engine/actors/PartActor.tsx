@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { type ThreeEvent, useFrame, useThree } from '@react-three/fiber';
 import { Edges } from '@react-three/drei';
 import { useAppStore } from '../../store/useAppStore';
+import { getNarrationAudioSnapshot } from '../../narration/audioPlayer';
 import { getWeaponManifest } from '../../weapons/manifests';
 import type {
   MaterialKind,
@@ -41,6 +42,8 @@ import {
   useTankCrewStore,
 } from '../tank/tankCrewStore';
 import {
+  CURATOR_SPOTLIGHT_RIM_DARK,
+  CURATOR_SPOTLIGHT_RIM_DAYLIGHT,
   computeThermalSpanInto,
   createArmoryMaterialHooks,
   createArmoryShaderUniforms,
@@ -275,6 +278,90 @@ export function shouldShowInteractiveHandleSheen(
 
 const INTERACTIVE_HANDLE_SHEEN_HEX = 0xd99a4e;
 
+/** Target weights for the Smithsonian museum pin-spot Fresnel rim & documentary depth emphasis. */
+export interface CuratorSpotlightTargets {
+  /** Grazing-angle Fresnel pin-spot rim catchlight weight in `[0, 1]`. */
+  rimWeight: number;
+  /** Non-focused background diffuse/IBL depth emphasis multiplier in `[0.72, 1.0]`. */
+  dimFactor: number;
+}
+
+export const CURATOR_RIM_DIRECTOR_FOCUSED = 1.0;
+export const CURATOR_RIM_SELECTED = 0.88;
+export const CURATOR_RIM_HOVERED = 0.35;
+export const CURATOR_DIRECTOR_BG_DIM = 0.72;
+export const CURATOR_SPOTLIGHT_LERP_SPEED = 10.0;
+
+/**
+ * Zero-GC in-place evaluator for museum pin-spot Fresnel rim emphasis and
+ * Documentary Director Mode background dimming.
+ */
+export function writeCuratorSpotlightTargetsInto(
+  isSelected: boolean,
+  isHovered: boolean,
+  isDirectorFocused: boolean,
+  hasAnyFocus: boolean,
+  isDirectorActive: boolean,
+  isFieldStrip: boolean,
+  isIsolated: boolean,
+  out: CuratorSpotlightTargets
+): CuratorSpotlightTargets {
+  if (isDirectorFocused) {
+    out.rimWeight = CURATOR_RIM_DIRECTOR_FOCUSED;
+    out.dimFactor = 1.0;
+    return out;
+  }
+  if (isSelected) {
+    out.rimWeight = CURATOR_RIM_SELECTED;
+    out.dimFactor = 1.0;
+    return out;
+  }
+  if (isHovered) {
+    out.rimWeight = CURATOR_RIM_HOVERED;
+    out.dimFactor = 1.0;
+    return out;
+  }
+  const shouldDimBackground =
+    isDirectorActive && hasAnyFocus && !isFieldStrip && !isIsolated;
+  out.rimWeight = 0;
+  out.dimFactor = shouldDimBackground ? CURATOR_DIRECTOR_BG_DIM : 1.0;
+  return out;
+}
+
+/**
+ * Pure state evaluator for museum pin-spot Fresnel rim catchlight and
+ * Documentary Director Mode background depth emphasis:
+ * - Default unselected idle (`hasAnyFocus === false`): `{ rimWeight: 0, dimFactor: 1 }`
+ * - Selected or Director-focused part: `{ rimWeight: 0.88..1.0, dimFactor: 1.0 }`
+ * - Unfocused sibling during active Director Mode (outside field-strip & isolate): `{ rimWeight: 0, dimFactor: 0.72 }`
+ * - Hovered part (unselected): `{ rimWeight: 0.35, dimFactor: 1.0 }`
+ */
+export function computeCuratorSpotlightTargets(
+  isSelected: boolean,
+  isHovered: boolean,
+  isDirectorFocused: boolean,
+  hasAnyFocus: boolean,
+  isDirectorActive: boolean,
+  isFieldStrip: boolean,
+  isIsolated: boolean
+): CuratorSpotlightTargets {
+  return writeCuratorSpotlightTargetsInto(
+    isSelected,
+    isHovered,
+    isDirectorFocused,
+    hasAnyFocus,
+    isDirectorActive,
+    isFieldStrip,
+    isIsolated,
+    { rimWeight: 0, dimFactor: 1 }
+  );
+}
+
+// Module-pooled Zero-GC scratch objects for useFrame curator spotlight interpolation
+const _curatorTarget: CuratorSpotlightTargets = { rimWeight: 0, dimFactor: 1 };
+const _curatorRimDarkColor = new THREE.Color(CURATOR_SPOTLIGHT_RIM_DARK);
+const _curatorRimDaylightColor = new THREE.Color(CURATOR_SPOTLIGHT_RIM_DAYLIGHT);
+
 // Module-pooled scratch struct for Zero-GC useFrame sheen checks
 const _sheenQuery: InteractiveHandleSheenInput = {
   screen: 'armory',
@@ -347,6 +434,9 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     const sectionCut = useAppStore((s) => s.sectionCut);
     const sectionCutAxis = useAppStore((s) => s.sectionCutAxis);
     const showEdges = useAppStore((s) => s.showEdges);
+    const isDaylightTheme = useAppStore(
+      (s) => s.environmentPreset === 'blueprint_daylight'
+    );
     const engineeringTint = useAppStore((s) => s.engineeringTint);
     const focusedEngineeringRole = useAppStore((s) => s.focusedEngineeringRole);
     const isGroupHidden = useAppStore((s) => s.hiddenGroups[part.group]);
@@ -380,6 +470,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       () => isWeaponActionPart(weaponId, part.id),
       [weaponId, part.id]
     );
+    const storyKeyPrefix = useMemo(() => `story:${weaponId}:`, [weaponId]);
 
     const isGlbAsset = geometry?.userData?.isGlbAsset === true;
     // Prefetch v3 Cycles-baked atlases in parallel while the Draco GLB streams,
@@ -566,7 +657,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
           : clock.animatedProgress > 0.04);
     }, [part.id, isSelected]);
 
-    useFrame(() => {
+    useFrame((_state, delta) => {
       const grp = groupRef.current;
       if (!grp) return;
       const clock = playbackClock.getState();
@@ -675,6 +766,63 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
         u.uThermalHeat.value = 0;
         u.uCarbonFouling.value = 0;
       }
+
+      // Cycle 13C: Smithsonian museum pin-spot Fresnel rim catchlight & Documentary Director depth emphasis
+      const inWorkbench = appState.screen === 'workbench';
+      const narrationSnap = getNarrationAudioSnapshot();
+      const isDirectorActive =
+        inWorkbench &&
+        appState.storyOpen &&
+        appState.storyDirectorMode &&
+        narrationSnap.activeKind === 'story' &&
+        narrationSnap.isPlaying &&
+        narrationSnap.activeKey !== null &&
+        narrationSnap.activeKey.startsWith(storyKeyPrefix);
+      const hasAnyFocus = inWorkbench && appState.selectedPartId !== null;
+      const isSelectedNow = inWorkbench && appState.selectedPartId === part.id;
+      const isGhostByIsolateNow =
+        hasAnyFocus && appState.isolateSelected && !isSelectedNow;
+      const isHoveredNow =
+        inWorkbench &&
+        appState.hoveredPartId === part.id &&
+        !isGhostByIsolateNow;
+      const isDirectorFocused = isDirectorActive && isSelectedNow;
+
+      writeCuratorSpotlightTargetsInto(
+        isSelectedNow,
+        isHoveredNow,
+        isDirectorFocused,
+        hasAnyFocus,
+        isDirectorActive,
+        isFieldStrip,
+        appState.isolateSelected,
+        _curatorTarget
+      );
+
+      const safeDelta = Number.isFinite(delta) ? delta : 0.016;
+      const dt = Math.min(Math.max(safeDelta, 0), 0.05);
+      const lerpAlpha =
+        dt > 0 ? 1 - Math.exp(-CURATOR_SPOTLIGHT_LERP_SPEED * dt) : 1;
+
+      const spotDiff = _curatorTarget.rimWeight - u.uCuratorSpot.value;
+      if (Math.abs(spotDiff) < 0.0015) {
+        u.uCuratorSpot.value = _curatorTarget.rimWeight;
+      } else {
+        u.uCuratorSpot.value += spotDiff * lerpAlpha;
+      }
+
+      const dimDiff = _curatorTarget.dimFactor - u.uCuratorDim.value;
+      if (Math.abs(dimDiff) < 0.0015) {
+        u.uCuratorDim.value = _curatorTarget.dimFactor;
+      } else {
+        u.uCuratorDim.value += dimDiff * lerpAlpha;
+      }
+
+      u.uCuratorRimColor.value.copy(
+        appState.environmentPreset === 'blueprint_daylight'
+          ? _curatorRimDaylightColor
+          : _curatorRimDarkColor
+      );
 
       // WP-07 & WP-09: Zero-GC transient interference / diagnostic pulsing
       const mat = matRef.current;
@@ -802,11 +950,11 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     let emissive = '#000000';
     let emissiveIntensity = 0;
     if (isSelected) {
-      emissive = '#0284c7';
-      emissiveIntensity = 0.28;
+      emissive = isDaylightTheme ? '#0284c7' : '#ffe8c2';
+      emissiveIntensity = isDaylightTheme ? 0.14 : 0.06;
     } else if (isHovered && !isGhostByIsolate) {
-      emissive = '#0ea5e9';
-      emissiveIntensity = isXrayHousing ? 0.1 : 0.16;
+      emissive = isDaylightTheme ? '#0ea5e9' : '#ffe8c2';
+      emissiveIntensity = isXrayHousing ? 0.06 : isDaylightTheme ? 0.1 : 0.04;
     } else if (
       engineeringTint &&
       focusedEngineeringRole === partRole &&
@@ -819,9 +967,13 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     baseEmissiveIntensityRef.current = emissiveIntensity;
 
     const edgeColor = isSelected
-      ? '#0284c7'
+      ? isDaylightTheme
+        ? '#0284c7'
+        : '#f5d89e'
       : isHovered
-        ? '#0ea5e9'
+        ? isDaylightTheme
+          ? '#0ea5e9'
+          : '#e2c896'
         : matCfg.edgeColor;
 
     const meshRenderOrder = isXrayHousing ? 12 : isGhostByIsolate ? 11 : 1;
