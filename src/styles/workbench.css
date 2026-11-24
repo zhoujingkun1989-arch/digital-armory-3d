@@ -4785,3 +4785,100 @@
     min-height: 34px;
   }
 }
+
+/* ==================== Cycle 22D: 1-Click Smithsonian Tech Dossier Copy ==================== */
+.inspector-copy-dossier-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.inspector-copy-dossier-btn {
+  width: 100%;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6.5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.34);
+  background: rgba(14, 165, 233, 0.12);
+  color: #bae6fd;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.inspector-copy-dossier-btn:hover {
+  border-color: #38bdf8;
+  background: rgba(14, 165, 233, 0.22);
+  color: #f8fafc;
+  transform: translateY(-1px);
+}
+
+.inspector-copy-dossier-btn.is-copied {
+  border-color: rgba(52, 211, 153, 0.56);
+  background: rgba(16, 185, 129, 0.18);
+  color: #a7f3d0;
+}
+
+.inspector-copy-dossier-btn:focus-visible {
+  outline: 2px solid var(--color-accent-cyan, #38bdf8);
+  outline-offset: 2px;
+}
+
+.inspector-copy-dossier-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+:is([data-theme='light'], .theme-light) .inspector-copy-dossier-btn {
+  background: #f0f9ff;
+  border-color: rgba(2, 132, 199, 0.38);
+  color: #075985;
+}
+
+:is([data-theme='light'], .theme-light) .inspector-copy-dossier-btn:hover {
+  background: #e0f2fe;
+  border-color: #0284c7;
+  color: #0c4a6e;
+}
+
+:is([data-theme='light'], .theme-light) .inspector-copy-dossier-btn.is-copied {
+  background: #ecfdf5;
+  border-color: rgba(5, 150, 105, 0.44);
+  color: #065f46;
+}
+
+@media (max-width: 768px) {
+  .inspector-copy-dossier-btn {
+    min-height: 36px;
+    min-width: 34px;
+    padding: 7px 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inspector-copy-dossier-btn {
+    transition: none;
+    transform: none;
+  }
+}
