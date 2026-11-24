@@ -12,6 +12,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Camera, Pause, Play, RotateCcw } from 'lucide-react';
 import { ViewportErrorBoundary } from '../../app/ViewportErrorBoundary';
+import { lockLinearTextureColorSpace } from '../../engine/materials/pbrManager';
 import type {
   ArmorPenetrationResult,
   PenetratorId,
@@ -156,11 +157,300 @@ const _scratchParticleOut: ParticleTransformOut = {
   visible: false,
 };
 
-const _colorWhiteHot = new THREE.Color('#fff7ed');
+const _colorWhiteHot = new THREE.Color('#fde68a');
 const _colorMoltenOrange = new THREE.Color('#f97316');
 const _colorDeepEmber = new THREE.Color('#991b1b');
 const _colorRicochetCyan = new THREE.Color('#7dd3fc');
 const _colorRicochetGold = new THREE.Color('#fef08a');
+
+interface ArmorSurfaceTextureSet {
+  rhaMap: THREE.CanvasTexture;
+  rhaBumpMap: THREE.CanvasTexture;
+  rhaRoughnessMap: THREE.CanvasTexture;
+  neraMap: THREE.CanvasTexture;
+  neraBumpMap: THREE.CanvasTexture;
+  duBumpMap: THREE.CanvasTexture;
+  dispose: () => void;
+}
+
+/**
+ * Formats a concise, authentic 3D cutaway-face material badge stencil tag
+ * (`FY-4 ERA`, `NERA`, `DU`, `RHA`, etc.) from an armor layer's domain metadata.
+ */
+export function formatArmorLayerBadgeTag(
+  layer: Pick<ArmorLayerLayout, 'kind' | 'nameEn'>
+): string {
+  const upper = layer.nameEn.toUpperCase();
+  if (layer.kind === 'era') {
+    if (upper.includes('FY-4')) return 'FY-4 ERA';
+    if (upper.includes('ARAT')) return 'ARAT ERA';
+    return 'ERA';
+  }
+  if (layer.kind === 'du_composite') {
+    return upper.includes('NGAP') ? 'DU · NGAP' : 'DU';
+  }
+  if (layer.kind === 'ceramic_nera') {
+    if (upper.includes('NERA')) return 'NERA';
+    if (upper.includes('CHOBHAM')) return 'CHOBHAM';
+    if (upper.includes('CERAMIC') || upper.includes('SIC')) return 'SiC NERA';
+    return 'NERA';
+  }
+  if (upper.includes('HHA') || upper.includes('HIGH-HARD')) return 'HHA';
+  return 'RHA';
+}
+
+function makeTiledCanvasTexture(
+  canvas: HTMLCanvasElement,
+  colorSpace: THREE.ColorSpace,
+  repeatX: number,
+  repeatY: number
+): THREE.CanvasTexture {
+  const tex = new THREE.CanvasTexture(canvas);
+  if (colorSpace === THREE.NoColorSpace) {
+    lockLinearTextureColorSpace(tex);
+  } else {
+    tex.colorSpace = colorSpace;
+  }
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(repeatX, repeatY);
+  tex.anisotropy = 4;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+function createArmorSurfaceTextures(): ArmorSurfaceTextureSet | null {
+  if (typeof document === 'undefined') return null;
+
+  // Deterministic LCG PRNG so rolled-steel & ceramic textures are crisp and reproducible
+  let seed = 0x51a7c3;
+  const nextRand = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 0xffffffff;
+  };
+
+  // 1. Rolled Homogeneous Armor (RHA) Mill Grain, Heat Banding & Micro-Pitting
+  const rhaCanvas = document.createElement('canvas');
+  rhaCanvas.width = 256;
+  rhaCanvas.height = 256;
+  const rhaCtx = rhaCanvas.getContext('2d');
+  if (!rhaCtx) return null;
+
+  rhaCtx.fillStyle = '#536273';
+  rhaCtx.fillRect(0, 0, 256, 256);
+  for (let y = 0; y < 256; y += 2) {
+    const shade = 78 + Math.round((nextRand() - 0.5) * 18);
+    rhaCtx.fillStyle = `rgb(${shade}, ${shade + 10}, ${shade + 22})`;
+    rhaCtx.fillRect(0, y, 256, 2);
+  }
+  // Brushed horizontal mill-roll streaks & subtle flame-cut cross-section striations
+  for (let i = 0; i < 190; i++) {
+    const x = nextRand() * 256;
+    const y = nextRand() * 256;
+    const w = 18 + nextRand() * 68;
+    const alpha = 0.05 + nextRand() * 0.11;
+    rhaCtx.fillStyle =
+      nextRand() > 0.45
+        ? `rgba(218, 232, 248, ${alpha.toFixed(3)})`
+        : `rgba(18, 28, 42, ${alpha.toFixed(3)})`;
+    rhaCtx.fillRect(x, y, w, 1.5);
+  }
+  // Subtle cross-section diagonal machining marks
+  rhaCtx.strokeStyle = 'rgba(203, 213, 225, 0.08)';
+  rhaCtx.lineWidth = 1;
+  for (let k = -256; k < 512; k += 16) {
+    rhaCtx.beginPath();
+    rhaCtx.moveTo(k, 0);
+    rhaCtx.lineTo(k + 256, 256);
+    rhaCtx.stroke();
+  }
+
+  const rhaBumpCanvas = document.createElement('canvas');
+  rhaBumpCanvas.width = 256;
+  rhaBumpCanvas.height = 256;
+  const rhaBumpCtx = rhaBumpCanvas.getContext('2d');
+  if (!rhaBumpCtx) return null;
+  rhaBumpCtx.fillStyle = '#808080';
+  rhaBumpCtx.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 420; i++) {
+    const v = 96 + Math.round(nextRand() * 64);
+    rhaBumpCtx.fillStyle = `rgb(${v},${v},${v})`;
+    rhaBumpCtx.fillRect(
+      nextRand() * 256,
+      nextRand() * 256,
+      8 + nextRand() * 34,
+      1.5 + nextRand() * 2
+    );
+  }
+
+  const rhaRoughCanvas = document.createElement('canvas');
+  rhaRoughCanvas.width = 256;
+  rhaRoughCanvas.height = 256;
+  const rhaRoughCtx = rhaRoughCanvas.getContext('2d');
+  if (!rhaRoughCtx) return null;
+  rhaRoughCtx.fillStyle = '#747474';
+  rhaRoughCtx.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 240; i++) {
+    const v = 76 + Math.round(nextRand() * 92);
+    rhaRoughCtx.fillStyle = `rgb(${v},${v},${v})`;
+    rhaRoughCtx.fillRect(
+      nextRand() * 256,
+      nextRand() * 256,
+      10 + nextRand() * 42,
+      2 + nextRand() * 6
+    );
+  }
+
+  // 2. NERA / SiC Ceramic Tile Seam Grid Texture (Staggered ceramic tiles + dark elastomer mortar)
+  const neraCanvas = document.createElement('canvas');
+  neraCanvas.width = 256;
+  neraCanvas.height = 256;
+  const neraCtx = neraCanvas.getContext('2d');
+  if (!neraCtx) return null;
+  neraCtx.fillStyle = '#0c2238';
+  neraCtx.fillRect(0, 0, 256, 256);
+
+  const neraBumpCanvas = document.createElement('canvas');
+  neraBumpCanvas.width = 256;
+  neraBumpCanvas.height = 256;
+  const neraBumpCtx = neraBumpCanvas.getContext('2d');
+  if (!neraBumpCtx) return null;
+  neraBumpCtx.fillStyle = '#202020';
+  neraBumpCtx.fillRect(0, 0, 256, 256);
+
+  const tileW = 64;
+  const tileH = 32;
+  for (let row = 0; row < 8; row++) {
+    const offset = (row % 2) * (tileW * 0.5);
+    for (let col = -1; col < 5; col++) {
+      const tx = col * tileW + offset + 3;
+      const ty = row * tileH + 3;
+      const w = tileW - 6;
+      const h = tileH - 6;
+      const tone = 24 + Math.round(nextRand() * 22);
+      neraCtx.fillStyle = `rgb(${tone + 12}, ${tone + 78}, ${tone + 132})`;
+      neraCtx.fillRect(tx, ty, w, h);
+      neraCtx.strokeStyle = 'rgba(125, 211, 252, 0.36)';
+      neraCtx.lineWidth = 1;
+      neraCtx.strokeRect(tx + 0.5, ty + 0.5, w - 1, h - 1);
+
+      neraBumpCtx.fillStyle = '#d4d4d4';
+      neraBumpCtx.fillRect(tx, ty, w, h);
+    }
+  }
+
+  // 3. DU Encapsulated Lattice Bump Texture
+  const duBumpCanvas = document.createElement('canvas');
+  duBumpCanvas.width = 256;
+  duBumpCanvas.height = 256;
+  const duCtx = duBumpCanvas.getContext('2d');
+  if (!duCtx) return null;
+  duCtx.fillStyle = '#2a2a2a';
+  duCtx.fillRect(0, 0, 256, 256);
+  for (let y = 4; y < 256; y += 24) {
+    for (let x = 4; x < 256; x += 24) {
+      duCtx.fillStyle = '#cfcfcf';
+      duCtx.fillRect(x, y, 18, 18);
+      duCtx.strokeStyle = '#606060';
+      duCtx.strokeRect(x + 2, y + 2, 14, 14);
+    }
+  }
+
+  const rhaMap = makeTiledCanvasTexture(rhaCanvas, THREE.SRGBColorSpace, 2, 3);
+  const rhaBumpMap = makeTiledCanvasTexture(
+    rhaBumpCanvas,
+    THREE.NoColorSpace,
+    2,
+    3
+  );
+  const rhaRoughnessMap = makeTiledCanvasTexture(
+    rhaRoughCanvas,
+    THREE.NoColorSpace,
+    2,
+    3
+  );
+  const neraMap = makeTiledCanvasTexture(
+    neraCanvas,
+    THREE.SRGBColorSpace,
+    1.5,
+    2.5
+  );
+  const neraBumpMap = makeTiledCanvasTexture(
+    neraBumpCanvas,
+    THREE.NoColorSpace,
+    1.5,
+    2.5
+  );
+  const duBumpMap = makeTiledCanvasTexture(
+    duBumpCanvas,
+    THREE.NoColorSpace,
+    2,
+    3
+  );
+
+  return {
+    rhaMap,
+    rhaBumpMap,
+    rhaRoughnessMap,
+    neraMap,
+    neraBumpMap,
+    duBumpMap,
+    dispose: () => {
+      rhaMap.dispose();
+      rhaBumpMap.dispose();
+      rhaRoughnessMap.dispose();
+      neraMap.dispose();
+      neraBumpMap.dispose();
+      duBumpMap.dispose();
+    },
+  };
+}
+
+function createArmorLayerBadgeTexture(
+  tag: string,
+  physicalMm: number,
+  accentHex: string
+): THREE.CanvasTexture | null {
+  if (typeof document === 'undefined') return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 88;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  ctx.clearRect(0, 0, 256, 88);
+  ctx.fillStyle = 'rgba(7, 13, 26, 0.92)';
+  ctx.beginPath();
+  if (typeof ctx.roundRect === 'function') {
+    ctx.roundRect(4, 4, 248, 80, 14);
+  } else {
+    ctx.rect(4, 4, 248, 80);
+  }
+  ctx.fill();
+
+  ctx.strokeStyle = accentHex;
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Accent bar on left edge
+  ctx.fillStyle = accentHex;
+  ctx.fillRect(14, 16, 6, 56);
+
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '700 28px ui-monospace, SFMono-Regular, Menlo, monospace';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(tag, 30, 34);
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '600 21px ui-monospace, SFMono-Regular, Menlo, monospace';
+  ctx.fillText(`${Math.round(physicalMm)} mm`, 30, 64);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  tex.needsUpdate = true;
+  return tex;
+}
 
 function buildLatheProfileAlongNegX(
   points: ReadonlyArray<readonly [number, number]>,
@@ -498,6 +788,7 @@ interface ArmorLayerMeshProps {
   slabDepthCm: number;
   slabLocalCenterYCm: number;
   isBackingPlate: boolean;
+  textures: ArmorSurfaceTextureSet | null;
   eraFrontRef: React.RefObject<THREE.Group>;
   eraRearRef: React.RefObject<THREE.Group>;
   eraExplosiveMatRef: React.RefObject<THREE.MeshStandardMaterial>;
@@ -513,6 +804,7 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
     slabDepthCm,
     slabLocalCenterYCm,
     isBackingPlate,
+    textures,
     eraFrontRef,
     eraRearRef,
     eraExplosiveMatRef,
@@ -523,8 +815,9 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
     const centerX = layer.localStartCm + layer.localThicknessCm * 0.5;
     const zCenter = -slabDepthCm * 0.5;
     const t = layer.localThicknessCm;
+    const topEdgeY = slabLocalCenterYCm + slabHeightCm * 0.5;
 
-    // Build reusable edge geometry for clean crisp CAD/museum cross-section bevel reading
+    // Build reusable edge geometry & 3D layer stencil badge texture (both disposed cleanly!)
     const edgesGeo = useMemo(() => {
       const box = new THREE.BoxGeometry(t, slabHeightCm, slabDepthCm);
       const edges = new THREE.EdgesGeometry(box, 20);
@@ -532,16 +825,61 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
       return edges;
     }, [t, slabHeightCm, slabDepthCm]);
 
+    const badgeTag = formatArmorLayerBadgeTag(layer);
+    const badgeAccentHex =
+      layer.kind === 'era'
+        ? '#f59e0b'
+        : layer.kind === 'ceramic_nera'
+          ? '#38bdf8'
+          : layer.kind === 'du_composite'
+            ? '#10b981'
+            : '#94a3b8';
+
+    const badgeTex = useMemo(
+      () =>
+        createArmorLayerBadgeTexture(
+          badgeTag,
+          layer.physicalMm,
+          badgeAccentHex
+        ),
+      [badgeTag, layer.physicalMm, badgeAccentHex]
+    );
+
     useEffect(() => {
       return () => {
         edgesGeo.dispose();
       };
     }, [edgesGeo]);
 
+    useEffect(() => {
+      return () => {
+        badgeTex?.dispose();
+      };
+    }, [badgeTex]);
+
+    const badgeStaggerY = (layer.index % 2) * 5.2;
+    const badgeY = topEdgeY + 4.8 + badgeStaggerY;
+    const badgePlate = badgeTex ? (
+      <group position={[centerX, badgeY, 0.35]}>
+        <mesh position={[0, -(2.4 + badgeStaggerY * 0.5), -0.06]}>
+          <boxGeometry args={[0.24, 4.6 + badgeStaggerY, 0.12]} />
+          <meshBasicMaterial color={badgeAccentHex} transparent opacity={0.72} />
+        </mesh>
+        <mesh>
+          <planeGeometry args={[14.5, 5.0]} />
+          <meshBasicMaterial
+            map={badgeTex}
+            transparent
+            depthWrite={false}
+          />
+        </mesh>
+      </group>
+    ) : null;
+
     if (layer.kind === 'era') {
       // FY-4 / ARAT-II Explosive Reactive Armor Module:
       // Active central reactive tile (splits into front steel flyer + energetic charge + rear steel flyer)
-      // flanked above & below by intact modular ERA wedge bricks.
+      // flanked above & below by chamfered bolted modular ERA wedge bricks.
       const tileH = 26;
       const topLimit = slabLocalCenterYCm + slabHeightCm * 0.5;
       const botLimit = slabLocalCenterYCm - slabHeightCm * 0.5;
@@ -558,53 +896,103 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
       const expX = layer.localStartCm + frontPlateT + explosiveT * 0.5;
       const rearX =
         layer.localStartCm + frontPlateT + explosiveT + rearPlateT * 0.5;
+      const boltX = layer.localStartCm - 0.12;
+      const upperBoltOffset = Math.min(upperH * 0.32, 6);
+      const lowerBoltOffset = Math.min(lowerH * 0.32, 6);
 
       return (
         <group>
-          {/* Upper Intact ERA Bricks */}
+          {badgePlate}
+
+          {/* Upper Intact Chamfered & Bolted ERA Brick */}
           <mesh
             position={[centerX, upperCenterY, zCenter]}
             castShadow
             receiveShadow
           >
-            <boxGeometry args={[t * 0.96, upperH - 0.8, slabDepthCm]} />
+            <boxGeometry args={[t * 0.96, upperH - 1.1, slabDepthCm]} />
             <meshStandardMaterial
-              color="#4d5948"
-              metalness={0.72}
-              roughness={0.44}
+              color="#4f5e4a"
+              map={textures?.rhaMap ?? null}
+              bumpMap={textures?.rhaBumpMap ?? null}
+              bumpScale={0.22}
+              roughnessMap={textures?.rhaRoughnessMap ?? null}
+              metalness={0.76}
+              roughness={0.42}
             />
           </mesh>
+          {/* Upper Chamfered Steel Rim & Corner Mounting Bolts */}
+          <mesh position={[centerX, upperCenterY + (upperH - 1.1) * 0.5, zCenter]}>
+            <boxGeometry args={[t * 0.86, 0.55, slabDepthCm * 0.94]} />
+            <meshStandardMaterial color="#64748b" metalness={0.85} roughness={0.32} />
+          </mesh>
+          {[-1, 1].map((signY) => (
+            <mesh
+              key={`ubolt-${signY}`}
+              position={[
+                boltX,
+                upperCenterY + signY * upperBoltOffset,
+                -slabDepthCm * 0.22,
+              ]}
+              rotation={[0, 0, Math.PI / 2]}
+            >
+              <cylinderGeometry args={[0.72, 0.72, 0.75, 6]} />
+              <meshStandardMaterial color="#94a3b8" metalness={0.92} roughness={0.26} />
+            </mesh>
+          ))}
           {/* Upper ERA Cutaway Hazard Strip */}
           <mesh position={[expX, upperCenterY, -0.1]}>
-            <boxGeometry args={[explosiveT * 0.78, upperH - 1.4, 0.35]} />
+            <boxGeometry args={[explosiveT * 0.78, upperH - 1.6, 0.35]} />
             <meshStandardMaterial
               color="#eab308"
               emissive="#ca8a04"
-              emissiveIntensity={0.22}
+              emissiveIntensity={0.2}
               metalness={0.18}
               roughness={0.55}
             />
           </mesh>
 
-          {/* Lower Intact ERA Bricks */}
+          {/* Lower Intact Chamfered & Bolted ERA Brick */}
           <mesh
             position={[centerX, lowerCenterY, zCenter]}
             castShadow
             receiveShadow
           >
-            <boxGeometry args={[t * 0.96, lowerH - 0.8, slabDepthCm]} />
+            <boxGeometry args={[t * 0.96, lowerH - 1.1, slabDepthCm]} />
             <meshStandardMaterial
-              color="#4d5948"
-              metalness={0.72}
-              roughness={0.44}
+              color="#4f5e4a"
+              map={textures?.rhaMap ?? null}
+              bumpMap={textures?.rhaBumpMap ?? null}
+              bumpScale={0.22}
+              roughnessMap={textures?.rhaRoughnessMap ?? null}
+              metalness={0.76}
+              roughness={0.42}
             />
           </mesh>
+          <mesh position={[centerX, lowerCenterY - (lowerH - 1.1) * 0.5, zCenter]}>
+            <boxGeometry args={[t * 0.86, 0.55, slabDepthCm * 0.94]} />
+            <meshStandardMaterial color="#64748b" metalness={0.85} roughness={0.32} />
+          </mesh>
+          {[-1, 1].map((signY) => (
+            <mesh
+              key={`lbolt-${signY}`}
+              position={[
+                boltX,
+                lowerCenterY + signY * lowerBoltOffset,
+                -slabDepthCm * 0.22,
+              ]}
+              rotation={[0, 0, Math.PI / 2]}
+            >
+              <cylinderGeometry args={[0.72, 0.72, 0.75, 6]} />
+              <meshStandardMaterial color="#94a3b8" metalness={0.92} roughness={0.26} />
+            </mesh>
+          ))}
           <mesh position={[expX, lowerCenterY, -0.1]}>
-            <boxGeometry args={[explosiveT * 0.78, lowerH - 1.4, 0.35]} />
+            <boxGeometry args={[explosiveT * 0.78, lowerH - 1.6, 0.35]} />
             <meshStandardMaterial
               color="#eab308"
               emissive="#ca8a04"
-              emissiveIntensity={0.22}
+              emissiveIntensity={0.2}
               metalness={0.18}
               roughness={0.55}
             />
@@ -616,10 +1004,10 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
             <meshStandardMaterial
               ref={eraExplosiveMatRef}
               color="#f59e0b"
-              emissive="#ff6b00"
-              emissiveIntensity={0.35}
-              metalness={0.1}
-              roughness={0.55}
+              emissive="#ea580c"
+              emissiveIntensity={0.28}
+              metalness={0.12}
+              roughness={0.58}
             />
           </mesh>
 
@@ -629,6 +1017,9 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
               <boxGeometry args={[frontPlateT, tileH - 0.8, slabDepthCm]} />
               <meshStandardMaterial
                 color="#64748b"
+                bumpMap={textures?.rhaBumpMap ?? null}
+                bumpScale={0.2}
+                roughnessMap={textures?.rhaRoughnessMap ?? null}
                 metalness={0.86}
                 roughness={0.34}
               />
@@ -650,6 +1041,9 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
               <boxGeometry args={[rearPlateT, tileH - 0.8, slabDepthCm]} />
               <meshStandardMaterial
                 color="#475569"
+                bumpMap={textures?.rhaBumpMap ?? null}
+                bumpScale={0.2}
+                roughnessMap={textures?.rhaRoughnessMap ?? null}
                 metalness={0.85}
                 roughness={0.38}
               />
@@ -668,7 +1062,7 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
     }
 
     if (layer.kind === 'ceramic_nera') {
-      // Multi-layer NERA / Ceramic Composite Cavity with internal angled sandwich laminae
+      // Multi-layer NERA / Ceramic Composite Cavity with internal angled sandwich laminae & ceramic tile seams
       const laminaCount = Math.max(3, Math.min(7, Math.round(t / 5.2)));
       const laminaStep = t / (laminaCount + 1);
       const laminaIndices: number[] = [];
@@ -676,7 +1070,9 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
 
       return (
         <group>
-          {/* Outer containment casing */}
+          {badgePlate}
+
+          {/* Outer containment casing with staggered NERA ceramic tile seams */}
           <mesh
             position={[centerX, slabLocalCenterYCm, zCenter]}
             castShadow
@@ -684,9 +1080,12 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
           >
             <boxGeometry args={[t * 0.99, slabHeightCm, slabDepthCm]} />
             <meshStandardMaterial
-              color="#0c243b"
-              metalness={0.42}
-              roughness={0.56}
+              color="#14324d"
+              map={textures?.neraMap ?? null}
+              bumpMap={textures?.neraBumpMap ?? null}
+              bumpScale={0.38}
+              metalness={0.36}
+              roughness={0.52}
             />
           </mesh>
 
@@ -708,10 +1107,17 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
                 />
                 <meshStandardMaterial
                   color={isCeramic ? layer.colorHex : '#1e293b'}
-                  metalness={isCeramic ? 0.26 : 0.62}
-                  roughness={isCeramic ? 0.42 : 0.66}
+                  map={isCeramic ? (textures?.neraMap ?? null) : null}
+                  bumpMap={
+                    isCeramic
+                      ? (textures?.neraBumpMap ?? null)
+                      : (textures?.rhaBumpMap ?? null)
+                  }
+                  bumpScale={isCeramic ? 0.34 : 0.18}
+                  metalness={isCeramic ? 0.28 : 0.65}
+                  roughness={isCeramic ? 0.4 : 0.64}
                   emissive={isCeramic ? '#0369a1' : '#000000'}
-                  emissiveIntensity={isCeramic ? 0.16 : 0}
+                  emissiveIntensity={isCeramic ? 0.14 : 0}
                 />
               </mesh>
             );
@@ -736,6 +1142,8 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
 
       return (
         <group>
+          {badgePlate}
+
           <mesh
             position={[centerX, slabLocalCenterYCm, zCenter]}
             castShadow
@@ -744,8 +1152,11 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
             <boxGeometry args={[t * 0.99, slabHeightCm, slabDepthCm]} />
             <meshStandardMaterial
               color="#122b25"
-              metalness={0.68}
-              roughness={0.45}
+              bumpMap={textures?.duBumpMap ?? null}
+              bumpScale={0.35}
+              roughnessMap={textures?.rhaRoughnessMap ?? null}
+              metalness={0.74}
+              roughness={0.42}
             />
           </mesh>
 
@@ -765,10 +1176,12 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
                 />
                 <meshStandardMaterial
                   color="#10b981"
-                  metalness={0.84}
-                  roughness={0.34}
+                  bumpMap={textures?.duBumpMap ?? null}
+                  bumpScale={0.3}
+                  metalness={0.86}
+                  roughness={0.32}
                   emissive="#047857"
-                  emissiveIntensity={0.18}
+                  emissiveIntensity={0.14}
                 />
               </mesh>
             );
@@ -784,9 +1197,11 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
       );
     }
 
-    // Rolled Homogeneous Armor (RHA / High-Hardness Steel)
+    // Rolled Homogeneous Armor (RHA / High-Hardness Steel) with procedural mill grain & roughness
     return (
       <group>
+        {badgePlate}
+
         <mesh
           position={[centerX, slabLocalCenterYCm, zCenter]}
           castShadow
@@ -795,8 +1210,12 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
           <boxGeometry args={[t * 0.99, slabHeightCm, slabDepthCm]} />
           <meshStandardMaterial
             color={layer.colorHex}
+            map={textures?.rhaMap ?? null}
+            bumpMap={textures?.rhaBumpMap ?? null}
+            bumpScale={0.28}
+            roughnessMap={textures?.rhaRoughnessMap ?? null}
             metalness={0.84}
-            roughness={0.36}
+            roughness={0.38}
           />
         </mesh>
 
@@ -865,7 +1284,17 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
   const eraExplosiveMatRef = useRef<THREE.MeshStandardMaterial>(null);
   const eraBlastSphereRef = useRef<THREE.Mesh>(null);
   const eraBlastMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const eraBlastHaloRef = useRef<THREE.Mesh>(null);
+  const eraBlastHaloMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const backingGlowMatRef = useRef<THREE.MeshBasicMaterial>(null);
+
+  // Build & dispose procedural PBR RHA / NERA / DU surface textures cleanly on unmount
+  const armorTextures = useMemo(() => createArmorSurfaceTextures(), []);
+  useEffect(() => {
+    return () => {
+      armorTextures?.dispose();
+    };
+  }, [armorTextures]);
 
   const cavityGroupRef = useRef<THREE.Group>(null);
   const cavityCoreRef = useRef<THREE.Mesh>(null);
@@ -1103,15 +1532,34 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
       }
       if (eraExplosiveMatRef.current) {
         eraExplosiveMatRef.current.emissiveIntensity =
-          0.35 + frame.eraFlashIntensity * 4.2;
+          0.28 + frame.eraFlashIntensity * 1.55;
       }
       if (eraBlastSphereRef.current && eraBlastMatRef.current) {
         const showBlast = frame.eraFlashIntensity > 0.02;
         eraBlastSphereRef.current.visible = showBlast;
         if (showBlast) {
-          const rad = 2.5 + (1 - frame.eraFlashIntensity * 0.55) * 18;
-          eraBlastSphereRef.current.scale.set(rad * 0.65, rad * 1.2, rad * 0.9);
-          eraBlastMatRef.current.opacity = frame.eraFlashIntensity * 0.85;
+          const rad = 1.6 + (1 - frame.eraFlashIntensity * 0.5) * 6.2;
+          eraBlastSphereRef.current.scale.set(rad * 0.58, rad * 1.08, rad * 0.78);
+          eraBlastMatRef.current.opacity = Math.min(
+            0.56,
+            frame.eraFlashIntensity * 0.56
+          );
+        }
+      }
+      if (eraBlastHaloRef.current && eraBlastHaloMatRef.current) {
+        const showBlast = frame.eraFlashIntensity > 0.02;
+        eraBlastHaloRef.current.visible = showBlast;
+        if (showBlast) {
+          const haloRad = 2.4 + (1 - frame.eraFlashIntensity * 0.45) * 9.5;
+          eraBlastHaloRef.current.scale.set(
+            haloRad * 0.62,
+            haloRad * 1.15,
+            haloRad * 0.85
+          );
+          eraBlastHaloMatRef.current.opacity = Math.min(
+            0.28,
+            frame.eraFlashIntensity * 0.28
+          );
         }
       }
     }
@@ -1156,14 +1604,17 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
       }
     }
 
-    // 4. Update impact flash, surface shockwave ring, and defeated internal arrest ring
+    // 4. Update clamped orange-gold impact flash, surface shockwave ring, and defeated internal arrest ring
     if (impactFlashRef.current && impactFlashMatRef.current) {
       const vis = frame.impactFlashIntensity > 0.015;
       impactFlashRef.current.visible = vis;
       if (vis) {
-        const s = 2.8 + frame.impactFlashIntensity * 14;
+        const s = 1.8 + frame.impactFlashIntensity * 5.6;
         impactFlashRef.current.scale.setScalar(s);
-        impactFlashMatRef.current.opacity = frame.impactFlashIntensity * 0.92;
+        impactFlashMatRef.current.opacity = Math.min(
+          0.6,
+          frame.impactFlashIntensity * 0.6
+        );
       }
     }
 
@@ -1334,15 +1785,15 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
       }
     }
 
-    // 9. Dynamic physically-coupled flash & molten glow point lights
+    // 9. Dynamic physically-coupled flash & molten glow point lights (clamped to prevent AgX whiteout)
     if (impactLightRef.current) {
       impactLightRef.current.intensity =
-        frame.impactFlashIntensity * 120 + frame.eraFlashIntensity * 150;
+        frame.impactFlashIntensity * 34 + frame.eraFlashIntensity * 42;
     }
     if (cavityLightRef.current) {
       cavityLightRef.current.position.set(frame.rodNoseX, frame.rodNoseY, 8);
       cavityLightRef.current.intensity =
-        frame.cavityGlowIntensity * 45 + frame.spallGlowIntensity * 65;
+        frame.cavityGlowIntensity * 22 + frame.spallGlowIntensity * 28;
     }
 
     // 10. Push direct DOM telemetry updates (Zero React re-renders!)
@@ -1424,6 +1875,7 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
             slabDepthCm={layout.slabDepthCm}
             slabLocalCenterYCm={layout.slabLocalCenterYCm}
             isBackingPlate={layer.index === layout.layers.length - 1}
+            textures={armorTextures}
             eraFrontRef={eraFrontRef}
             eraRearRef={eraRearRef}
             eraExplosiveMatRef={eraExplosiveMatRef}
@@ -1433,23 +1885,40 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
           />
         ))}
 
-        {/* ERA Detonation Core Flash (local to tilted ERA cavity) */}
+        {/* Clamped Orange-Gold ERA Detonation Plasma Core + Outer Shock Halo (no #ffffff whiteout) */}
         {layout.eraActive && (
-          <mesh
-            ref={eraBlastSphereRef}
-            position={[eraRestCoords.expX, 0, 0.8]}
-            visible={false}
-          >
-            <sphereGeometry args={[1, 20, 16]} />
-            <meshBasicMaterial
-              ref={eraBlastMatRef}
-              color="#fff3c4"
-              transparent
-              opacity={0}
-              blending={THREE.AdditiveBlending}
-              depthWrite={false}
-            />
-          </mesh>
+          <>
+            <mesh
+              ref={eraBlastSphereRef}
+              position={[eraRestCoords.expX, 0, 0.8]}
+              visible={false}
+            >
+              <sphereGeometry args={[1, 20, 16]} />
+              <meshBasicMaterial
+                ref={eraBlastMatRef}
+                color="#f59e0b"
+                transparent
+                opacity={0}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+              />
+            </mesh>
+            <mesh
+              ref={eraBlastHaloRef}
+              position={[eraRestCoords.expX, 0, 0.72]}
+              visible={false}
+            >
+              <sphereGeometry args={[1, 18, 14]} />
+              <meshBasicMaterial
+                ref={eraBlastHaloMatRef}
+                color="#ea580c"
+                transparent
+                opacity={0}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+              />
+            </mesh>
+          </>
         )}
 
         {/* Impact Surface Shockwave Ring aligned flush to tilted front face */}
@@ -1496,12 +1965,12 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
         </mesh>
       </group>
 
-      {/* Primary Contact Flash Burst */}
+      {/* Primary Contact Orange-Gold Plasma Burst (clamped against whiteout) */}
       <mesh ref={impactFlashRef} position={[0, 0, 1.2]} visible={false}>
         <sphereGeometry args={[1, 18, 14]} />
         <meshBasicMaterial
           ref={impactFlashMatRef}
-          color="#fffbeb"
+          color="#fb923c"
           transparent
           opacity={0}
           blending={THREE.AdditiveBlending}

@@ -15,6 +15,7 @@ import {
   HardDrive,
   Image as ImageIcon,
   Layers,
+  Menu,
   Palette,
   Printer,
   RotateCcw,
@@ -30,6 +31,7 @@ import {
   Volume2,
   VolumeX,
   Wrench,
+  X,
 } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { DEFAULT_ATTACHMENT_LOADOUT } from '../../engine/attachments/attachmentSpecs';
@@ -121,8 +123,10 @@ export const WorkbenchHeader: React.FC = () => {
   const resetAll = useAppStore((s) => s.resetAll);
 
   const [toolsMenuOpen, setToolsMenuOpen] = useState(false);
+  const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
   const toolsPopoverRef = useRef<HTMLDivElement>(null);
   const isToolsMenuOpen = toolsMenuOpen && !hudHidden;
+  const isMobileToolsOpen = mobileToolsOpen && !hudHidden;
 
   const { bundle } = useWeaponNarration(activeWeaponId);
   const manifest = getWeaponManifest(activeWeaponId);
@@ -147,7 +151,19 @@ export const WorkbenchHeader: React.FC = () => {
 
   useEffect(() => {
     scheduleHudBoundsRefresh();
-  }, [activeWeaponId, lang, mode, showLabels, sectionCut]);
+  }, [activeWeaponId, lang, mode, showLabels, sectionCut, isMobileToolsOpen]);
+
+  useEffect(() => {
+    if (!isMobileToolsOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        setMobileToolsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown, true);
+    return () => window.removeEventListener('keydown', onKeyDown, true);
+  }, [isMobileToolsOpen]);
 
   useEffect(() => {
     if (!isToolsMenuOpen) return;
@@ -175,7 +191,9 @@ export const WorkbenchHeader: React.FC = () => {
   }, [isToolsMenuOpen]);
 
   return (
-    <header className="top-bar">
+    <header
+      className={`top-bar ${isMobileToolsOpen ? 'is-mobile-expanded' : ''}`}
+    >
       <div className="brand-block">
         <button
           type="button"
@@ -188,11 +206,49 @@ export const WorkbenchHeader: React.FC = () => {
         </button>
 
         <div className="brand-badge">{meta.badge}</div>
-        <div>
+        <div className="brand-title-wrap">
           <h1 className="brand-title" title={displayMeta.workbenchTitle}>
             {displayMeta.workbenchTitle}
           </h1>
           <p className="brand-sub">{displayMeta.workbenchSubtitle}</p>
+        </div>
+
+        {/* Compact Mobile Quick Controls (<= 768px keeps header <= 56px single row) */}
+        <div className="wb-mobile-actions">
+          <button
+            type="button"
+            className={`toggle-chip wb-accent-cutaway wb-mobile-cut-btn ${
+              sectionCut ? 'active-teal' : ''
+            }`}
+            aria-pressed={sectionCut}
+            aria-label={ui.sectionChip}
+            title={ui.sectionChipTitle}
+            onClick={toggleSectionCut}
+          >
+            <Scissors size={14} aria-hidden="true" />
+          </button>
+
+          <button
+            type="button"
+            className={`toggle-chip wb-mobile-drawer-btn ${
+              isMobileToolsOpen ? 'active-cyan' : ''
+            }`}
+            aria-expanded={isMobileToolsOpen}
+            aria-label={
+              lang === 'zh' ? '展开工作台工具栏' : 'Toggle workbench tools'
+            }
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              setMobileToolsOpen((prev) => !prev);
+            }}
+          >
+            {isMobileToolsOpen ? (
+              <X size={15} aria-hidden="true" />
+            ) : (
+              <Menu size={15} aria-hidden="true" />
+            )}
+            <span>{lang === 'zh' ? '工具' : 'Tools'}</span>
+          </button>
         </div>
       </div>
 
@@ -232,7 +288,9 @@ export const WorkbenchHeader: React.FC = () => {
         {/* Hero 3D Cutaway & Engineering Inspection Controls */}
         <button
           type="button"
-          className={`toggle-chip ${sectionCut ? 'active-teal' : ''}`}
+          className={`toggle-chip wb-accent-cutaway ${
+            sectionCut ? 'active-teal' : ''
+          }`}
           aria-pressed={sectionCut}
           onClick={toggleSectionCut}
           title={ui.sectionChipTitle}
@@ -278,7 +336,7 @@ export const WorkbenchHeader: React.FC = () => {
         <div ref={toolsPopoverRef} className="studio-popover-wrap">
           <button
             type="button"
-            className={`toggle-chip workbench-tools-trigger ${
+            className={`toggle-chip workbench-tools-trigger wb-accent-labs ${
               isToolsMenuOpen ? 'active-cyan' : ''
             }`}
             aria-expanded={isToolsMenuOpen}
@@ -678,7 +736,7 @@ export const WorkbenchHeader: React.FC = () => {
 
         <button
           type="button"
-          className="toggle-chip"
+          className="toggle-chip wb-ghost-chip"
           onClick={() => openPosterModal({ weaponId: activeWeaponId })}
           title={ui.posterChipTitle}
         >
@@ -688,7 +746,7 @@ export const WorkbenchHeader: React.FC = () => {
 
         <button
           type="button"
-          className="toggle-chip active-amber"
+          className="toggle-chip wb-ghost-chip"
           onClick={() => openMonographModal(activeWeaponId)}
           title={monoUi.entryChipTitle}
         >
@@ -698,7 +756,9 @@ export const WorkbenchHeader: React.FC = () => {
 
         <button
           type="button"
-          className={`toggle-chip ${!sfxMuted ? 'active-cyan' : ''}`}
+          className={`toggle-chip wb-ghost-chip ${
+            sfxMuted ? 'is-sfx-muted' : ''
+          }`}
           aria-pressed={!sfxMuted}
           onClick={toggleSfxMuted}
           title={ui.sfxChipTitle(sfxMuted)}

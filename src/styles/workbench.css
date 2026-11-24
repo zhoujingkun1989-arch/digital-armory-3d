@@ -27,9 +27,18 @@
   flex: 1 1 240px;
 }
 
-.brand-block > div:last-child {
+.brand-block > div:last-child:not(.wb-mobile-actions),
+.brand-title-wrap {
   min-inline-size: 0;
   flex: 1 1 auto;
+}
+
+.wb-mobile-actions {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  margin-inline-start: auto;
 }
 
 .brand-badge {
@@ -452,6 +461,59 @@
   border-color: #10b981;
   color: #ffffff;
   box-shadow: 0 3px 10px rgba(5, 150, 105, 0.3);
+}
+
+/* Workbench Museum Visual Hierarchy: elevate Cutaway & Labs, demote Monograph/SFX to calm ghost chips */
+.toggle-chip.wb-ghost-chip {
+  background: transparent;
+  border-color: var(--border-subtle);
+  color: var(--color-text-secondary);
+}
+
+.toggle-chip.wb-ghost-chip:hover {
+  background: var(--surface-pill);
+  border-color: var(--border-strong);
+  color: var(--color-text-primary);
+}
+
+.toggle-chip.wb-ghost-chip.is-sfx-muted {
+  opacity: 0.68;
+}
+
+.toggle-chip.wb-accent-cutaway:not(.active-teal) {
+  background: rgba(13, 148, 136, 0.14);
+  border-color: rgba(20, 184, 166, 0.44);
+  color: var(--color-accent-teal-text);
+}
+
+.toggle-chip.wb-accent-cutaway:not(.active-teal):hover {
+  background: rgba(13, 148, 136, 0.24);
+  border-color: #14b8a6;
+}
+
+.toggle-chip.wb-accent-labs:not(.active-cyan) {
+  background: var(--surface-cyan-tint);
+  border-color: rgba(56, 189, 248, 0.42);
+  color: var(--color-accent-cyan-text);
+}
+
+.toggle-chip.wb-accent-labs:not(.active-cyan):hover {
+  background: rgba(2, 132, 199, 0.22);
+  border-color: var(--color-accent-cyan);
+}
+
+:is([data-theme='light'], .theme-light)
+  .toggle-chip.wb-accent-cutaway:not(.active-teal) {
+  background: rgba(13, 148, 136, 0.1);
+  border-color: rgba(13, 148, 136, 0.42);
+  color: #0f766e;
+}
+
+:is([data-theme='light'], .theme-light)
+  .toggle-chip.wb-accent-labs:not(.active-cyan) {
+  background: rgba(2, 132, 199, 0.09);
+  border-color: rgba(2, 132, 199, 0.38);
+  color: #0369a1;
 }
 
 .reset-chip:hover {

@@ -3,26 +3,38 @@ import React, {
   lazy,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
   useState,
 } from 'react';
 import {
+  Aperture,
   ArrowRight,
   Award,
   BookOpen,
   CheckCircle2,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock,
   Crosshair,
+  Droplets,
   Eye,
+  EyeOff,
+  FlaskConical,
+  Gauge,
   GitCompareArrows,
   Globe2,
   HardDrive,
   Headphones,
   Image as ImageIcon,
   Layers,
+  Lightbulb,
+  Maximize2,
+  Menu,
+  Minimize2,
+  Moon,
   MousePointerClick,
   Orbit,
   Palette,
@@ -30,18 +42,34 @@ import {
   Rotate3d,
   Ruler,
   Scissors,
+  Search,
   Share2,
   Shield,
+  SlidersHorizontal,
   Sparkles,
+  Sun,
   Wrench,
+  X,
 } from 'lucide-react';
+import { useDialogAccessibility } from '../../app/useDialogAccessibility';
+import { useBrowserFullscreen } from '../../app/useFullscreen';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { scheduleHudBoundsRefresh } from '../../engine/callout/hudBoundsCache';
+import {
+  ARMORY_ENVIRONMENT_PRESETS,
+  type ArmoryEnvironmentPreset,
+} from '../../engine/canvas/GunsmithStageMat';
+import { GRAPHICS_QUALITY_TIERS } from '../../engine/canvas/graphicsQuality';
 import { useWeaponExamSummary } from '../../engine/exam/armorerExamStore';
+import {
+  ARMORY_WEAR_PRESETS,
+  resolveWearPresetFromLevel,
+} from '../../engine/materials/armoryShader';
 import {
   isArcheryWeapon,
   isTankWeapon,
 } from '../../engine/physics/armoryPhysics';
+import { COMMAND_PALETTE_STRINGS } from '../../i18n/commandPaletteStrings';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   getLocalizedShortWeaponLabel,
@@ -67,8 +95,8 @@ import type {
   WeaponId,
 } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
+import { isMacLikePlatform } from '../workbench/CommandPaletteModal';
 import { EngineeringTintLegend } from '../workbench/EngineeringTintLegend';
-import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
 import type { ShowdownViewMode } from './MechanismShowdownModal';
 import {
   consumePendingShowdownLaunch,
@@ -109,6 +137,29 @@ function matchesCategoryWithLmg(
   if (filter === 'lmg') return isLmg;
   if (filter === 'assault' && isLmg) return false;
   return matchesArmoryCategory(item, filter as ArmoryCategory);
+}
+
+const ARMORY_ENV_ICONS: Record<ArmoryEnvironmentPreset, React.ReactNode> = {
+  tactical_vault: <Moon size={12} aria-hidden="true" />,
+  gunsmith_bench: <Lightbulb size={12} aria-hidden="true" />,
+  blueprint_daylight: <Sun size={12} aria-hidden="true" />,
+};
+
+export function resolveArmoryPlaqueStrings(
+  weaponId: WeaponId,
+  category: ArmoryWeaponItem['category'],
+  armoryUi: (typeof UI_STRINGS)['zh']['armory']
+) {
+  if (isArcheryWeapon(weaponId) || category === 'archery') {
+    return armoryUi.archeryPlaque;
+  }
+  if (isTankWeapon(weaponId) || category === 'armor') {
+    return armoryUi.tankPlaque;
+  }
+  if (category === 'ordnance' || weaponId === 'gau8') {
+    return armoryUi.ordnancePlaque;
+  }
+  return armoryUi;
 }
 
 export const ARMORY_HOVER_PRELOAD_DEBOUNCE_MS = 180;
@@ -240,14 +291,20 @@ export const ArmoryRackBayCard = React.memo<ArmoryRackBayCardProps>(
           {item.available ? (
             <button
               type="button"
-              className="wcard-enter-cta-btn"
+              className={`wcard-enter-cta-btn ${
+                isOnTurntable ? 'is-stage-active' : ''
+              }`}
+              title={ui.cardEnterCta}
               onClick={(e) => {
                 e.stopPropagation();
                 onEnterWorkbench(item.id);
               }}
             >
-              <span>{ui.cardEnterCta}</span>
-              <ArrowRight size={12} />
+              <span className="wcard-spec-tag">{itemMeta.actionMechanism}</span>
+              <span className="wcard-enter-cue">
+                <span>{ui.cardCompactCta}</span>
+                <ArrowRight size={11} aria-hidden="true" />
+              </span>
             </button>
           ) : (
             <span className="wcard-planned-note">{itemMeta.actionMechanism}</span>
@@ -267,7 +324,16 @@ export const ArmoryView: React.FC = () => {
     weaponA: string;
     weaponB: string;
   } | null>(() => consumePendingShowdownLaunch());
+  const [openPopover, setOpenPopover] = useState<'labs' | 'display' | null>(
+    null
+  );
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState<boolean>(false);
+
   const rackScrollRef = useRef<HTMLDivElement>(null);
+  const labsPopoverRef = useRef<HTMLDivElement>(null);
+  const displayPopoverRef = useRef<HTMLDivElement>(null);
+  const mobileDrawerRef = useRef<HTMLDivElement>(null);
+  const mobileDrawerTitleId = useId();
 
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const lang = useAppStore((s) => s.lang);
@@ -278,6 +344,7 @@ export const ArmoryView: React.FC = () => {
   const openCartridgeLab = useAppStore((s) => s.openCartridgeLab);
   const openExternalBallistics = useAppStore((s) => s.openExternalBallistics);
   const openPosterModal = useAppStore((s) => s.openPosterModal);
+  const openCommandPalette = useAppStore((s) => s.openCommandPalette);
   const selectArmoryWeapon = useAppStore((s) => s.selectArmoryWeapon);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
   const armoryAutoRotate = useAppStore((s) => s.armoryAutoRotate);
@@ -292,6 +359,19 @@ export const ArmoryView: React.FC = () => {
   const togglePbrTextures = useAppStore((s) => s.togglePbrTextures);
   const setTextureModalOpen = useAppStore((s) => s.setTextureModalOpen);
   const openMonographModal = useAppStore((s) => s.openMonographModal);
+  const environmentPreset = useAppStore((s) => s.environmentPreset);
+  const setEnvironmentPreset = useAppStore((s) => s.setEnvironmentPreset);
+  const postFxEnabled = useAppStore((s) => s.postFxEnabled);
+  const togglePostFx = useAppStore((s) => s.togglePostFx);
+  const weaponWearLevel = useAppStore((s) => s.weaponWearLevel);
+  const setWeaponWearPreset = useAppStore((s) => s.setWeaponWearPreset);
+  const graphicsQuality = useAppStore((s) => s.graphicsQuality);
+  const setGraphicsQuality = useAppStore((s) => s.setGraphicsQuality);
+  const hudHidden = useAppStore((s) => s.hudHidden);
+  const setHudHidden = useAppStore((s) => s.setHudHidden);
+
+  const { isFullscreen, isSupported, toggleFullscreen } =
+    useBrowserFullscreen();
 
   const featuredWeapon =
     ARMORY_WEAPONS.find((w) => w.id === activeWeaponId) ?? ARMORY_WEAPONS[0];
@@ -299,9 +379,19 @@ export const ArmoryView: React.FC = () => {
   const featuredExam = useWeaponExamSummary(featuredWeapon.id);
 
   const ui = UI_STRINGS[lang].armory;
+  const studioUi = UI_STRINGS[lang].studio;
   const monoUi = UI_STRINGS[lang].monograph;
   const showdownUi = UI_STRINGS[lang].mechanismShowdown;
-  const plaqueUi = isArcheryWeapon(featuredWeapon.id) ? ui.archeryPlaque : ui;
+  const cmdUi = COMMAND_PALETTE_STRINGS[lang];
+  const menuUi = cmdUi.workbenchMenus;
+  const kbdHint = isMacLikePlatform()
+    ? cmdUi.trigger.kbdMac
+    : cmdUi.trigger.kbdOther;
+  const plaqueUi = resolveArmoryPlaqueStrings(
+    featuredWeapon.id,
+    featuredWeapon.category,
+    ui
+  );
   const featuredDisplay = resolveWeaponDisplayMeta(
     featuredWeapon.id,
     lang,
@@ -313,6 +403,68 @@ export const ArmoryView: React.FC = () => {
     suggestedRivalId,
     lang
   ).shortLabel;
+  const activeWearPreset = resolveWearPresetFromLevel(weaponWearLevel);
+  const hasCustomDisplaySetting =
+    activeWearPreset !== 'field_oiled' ||
+    !postFxEnabled ||
+    graphicsQuality !== 'ultra';
+  const activePopover = hudHidden ? null : openPopover;
+  const isMobileDrawerOpen = mobileDrawerOpen && !hudHidden;
+
+  useDialogAccessibility({
+    isOpen: isMobileDrawerOpen,
+    containerRef: mobileDrawerRef,
+    onClose: () => setMobileDrawerOpen(false),
+  });
+
+  useEffect(() => {
+    if (!activePopover) return;
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target;
+      if (!(target instanceof Node)) return;
+      const inLabs = labsPopoverRef.current?.contains(target) ?? false;
+      const inDisplay = displayPopoverRef.current?.contains(target) ?? false;
+      if (!inLabs && !inDisplay) {
+        setOpenPopover(null);
+      }
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        setOpenPopover(null);
+      }
+    };
+    window.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('keydown', onKeyDown, true);
+    return () => {
+      window.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('keydown', onKeyDown, true);
+    };
+  }, [activePopover]);
+
+  const handleFullscreenClick = useCallback(async () => {
+    playWorkbenchFoley('toggle_switch');
+    setOpenPopover(null);
+    setMobileDrawerOpen(false);
+    if (!isSupported) {
+      setHudHidden(true);
+      return;
+    }
+    const wasFullscreen = isFullscreen;
+    const activeAfter = await toggleFullscreen();
+    if (!wasFullscreen && !activeAfter) {
+      setHudHidden(true);
+    }
+  }, [isFullscreen, isSupported, setHudHidden, toggleFullscreen]);
+
+  const storyMenuLabel =
+    isArcheryWeapon(featuredWeapon.id) && lang === 'zh'
+      ? '弓弩研发故事'
+      : isTankWeapon(featuredWeapon.id) && lang === 'zh'
+        ? '坦克研发故事'
+        : featuredWeapon.category === 'ordnance' && lang === 'zh'
+          ? '航炮研发故事'
+          : ui.storyBtn;
 
   useEffect(() => {
     scheduleHudBoundsRefresh();
@@ -415,103 +567,53 @@ export const ArmoryView: React.FC = () => {
     [enterWorkbench, lang, selectArmoryWeapon, ui]
   );
 
-  return (
-    <div className="armory-overlay">
-      {/* Top Digital Armory Header */}
-      <header className="armory-header">
-        <div className="brand-block">
-          <div className="brand-badge armory-vault-badge">DIGITAL ARMORY</div>
-          <div>
-            <h1 className="brand-title">{ui.title}</h1>
-            <p className="brand-sub">{ui.subtitle}</p>
-          </div>
+  const closeMenus = () => {
+    setOpenPopover(null);
+    setMobileDrawerOpen(false);
+  };
+
+  const renderLabsPanelContent = () => (
+    <>
+      <div className="popover-section">
+        <div className="popover-section-head">
+          <FlaskConical size={12} aria-hidden="true" />
+          <span>{ui.labsSectionPhysics}</span>
         </div>
-
-        <div className="armory-header-actions armory-actions-filters">
-          <div
-            className="armory-filter-pills"
-            role="tablist"
-            aria-label={ui.filterAria}
-          >
-            {CATEGORY_KEYS.map((key) => {
-              const count = categoryCounts[key];
-              if (count === 0 && key !== 'all' && category !== key) {
-                return null;
-              }
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  className={`armory-filter-btn ${
-                    key === 'armor' || key === 'ordnance' ? 'is-armor-pill' : ''
-                  } ${category === key ? 'active' : ''}`}
-                  onClick={() => setCategory(key)}
-                >
-                  {(key === 'armor' || key === 'ordnance') && (
-                    <Shield size={12} className="filter-pill-icon" aria-hidden="true" />
-                  )}
-                  <span>
-                    {ui.categories[key]} ({count})
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="armory-header-actions armory-actions-utility">
-          <StudioEnvironmentBar compact />
-
-          <LanguageSwitchPill compact />
-
+        <div className="popover-chip-grid">
           <button
             type="button"
-            className={`armory-story-btn ${storyOpen ? 'active' : ''}`}
-            onClick={toggleStoryOpen}
-            title={ui.storyBtnTitle}
-          >
-            <BookOpen size={13} />
-            <span>
-              {isArcheryWeapon(featuredWeapon.id) && lang === 'zh'
-                ? '弓弩研发故事'
-                : isTankWeapon(featuredWeapon.id) && lang === 'zh'
-                  ? '坦克研发故事'
-                  : ui.storyBtn}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            className="armory-showdown-btn"
+            className="toggle-chip"
             onClick={() => {
-              playWorkbenchFoley('preset_detent');
-              setShowdownRequest({
-                mode: 'matrix',
-                weaponA: featuredWeapon.id,
-                weaponB: suggestedRivalId,
-              });
+              closeMenus();
+              openCartridgeLab();
             }}
-            title={showdownUi.entryBtnTitle}
+            title={ui.cartridgeLabTitle}
           >
-            <GitCompareArrows size={13} aria-hidden="true" />
-            <span>{showdownUi.entryBtn}</span>
+            <Layers size={13} aria-hidden="true" />
+            <span>{ui.cartridgeLabBtn}</span>
+            <kbd className="popover-kbd">B</kbd>
           </button>
 
           <button
             type="button"
-            className="armory-showcase-btn armory-ballistics-btn"
-            onClick={() => openExternalBallistics()}
+            className="toggle-chip"
+            onClick={() => {
+              closeMenus();
+              openExternalBallistics();
+            }}
             title={ui.ballisticsLabTitle}
           >
             <Crosshair size={13} aria-hidden="true" />
             <span>{ui.ballisticsLabBtn}</span>
+            <kbd className="popover-kbd">R</kbd>
           </button>
 
           <button
             type="button"
-            className="armory-showcase-btn armory-armor-btn"
+            className="toggle-chip"
             onClick={() => {
               playWorkbenchFoley('preset_detent');
+              closeMenus();
               useAppStore
                 .getState()
                 .openArmorPenetrationModal(
@@ -530,26 +632,68 @@ export const ArmoryView: React.FC = () => {
 
           <button
             type="button"
-            className="armory-showcase-btn armory-passport-btn"
+            className="toggle-chip armory-showdown-btn"
             onClick={() => {
               playWorkbenchFoley('preset_detent');
-              useAppStore.getState().openPassportModal();
+              closeMenus();
+              setShowdownRequest({
+                mode: 'matrix',
+                weaponA: featuredWeapon.id,
+                weaponB: suggestedRivalId,
+              });
             }}
-            title={
-              lang === 'en'
-                ? `Open ${MUSEUM_EXHIBIT_COUNT}-Exhibit Armorer Certification Passport`
-                : `打开全馆 ${MUSEUM_EXHIBIT_COUNT} 展品军械师资格护照`
-            }
+            title={showdownUi.entryBtnTitle}
           >
-            <Award size={13} aria-hidden="true" />
-            <span>{lang === 'en' ? 'Passport' : '军械护照'}</span>
+            <GitCompareArrows size={13} aria-hidden="true" />
+            <span>{showdownUi.entryBtn}</span>
+            <kbd className="popover-kbd">S</kbd>
           </button>
 
           <button
             type="button"
-            className="armory-showcase-btn armory-timeline-btn"
+            className="toggle-chip"
             onClick={() => {
               playWorkbenchFoley('preset_detent');
+              closeMenus();
+              useAppStore.getState().openSplitShowdown(featuredWeapon.id);
+            }}
+            title={
+              lang === 'en'
+                ? 'Compare two exhibits live side-by-side in 3D viewports'
+                : '进入双展品实时 3D 同屏剖视对比台'
+            }
+          >
+            <GitCompareArrows size={13} aria-hidden="true" />
+            <span>{lang === 'en' ? '3D Split' : '3D 同屏对比'}</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="popover-section">
+        <div className="popover-section-head">
+          <BookOpen size={12} aria-hidden="true" />
+          <span>{ui.labsSectionArchive}</span>
+        </div>
+        <div className="popover-chip-grid">
+          <button
+            type="button"
+            className={`toggle-chip ${storyOpen ? 'active-cyan' : ''}`}
+            onClick={() => {
+              closeMenus();
+              toggleStoryOpen();
+            }}
+            title={ui.storyBtnTitle}
+          >
+            <BookOpen size={13} aria-hidden="true" />
+            <span>{storyMenuLabel}</span>
+          </button>
+
+          <button
+            type="button"
+            className="toggle-chip"
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              closeMenus();
               useAppStore.getState().openTimelineModal();
             }}
             title={
@@ -564,9 +708,58 @@ export const ArmoryView: React.FC = () => {
 
           <button
             type="button"
-            className="armory-showcase-btn armory-offline-btn"
+            className="toggle-chip"
             onClick={() => {
               playWorkbenchFoley('preset_detent');
+              closeMenus();
+              useAppStore.getState().openPassportModal();
+            }}
+            title={
+              lang === 'en'
+                ? `Open ${MUSEUM_EXHIBIT_COUNT}-Exhibit Armorer Certification Passport`
+                : `打开全馆 ${MUSEUM_EXHIBIT_COUNT} 展品军械师资格护照`
+            }
+          >
+            <Award size={13} aria-hidden="true" />
+            <span>{lang === 'en' ? 'Passport' : '军械护照'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="toggle-chip"
+            onClick={() => {
+              closeMenus();
+              openPosterModal({
+                weaponId: featuredWeapon.id,
+                armorerRank: featuredExam.overallRank,
+              });
+            }}
+            title={ui.posterTitle}
+          >
+            <Share2 size={13} aria-hidden="true" />
+            <span>{ui.posterBtn}</span>
+            <kbd className="popover-kbd">U</kbd>
+          </button>
+
+          <button
+            type="button"
+            className="toggle-chip"
+            onClick={() => {
+              closeMenus();
+              openMonographModal(featuredWeapon.id);
+            }}
+            title={monoUi.entryChipTitle}
+          >
+            <Printer size={13} aria-hidden="true" />
+            <span>{monoUi.entryChip}</span>
+          </button>
+
+          <button
+            type="button"
+            className="toggle-chip"
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              closeMenus();
               useAppStore.getState().openOfflineModal();
             }}
             title={
@@ -581,47 +774,358 @@ export const ArmoryView: React.FC = () => {
 
           <button
             type="button"
-            className="armory-showcase-btn armory-poster-btn"
-            onClick={() =>
-              openPosterModal({
-                weaponId: featuredWeapon.id,
-                armorerRank: featuredExam.overallRank,
-              })
-            }
-            title={ui.posterTitle}
-          >
-            <Share2 size={13} aria-hidden="true" />
-            <span>{ui.posterBtn}</span>
-          </button>
-
-          <button
-            type="button"
-            className="armory-showcase-btn"
-            onClick={() => openMonographModal(featuredWeapon.id)}
-            title={monoUi.entryChipTitle}
-          >
-            <Printer size={13} aria-hidden="true" />
-            <span>{monoUi.entryChip}</span>
-          </button>
-
-          <button
-            type="button"
-            className="armory-showcase-btn"
-            onClick={() => openCartridgeLab()}
-            title={ui.cartridgeLabTitle}
-          >
-            <Layers size={13} aria-hidden="true" />
-            <span>{ui.cartridgeLabBtn}</span>
-          </button>
-
-          <button
-            type="button"
-            className="armory-showcase-btn"
-            onClick={openShowcase}
+            className="toggle-chip"
+            onClick={() => {
+              closeMenus();
+              openShowcase();
+            }}
             title={ui.showcaseTitle}
           >
-            <Sparkles size={13} />
+            <Sparkles size={13} aria-hidden="true" />
             <span>{ui.showcaseBtn}</span>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+
+  const renderDisplayPanelContent = () => (
+    <>
+      <div className="popover-section">
+        <div className="popover-section-head">
+          {ARMORY_ENV_ICONS[environmentPreset]}
+          <span>{ui.displayLightingHeading}</span>
+        </div>
+        <div
+          className="popover-seg-row"
+          role="group"
+          aria-label={studioUi.envGroupAria}
+        >
+          {ARMORY_ENVIRONMENT_PRESETS.map((preset) => {
+            const isActive = environmentPreset === preset;
+            const copy = studioUi.presets[preset];
+            return (
+              <button
+                key={preset}
+                type="button"
+                className={`popover-seg-btn ${isActive ? 'is-active' : ''} env-${preset}`}
+                aria-pressed={isActive}
+                title={copy.title}
+                onClick={() => {
+                  if (!isActive) {
+                    playWorkbenchFoley('toggle_switch');
+                    setEnvironmentPreset(preset);
+                  }
+                }}
+              >
+                {copy.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="popover-section">
+        <div className="popover-section-head">
+          <Droplets size={12} aria-hidden="true" />
+          <span>{menuUi.studioWearHeading}</span>
+        </div>
+        <div
+          className="popover-seg-row"
+          role="group"
+          aria-label={studioUi.wearGroupAria}
+        >
+          {ARMORY_WEAR_PRESETS.map((wearPreset) => {
+            const isActive = activeWearPreset === wearPreset;
+            const meta = studioUi.wearPresets[wearPreset];
+            return (
+              <button
+                key={wearPreset}
+                type="button"
+                className={`popover-seg-btn ${isActive ? 'is-active' : ''} wear-${wearPreset}`}
+                aria-pressed={isActive}
+                title={meta.title}
+                onClick={() => {
+                  playWorkbenchFoley('toggle_switch');
+                  setWeaponWearPreset(wearPreset);
+                }}
+              >
+                {meta.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="popover-section">
+        <div className="popover-section-head">
+          <Gauge size={12} aria-hidden="true" />
+          <span>{menuUi.studioQualityHeading}</span>
+        </div>
+        <div className="popover-seg-row">
+          {GRAPHICS_QUALITY_TIERS.map((tier) => {
+            const isActive = graphicsQuality === tier;
+            return (
+              <button
+                key={tier}
+                type="button"
+                className={`popover-seg-btn ${isActive ? 'is-active' : ''}`}
+                aria-pressed={isActive}
+                title={studioUi.qualityTitle(tier)}
+                onClick={() => {
+                  playWorkbenchFoley('toggle_switch');
+                  setGraphicsQuality(tier, true);
+                }}
+              >
+                {studioUi.qualityLabels[tier]}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="popover-section popover-section-inline">
+        <div className="popover-inline-copy">
+          <div className="popover-section-head">
+            <Aperture size={12} aria-hidden="true" />
+            <span>{menuUi.studioPostFxHeading}</span>
+          </div>
+          <p className="popover-section-desc">{menuUi.studioPostFxDesc}</p>
+        </div>
+        <button
+          type="button"
+          className={`toggle-chip postfx-chip ${postFxEnabled ? 'active-cyan' : ''}`}
+          aria-pressed={postFxEnabled}
+          title={studioUi.postFxTitle(postFxEnabled)}
+          onClick={() => {
+            playWorkbenchFoley('toggle_switch');
+            togglePostFx();
+          }}
+        >
+          <Aperture size={12} aria-hidden="true" />
+          <span>{studioUi.postFxChip}</span>
+        </button>
+      </div>
+
+      <div className="popover-section">
+        <div className="popover-chip-grid">
+          <button
+            type="button"
+            className="toggle-chip"
+            title={studioUi.hideUiTitle}
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              closeMenus();
+              setHudHidden(true);
+            }}
+          >
+            <EyeOff size={13} aria-hidden="true" />
+            <span>{studioUi.hideUiChip}</span>
+            <kbd className="popover-kbd">H</kbd>
+          </button>
+
+          <button
+            type="button"
+            className={`toggle-chip ${isFullscreen ? 'active-cyan' : ''}`}
+            title={studioUi.fullscreenTitle(isFullscreen)}
+            onClick={() => {
+              void handleFullscreenClick();
+            }}
+          >
+            {isFullscreen ? (
+              <Minimize2 size={13} aria-hidden="true" />
+            ) : (
+              <Maximize2 size={13} aria-hidden="true" />
+            )}
+            <span>
+              {isFullscreen
+                ? studioUi.fullscreenExitChip
+                : studioUi.fullscreenEnterChip}
+            </span>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="armory-overlay">
+      {/* Consolidated Single-Row Luxury Digital Armory Header (<= 8 Desktop Controls) */}
+      <header className="armory-header">
+        <div className="brand-block armory-brand-block">
+          <div className="brand-badge armory-vault-badge">DIGITAL ARMORY</div>
+          <div className="armory-brand-titles">
+            <h1 className="brand-title">{ui.title}</h1>
+            <p className="brand-sub">{ui.subtitle}</p>
+          </div>
+        </div>
+
+        {/* Compact Single-Row Scrollable Hall Category Tabs (Desktop > 1024px) */}
+        <div className="armory-halls-strip">
+          <div
+            className="armory-filter-pills"
+            role="tablist"
+            aria-label={ui.filterAria}
+          >
+            {CATEGORY_KEYS.map((key) => {
+              const count = categoryCounts[key];
+              if (count === 0 && key !== 'all' && category !== key) {
+                return null;
+              }
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={category === key}
+                  className={`armory-filter-btn ${
+                    key === 'armor' || key === 'ordnance' ? 'is-armor-pill' : ''
+                  } ${category === key ? 'active' : ''}`}
+                  onClick={() => setCategory(key)}
+                >
+                  {(key === 'armor' || key === 'ordnance') && (
+                    <Shield
+                      size={11}
+                      className="filter-pill-icon"
+                      aria-hidden="true"
+                    />
+                  )}
+                  <span>
+                    {ui.categories[key]} ({count})
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Right Luxury Control Cluster: Cmd+K, Labs ▾, Display ▾, Lang, Inspect CTA (+ Mobile Drawer Trigger) */}
+        <div className="armory-header-controls">
+          <button
+            type="button"
+            className="cmdk-trigger-pill armory-desktop-ctrl"
+            title={cmdUi.trigger.title}
+            aria-label={cmdUi.trigger.ariaLabel}
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              closeMenus();
+              openCommandPalette();
+            }}
+          >
+            <Search size={12} aria-hidden="true" />
+            <span className="cmdk-trigger-text">{cmdUi.trigger.shortLabel}</span>
+            <kbd className="cmdk-trigger-kbd" aria-hidden="true">
+              {kbdHint}
+            </kbd>
+          </button>
+
+          {/* Consolidated Labs & Archive Popover */}
+          <div
+            ref={labsPopoverRef}
+            className="studio-popover-wrap armory-desktop-ctrl"
+          >
+            <button
+              type="button"
+              className={`toggle-chip armory-popover-trigger ${
+                activePopover === 'labs' ? 'active-cyan' : ''
+              }`}
+              aria-expanded={activePopover === 'labs'}
+              aria-controls="armory-labs-popover-panel"
+              title={ui.labsMenuTitle}
+              onClick={() => {
+                playWorkbenchFoley('toggle_switch');
+                setOpenPopover((prev) => (prev === 'labs' ? null : 'labs'));
+              }}
+            >
+              <FlaskConical size={12} aria-hidden="true" />
+              <span>{ui.labsMenuBtn}</span>
+              <ChevronDown
+                size={11}
+                className={`popover-caret ${
+                  activePopover === 'labs' ? 'is-open' : ''
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+
+            {activePopover === 'labs' && (
+              <div
+                id="armory-labs-popover-panel"
+                className="workbench-popover-menu armory-labs-popover"
+                role="region"
+                aria-label={ui.labsMenuAria}
+              >
+                {renderLabsPanelContent()}
+              </div>
+            )}
+          </div>
+
+          {/* Consolidated Studio Display / Lighting / Wear Popover */}
+          <div
+            ref={displayPopoverRef}
+            className="studio-popover-wrap armory-desktop-ctrl"
+          >
+            <button
+              type="button"
+              className={`toggle-chip armory-popover-trigger ${
+                activePopover === 'display' ? 'active-cyan' : ''
+              }`}
+              aria-expanded={activePopover === 'display'}
+              aria-controls="armory-display-popover-panel"
+              title={ui.displayMenuTitle}
+              onClick={() => {
+                playWorkbenchFoley('toggle_switch');
+                setOpenPopover((prev) =>
+                  prev === 'display' ? null : 'display'
+                );
+              }}
+            >
+              <SlidersHorizontal size={12} aria-hidden="true" />
+              <span>{ui.displayMenuBtn}</span>
+              {hasCustomDisplaySetting && activePopover !== 'display' && (
+                <span className="popover-active-dot" aria-hidden="true" />
+              )}
+              <ChevronDown
+                size={11}
+                className={`popover-caret ${
+                  activePopover === 'display' ? 'is-open' : ''
+                }`}
+                aria-hidden="true"
+              />
+            </button>
+
+            {activePopover === 'display' && (
+              <div
+                id="armory-display-popover-panel"
+                className="workbench-popover-menu studio-display-popover armory-display-popover"
+                role="region"
+                aria-label={ui.displayMenuAria}
+              >
+                {renderDisplayPanelContent()}
+              </div>
+            )}
+          </div>
+
+          <div className="armory-desktop-lang">
+            <LanguageSwitchPill compact />
+          </div>
+
+          {/* Mobile / Tablet Compact Drawer Trigger (<= 1024px) */}
+          <button
+            type="button"
+            className={`toggle-chip armory-mobile-menu-btn ${
+              isMobileDrawerOpen ? 'active-cyan' : ''
+            }`}
+            aria-expanded={isMobileDrawerOpen}
+            aria-controls="armory-mobile-nav-drawer"
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              setOpenPopover(null);
+              setMobileDrawerOpen((prev) => !prev);
+            }}
+          >
+            <Menu size={14} aria-hidden="true" />
+            <span>{ui.mobileMenuBtn}</span>
           </button>
 
           <button
@@ -629,12 +1133,104 @@ export const ArmoryView: React.FC = () => {
             className="armory-quick-enter-btn"
             onClick={() => enterWorkbench(featuredWeapon.id)}
           >
-            <Wrench size={14} />
+            <Wrench size={13} aria-hidden="true" />
             <span>{ui.enterBenchBtn(shortWeaponTag)}</span>
-            <ArrowRight size={14} />
+            <ArrowRight size={13} aria-hidden="true" />
           </button>
         </div>
       </header>
+
+      {/* Mobile / Tablet Slide-Over Halls & Museum Navigation Drawer */}
+      {isMobileDrawerOpen && (
+        <div
+          className="armory-drawer-backdrop"
+          onClick={() => setMobileDrawerOpen(false)}
+        >
+          <div
+            id="armory-mobile-nav-drawer"
+            ref={mobileDrawerRef}
+            className="armory-mobile-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={mobileDrawerTitleId}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="armory-drawer-head">
+              <h2 id={mobileDrawerTitleId} className="armory-drawer-title">
+                {ui.mobileMenuBtn}
+              </h2>
+              <div className="armory-drawer-head-right">
+                <LanguageSwitchPill compact />
+                <button
+                  type="button"
+                  className="armory-drawer-close-btn"
+                  aria-label={lang === 'zh' ? '关闭导航菜单' : 'Close menu'}
+                  onClick={() => setMobileDrawerOpen(false)}
+                >
+                  <X size={16} aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+
+            <div className="armory-drawer-body">
+              <button
+                type="button"
+                className="cmdk-trigger-pill armory-drawer-search-btn"
+                onClick={() => {
+                  playWorkbenchFoley('toggle_switch');
+                  closeMenus();
+                  openCommandPalette();
+                }}
+              >
+                <Search size={13} aria-hidden="true" />
+                <span className="cmdk-trigger-text">
+                  {cmdUi.trigger.title}
+                </span>
+                <kbd className="cmdk-trigger-kbd" aria-hidden="true">
+                  {kbdHint}
+                </kbd>
+              </button>
+
+              <div className="popover-section">
+                <div className="popover-section-head">
+                  <Shield size={12} aria-hidden="true" />
+                  <span>{ui.mobileHallsHeading}</span>
+                </div>
+                <div className="armory-drawer-halls-grid">
+                  {CATEGORY_KEYS.map((key) => {
+                    const count = categoryCounts[key];
+                    if (count === 0 && key !== 'all' && category !== key) {
+                      return null;
+                    }
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        className={`armory-filter-btn ${
+                          key === 'armor' || key === 'ordnance'
+                            ? 'is-armor-pill'
+                            : ''
+                        } ${category === key ? 'active' : ''}`}
+                        onClick={() => {
+                          setCategory(key);
+                          setMobileDrawerOpen(false);
+                        }}
+                      >
+                        <span>
+                          {ui.categories[key]} ({count})
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {renderLabsPanelContent()}
+              {renderDisplayPanelContent()}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Left Featured Weapon Technical Plaque */}
       <aside className="armory-hero-plaque armory-plaque">

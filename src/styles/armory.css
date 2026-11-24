@@ -20,11 +20,12 @@
   min-inline-size: 0;
   max-inline-size: 100%;
   display: flex;
-  align-items: safe center;
+  align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 6px 12px;
-  padding: 8px 14px;
+  flex-wrap: nowrap;
+  gap: 10px;
+  min-height: 54px;
+  padding: 7px 14px;
   border-radius: 12px;
   background: var(--surface-glass);
   border: 1px solid var(--border-subtle);
@@ -33,10 +34,178 @@
   pointer-events: auto;
 }
 
+.armory-brand-block {
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  max-inline-size: 320px;
+}
+
+.armory-brand-block .brand-sub {
+  display: none;
+}
+
+.armory-brand-titles {
+  min-inline-size: 0;
+}
+
 .armory-vault-badge {
   background: var(--surface-cyan-tint);
   border-color: rgba(56, 189, 248, 0.42);
   color: var(--color-accent-cyan);
+}
+
+.armory-halls-strip {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 calc(100% - 24px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 calc(100% - 24px),
+    transparent 100%
+  );
+  padding-inline-end: 18px;
+}
+
+.armory-halls-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.armory-header-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.armory-desktop-lang {
+  display: inline-flex;
+  align-items: center;
+}
+
+.armory-mobile-menu-btn {
+  display: none;
+}
+
+.armory-labs-popover {
+  width: min(392px, calc(100vw - 24px));
+  max-height: min(76vh, 560px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.armory-display-popover {
+  max-height: min(76vh, 520px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Mobile / Tablet Off-Canvas Halls & Museum Drawer */
+.armory-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-modal, 60) + 12);
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(2, 6, 23, 0.66);
+  backdrop-filter: blur(6px);
+  pointer-events: auto;
+}
+
+.armory-mobile-drawer {
+  width: min(360px, 88vw);
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-glass-strong);
+  border-left: 1px solid var(--border-strong);
+  backdrop-filter: blur(22px);
+  box-shadow: var(--shadow-modal);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+:is([data-theme='light'], .theme-light) .armory-mobile-drawer {
+  background: rgba(255, 255, 255, 0.97);
+}
+
+.armory-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-divider);
+  flex-shrink: 0;
+}
+
+.armory-drawer-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.armory-drawer-head-right {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.armory-drawer-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 8px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-text-primary);
+}
+
+.armory-drawer-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.armory-drawer-search-btn {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 8px 10px;
+}
+
+.armory-drawer-search-btn .cmdk-trigger-kbd {
+  margin-inline-start: auto;
+}
+
+.armory-drawer-halls-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.armory-drawer-halls-grid .armory-filter-btn {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 7px 9px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
 }
 
 .armory-header-actions {
@@ -51,16 +220,15 @@
 }
 
 .armory-filter-pills {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 2.5px;
   padding: 2px 3px;
   border-radius: 8px;
   background: var(--surface-pill);
   border: 1px solid var(--border-subtle);
-  min-inline-size: 0;
-  max-inline-size: 100%;
+  width: max-content;
 }
 
 .armory-filter-btn {
@@ -736,6 +904,19 @@
   scroll-behavior: smooth;
   scrollbar-width: none;
   padding-bottom: 1px;
+  padding-inline-end: 36px;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 calc(100% - 44px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    #000 0%,
+    #000 calc(100% - 44px),
+    transparent 100%
+  );
 }
 
 .armory-cards-grid::-webkit-scrollbar {
@@ -993,15 +1174,52 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10.5px;
-  font-weight: 700;
-  color: var(--color-accent-cyan);
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-muted);
   transition: color 0.15s ease;
 }
 
-.wcard-enter-cta-btn:hover {
-  color: var(--color-accent-cyan-text);
-  text-decoration: underline;
+.wcard-spec-tag {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 9.5px;
+  color: var(--color-text-muted);
+}
+
+.wcard-enter-cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  padding: 1.5px 6px;
+  border-radius: 999px;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
+  opacity: 0.78;
+  transition: all 0.15s ease;
+}
+
+.armory-weapon-card.is-on-turntable .wcard-enter-cue,
+.armory-weapon-card:hover .wcard-enter-cue,
+.armory-weapon-card:focus-within .wcard-enter-cue,
+.wcard-enter-cta-btn.is-stage-active .wcard-enter-cue {
+  opacity: 1;
+  color: #ffffff;
+  background: var(--color-accent-cyan-solid);
+  border-color: var(--color-accent-cyan);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.28);
+}
+
+.wcard-enter-cta-btn:hover .wcard-spec-tag {
+  color: var(--color-text-secondary);
 }
 
 .wcard-planned-note {

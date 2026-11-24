@@ -117,8 +117,47 @@ export interface UiDictionary {
     plannedBadge: string;
     partsNodeSuffix: (count: number) => string;
     cardEnterCta: string;
+    cardCompactCta: string;
     plannedToast: (name: string) => string;
+    labsMenuBtn: string;
+    labsMenuTitle: string;
+    labsMenuAria: string;
+    labsSectionPhysics: string;
+    labsSectionArchive: string;
+    displayMenuBtn: string;
+    displayMenuTitle: string;
+    displayMenuAria: string;
+    displayLightingHeading: string;
+    mobileMenuBtn: string;
+    mobileMenuAria: string;
+    mobileHallsHeading: string;
     archeryPlaque: {
+      caliberLabel: string;
+      mechanismLabel: string;
+      metrologyTitle: string;
+      oalLabel: string;
+      barrelLabel: string;
+      weightLabel: string;
+      muzzleVelLabel: string;
+      rangeLabel: string;
+      rofLabel: string;
+      plaquePrimaryCta: (shortTag: string) => string;
+      stageHint: string;
+    };
+    tankPlaque: {
+      caliberLabel: string;
+      mechanismLabel: string;
+      metrologyTitle: string;
+      oalLabel: string;
+      barrelLabel: string;
+      weightLabel: string;
+      muzzleVelLabel: string;
+      rangeLabel: string;
+      rofLabel: string;
+      plaquePrimaryCta: (shortTag: string) => string;
+      stageHint: string;
+    };
+    ordnancePlaque: {
       caliberLabel: string;
       mechanismLabel: string;
       metrologyTitle: string;
@@ -882,8 +921,21 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       plannedBadge: '待接入',
       partsNodeSuffix: (n) => `${n} 零件节点`,
       cardEnterCta: '进入 3D 内部拆解与发射演示',
+      cardCompactCta: '进入 3D 拆解',
       plannedToast: (name) =>
         `「${name}」模块正在接入中，当前可预览并拆解已入库枪械`,
+      labsMenuBtn: '实验室',
+      labsMenuTitle: '打开全馆 3D 物理实验室、研发纪录片、历史时间轴与离线工具菜单',
+      labsMenuAria: '博物馆物理实验室与策展档案菜单',
+      labsSectionPhysics: '3D 物理剧场与实验室',
+      labsSectionArchive: '策展档案、故事与出版工坊',
+      displayMenuBtn: '显示',
+      displayMenuTitle: '切换影棚布光环境、磨损包浆、画质档位、GTAO 后处理与纯净全屏展示',
+      displayMenuAria: '影棚布光与显示画质设置',
+      displayLightingHeading: '影棚布光与界面主题',
+      mobileMenuBtn: '展厅 / 菜单',
+      mobileMenuAria: '展厅筛选与实验室导航抽屉',
+      mobileHallsHeading: '十大主题展厅筛选',
       archeryPlaque: {
         caliberLabel: '箭矢与磅数',
         mechanismLabel: '核心凸轮与储能原理',
@@ -896,6 +948,32 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         rofLabel: '峰值拉力 / 省力',
         plaquePrimaryCta: (tag) => `进入 ${tag} 分解与发射演示`,
         stageHint: '拖拽检视 · 单击弓弩直达分解',
+      },
+      tankPlaque: {
+        caliberLabel: '主炮口径',
+        mechanismLabel: '火炮闭锁与自动装填原理',
+        metrologyTitle: '1:1 车体测绘与主炮火控参数',
+        oalLabel: '全车长',
+        barrelLabel: '主炮与身管',
+        weightLabel: '战斗全重',
+        muzzleVelLabel: '炮口初速',
+        rangeLabel: '有效射程',
+        rofLabel: '装填射速',
+        plaquePrimaryCta: (tag) => `进入 ${tag} 重装甲剖视与火控`,
+        stageHint: '拖拽检视 · 单击坦克直达重装拆解',
+      },
+      ordnancePlaque: {
+        caliberLabel: '航炮口径',
+        mechanismLabel: '七管旋转与无链供弹原理',
+        metrologyTitle: '1:1 系统测绘与旋转机炮参数',
+        oalLabel: '系统全长',
+        barrelLabel: '七管旋转炮管',
+        weightLabel: '满载质量',
+        muzzleVelLabel: '炮口初速',
+        rangeLabel: '有效射程',
+        rofLabel: '理论射速',
+        plaquePrimaryCta: (tag) => `进入 ${tag} 七管剖视与连射演示`,
+        stageHint: '拖拽检视 · 单击机炮直达拆解台',
       },
     },
     atlasModal: {
@@ -1600,7 +1678,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     attachmentBench: {
       badge: 'MODULAR OPTICS & MUZZLE · 物理耦合改装台',
-      title: '光学瞄具与枪口装置改装台',
+      title: '模块化改装台',
       subtitle: '1:1 零悬空挂点 · 同步驱动 3D 剖视内构、燃气羽流、后坐与实弹声学',
       presetsHeading: '一键战术配置方案',
       muzzleHeading: '枪口装置 (Muzzle)',
@@ -1775,8 +1853,23 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       plannedBadge: 'Planned',
       partsNodeSuffix: (n) => `${n} CAD Parts`,
       cardEnterCta: 'Enter 3D Disassembly & Firing',
+      cardCompactCta: 'Inspect 3D',
       plannedToast: (name) =>
         `"${name}" module is being integrated; select an active vault firearm to inspect.`,
+      labsMenuBtn: 'Labs',
+      labsMenuTitle:
+        'Open 3D Physics Labs, R&D Documentary, Patent Timeline & Museum Tools',
+      labsMenuAria: 'Museum Physics Labs and Archive Menu',
+      labsSectionPhysics: '3D Physics Theaters & Labs',
+      labsSectionArchive: 'Curatorial Archive, Story & Print',
+      displayMenuBtn: 'Display',
+      displayMenuTitle:
+        'Configure Studio Lighting, Wear Patina, Graphics Quality, GTAO PostFX & Fullscreen',
+      displayMenuAria: 'Studio Lighting and Display Settings',
+      displayLightingHeading: 'Studio Lighting & Theme',
+      mobileMenuBtn: 'Halls & Menu',
+      mobileMenuAria: 'Hall filters and museum navigation drawer',
+      mobileHallsHeading: 'Filter by Exhibition Hall',
       archeryPlaque: {
         caliberLabel: 'Projectile & Draw',
         mechanismLabel: 'Cam & Energy System',
@@ -1789,6 +1882,32 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         rofLabel: 'Draw Wt / Cycle',
         plaquePrimaryCta: (tag) => `Enter ${tag} 3D Disassembly & Launch`,
         stageHint: 'Drag to orbit · Click exhibit to enter workbench',
+      },
+      tankPlaque: {
+        caliberLabel: 'Main Gun Caliber',
+        mechanismLabel: 'Breech & Autoloader Architecture',
+        metrologyTitle: '1:1 Hull Metrology & Main Gun Ballistics',
+        oalLabel: 'Overall Length',
+        barrelLabel: 'Main Cannon',
+        weightLabel: 'Combat Weight',
+        muzzleVelLabel: 'Muzzle Velocity',
+        rangeLabel: 'Effective Range',
+        rofLabel: 'Reload Rate',
+        plaquePrimaryCta: (tag) => `Enter ${tag} 3D Armor Cutaway & FCS`,
+        stageHint: 'Drag to orbit · Click tank to enter workbench',
+      },
+      ordnancePlaque: {
+        caliberLabel: 'Ordnance Caliber',
+        mechanismLabel: 'Rotary Drive & Linkless Feed',
+        metrologyTitle: '1:1 System Metrology & Rotary Ballistics',
+        oalLabel: 'System Length',
+        barrelLabel: '7-Barrel Cluster',
+        weightLabel: 'Loaded Mass',
+        muzzleVelLabel: 'Muzzle Velocity',
+        rangeLabel: 'Effective Range',
+        rofLabel: 'Rate of Fire',
+        plaquePrimaryCta: (tag) => `Enter ${tag} 3D Cutaway & Firing`,
+        stageHint: 'Drag to orbit · Click cannon to enter workbench',
       },
     },
     atlasModal: {
@@ -2554,7 +2673,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     attachmentBench: {
       badge: 'MODULAR OPTICS & MUZZLE · PHYSICALLY COUPLED',
-      title: 'Optics & Muzzle Attachment Bench',
+      title: 'Attachment Bench',
       subtitle:
         'Flush 1:1 CAD mounts coupled live to CT cutaway internals, gas flow, recoil & acoustics',
       presetsHeading: 'One-Click Tactical Presets',

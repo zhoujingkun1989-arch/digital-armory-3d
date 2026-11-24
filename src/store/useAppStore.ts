@@ -283,6 +283,7 @@ export interface AppState {
   sectionBoxHalfSize: [number, number, number];
   showEdges: boolean;
   showLabels: boolean;
+  labelsUserToggled: boolean;
   isolateSelected: boolean;
   sidebarCollapsed: boolean;
   hudHidden: boolean;
@@ -522,7 +523,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     number,
   ],
   showEdges: false,
-  showLabels: true,
+  showLabels: false,
+  labelsUserToggled: false,
   isolateSelected: false,
   sidebarCollapsed: true,
   hudHidden: false,
@@ -1057,7 +1059,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         sectionCutAxis: 'z',
         sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
         sectionCutFlip: false,
-        showLabels: true,
+        showLabels: false,
+        labelsUserToggled: false,
         isolateSelected: false,
         selectedPartId: null,
         hoveredPartId: null,
@@ -1090,7 +1093,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         sectionCutAxis: 'z',
         sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
         sectionCutFlip: false,
-        showLabels: true,
+        showLabels: false,
+        labelsUserToggled: false,
         isolateSelected: false,
         selectedPartId: null,
         hoveredPartId: null,
@@ -1635,7 +1639,18 @@ export const useAppStore = create<AppState>((set, get) => ({
       sectionBoxHalfSize: [halfSize[0], halfSize[1], halfSize[2]],
     }),
   toggleShowEdges: () => set((s) => ({ showEdges: !s.showEdges })),
-  toggleShowLabels: () => set((s) => ({ showLabels: !s.showLabels })),
+  toggleShowLabels: () =>
+    set((s) => {
+      const autoExplodeActive =
+        !s.labelsUserToggled &&
+        s.mode === 'explode' &&
+        playbackClock.getState().targetProgress >= 0.15;
+      const effectiveVisible = s.showLabels || autoExplodeActive;
+      return {
+        showLabels: !effectiveVisible,
+        labelsUserToggled: true,
+      };
+    }),
   toggleIsolateSelected: () =>
     set((s) => ({ isolateSelected: !s.isolateSelected })),
   setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
@@ -1876,7 +1891,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       sectionBoxCenter: [...boxDefs.center] as [number, number, number],
       sectionBoxHalfSize: [...boxDefs.halfSize] as [number, number, number],
       showEdges: false,
-      showLabels: true,
+      showLabels: false,
+      labelsUserToggled: false,
       isolateSelected: false,
       hudHidden: false,
       posterShareModalOpen: false,
