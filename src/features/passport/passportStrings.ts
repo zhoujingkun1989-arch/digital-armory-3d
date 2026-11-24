@@ -1,4 +1,5 @@
 import type { LanguageCode } from '../../narration/types';
+import { MUSEUM_EXHIBIT_COUNT } from '../../weapons/museumMetrics';
 
 export interface PassportLocaleStrings {
   badge: string;
@@ -30,9 +31,9 @@ export interface PassportLocaleStrings {
 export const PASSPORT_STRINGS: Record<LanguageCode, PassportLocaleStrings> = {
   zh: {
     badge: 'WP-23 · 军械师资格护照',
-    title: '全馆 27 款展品机械资质护照与履历档案',
+    title: `全馆 ${MUSEUM_EXHIBIT_COUNT} 款展品机械资质护照与履历档案`,
     subtitle:
-      '汇总全部名枪、复合弓弩与主战坦克的野战盲拆、军械所全拆与故障盲考 S/A/B/C 等级，支持 JSON 离线导出与跨设备恢复',
+      '汇总全部名枪、复合弓弩、主战坦克与航空重武的野战盲拆、军械所全拆与故障盲考 S/A/B/C 等级，支持 JSON 离线导出与跨设备恢复',
     close: '关闭护照档案',
     overallProgress: '全馆认证进度',
     certifiedCount: '已取证展品',
@@ -57,9 +58,9 @@ export const PASSPORT_STRINGS: Record<LanguageCode, PassportLocaleStrings> = {
   },
   en: {
     badge: 'WP-23 · ARMORER MASTERY PASSPORT',
-    title: '27-Exhibit Armorer Certification Ledger & Passport',
+    title: `${MUSEUM_EXHIBIT_COUNT}-Exhibit Armorer Certification Ledger & Passport`,
     subtitle:
-      'Unified S/A/B/C mastery matrix spanning Service Field-Strip, Detail Strip, and Blind Triage across all 27 exhibits with portable JSON backup',
+      `Unified S/A/B/C mastery matrix spanning Service Field-Strip, Detail Strip, and Blind Triage across all ${MUSEUM_EXHIBIT_COUNT} exhibits with portable JSON backup`,
     close: 'Close Armorer Passport',
     overallProgress: 'Museum Certification Progress',
     certifiedCount: 'Certified Exhibits',

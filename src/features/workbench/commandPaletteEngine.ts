@@ -11,6 +11,15 @@ import { WEAPON_EN_FALLBACKS } from '../../i18n/weaponFallbacks';
 import type { LanguageCode } from '../../narration/types';
 import { type AppState, useAppStore } from '../../store/useAppStore';
 import { WEAPON_MANIFESTS } from '../../weapons/manifests';
+import {
+  MUSEUM_EXHIBIT_COUNT,
+  MUSEUM_TIMELINE_LINEAGE_COUNT,
+  MUSEUM_TIMELINE_MAX_YEAR,
+  MUSEUM_TIMELINE_MIN_YEAR,
+  MUSEUM_TIMELINE_SPAN_LABEL,
+  MUSEUM_TIMELINE_TOUR_COUNT,
+  resolveArmorLabPresetForWeapon,
+} from '../../weapons/museumMetrics';
 import type { WeaponId, WeaponPartSpec } from '../../weapons/types';
 import { queueMechanismShowdownLaunch } from '../armory/mechanismShowdownSpecs';
 
@@ -503,7 +512,7 @@ export function buildCommandPaletteItems(
   const studioUi = UI_STRINGS[lang].studio;
   const items: CommandPaletteItem[] = [];
 
-  // 1. All 27 Museum Exhibits (21 Firearms + 2 Archery + 4 1:1 Main Battle Tanks)
+  // 1. All Museum Exhibits (derived dynamically from WEAPON_MANIFESTS)
   for (const manifest of WEAPON_MANIFESTS) {
     const id = manifest.id;
     const cat = manifest.catalog;
@@ -700,18 +709,19 @@ export function buildCommandPaletteItems(
       icon: 'cartridge',
       title:
         lang === 'en'
-          ? '1:1 Tank Cannon Ordnance Cutaway Lab'
-          : '1:1 主战坦克炮弹纵剖对比馆',
+          ? '1:1 Tank & Aero Cannon Ordnance Cutaway Lab'
+          : '1:1 航空机炮弹与主战坦克炮弹纵剖对比馆',
       subtitle:
         lang === 'en'
-          ? '88mm PzGr.39 · 120mm NATO APFSDS · 125mm DTC10-125 at 1:1 physical scale'
-          : '88mm PzGr.39 · 120mm NATO APFSDS · 125mm DTC10-125 绝对比例纵剖同台陈列',
-      codeBadge: '88/120/125mm',
+          ? '30×173mm PGU-14/B · 88mm PzGr.39 · 120mm NATO APFSDS · 125mm DTC10-125 at 1:1 scale'
+          : '30×173mm 航炮弹 · 88mm PzGr.39 · 120mm NATO APFSDS · 125mm DTC10-125 绝对比例纵剖同台陈列',
+      codeBadge: '30/88/120/125mm',
       primaryFields: [
         '1:1 Tank Cannon Ordnance Cutaway Lab',
         '主战坦克炮弹纵剖对比馆',
         'Tank Ordnance',
         '坦克炮弹',
+        '30mm PGU-14/B',
         '125mm APFSDS',
         '120mm APFSDS',
         '88mm PzGr.39',
@@ -723,11 +733,15 @@ export function buildCommandPaletteItems(
         'dtc10',
         'm829a4',
         'dm63a1',
+        'pgu-14',
+        'gau8',
+        '30mm',
         'armor',
         'tank',
         'heavy armor',
         '穿甲弹',
         '脱壳穿甲弹',
+        '航炮弹',
         '主炮弹',
         '重装甲',
       ],
@@ -895,8 +909,8 @@ export function buildCommandPaletteItems(
           : '1:1 Composite Armor Penetration Lab',
       subtitle:
         state.lang === 'zh'
-          ? '125mm/120mm APFSDS、88mm PzGr.39 对抗 ZTZ-99A / M1A2 / 豹2A7 / 虎式装甲'
-          : 'Lanz-Odermatt APFSDS vs ZTZ-99A, M1A2, Leopard 2A7V & Tiger I composite/ERA arrays',
+          ? '125mm/120mm APFSDS、88mm PzGr.39、30mm PGU-14/B 对抗 ZTZ-99A / M1A2 / 豹2A7 / 虎式装甲'
+          : 'Lanz-Odermatt APFSDS & 30mm PGU-14/B vs ZTZ-99A, M1A2, Leopard 2A7V & Tiger I composite/ERA arrays',
       statusBadge: state.armorPenetrationModalOpen
         ? str.modal.onBadge
         : undefined,
@@ -905,7 +919,7 @@ export function buildCommandPaletteItems(
       primaryFields: [
         '1:1 Composite Armor Penetration Lab',
         '穿甲抗弹实验室',
-        'APFSDS RHAe ERA Composite',
+        'APFSDS RHAe ERA Composite 30mm',
       ],
       secondaryFields: [
         'armor',
@@ -914,6 +928,8 @@ export function buildCommandPaletteItems(
         'era',
         'rhae',
         'ricochet',
+        'gau8',
+        '30mm',
         '穿甲',
         '装甲',
         '反应装甲',
@@ -921,7 +937,10 @@ export function buildCommandPaletteItems(
       ],
       execute: () => {
         playWorkbenchFoley('preset_detent');
-        useAppStore.getState().openArmorPenetrationModal();
+        const cur = useAppStore.getState();
+        cur.openArmorPenetrationModal(
+          resolveArmorLabPresetForWeapon(cur.activeWeaponId)
+        );
       },
     },
     {
@@ -956,12 +975,12 @@ export function buildCommandPaletteItems(
       icon: 'fieldstrip',
       title:
         state.lang === 'zh'
-          ? '军械师全馆 27 展品资格护照'
-          : '27-Exhibit Armorer Mastery Passport',
+          ? `军械师全馆 ${MUSEUM_EXHIBIT_COUNT} 展品资格护照`
+          : `${MUSEUM_EXHIBIT_COUNT}-Exhibit Armorer Mastery Passport`,
       subtitle:
         state.lang === 'zh'
           ? '汇总野战快拆、全拆精修与盲考等级并支持 JSON 导出/恢复'
-          : 'Unified S/A/B/C mastery ledger & JSON import/export across 27 exhibits',
+          : `Unified S/A/B/C mastery ledger & JSON import/export across ${MUSEUM_EXHIBIT_COUNT} exhibits`,
       statusBadge: state.passportModalOpen ? str.modal.onBadge : undefined,
       statusTone: state.passportModalOpen ? 'emerald' : undefined,
       isActive: state.passportModalOpen,
@@ -1012,19 +1031,19 @@ export function buildCommandPaletteItems(
       icon: 'story',
       title:
         state.lang === 'zh'
-          ? '1898–2026 枪械与装甲演化时间轴'
-          : '1898 - 2026 Interactive History & Lineage Timeline',
+          ? `${MUSEUM_TIMELINE_SPAN_LABEL} 枪械与装甲演化时间轴`
+          : `${MUSEUM_TIMELINE_MIN_YEAR} - ${MUSEUM_TIMELINE_MAX_YEAR} Interactive History & Lineage Timeline`,
       subtitle:
         state.lang === 'zh'
-          ? '6 大机构脉系、祖源连线追踪与 4 条精选策展导览路线'
-          : 'Explore all 27 exhibits across 6 mechanical lineages & 4 curated tours',
+          ? `${MUSEUM_TIMELINE_LINEAGE_COUNT} 大机构脉系、祖源连线追踪与 ${MUSEUM_TIMELINE_TOUR_COUNT} 条精选策展导览路线`
+          : `Explore all ${MUSEUM_EXHIBIT_COUNT} exhibits across ${MUSEUM_TIMELINE_LINEAGE_COUNT} mechanical lineages & ${MUSEUM_TIMELINE_TOUR_COUNT} curated tours`,
       statusBadge: state.timelineModalOpen ? str.modal.onBadge : undefined,
       statusTone: state.timelineModalOpen ? 'amber' : undefined,
       isActive: state.timelineModalOpen,
       primaryFields: [
         'History Timeline Patent Lineage',
         '演化时间轴专利谱系',
-        '1898 2026 Cold War Evolution',
+        `${MUSEUM_TIMELINE_MIN_YEAR} ${MUSEUM_TIMELINE_MAX_YEAR} Cold War Evolution`,
       ],
       secondaryFields: ['timeline', 'history', 'lineage', 'patent', 'evolution', '时间轴', '历史', '脉系'],
       execute: () => {

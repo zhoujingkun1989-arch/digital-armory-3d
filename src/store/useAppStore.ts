@@ -48,6 +48,10 @@ import {
 } from '../engine/materials/armoryShader';
 import type { EngineeringRole } from '../engine/materials/engineeringRoles';
 import { resetArmoryPhysics } from '../engine/physics/armoryPhysics';
+import type {
+  ArmorTargetTankId,
+  PenetratorId,
+} from '../engine/physics/armorPenetration';
 import { useCausalitySandboxStore } from '../engine/physics/causalitySandbox';
 import { useAttachmentStore } from '../engine/attachments/attachmentStore';
 import { useTankCrewStore } from '../engine/tank/tankCrewStore';
@@ -69,6 +73,7 @@ import {
 } from '../narration/audioPlayer';
 import type { LanguageCode } from '../narration/types';
 import { getWeaponManifest } from '../weapons/manifests';
+import { resolveArmorLabPresetForWeapon } from '../weapons/museumMetrics';
 import { getLoadedWeaponPlugin, loadWeaponPlugin } from '../weapons/registry';
 import type {
   AssemblyGroupKey,
@@ -91,6 +96,11 @@ export type PosterArmorerRankOption = 'S' | 'A' | 'B' | 'C';
 export interface PosterModalLaunchOptions {
   weaponId?: WeaponId;
   armorerRank?: PosterArmorerRankOption | null;
+}
+
+export interface ArmorPenetrationLaunchOptions {
+  projectileId?: PenetratorId;
+  targetTankId?: ArmorTargetTankId;
 }
 
 export interface MonographModalLaunchOptions {
@@ -258,6 +268,7 @@ export interface AppState {
   posterShareOptions: PosterModalLaunchOptions | null;
   causalitySandboxOpen: boolean;
   armorPenetrationModalOpen: boolean;
+  armorPenetrationLaunchOptions: ArmorPenetrationLaunchOptions | null;
   directorReelModalOpen: boolean;
   passportModalOpen: boolean;
   timelineModalOpen: boolean;
@@ -393,7 +404,7 @@ export interface AppState {
   setCausalitySandboxOpen: (open: boolean) => void;
   toggleCausalitySandbox: () => void;
   setArmorPenetrationModalOpen: (open: boolean) => void;
-  openArmorPenetrationModal: () => void;
+  openArmorPenetrationModal: (options?: ArmorPenetrationLaunchOptions) => void;
   closeArmorPenetrationModal: () => void;
   setDirectorReelModalOpen: (open: boolean) => void;
   openDirectorReelModal: () => void;
@@ -489,6 +500,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   posterShareOptions: null,
   causalitySandboxOpen: false,
   armorPenetrationModalOpen: false,
+  armorPenetrationLaunchOptions: null,
   directorReelModalOpen: false,
   passportModalOpen: false,
   timelineModalOpen: false,
@@ -1391,6 +1403,9 @@ export const useAppStore = create<AppState>((set, get) => ({
   setArmorPenetrationModalOpen: (armorPenetrationModalOpen) =>
     set((s) => ({
       armorPenetrationModalOpen,
+      armorPenetrationLaunchOptions: armorPenetrationModalOpen
+        ? s.armorPenetrationLaunchOptions
+        : null,
       textureModalOpen: armorPenetrationModalOpen ? false : s.textureModalOpen,
       monographModalOpen: armorPenetrationModalOpen
         ? false
@@ -1403,8 +1418,27 @@ export const useAppStore = create<AppState>((set, get) => ({
         : s.commandPaletteOpen,
       hudHidden: armorPenetrationModalOpen ? false : s.hudHidden,
     })),
-  openArmorPenetrationModal: () => get().setArmorPenetrationModalOpen(true),
-  closeArmorPenetrationModal: () => get().setArmorPenetrationModalOpen(false),
+  openArmorPenetrationModal: (options) =>
+    set((s) => {
+      const contextual = resolveArmorLabPresetForWeapon(s.activeWeaponId);
+      return {
+        armorPenetrationModalOpen: true,
+        armorPenetrationLaunchOptions: {
+          projectileId: options?.projectileId ?? contextual.projectileId,
+          targetTankId: options?.targetTankId ?? contextual.targetTankId,
+        },
+        textureModalOpen: false,
+        monographModalOpen: false,
+        posterShareModalOpen: false,
+        commandPaletteOpen: false,
+        hudHidden: false,
+      };
+    }),
+  closeArmorPenetrationModal: () =>
+    set({
+      armorPenetrationModalOpen: false,
+      armorPenetrationLaunchOptions: null,
+    }),
   setDirectorReelModalOpen: (directorReelModalOpen) =>
     set((s) => ({
       directorReelModalOpen,

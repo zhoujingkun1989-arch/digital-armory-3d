@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useId, useRef } from 'react';
 import {
   Activity,
   AlertTriangle,
@@ -9,6 +9,7 @@ import {
   SlidersHorizontal,
   X,
 } from 'lucide-react';
+import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { playbackClock } from '../../engine/clock/playbackClock';
 import {
@@ -67,9 +68,22 @@ const CausalitySandboxModal: React.FC = () => {
   const applyPreset = useCausalitySandboxStore((s) => s.applyPreset);
   const reset = useCausalitySandboxStore((s) => s.reset);
 
+  const titleId = useId();
+  const containerRef = useRef<HTMLElement>(null);
   const ui = CAUSALITY_SANDBOX_STRINGS[lang];
   const archery = isArcheryWeapon(activeWeaponId);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  const handleClose = useCallback(() => {
+    playWorkbenchFoley('toggle_switch');
+    setCausalitySandboxOpen(false);
+  }, [setCausalitySandboxOpen]);
+
+  useDialogAccessibility({
+    isOpen: true,
+    containerRef,
+    onClose: handleClose,
+  });
 
   const evaluation = evaluateCausalityPhysics(activeWeaponId, {
     gasPortScale: enabled ? gasPortScale : 1.0,
@@ -264,9 +278,13 @@ const CausalitySandboxModal: React.FC = () => {
 
   return (
     <section
+      ref={containerRef}
       className="causality-sandbox-card"
       data-testid="causality-sandbox-modal"
-      aria-label={ui.title}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      tabIndex={-1}
     >
       <div className="causality-head">
         <div className="causality-title-block">
@@ -274,7 +292,9 @@ const CausalitySandboxModal: React.FC = () => {
             <SlidersHorizontal size={12} aria-hidden="true" />
             <span className="causality-badge">{ui.badge}</span>
           </div>
-          <h3 className="causality-title">{ui.title}</h3>
+          <h3 id={titleId} className="causality-title">
+            {ui.title}
+          </h3>
         </div>
 
         <div className="causality-head-actions">

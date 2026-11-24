@@ -305,3 +305,15 @@
     padding: 7px 9px;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .split-showdown-overlay,
+  .split-showdown-overlay *,
+  .split-showdown-overlay *::before,
+  .split-showdown-overlay *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

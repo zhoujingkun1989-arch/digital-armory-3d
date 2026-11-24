@@ -1504,3 +1504,20 @@
     padding: 3px 6px;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .eb-lab-screen,
+  .eb-lab-screen *,
+  .eb-lab-screen *::before,
+  .eb-lab-screen *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .eb-range3d-fire-btn:hover,
+  .eb-range3d-fire-btn:active {
+    transform: none;
+  }
+}

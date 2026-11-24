@@ -8,6 +8,7 @@ import {
   Upload,
   X,
 } from 'lucide-react';
+import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import {
   buildSummaryFromRecord,
@@ -44,25 +45,23 @@ export const ArmorerPassportModal: React.FC<ArmorerPassportModalProps> = ({
   const [notice, setNotice] = useState<string | null>(null);
   const ui = PASSPORT_STRINGS[lang];
 
+  useDialogAccessibility({
+    isOpen: true,
+    containerRef: dialogRef,
+    onClose,
+  });
+
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (dialog && !dialog.open) {
+    if (dialog && !dialog.open && typeof dialog.showModal === 'function') {
       dialog.showModal();
     }
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
     return () => {
-      window.removeEventListener('keydown', onKeyDown);
       if (dialog?.open) {
         dialog.close();
       }
     };
-  }, [onClose]);
+  }, []);
 
   const rows = useMemo(() => {
     return WEAPON_MANIFESTS.map((m) => ({
@@ -124,6 +123,8 @@ export const ArmorerPassportModal: React.FC<ArmorerPassportModalProps> = ({
       ref={dialogRef}
       className="passport-dialog"
       data-testid="armorer-passport-modal"
+      role="dialog"
+      aria-modal="true"
       aria-labelledby={titleId}
       onClick={(e) => {
         if (e.target === dialogRef.current) {

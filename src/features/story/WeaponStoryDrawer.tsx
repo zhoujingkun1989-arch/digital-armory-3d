@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useRef } from 'react';
 import {
   BookOpen,
   Captions,
@@ -16,6 +16,7 @@ import {
   Volume2,
   X,
 } from 'lucide-react';
+import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
@@ -41,8 +42,15 @@ import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { LanguageSwitchPill } from './LanguageSwitchPill';
 
-export const WeaponStoryDrawer: React.FC = () => {
-  const storyOpen = useAppStore((s) => s.storyOpen);
+export interface WeaponStoryDrawerProps {
+  forceOpen?: boolean;
+}
+
+export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
+  forceOpen = false,
+}) => {
+  const storyOpenStore = useAppStore((s) => s.storyOpen);
+  const storyOpen = forceOpen || storyOpenStore;
   const storyMinimized = useAppStore((s) => s.storyMinimized);
   const storyDirectorMode = useAppStore((s) => s.storyDirectorMode);
   const setStoryOpen = useAppStore((s) => s.setStoryOpen);
@@ -96,7 +104,29 @@ export const WeaponStoryDrawer: React.FC = () => {
       : -1;
   const activeCue = activeCueIndex >= 0 ? activeCues[activeCueIndex] : null;
 
+  const titleId = useId();
+  const drawerRef = useRef<HTMLElement>(null);
   const activeCueBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  const isExpandedDrawer =
+    storyOpen && !storyMinimized && (forceOpen || screen !== 'showcase');
+
+  const handleEscapeDismiss = useCallback(() => {
+    if (audio.activeKind === 'story' && audio.isPlaying) {
+      setStoryMinimized(true);
+      return;
+    }
+    if (audio.activeKind === 'story') {
+      stopNarrationAudio();
+    }
+    setStoryOpen(false);
+  }, [audio.activeKind, audio.isPlaying, setStoryMinimized, setStoryOpen]);
+
+  useDialogAccessibility({
+    isOpen: isExpandedDrawer,
+    containerRef: drawerRef,
+    onClose: handleEscapeDismiss,
+  });
 
   // Smoothly auto-scroll active subtitle sentence inside expanded drawer
   useEffect(() => {
@@ -119,7 +149,7 @@ export const WeaponStoryDrawer: React.FC = () => {
     });
   }, [storyOpen, storyMinimized, isStoryPlaying, activeActId, activeCueIndex]);
 
-  if (!storyOpen || screen === 'showcase') {
+  if (!storyOpen || (!forceOpen && screen === 'showcase')) {
     return null;
   }
 
@@ -326,8 +356,12 @@ export const WeaponStoryDrawer: React.FC = () => {
 
   return (
     <aside
+      ref={drawerRef}
       className="story-drawer"
-      aria-label={`${displayMeta.name} — ${ui.badge}`}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      tabIndex={-1}
     >
       {/* Sticky Drawer Header */}
       <div className="story-drawer-header">
@@ -341,7 +375,9 @@ export const WeaponStoryDrawer: React.FC = () => {
               {manifest.catalog.bayCode} · {displayMeta.shortLabel}
             </span>
           </div>
-          <h2 className="story-weapon-name">{displayMeta.name}</h2>
+          <h2 id={titleId} className="story-weapon-name">
+            {displayMeta.name}
+          </h2>
           <p className="story-drawer-sub">{drawerSubtitle}</p>
         </div>
 
