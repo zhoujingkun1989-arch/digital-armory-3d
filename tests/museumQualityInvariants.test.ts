@@ -1,6 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import {
+  type AcousticTelemetryRoomId,
+  getActiveAcousticTelemetry,
+} from '../src/engine/audio/mechanicalSoundEngine';
 import { WEAPON_RIFLING_SPECS } from '../src/engine/ballistics/riflingSpecs';
 import { CALIPER_V2_BENCHMARK_NOTES } from '../src/engine/caliper/caliperStore';
 import {
@@ -8,6 +13,10 @@ import {
   getGlossaryTermsForWeapon,
 } from '../src/engine/encyclopedia/engineeringGlossary';
 import { EXAM_STRINGS } from '../src/engine/exam/examStrings';
+import {
+  OFFLINE_MUSEUM_CACHE_NAME,
+  OFFLINE_RUNTIME_CACHE_NAME,
+} from '../src/engine/offline/offlineMuseumManager';
 import { ARMOR_PENETRATION_STRINGS } from '../src/features/armorlab/armorPenetrationStrings';
 import { ARMORY_SORT_FILTER_STRINGS } from '../src/features/armory/armorySortFilter';
 import { EXTERNAL_BALLISTICS_STRINGS } from '../src/features/ballistics/externalBallisticsStrings';
@@ -28,6 +37,12 @@ import { WEAPON_MANIFESTS } from '../src/weapons/manifests';
 import type { WeaponId } from '../src/weapons/types';
 
 const REPO_ROOT = path.resolve(__dirname, '..');
+const ACOUSTIC_ROOMS: readonly AcousticTelemetryRoomId[] = [
+  'bench_close',
+  'indoor_range',
+  'tactical_hall',
+  'open_field',
+];
 const CJK_RE = /[\u4e00-\u9fff\u3000-\u303f\uff00-\uffef]/;
 const WP_CODE_RE = /\bWP-\d{2}[a-z]?\b/i;
 
@@ -145,7 +160,27 @@ describe('Permanent Repository-Wide Museum Quality Invariants Gate', () => {
         }
       }
 
-      expect(enEntries.length).toBeGreaterThan(400);
+      for (const manifest of WEAPON_MANIFESTS) {
+        for (const room of ACOUSTIC_ROOMS) {
+          const tel = getActiveAcousticTelemetry(manifest.id, room);
+          enEntries.push(
+            {
+              path: `getActiveAcousticTelemetry.${manifest.id}.${room}.signatureLabelEn`,
+              value: tel.signatureLabelEn,
+            },
+            {
+              path: `getActiveAcousticTelemetry.${manifest.id}.${room}.caliberClassEn`,
+              value: tel.caliberClassEn,
+            },
+            ...tel.highlightsEn.map((h, idx) => ({
+              path: `getActiveAcousticTelemetry.${manifest.id}.${room}.highlightsEn[${idx}]`,
+              value: h,
+            }))
+          );
+        }
+      }
+
+      expect(enEntries.length).toBeGreaterThan(800);
 
       const leaks = enEntries.filter(({ path: keyPath, value }) => {
         const leafKey = keyPath.split('.').pop() ?? '';
@@ -185,9 +220,17 @@ describe('Permanent Repository-Wide Museum Quality Invariants Gate', () => {
           'ARMORY_SORT_FILTER_STRINGS'
         ),
         ...collectStrings(CARTRIDGE_DUEL_STRINGS, 'CARTRIDGE_DUEL_STRINGS'),
+        ...WEAPON_MANIFESTS.flatMap((manifest) =>
+          ACOUSTIC_ROOMS.flatMap((room) =>
+            collectStrings(
+              getActiveAcousticTelemetry(manifest.id, room),
+              `getActiveAcousticTelemetry.${manifest.id}.${room}`
+            )
+          )
+        ),
       ];
 
-      expect(allCopyEntries.length).toBeGreaterThan(800);
+      expect(allCopyEntries.length).toBeGreaterThan(1500);
 
       const wpLeaks = allCopyEntries.filter(({ value }) => WP_CODE_RE.test(value));
       expect(wpLeaks).toEqual([]);
@@ -229,12 +272,26 @@ describe('Permanent Repository-Wide Museum Quality Invariants Gate', () => {
         SCALE_WALL_EXHIBITS.map((e) => e.weaponId)
       );
 
+      expect(ENGINEERING_GLOSSARY_TERMS.length).toBeGreaterThanOrEqual(28);
+
       for (const id of canonicalIds) {
         const terms = getGlossaryTermsForWeapon(id);
         expect(
           terms.length,
           `getGlossaryTermsForWeapon(${id}) must return >= 2 principles`
         ).toBeGreaterThanOrEqual(2);
+
+        for (const room of ACOUSTIC_ROOMS) {
+          const tel = getActiveAcousticTelemetry(id, room);
+          expect(tel.signatureId.trim().length, `${id}/${room} signatureId`).toBeGreaterThan(0);
+          expect(tel.signatureLabelZh.trim().length, `${id}/${room} signatureLabelZh`).toBeGreaterThan(0);
+          expect(tel.signatureLabelEn.trim().length, `${id}/${room} signatureLabelEn`).toBeGreaterThan(0);
+          expect(tel.caliberClassZh.trim().length, `${id}/${room} caliberClassZh`).toBeGreaterThan(0);
+          expect(tel.caliberClassEn.trim().length, `${id}/${room} caliberClassEn`).toBeGreaterThan(0);
+          expect(tel.highlightsZh.length, `${id}/${room} highlightsZh`).toBeGreaterThanOrEqual(1);
+          expect(tel.highlightsEn.length, `${id}/${room} highlightsEn`).toBeGreaterThanOrEqual(1);
+          expect(Number.isFinite(tel.reverbRt60Sec) && tel.reverbRt60Sec > 0).toBe(true);
+        }
       }
     });
   });
@@ -324,6 +381,159 @@ describe('Permanent Repository-Wide Museum Quality Invariants Gate', () => {
       expect(ciYaml).toContain('Circular chunk');
       expect(ciYaml).toContain('VITE_BASE_PATH=/digital-armory-3d/ npm run build');
       expect(ciYaml).toContain('/digital-armory-3d/assets/');
+    });
+  });
+
+  describe('6. 38/38 Flagship docs/screenshots/*.jpg On-Disk 1920×1080 JPEG Contract', () => {
+    it('verifies all 38 FLAGSHIP_DOC_SHOTS exist non-empty on disk at exact 1920×1080 JPEG dimensions', async () => {
+      const captureMod = (await import(
+        pathToFileURL(
+          path.join(REPO_ROOT, 'scripts', 'capture_flagship_docs_screenshots.mjs')
+        ).href
+      )) as {
+        FLAGSHIP_DOC_SHOTS: ReadonlyArray<{
+          id: string;
+          filename: string;
+          group: 'core' | 'sculptures' | 'labs';
+        }>;
+      };
+      const visualGateMod = (await import(
+        pathToFileURL(path.join(REPO_ROOT, 'scripts', 'qa_visual_gate.mjs')).href
+      )) as {
+        inspectImageDimensions: (
+          buf: Buffer
+        ) => { width: number; height: number } | null;
+      };
+
+      expect(captureMod.FLAGSHIP_DOC_SHOTS).toHaveLength(38);
+      expect(
+        captureMod.FLAGSHIP_DOC_SHOTS.filter((s) => s.group === 'core')
+      ).toHaveLength(5);
+      expect(
+        captureMod.FLAGSHIP_DOC_SHOTS.filter((s) => s.group === 'sculptures')
+      ).toHaveLength(22);
+      expect(
+        captureMod.FLAGSHIP_DOC_SHOTS.filter((s) => s.group === 'labs')
+      ).toHaveLength(11);
+
+      const screenshotsDir = path.join(REPO_ROOT, 'docs', 'screenshots');
+      const failures: string[] = [];
+
+      for (const shot of captureMod.FLAGSHIP_DOC_SHOTS) {
+        const filePath = path.join(screenshotsDir, shot.filename);
+        if (!fs.existsSync(filePath)) {
+          failures.push(`${shot.filename}: missing`);
+          continue;
+        }
+        const buf = fs.readFileSync(filePath);
+        if (buf.length < 10_000) {
+          failures.push(`${shot.filename}: suspiciously small (${buf.length} B)`);
+          continue;
+        }
+        const dims = visualGateMod.inspectImageDimensions(buf);
+        if (!dims || dims.width !== 1920 || dims.height !== 1080) {
+          failures.push(
+            `${shot.filename}: invalid dims ${dims ? `${dims.width}x${dims.height}` : 'null'}`
+          );
+        }
+      }
+
+      expect(failures).toEqual([]);
+    });
+  });
+
+  describe('7. 75-Target Complete App WCAG 2.1 AA Harness Lock', () => {
+    it('enforces 6 screens + 14 modals + 5 HUDs = 25 surfaces × 3 profiles = 75 live WCAG checks', async () => {
+      const a11yMod = (await import(
+        pathToFileURL(path.join(REPO_ROOT, 'scripts', 'qa_a11y_audit.mjs')).href
+      )) as {
+        A11Y_SCREEN_SPECS: ReadonlyArray<{ key: string }>;
+        A11Y_MODAL_SPECS: ReadonlyArray<{ key: string }>;
+        A11Y_HUD_SPECS: ReadonlyArray<{ key: string }>;
+        ALL_A11Y_TARGET_SPECS: ReadonlyArray<{ key: string }>;
+        A11Y_PROFILES: Record<string, unknown>;
+        buildA11yAuditTargets: (origin: string) => ReadonlyArray<{ id: string }>;
+      };
+
+      expect(a11yMod.A11Y_SCREEN_SPECS).toHaveLength(6);
+      expect(a11yMod.A11Y_MODAL_SPECS).toHaveLength(14);
+      expect(a11yMod.A11Y_HUD_SPECS).toHaveLength(5);
+      expect(a11yMod.ALL_A11Y_TARGET_SPECS).toHaveLength(25);
+      expect(Object.keys(a11yMod.A11Y_PROFILES)).toHaveLength(3);
+      expect(a11yMod.buildA11yAuditTargets('http://127.0.0.1:4173')).toHaveLength(
+        75
+      );
+    });
+  });
+
+  describe('8. PWA Manifest & Service Worker Parity Audit', () => {
+    it('validates public/manifest.webmanifest 34-exhibit/10-hall metadata, subpath safety, icon files, and SW cache parity', () => {
+      const manifestRaw = fs.readFileSync(
+        path.join(REPO_ROOT, 'public', 'manifest.webmanifest'),
+        'utf-8'
+      );
+      const manifest = JSON.parse(manifestRaw) as {
+        id: string;
+        name: string;
+        short_name: string;
+        description: string;
+        start_url: string;
+        scope: string;
+        display: string;
+        icons: Array<{ src: string; sizes: string; type: string }>;
+        shortcuts: Array<{
+          name: string;
+          short_name: string;
+          description: string;
+          url: string;
+        }>;
+      };
+
+      // Accurate 34-exhibit / 10-hall / 854-part counts & zero WP-XX / EN CJK leaks
+      expect(manifest.name).toContain('34 Exhibits');
+      expect(manifest.name).toContain('10 Halls');
+      expect(manifest.description).toContain('34 Exhibits');
+      expect(manifest.description).toContain('10 Halls');
+      expect(manifest.description).toContain('854 Parts');
+      expect(manifestRaw).not.toMatch(WP_CODE_RE);
+      expect(manifestRaw).not.toMatch(CJK_RE);
+
+      // Subpath-safe relative PWA roots for both `/` and `/digital-armory-3d/`
+      expect(manifest.id.startsWith('./')).toBe(true);
+      expect(manifest.start_url.startsWith('./')).toBe(true);
+      expect(manifest.scope.startsWith('./')).toBe(true);
+      expect(manifest.display).toBe('standalone');
+
+      // Every declared icon exists non-empty inside public/
+      expect(manifest.icons.length).toBeGreaterThanOrEqual(1);
+      for (const icon of manifest.icons) {
+        expect(icon.src.startsWith('./')).toBe(true);
+        const iconPath = path.join(REPO_ROOT, 'public', icon.src.replace(/^\.\//, ''));
+        expect(fs.existsSync(iconPath), `Missing manifest icon ${icon.src}`).toBe(true);
+        expect(fs.statSync(iconPath).size).toBeGreaterThan(0);
+      }
+
+      // Every shortcut uses subpath-safe `./?` URL
+      expect(manifest.shortcuts.length).toBeGreaterThanOrEqual(4);
+      for (const sc of manifest.shortcuts) {
+        expect(sc.url.startsWith('./?')).toBe(true);
+        expect(sc.name.trim().length).toBeGreaterThan(0);
+        expect(sc.description.trim().length).toBeGreaterThan(0);
+      }
+
+      // Service worker cache version parity & bounded eviction hygiene
+      const swSrc = fs.readFileSync(
+        path.join(REPO_ROOT, 'public', 'sw.js'),
+        'utf-8'
+      );
+      expect(swSrc).toContain(
+        `const OFFLINE_CACHE_NAME = '${OFFLINE_MUSEUM_CACHE_NAME}'`
+      );
+      expect(swSrc).toContain(
+        `const RUNTIME_CACHE_NAME = '${OFFLINE_RUNTIME_CACHE_NAME}'`
+      );
+      expect(swSrc).toContain('RUNTIME_CACHE_MAX_ENTRIES');
+      expect(swSrc).toContain('status: 503');
     });
   });
 });
