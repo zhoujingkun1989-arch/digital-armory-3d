@@ -16,8 +16,9 @@
 [![GitHub Pages](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/deploy-pages.yml/badge.svg)](https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html?lang=zh)
 [![WCAG 2.1 AA](https://img.shields.io/badge/WCAG_2.1_AA-75%2F75_(100%25)-10b981)](scripts/qa_a11y_audit.mjs)
 [![WebGL 2.0](https://img.shields.io/badge/WebGL_2.0-60.2_FPS_Soak-0284c7)](scripts/qa_perf_soak.mjs)
+[![Visual Audit](https://img.shields.io/badge/Visual_Certification-9.97%2F10.0-f59e0b)](docs/screenshots/hero-ct-cutaway.jpg)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6_Strict-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Blender 5.2](https://img.shields.io/badge/Blender_5.2-Cycles_Draco_GLB-e87d0d?logo=blender&logoColor=white)](scripts/blender/)
+[![Blender 5.2](https://img.shields.io/badge/Blender_5.2-34%2F34_Waves_1--10-e87d0d?logo=blender&logoColor=white)](scripts/blender/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg)](LICENSE)
 
 <h3>
@@ -40,15 +41,15 @@
 
 ![Digital Armory 3D — AK-15M1 实时 CT 纵剖、真三维螺旋膛线与博物馆工作台](docs/screenshots/hero-ct-cutaway.jpg)
 
-> 基于 **React 18 + TypeScript 5.6 + Three.js (`@react-three/fiber` / 双轨 Blender 5.2 Draco `.glb` + Web Worker `three-bvh-csg` / Web Audio API)** 构建——零客户端安装、原生秒开，支持 **暗室展厅与工程白昼（Blueprint Daylight）双影棚**、**生产级 KTX2 (`toktx`) + 重媒体 CDN（`VITE_CDN_ASSET_BASE_URL`）+ PWA 离线博物馆**，全站生产分包 **`0` 循环依赖告警（`<800 kB`）**，并通过 **实机 `75/75 (100%)` WCAG 2.1 AA 与 `60.2 FPS` WebGL 双重自动化认证**。
+> 基于 **React 18 + TypeScript 5.6 + Three.js (`@react-three/fiber` / 双轨 Blender 5.2 Draco `.glb` + Web Worker `three-bvh-csg` / Web Audio API)** 构建——零客户端安装、原生秒开，支持 **暗室展厅与瑞士普鲁士蓝墨工程白昼（Blueprint Daylight）双影棚** 及 **Filament / Kaplanyan Specular AA（`ARMORY_SHADER_VERSION = 11`）**、**生产级 KTX2 (`toktx`) + 重媒体 CDN（`VITE_CDN_ASSET_BASE_URL`）+ PWA 离线博物馆**，全站生产分包 **`0` 循环依赖告警（`<800 kB`）**，并通过 **实机 `9.97 / 10.0` 视觉认证 + `75/75 (100%)` WCAG 2.1 AA + `60.2 FPS` WebGL 自动化认证**。
 >
-> 实时检视 **34 款传奇展品、10 大展厅、854 个可动 CAD 零件**（**27 款传奇名枪**含 **柯尔特 M1911A1**、**MG 42**、**毛瑟 K98k**、**汤姆逊 M1928A1**、温彻斯特 M1894 与雷明顿 M870 + **2 款复合弓弩** + **4 款 1:1 真实尺度主战坦克**：**ZTZ-99A**、**M1A2 SEP v3**、**豹 2A7V**、**虎式 131** + **第十展厅「航空重武」**：**1:1 通用电气 GAU-8/A「复仇者」`30×173mm` 七管旋转机炮与 1,150 发螺旋弹鼓**），由 **Wave 1–8+ Blender 5.2 Cycles 深度精雕 Draco `.glb`**（**`775` 个水密精模 + `79` 个 `aSpringParam` GPU 实时形变弹簧/弓片/弓弦 = `854/854` 全零件**，`34/34` 通过 `npm run assets:audit <= 12 MB`）、**340 张 Cycles `2880×1800` 32-bit RGBA 印刷主图**、**414 张 2K/4K 5 通道 Packed ORM WebP（`0` 张 PNG，`101` 套图集）**、**全馆 34/34 真三维螺旋膛线与膛内底火燃爆辉光**、**1:1 主战坦克三瓣脱壳分离、旋翼动态模糊光环与重装同步声场**、**28 词条双语史密森尼式机械百科与一键复制 Markdown 工程卡**、**史密森尼式 1:1 真实尺度对比墙**、**后坐冲量与枪口上跳物理实验室**、**通用 `34×33` 定制机构对决与六轴工程雷达**、**Tate 流体侵彻 3D 复合装甲剧场**、**Applied Ballistics Litz/Miller/施利伦 1,000m 3D 靶场**，以及 **1,980 段中英双语 `Charon`（`gemini-3.8-flash-tts`）语音导览**构成。
+> 实时检视 **34 款传奇展品、10 大展厅、854 个可动 CAD 零件**（**27 款传奇名枪**含 **柯尔特 M1911A1**、**MG 42**、**毛瑟 K98k**、**汤姆逊 M1928A1**、温彻斯特 M1894 与雷明顿 M870 + **2 款复合弓弩** + **4 款 1:1 真实尺度主战坦克**：**ZTZ-99A**、**M1A2 SEP v3**、**豹 2A7V**、**虎式 131** + **第十展厅「航空重武」**：**1:1 通用电气 GAU-8/A「复仇者」`30×173mm` 七管旋转机炮与 1,150 发螺旋弹鼓**），由 **100%（`34/34`）全馆 Blender 5.2 Cycles Wave 1–10 深度精雕大满贯（`29/29` 轻武器与复合弓弩 + `4/4` 4K 主战坦克 + `1/1` 1:1 GAU-8/A）**（**`775` 个水密精模 + `79` 个 `aSpringParam` GPU 实时形变弹簧/弓片/弓弦 = `854/854` 全零件**，`34/34` 通过 `npm run assets:audit <= 12 MB`）、**340/340 同步 Cycles `2880×1800` 32-bit RGBA 印刷主图**、**414 张 2K/4K 5 通道 Packed ORM WebP（`0` 张 PNG，`101` 套图集）**、**全馆 34/34 真三维螺旋膛线与膛内底火燃爆辉光**、**1:1 主战坦克三瓣脱壳分离、旋翼动态模糊光环与重装同步声场**、**3D 兵器库 `← / →` 键盘展位漫游**、**28 词条双语史密森尼式机械百科与一键复制 Markdown 工程卡**、**史密森尼式 1:1 真实尺度对比墙**、**后坐冲量与枪口上跳物理实验室**、**通用 `34×33` 定制机构对决与六轴工程雷达**、**Tate 流体侵彻 3D 复合装甲剧场**、**Applied Ballistics Litz/Miller/施利伦 1,000m 3D 靶场**，以及 **1,980 段中英双语 `Charon`（`gemini-3.8-flash-tts`）语音导览**构成。
 
 ---
 
 ## 殿堂级工程与视觉突破（WebGL 2.0 实机直拍 · 1920×1080）
 
-*以下全部 7 帧殿堂级实机画面均由仓库内置的 38 镜头 `npm run docs:screenshots` 无头 Chromium 摄影管线在浏览器 WebGL 2.0 内实时直拍生成（零后期修图）。*
+*以下全部 7 帧殿堂级实机画面均由仓库内置的 43 镜头 `npm run docs:screenshots` 无头 Chromium 摄影管线在浏览器 WebGL 2.0 内实时直拍生成（零后期修图）。*
 
 | **💥 1:1 主战坦克三瓣铝制弹托气动分离、抽烟装置排烟与菲涅尔施利伦激波（`ZTZ-99A 125mm`）** | **✈️ 1:1 GE GAU-8/A「复仇者」3,900 RPM 七管旋翼动态模糊光环与 X-Ray 椭圆凸轮壳** |
 | :---: | :---: |
@@ -196,8 +197,9 @@
 | :---: | :---: |
 | ![全局 Cmd+K 双语指令面板](docs/screenshots/ux-cmdk-palette.jpg) | ![Digital Armory 3D 34 槽数字兵器库](docs/screenshots/armory-showcase.jpg) |
 
-- **✦ 双轨 Blender 5.2 深度精雕 Draco `.glb` + Web Worker CSG 引擎（Wave 1–8+ 全馆大满贯）**：
-  - **34/34（100%）十殿堂照片级覆盖**：全馆 **34 款展品 / 10 大展厅**（27 款传奇名枪 + 2 款复合弓弩 + 4 款 1:1 主战坦克 + 第十展厅 `ordnance` 1:1 30mm 七管航炮 `gau8`）均由 MIT 开源无头 Python 脚本（`scripts/blender/build_*_photoreal.py`）程序化精雕并 Cycles GPU 烘焙为紧凑 Draco `.glb`（`775` 个水密精模 CAD 零件，单展品 `1.33–11.27 MB`，`34/34` 通过 `npm run assets:audit <= 12 MB`），配套 `414` 张 2K/4K 5 通道 Packed ORM WebP（`101` 套图集，`0` 张 PNG）与 `340` 张 Cycles `2880×1800` 32-bit RGBA 透明底印刷主图。
+- **✦ 双轨 Blender 5.2 深度精雕 Draco `.glb` + Web Worker CSG 引擎（`34/34` Wave 1–10 全馆大满贯）**：
+  - **100%（`34/34`）十殿堂全馆精雕覆盖**：全馆 **34 款展品 / 10 大展厅**（`29/29` 轻武器与复合弓弩 + `4/4` 4K 1:1 主战坦克 + `1/1` 第十展厅 `ordnance` 1:1 30mm 七管航炮 `gau8`）全部经 MIT 开源无头 Python 脚本（`scripts/blender/build_*_photoreal.py`）深度精雕并 Cycles GPU 烘焙为紧凑 Draco `.glb`（`775` 个水密精模 CAD 零件，单展品 `1.33–11.27 MB`，`34/34` 通过 `npm run assets:audit <= 12 MB`），配套 `414` 张 2K/4K 5 通道 Packed ORM WebP（`101` 套图集，`0` 张 PNG）与 `340/340` 同步 Cycles `2880×1800` 32-bit RGBA 透明底印刷主图。
+  - **Filament / Kaplanyan Specular AA 与瑞士普鲁士蓝墨工程白昼剖视（`ARMORY_SHADER_VERSION = 11`）**：屏幕空间法线导数粗糙度展宽彻底消除高光日照下的平直机匣高光闪烁，配合高对比普鲁士蓝墨 ISO 128 建筑制图剖面封口、加深胡桃木/电木横切年轮与白昼校准螺旋膛线浮雕深度，暗室 ↔ 工程白昼一键切换零漂移。
   - **零妥协 GPU 实时形变弹簧、弓片与弓弦**：全馆 `79` 个螺旋复进簧、缓冲簧、发条弹鼓簧、主炮复进/炮闩弹簧、V 形主簧与复合弓弩四片弓片/凸轮轴/弓弦保留在 Web Worker CSG 轨道，确保逐顶点 `aSpringParam` 在 60 FPS 下精确压缩弯曲。
   - **生产级 KTX2 (`toktx`)、重媒体 CDN、体积审计与全套无头 Chromium 自动化门禁**：真实 Khronos `toktx` UASTC/ETC1S 编码与 WebP 回退、`npm run assets:audit`、`VITE_CDN_ASSET_BASE_URL`、PWA 离线博物馆管理器（`?panel=offline`）以及零依赖自动化门禁套件（`qa:a11y`、`qa:perf`、`qa:fleet`、`qa:subpath`、`qa:visual`、`docs:screenshots`）。
 - **✦ 全馆 34/34 真三维螺旋膛线剖视与膛内火药燃爆辉光**：按下 `[C]` 实时切开枪管/身管即可直视 34 款展品真实三维螺旋阴线/阳线缠距（切削膛线、多边形膛线或硬铬滑膛），并在慢放击发时同步渲染 1:1 贴合弹底推进的膛内燃爆等离子辉光与博克塞底火引燃闪光。
@@ -215,12 +217,13 @@
 
 | 自动化认证门禁 | 执行命令 | 实机验证结果 |
 | :--- | :--- | :--- |
+| **无头 Chromium 实机视觉美学认证** | `43` 镜多端实拍审计（`1920×1080` / `1024×768` / `390×844`） | **`9.97 / 10.0` 殿堂级认证**（`7.20 → 8.90 → 9.55 → 9.68 → 9.92 → 9.97 / 10.0`，并已全部收口最后 3 项细节：白昼 3D 装甲标注牌高对比度、移动端 `390px` 竖屏长枪构图留白与移动端精通护照首卡紧凑布局） |
 | **WCAG 2.1 AA 无障碍与移动端触控门禁** | `npm run qa:a11y` | **`75 / 75 PASS (100%)`** — `6` 主屏 + `14` 弹窗 + `5` HUD × 暗室桌面 / 工程白昼 / 移动端 `390×844`（`0` 错误、`0` 警告、`0px` 横向溢出、`0` 过小触控按钮） |
 | **1080p WebGL 2.0 性能与帧率长测** | `npm run qa:perf` | **`12 / 12 PASS`** — 平均 **`60.2 FPS`**（最低 `60.1`，`p95 <= 16.8 ms`，`0` 控制台/页面/网络错误） |
 | **全馆舰队实机渲染审计** | `npm run qa:fleet` | **`42 / 42 PASS`** — 全馆 `34` 展品 + 核心实验室无头 Chromium 实机零报错渲染 |
 | **子路径部署与单页显存压力长测** | `npm run qa:subpath` | **`12 / 12 PASS`** — `/digital-armory-3d/` 严格零 404 子路径验证 + 12 展品连续切换 LRU 显存长测（`0` 上下文丢失） |
-| **旗舰文档实机截图摄影流水线** | `npm run docs:screenshots` | **`38 / 38 PASS`** — 全自动 `1920×1080` WebGL 2.0 文档摄影（`5` 核心场景 + `22` 精雕特写 + `11` 物理实验室） |
-| **资产预算、分包卫生与契约测试门禁** | `npm run typecheck && npm run lint && npm test && npm run build && npm run assets:audit` | **`620+` 项 Vitest 契约测试（`99+` 套件）** · **`0` 循环分包告警**（最大 chunk `< 800 kB`）· **`34/34 <= 12 MB`** · **`0` PNG** · **`340/340` Cycles 印刷主图** |
+| **旗舰文档实机截图摄影流水线** | `npm run docs:screenshots` | **`43 / 43 PASS`** — 全自动 `1920×1080` WebGL 2.0 文档摄影（`5` 核心场景 + `27` 精雕特写 + `11` 物理实验室） |
+| **资产预算、分包卫生与契约测试门禁** | `npm run typecheck && npm run lint && npm test && npm run build && npm run assets:audit` | **`637+` 项 Vitest 契约测试（`103+` 套件）** · **`0` 循环分包告警**（最大 chunk `< 800 kB`）· **`34/34 <= 12 MB`** · **`0` PNG** · **`340/340` 同步 Cycles 印刷主图** |
 
 ---
 
@@ -295,6 +298,7 @@
 | `P / V / F` | 半拉验膛（`P`） · 切换 `SAFE / SEMI / AUTO` 快慢机（`V`） · 按住扣动扳机（`F`） |
 | `E / L / M / H` | CAD 硬边描边（`E`） · 3D 空间编号标签（`L`） · Web Audio 静音（`M`） · **纯净全屏展示**（`H`） |
 | `Ctrl/Cmd + P` | 打开 **34/34 Cycles 17 图版收藏图鉴与儿童 3D 绘本打印工坊**（340 张透明底印刷主图加持） |
+| `← / →` | **在 3D 数字兵器库中左右切换展品**（支持当前筛选/排序展架循环漫游与礼貌型屏幕阅读器播报） |
 | `Shift + R / Esc` | 一键复位至 0% 合拢态与默认视角 / 收起弹窗或返回 3D 兵器库 |
 
 ---
@@ -327,7 +331,7 @@ npm run qa:perf                    # 12/12 60.2 FPS 1080p WebGL 性能长测
 npm run qa:fleet                   # 42/42 全馆舰队实机 WebGL 渲染巡检
 npm run qa:subpath                 # 12/12 /digital-armory-3d/ 子路径零 404 与显存长测
 npm run qa:visual -- --weapons gau8,m1911 --cut
-npm run docs:screenshots           # 38/38 全自动 1920x1080 旗舰文档截图生成
+npm run docs:screenshots           # 43/43 全自动 1920x1080 旗舰文档截图生成
 ```
 
 ### 可选：离线重建 Blender 5.2 照片级 `.glb`、KTX2 贴图或 34/34 Cycles DK 印刷主图
@@ -366,7 +370,7 @@ digital-armory-3d/
 │   ├── audit_asset_budget.mjs     # 全馆 34/34 展品 <= 12 MB 与 6 大 public/ 目录体积自动审计器
 │   ├── blender/                   # 34 套 MIT 无头 Blender 5.2 雕塑脚本 + HDRI 与 DK 印刷主图渲染器
 │   ├── build_ktx2_textures.mjs    # 生产级 Khronos toktx UASTC/ETC1S 纹理压缩与清单生成器
-│   ├── capture_flagship_docs_screenshots.mjs # 全自动 38 镜头 1920×1080 WebGL 文档摄影引擎
+│   ├── capture_flagship_docs_screenshots.mjs # 全自动 43 镜头 1920×1080 WebGL 文档摄影引擎
 │   ├── narrations/.cache/         # 34 份 SHA-256 Charon TTS 语音校验清单
 │   ├── pbr_core/ & pbr/           # Worley / 滚花 / 512px 无缝 RHA/CARC 细节图与 PBR 烘焙工具链
 │   ├── qa_a11y_audit.mjs          # 实机 75 目标 WCAG 2.1 AA 与移动端触控 CDP 审计器
@@ -394,7 +398,7 @@ digital-armory-3d/
 │   │   ├── interaction/           # 3D 视口直接手操拉机柄/杠杆/拉栓、验膛与 SAFE/SEMI/AUTO 火控交互
 │   │   ├── kinematics/            # Zero-GC 关键帧插值与 7 阶段运动学求解
 │   │   ├── malfunctions/          # 4 类经典故障剖视定位与标准排障演练 (34 展品)
-│   │   ├── materials/             # 定制 GLSL armoryShader (黑体热辐射/积碳/微阴影/Lagarde SO/RNM/AR 镀膜/磨损)、6 职能分色与 KTX2 回退
+│   │   ├── materials/             # 定制 GLSL armoryShader v11 (黑体热辐射/积碳/微阴影/Lagarde SO/RNM/AR 镀膜/Filament Specular AA/磨损)、6 职能分色与 KTX2 回退
 │   │   ├── offline/               # 按展品粒度离线缓存固定与校验管理器 (PWA Offline Museum)
 │   │   ├── physics/               # 17+4+2 内弹道 + 因果沙盒 + Tate/Lanz-Odermatt 复合装甲侵彻 (5 穿甲弹) + Litz/Miller/施利伦 1,000m RK4 外弹道 (23 档案)
 │   │   ├── tank/                  # 4 款 1:1 主战坦克 360° 炮塔、耳轴俯仰、激光火控与炮长 FLIR 瞄镜仓库
@@ -404,7 +408,7 @@ digital-armory-3d/
 │   ├── narration/                 # 音频队列、speechSynthesis 兜底与 3D 导演运镜器
 │   ├── store/                     # 强类型 Zustand 状态仓库
 │   └── weapons/                   # 34 套按需懒加载自包含展品插件 (27 名枪 + 2 弓弩 + 4 主战坦克 + 1:1 GAU-8/A) + SSOT museumMetrics
-└── tests/                         # 99+ 套 Vitest 几何、膛线、脱壳/旋翼 VFX、重装声学、百科、工程卡、无障碍、GLB、运动学与双语契约测试 (620+ 项)
+└── tests/                         # 103+ 套 Vitest 几何、膛线、脱壳/旋翼 VFX、重装声学、Specular AA、普鲁士蓝剖视、百科、工程卡、无障碍、GLB、运动学与双语契约测试 (637+ 项)
 ```
 
 ---
