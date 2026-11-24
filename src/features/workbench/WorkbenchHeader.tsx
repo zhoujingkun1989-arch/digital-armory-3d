@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Activity,
   ArrowLeft,
   Award,
   BookOpen,
@@ -14,11 +15,13 @@ import {
   GitCompareArrows,
   HardDrive,
   Image as ImageIcon,
+  Keyboard,
   Layers,
   Menu,
   Palette,
   Printer,
   RotateCcw,
+  RotateCw,
   Ruler,
   Scissors,
   Share2,
@@ -33,6 +36,7 @@ import {
   Wrench,
   X,
 } from 'lucide-react';
+import { openKeyboardShortcutsModal } from '../../app/useKeyboardShortcuts';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { DEFAULT_ATTACHMENT_LOADOUT } from '../../engine/attachments/attachmentSpecs';
 import { useAttachmentStore } from '../../engine/attachments/attachmentStore';
@@ -83,6 +87,8 @@ export const WorkbenchHeader: React.FC = () => {
   const showLabels = useAppStore((s) => s.showLabels);
   const sfxMuted = useAppStore((s) => s.sfxMuted);
   const hudHidden = useAppStore((s) => s.hudHidden);
+  const gpuTelemetryOpen = useAppStore((s) => s.gpuTelemetryOpen);
+  const workbenchAutoOrbit = useAppStore((s) => s.workbenchAutoOrbit);
   const cameraPreset = useAppStore((s) => s.cameraCommand.preset);
 
   const togglePbrTextures = useAppStore((s) => s.togglePbrTextures);
@@ -119,6 +125,10 @@ export const WorkbenchHeader: React.FC = () => {
   const toggleShowEdges = useAppStore((s) => s.toggleShowEdges);
   const toggleShowLabels = useAppStore((s) => s.toggleShowLabels);
   const toggleSfxMuted = useAppStore((s) => s.toggleSfxMuted);
+  const toggleGpuTelemetry = useAppStore((s) => s.toggleGpuTelemetry);
+  const toggleWorkbenchAutoOrbit = useAppStore(
+    (s) => s.toggleWorkbenchAutoOrbit
+  );
   const triggerCameraPreset = useAppStore((s) => s.triggerCameraPreset);
   const resetAll = useAppStore((s) => s.resetAll);
 
@@ -146,6 +156,7 @@ export const WorkbenchHeader: React.FC = () => {
     causalitySandboxOpen ||
     armorPenetrationModalOpen ||
     (isTank && tankCrewActive) ||
+    gpuTelemetryOpen ||
     showEdges ||
     !pbrTexturesEnabled;
 
@@ -281,6 +292,23 @@ export const WorkbenchHeader: React.FC = () => {
               {ui.viewAngles[key]}
             </button>
           ))}
+          <button
+            type="button"
+            className={`cam-btn wb-orbit-btn ${workbenchAutoOrbit ? 'active' : ''}`}
+            aria-pressed={workbenchAutoOrbit}
+            title={ui.orbitTitle(workbenchAutoOrbit)}
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              toggleWorkbenchAutoOrbit();
+            }}
+          >
+            <RotateCw
+              size={11}
+              className={workbenchAutoOrbit ? 'wb-orbit-spinning' : undefined}
+              aria-hidden="true"
+            />
+            <span>{ui.orbitBtn}</span>
+          </button>
         </div>
 
         <div className="toolbar-divider" />
@@ -726,6 +754,25 @@ export const WorkbenchHeader: React.FC = () => {
                       <kbd className="popover-kbd">L</kbd>
                     </button>
                   )}
+
+                  <button
+                    type="button"
+                    role="menuitemcheckbox"
+                    aria-checked={gpuTelemetryOpen}
+                    className={`toggle-chip ${
+                      gpuTelemetryOpen ? 'active-emerald' : ''
+                    }`}
+                    onClick={() => {
+                      playWorkbenchFoley('toggle_switch');
+                      toggleGpuTelemetry();
+                      setToolsMenuOpen(false);
+                    }}
+                    title={ui.gpuTelemetryChipTitle}
+                    data-testid="wb-gpu-telemetry-toggle"
+                  >
+                    <Activity size={13} aria-hidden="true" />
+                    <span>{ui.gpuTelemetryChip}</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -769,6 +816,20 @@ export const WorkbenchHeader: React.FC = () => {
             <Volume2 size={13} aria-hidden="true" />
           )}
           <span>{ui.sfxChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className="toggle-chip wb-ghost-chip wb-shortcuts-btn"
+          aria-label={ui.shortcutsChipTitle}
+          title={ui.shortcutsChipTitle}
+          onClick={() => {
+            playWorkbenchFoley('toggle_switch');
+            openKeyboardShortcutsModal();
+          }}
+        >
+          <Keyboard size={13} aria-hidden="true" />
+          <kbd className="wb-shortcuts-kbd">?</kbd>
         </button>
 
         <button

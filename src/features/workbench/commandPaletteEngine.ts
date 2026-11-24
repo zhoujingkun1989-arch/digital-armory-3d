@@ -1680,6 +1680,79 @@ export function buildCommandPaletteItems(
       },
     },
     {
+      id: 'action:gpu-telemetry',
+      group: 'actions',
+      icon: 'edges',
+      title: UI_STRINGS[lang].workbench.gpuTelemetryCmdTitle,
+      subtitle: UI_STRINGS[lang].workbench.gpuTelemetryCmdSub,
+      statusBadge: state.gpuTelemetryOpen
+        ? str.modal.onBadge
+        : str.modal.offBadge,
+      statusTone: state.gpuTelemetryOpen ? 'emerald' : 'muted',
+      isActive: state.gpuTelemetryOpen,
+      primaryFields: [
+        UI_STRINGS[lang].workbench.gpuTelemetryCmdTitle,
+        'GPU & WebGL Telemetry',
+        'FPS Draw Calls Memory',
+        '实时 GPU 性能遥测',
+        '帧率 显存',
+      ],
+      secondaryFields: [
+        'gpu',
+        'fps',
+        'webgl',
+        'telemetry',
+        'vram',
+        'memory',
+        'perf',
+        'performance',
+        'draw',
+        'ktx2',
+        'lru',
+        '性能',
+        '遥测',
+        '帧率',
+        '显存',
+      ],
+      execute: () => {
+        playWorkbenchFoley('toggle_switch');
+        useAppStore.getState().toggleGpuTelemetry();
+      },
+    },
+    {
+      id: 'action:workbench-orbit',
+      group: 'actions',
+      icon: 'reset',
+      title:
+        lang === 'en' ? 'Workbench Auto-Orbit' : '工作台展厅环绕检视',
+      subtitle: UI_STRINGS[lang].workbench.orbitTitle(
+        state.workbenchAutoOrbit
+      ),
+      statusBadge: state.workbenchAutoOrbit
+        ? str.modal.onBadge
+        : str.modal.offBadge,
+      statusTone: state.workbenchAutoOrbit ? 'cyan' : 'muted',
+      isActive: state.workbenchAutoOrbit,
+      primaryFields: [
+        lang === 'en' ? 'Workbench Auto-Orbit' : '工作台展厅环绕检视',
+        'Orbit Camera Rotate',
+        '环绕 旋转 检视',
+      ],
+      secondaryFields: [
+        'orbit',
+        'turntable',
+        'spin',
+        'rotate',
+        'camera',
+        '环绕',
+        '自动旋转',
+      ],
+      execute: () => {
+        playWorkbenchFoley('toggle_switch');
+        useAppStore.getState().toggleWorkbenchAutoOrbit();
+      },
+    },
+    {
       id: 'action:keyboard-shortcuts',
       group: 'actions',
       icon: 'story',

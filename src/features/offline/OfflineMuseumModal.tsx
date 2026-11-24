@@ -45,7 +45,7 @@ const ARMOR_HALL_IDS = ['ztz99a', 'm1a2', 'leopard2a7', 'tiger1'] as const;
 
 export const OFFLINE_MUSEUM_STRINGS = {
   zh: {
-    badge: 'WP-25a · PWA 离线博物馆 & GPU KTX2 管线',
+    badge: 'PWA 离线博物馆 · GPU KTX2 管线',
     title: '离线博物馆缓存包与硬件纹理管线中心',
     subtitle:
       '将全馆 Draco .glb 3D 精模、双语四幕语音剧本、2K/4K 5 通道 ORM 贴图与 HDRI 环境光预缓存至独立保护库，断网环境仍可零卡顿独立运行',
@@ -77,7 +77,7 @@ export const OFFLINE_MUSEUM_STRINGS = {
     unsupportedStatus: '当前浏览器环境不支持 Cache Storage 离线缓存 API',
   },
   en: {
-    badge: 'WP-25a · PWA OFFLINE MUSEUM & KTX2 PIPELINE',
+    badge: 'OFFLINE VAULT · PWA & KTX2 PIPELINE',
     title: 'Offline Museum Package Cache & GPU Texture Pipeline',
     subtitle:
       'Pre-cache Draco .glb 3D models, bilingual story scripts, 2K/4K 5-channel ORM maps, and HDRI lighting into protected Service Worker storage for air-gapped offline browsing',

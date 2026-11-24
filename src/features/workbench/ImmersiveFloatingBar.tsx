@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Eye, Maximize2, Minimize2 } from 'lucide-react';
+import { Eye, Keyboard, Maximize2, Minimize2 } from 'lucide-react';
 import { useBrowserFullscreen } from '../../app/useFullscreen';
+import { openKeyboardShortcutsModal } from '../../app/useKeyboardShortcuts';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { useAppStore } from '../../store/useAppStore';
@@ -157,6 +158,22 @@ const ImmersiveFloatingBarBody: React.FC = () => {
           </span>
         </button>
       )}
+
+      <button
+        type="button"
+        className="immersive-ctrl-btn immersive-shortcuts-btn"
+        aria-label={UI_STRINGS[lang].workbench.shortcutsChipTitle}
+        title={UI_STRINGS[lang].workbench.shortcutsChipTitle}
+        onClick={() => {
+          playWorkbenchFoley('toggle_switch');
+          openKeyboardShortcutsModal();
+        }}
+      >
+        <Keyboard size={13} aria-hidden="true" />
+        <kbd className="immersive-kbd" aria-hidden="true">
+          ?
+        </kbd>
+      </button>
 
       <button
         ref={restoreBtnRef}

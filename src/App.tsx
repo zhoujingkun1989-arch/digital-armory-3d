@@ -75,6 +75,11 @@ const LazyOfflineMuseumModal = lazy(
 const LazyKeyboardShortcutsModal = lazy(
   () => import('./features/workbench/KeyboardShortcutsModal')
 );
+const LazyGpuTelemetryOverlay = lazy(() =>
+  import('./features/workbench/GpuTelemetryOverlay').then((m) => ({
+    default: m.GpuTelemetryOverlay,
+  }))
+);
 
 export const App: React.FC = () => {
   useUrlStateSync();
@@ -113,7 +118,10 @@ export const App: React.FC = () => {
   const tankCrewActive = useTankCrewStore((s) => s.active);
   const attachmentBenchOpen = useAttachmentStore((s) => s.benchOpen);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
+  const graphicsQuality = useAppStore((s) => s.graphicsQuality);
   const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
+  const gpuTelemetryOpen = useAppStore((s) => s.gpuTelemetryOpen);
+  const setGpuTelemetryOpen = useAppStore((s) => s.setGpuTelemetryOpen);
   const sectionCut = useAppStore((s) => s.sectionCut);
   const engineeringTint = useAppStore((s) => s.engineeringTint);
   const fieldStripActive = useAppStore((s) => s.fieldStripActive);
@@ -315,6 +323,19 @@ export const App: React.FC = () => {
       {keyboardShortcutsOpen && (
         <Suspense fallback={null}>
           <LazyKeyboardShortcutsModal onClose={closeKeyboardShortcutsModal} />
+        </Suspense>
+      )}
+
+      {/* Lazy-loaded Zero-Overhead Real-Time GPU & Memory Telemetry HUD */}
+      {gpuTelemetryOpen && (
+        <Suspense fallback={null}>
+          <LazyGpuTelemetryOverlay
+            open={gpuTelemetryOpen}
+            onClose={() => setGpuTelemetryOpen(false)}
+            lang={lang}
+            qualityTier={graphicsQuality}
+            theme={uiTheme}
+          />
         </Suspense>
       )}
     </div>

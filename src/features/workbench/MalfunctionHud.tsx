@@ -311,7 +311,7 @@ export const MalfunctionHud: React.FC = () => {
                 </div>
                 <div className="exam-cert-titles">
                   <div className="exam-cert-overline">
-                    <span>{exUi.triage.certBadge}</span>
+                    <span>{ui.certBadge}</span>
                     {triage.isNewRecord && (
                       <span className="exam-new-record-pill">
                         {exUi.common.newRecordBadge}
