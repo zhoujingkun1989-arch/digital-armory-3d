@@ -75,6 +75,9 @@ const LazyOfflineMuseumModal = lazy(
 const LazyScaleWallModal = lazy(
   () => import('./features/scalewall/ScaleWallModal')
 );
+const LazyRecoilLabModal = lazy(
+  () => import('./features/recoillab/RecoilLabModal')
+);
 const LazyKeyboardShortcutsModal = lazy(
   () => import('./features/workbench/KeyboardShortcutsModal')
 );
@@ -118,6 +121,8 @@ export const App: React.FC = () => {
   const closeOfflineModal = useAppStore((s) => s.closeOfflineModal);
   const scaleWallModalOpen = useAppStore((s) => s.scaleWallModalOpen);
   const closeScaleWallModal = useAppStore((s) => s.closeScaleWallModal);
+  const recoilLabOpen = useAppStore((s) => s.recoilLabOpen);
+  const closeRecoilLab = useAppStore((s) => s.closeRecoilLab);
   const keyboardShortcutsOpen = useKeyboardShortcutsModalOpen();
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const tankCrewActive = useTankCrewStore((s) => s.active);
@@ -328,6 +333,13 @@ export const App: React.FC = () => {
       {scaleWallModalOpen && (
         <Suspense fallback={null}>
           <LazyScaleWallModal onClose={closeScaleWallModal} />
+        </Suspense>
+      )}
+
+      {/* Lazy-loaded Interactive Recoil Impulse & Muzzle-Climb Physics Lab */}
+      {recoilLabOpen && (
+        <Suspense fallback={null}>
+          <LazyRecoilLabModal onClose={closeRecoilLab} />
         </Suspense>
       )}
 

@@ -180,6 +180,8 @@ export const ShowcaseView: React.FC = () => {
     (s) => s.openArmorPenetrationModal
   );
   const openPosterModal = useAppStore((s) => s.openPosterModal);
+  const openScaleWallModal = useAppStore((s) => s.openScaleWallModal);
+  const openRecoilLab = useAppStore((s) => s.openRecoilLab);
 
   const s = SHOWCASE_STRINGS[lang];
 
@@ -896,6 +898,61 @@ export const ShowcaseView: React.FC = () => {
                 <p>{s.physicsLabs.cards.monograph.desc}</p>
                 <span className="lab-card-cta">
                   <span>{s.physicsLabs.cards.monograph.cta(shortWeaponTag)}</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </span>
+              </button>
+            </div>
+
+            <div
+              className="labs-bento-grid labs-bento-grid-duo"
+              style={{
+                gridTemplateColumns:
+                  'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
+                marginTop: 14,
+              }}
+            >
+              <button
+                type="button"
+                className="lab-bento-card lab-accent-cyan"
+                data-testid="showcase-lab-scalewall"
+                onClick={() => openScaleWallModal()}
+                title={UI_STRINGS[lang].workbench.scaleWallChipTitle}
+              >
+                <div className="lab-card-top">
+                  <span className="lab-card-icon">
+                    <Ruler size={17} aria-hidden="true" />
+                  </span>
+                  <span className="lab-card-badge">
+                    {s.physicsLabs.cards.scaleWall.badge}
+                  </span>
+                </div>
+                <h3>{s.physicsLabs.cards.scaleWall.title}</h3>
+                <p>{s.physicsLabs.cards.scaleWall.desc}</p>
+                <span className="lab-card-cta">
+                  <span>{s.physicsLabs.cards.scaleWall.cta}</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="lab-bento-card lab-accent-amber"
+                data-testid="showcase-lab-recoil"
+                onClick={() => openRecoilLab()}
+                title={UI_STRINGS[lang].workbench.recoilLabChipTitle}
+              >
+                <div className="lab-card-top">
+                  <span className="lab-card-icon">
+                    <Gauge size={17} aria-hidden="true" />
+                  </span>
+                  <span className="lab-card-badge">
+                    {s.physicsLabs.cards.recoilLab.badge}
+                  </span>
+                </div>
+                <h3>{s.physicsLabs.cards.recoilLab.title}</h3>
+                <p>{s.physicsLabs.cards.recoilLab.desc}</p>
+                <span className="lab-card-cta">
+                  <span>{s.physicsLabs.cards.recoilLab.cta}</span>
                   <ArrowRight size={14} aria-hidden="true" />
                 </span>
               </button>

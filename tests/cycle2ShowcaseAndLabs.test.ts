@@ -85,10 +85,10 @@ describe('Cycle 2B · Showcase Luxury Overhaul, APFSDS Lab, 3D-First Range & Spl
       expect(htmlEn).toContain('stage-weapon-carousel');
       expect((htmlEn.match(/stage-carousel-arrow/g) ?? []).length).toBe(2);
 
-      // Below-fold Explore 3D Physics Theaters & Engineering Labs bento with all 8 destinations
+      // Below-fold Explore 3D Physics Theaters & Engineering Labs bento with all 10 destinations
       expect(htmlEn).toContain('id="physics-labs"');
       expect(htmlEn).toContain('labs-bento-grid');
-      expect((htmlEn.match(/lab-bento-card/g) ?? []).length).toBe(8);
+      expect((htmlEn.match(/lab-bento-card/g) ?? []).length).toBe(10);
 
       // Zero CJK leaks in English ShowcaseView (except language toggle pill '中文')
       expect(CJK_RE.test(htmlEn.replace(/中文/g, ''))).toBe(false);

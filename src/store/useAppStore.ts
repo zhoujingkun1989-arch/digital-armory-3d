@@ -277,6 +277,7 @@ export interface AppState {
   timelineModalOpen: boolean;
   offlineModalOpen: boolean;
   scaleWallModalOpen: boolean;
+  recoilLabOpen: boolean;
   commandPaletteOpen: boolean;
   xrayShells: boolean;
   sectionCut: boolean;
@@ -430,6 +431,10 @@ export interface AppState {
   setScaleWallModalOpen: (open: boolean) => void;
   openScaleWallModal: () => void;
   closeScaleWallModal: () => void;
+  setRecoilLabOpen: (open: boolean) => void;
+  openRecoilLab: () => void;
+  closeRecoilLab: () => void;
+  toggleRecoilLab: () => void;
   setCommandPaletteOpen: (open: boolean) => void;
   openCommandPalette: () => void;
   closeCommandPalette: () => void;
@@ -520,6 +525,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   timelineModalOpen: false,
   offlineModalOpen: false,
   scaleWallModalOpen: false,
+  recoilLabOpen: false,
   commandPaletteOpen: false,
   xrayShells: false,
   sectionCut: false,
@@ -741,6 +747,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         isPlaying: false,
         isFiringPlaying: false,
         textureModalOpen: false,
+        scaleWallModalOpen: false,
+        recoilLabOpen: false,
         commandPaletteOpen: false,
         xrayShells: true,
         sectionCut: false,
@@ -795,6 +803,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       textureModalOpen: false,
       posterShareModalOpen: false,
       posterShareOptions: null,
+      scaleWallModalOpen: false,
+      recoilLabOpen: false,
       xrayShells: false,
       sectionCut: false,
       sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
@@ -850,6 +860,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       textureModalOpen: false,
       posterShareModalOpen: false,
       posterShareOptions: null,
+      scaleWallModalOpen: false,
+      recoilLabOpen: false,
       commandPaletteOpen: false,
       sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
       sectionCutFlip: false,
@@ -918,6 +930,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       monographModalOpen: false,
       posterShareModalOpen: false,
       posterShareOptions: null,
+      scaleWallModalOpen: false,
+      recoilLabOpen: false,
       commandPaletteOpen: false,
       sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
       sectionCutFlip: false,
@@ -970,6 +984,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       monographModalOpen: false,
       posterShareModalOpen: false,
       posterShareOptions: null,
+      scaleWallModalOpen: false,
+      recoilLabOpen: false,
       commandPaletteOpen: false,
       xrayShells: false,
       sectionCut: false,
@@ -1067,6 +1083,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         isPlaying: false,
         isFiringPlaying: true,
         textureModalOpen: false,
+        scaleWallModalOpen: false,
+        recoilLabOpen: false,
         commandPaletteOpen: false,
         xrayShells: true,
         sectionCut: false,
@@ -1101,6 +1119,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         isPlaying: false,
         isFiringPlaying: false,
         textureModalOpen: false,
+        scaleWallModalOpen: false,
+        recoilLabOpen: false,
         commandPaletteOpen: false,
         xrayShells: false,
         sectionCut: false,
@@ -1145,6 +1165,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       textureModalOpen: false,
       posterShareModalOpen: false,
       posterShareOptions: null,
+      scaleWallModalOpen: false,
+      recoilLabOpen: false,
       xrayShells: false,
       sectionCut: false,
       sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
@@ -1366,6 +1388,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       textureModalOpen,
       monographModalOpen: textureModalOpen ? false : s.monographModalOpen,
       posterShareModalOpen: textureModalOpen ? false : s.posterShareModalOpen,
+      scaleWallModalOpen: textureModalOpen ? false : s.scaleWallModalOpen,
+      recoilLabOpen: textureModalOpen ? false : s.recoilLabOpen,
       commandPaletteOpen: textureModalOpen ? false : s.commandPaletteOpen,
       hudHidden: textureModalOpen ? false : s.hudHidden,
     })),
@@ -1377,6 +1401,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       monographLaunchOptions: options,
       textureModalOpen: false,
       posterShareModalOpen: false,
+      scaleWallModalOpen: false,
+      recoilLabOpen: false,
       commandPaletteOpen: false,
       hudHidden: false,
     })),
@@ -1401,6 +1427,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       isFiringPlaying: false,
       textureModalOpen: false,
       monographModalOpen: false,
+      scaleWallModalOpen: false,
+      recoilLabOpen: false,
       commandPaletteOpen: false,
       hudHidden: false,
     })),
@@ -1447,6 +1475,10 @@ export const useAppStore = create<AppState>((set, get) => ({
       posterShareModalOpen: armorPenetrationModalOpen
         ? false
         : s.posterShareModalOpen,
+      scaleWallModalOpen: armorPenetrationModalOpen
+        ? false
+        : s.scaleWallModalOpen,
+      recoilLabOpen: armorPenetrationModalOpen ? false : s.recoilLabOpen,
       commandPaletteOpen: armorPenetrationModalOpen
         ? false
         : s.commandPaletteOpen,
@@ -1465,6 +1497,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         monographModalOpen: false,
         posterShareModalOpen: false,
         scaleWallModalOpen: false,
+        recoilLabOpen: false,
         commandPaletteOpen: false,
         hudHidden: false,
       };
@@ -1489,6 +1522,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         : s.armorPenetrationModalOpen,
       passportModalOpen: directorReelModalOpen ? false : s.passportModalOpen,
       scaleWallModalOpen: directorReelModalOpen ? false : s.scaleWallModalOpen,
+      recoilLabOpen: directorReelModalOpen ? false : s.recoilLabOpen,
       commandPaletteOpen: directorReelModalOpen
         ? false
         : s.commandPaletteOpen,
@@ -1511,6 +1545,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         ? false
         : s.directorReelModalOpen,
       scaleWallModalOpen: passportModalOpen ? false : s.scaleWallModalOpen,
+      recoilLabOpen: passportModalOpen ? false : s.recoilLabOpen,
       commandPaletteOpen: passportModalOpen ? false : s.commandPaletteOpen,
       hudHidden: passportModalOpen ? false : s.hudHidden,
     })),
@@ -1531,6 +1566,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       passportModalOpen: timelineModalOpen ? false : s.passportModalOpen,
       offlineModalOpen: timelineModalOpen ? false : s.offlineModalOpen,
       scaleWallModalOpen: timelineModalOpen ? false : s.scaleWallModalOpen,
+      recoilLabOpen: timelineModalOpen ? false : s.recoilLabOpen,
       commandPaletteOpen: timelineModalOpen ? false : s.commandPaletteOpen,
       hudHidden: timelineModalOpen ? false : s.hudHidden,
     })),
@@ -1549,6 +1585,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       passportModalOpen: offlineModalOpen ? false : s.passportModalOpen,
       timelineModalOpen: offlineModalOpen ? false : s.timelineModalOpen,
       scaleWallModalOpen: offlineModalOpen ? false : s.scaleWallModalOpen,
+      recoilLabOpen: offlineModalOpen ? false : s.recoilLabOpen,
       commandPaletteOpen: offlineModalOpen ? false : s.commandPaletteOpen,
       hudHidden: offlineModalOpen ? false : s.hudHidden,
     })),
@@ -1571,11 +1608,32 @@ export const useAppStore = create<AppState>((set, get) => ({
       passportModalOpen: scaleWallModalOpen ? false : s.passportModalOpen,
       timelineModalOpen: scaleWallModalOpen ? false : s.timelineModalOpen,
       offlineModalOpen: scaleWallModalOpen ? false : s.offlineModalOpen,
+      recoilLabOpen: scaleWallModalOpen ? false : s.recoilLabOpen,
       commandPaletteOpen: scaleWallModalOpen ? false : s.commandPaletteOpen,
       hudHidden: scaleWallModalOpen ? false : s.hudHidden,
     })),
   openScaleWallModal: () => get().setScaleWallModalOpen(true),
   closeScaleWallModal: () => get().setScaleWallModalOpen(false),
+  setRecoilLabOpen: (recoilLabOpen) =>
+    set((s) => ({
+      recoilLabOpen,
+      textureModalOpen: recoilLabOpen ? false : s.textureModalOpen,
+      monographModalOpen: recoilLabOpen ? false : s.monographModalOpen,
+      posterShareModalOpen: recoilLabOpen ? false : s.posterShareModalOpen,
+      armorPenetrationModalOpen: recoilLabOpen
+        ? false
+        : s.armorPenetrationModalOpen,
+      directorReelModalOpen: recoilLabOpen ? false : s.directorReelModalOpen,
+      passportModalOpen: recoilLabOpen ? false : s.passportModalOpen,
+      timelineModalOpen: recoilLabOpen ? false : s.timelineModalOpen,
+      offlineModalOpen: recoilLabOpen ? false : s.offlineModalOpen,
+      scaleWallModalOpen: recoilLabOpen ? false : s.scaleWallModalOpen,
+      commandPaletteOpen: recoilLabOpen ? false : s.commandPaletteOpen,
+      hudHidden: recoilLabOpen ? false : s.hudHidden,
+    })),
+  openRecoilLab: () => get().setRecoilLabOpen(true),
+  closeRecoilLab: () => get().setRecoilLabOpen(false),
+  toggleRecoilLab: () => get().setRecoilLabOpen(!get().recoilLabOpen),
   setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
   openCommandPalette: () => set({ commandPaletteOpen: true }),
   closeCommandPalette: () => set({ commandPaletteOpen: false }),
@@ -1600,6 +1658,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         isPlaying: false,
         isFiringPlaying: false,
         textureModalOpen: false,
+        scaleWallModalOpen: false,
+        recoilLabOpen: false,
         commandPaletteOpen: false,
         hudHidden: false,
         inspectorMinimized: false,
@@ -1964,6 +2024,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       timelineModalOpen: false,
       offlineModalOpen: false,
       scaleWallModalOpen: false,
+      recoilLabOpen: false,
       commandPaletteOpen: false,
       selectedPartId: null,
       hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },

@@ -118,6 +118,7 @@ export const WorkbenchHeader: React.FC = () => {
   const openTimelineModal = useAppStore((s) => s.openTimelineModal);
   const openOfflineModal = useAppStore((s) => s.openOfflineModal);
   const openScaleWallModal = useAppStore((s) => s.openScaleWallModal);
+  const openRecoilLab = useAppStore((s) => s.openRecoilLab);
   const tankCrewActive = useTankCrewStore((s) => s.active);
   const toggleTankCrew = useTankCrewStore((s) => s.toggleActive);
   const attachmentBenchOpen = useAttachmentStore((s) => s.benchOpen);
@@ -695,6 +696,22 @@ export const WorkbenchHeader: React.FC = () => {
                   >
                     <Ruler size={13} aria-hidden="true" />
                     <span>{ui.scaleWallChip}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    data-testid="wb-recoil-lab-btn"
+                    onClick={() => {
+                      playWorkbenchFoley('preset_detent');
+                      setToolsMenuOpen(false);
+                      openRecoilLab();
+                    }}
+                    title={ui.recoilLabChipTitle}
+                  >
+                    <Activity size={13} aria-hidden="true" />
+                    <span>{ui.recoilLabChip}</span>
                   </button>
 
                   <button
