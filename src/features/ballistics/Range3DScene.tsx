@@ -1112,8 +1112,19 @@ const TargetArrayRig: React.FC<{
   const isArmor = traj.spec.category === 'armor';
   const plateR = traj.steelImpact.plateRadiusM;
   const chainL = isArmor ? 1.55 : 0.65;
-  const gantryHeight = traj.targetCenterY + chainL + 0.12;
+  // Align A-frame crossbar centerline flush with pendulum pivot Y (zero air gap!)
+  const gantryHeight = traj.targetCenterY + chainL;
   const gantryHalfW = plateR + (isArmor ? 0.75 : 0.45);
+  const legSpread = isArmor ? 0.72 : 0.42;
+  const legLen = Math.hypot(legSpread, gantryHeight);
+  const legTilt = Math.atan2(legSpread, gantryHeight);
+
+  // Ensure pendulum rotation resets cleanly whenever target array type changes
+  useEffect(() => {
+    if (pendulumRef.current) {
+      pendulumRef.current.rotation.set(0, 0, 0);
+    }
+  }, [traj.targetType, traj.projectileId]);
 
   const impactOffsetYM = traj.steelImpact.impactOffsetYCm / 100;
   const impactOffsetZM = traj.steelImpact.impactOffsetZCm / 100;
@@ -1280,59 +1291,80 @@ const TargetArrayRig: React.FC<{
       {/* Main Target Array Positioned at (targetCenterX, 0, 0) */}
       <group position={[traj.targetCenterX, 0, 0]}>
         {traj.targetType === 'steel_gong' ? (
-          <group>
-            {/* Heavy A-frame Gantry Stand */}
+          <group key="steel-gong-target">
+            {/* Heavy A-frame Gantry Stand (Crossbar flush at Y = gantryHeight = pendulum pivot) */}
             <mesh position={[0, gantryHeight, 0]} rotation={[Math.PI / 2, 0, 0]}>
               <cylinderGeometry args={[0.045, 0.045, gantryHalfW * 2.2, 10]} />
               <meshStandardMaterial
-                color={flirActive ? '#263242' : '#334155'}
-                metalness={0.78}
-                roughness={0.4}
+                color={flirActive ? '#52657e' : '#334155'}
+                emissive={flirActive ? '#2d3b4e' : '#000000'}
+                emissiveIntensity={flirActive ? 0.55 : 0}
+                metalness={flirActive ? 0.25 : 0.78}
+                roughness={flirActive ? 0.6 : 0.4}
               />
             </mesh>
-            {/* Left & Right A-frame legs */}
+            {/* Left & Right A-frame legs welded flush into crossbar apex */}
             {[-1, 1].map((side) => (
               <group key={side} position={[0, 0, side * gantryHalfW]}>
                 <mesh
-                  position={[-0.32, gantryHeight * 0.5, 0]}
-                  rotation={[0, 0, -0.18]}
+                  position={[-legSpread * 0.5, gantryHeight * 0.5, 0]}
+                  rotation={[0, 0, -legTilt]}
                 >
-                  <cylinderGeometry args={[0.038, 0.042, gantryHeight * 1.04, 8]} />
+                  <cylinderGeometry args={[0.038, 0.042, legLen, 8]} />
                   <meshStandardMaterial
-                    color={flirActive ? '#1e293b' : '#475569'}
-                    metalness={0.75}
-                    roughness={0.45}
+                    color={flirActive ? '#475a73' : '#475569'}
+                    emissive={flirActive ? '#263447' : '#000000'}
+                    emissiveIntensity={flirActive ? 0.5 : 0}
+                    metalness={flirActive ? 0.25 : 0.75}
+                    roughness={flirActive ? 0.65 : 0.45}
                   />
                 </mesh>
                 <mesh
-                  position={[0.32, gantryHeight * 0.5, 0]}
-                  rotation={[0, 0, 0.18]}
+                  position={[legSpread * 0.5, gantryHeight * 0.5, 0]}
+                  rotation={[0, 0, legTilt]}
                 >
-                  <cylinderGeometry args={[0.038, 0.042, gantryHeight * 1.04, 8]} />
+                  <cylinderGeometry args={[0.038, 0.042, legLen, 8]} />
                   <meshStandardMaterial
-                    color={flirActive ? '#1e293b' : '#475569'}
-                    metalness={0.75}
-                    roughness={0.45}
+                    color={flirActive ? '#475a73' : '#475569'}
+                    emissive={flirActive ? '#263447' : '#000000'}
+                    emissiveIntensity={flirActive ? 0.5 : 0}
+                    metalness={flirActive ? 0.25 : 0.75}
+                    roughness={flirActive ? 0.65 : 0.45}
                   />
                 </mesh>
               </group>
             ))}
 
-            {/* Pivoted Hanging Chains + AR500 Steel Gong Plate */}
+            {/* Pivoted Hanging Chains + AR500 Steel Gong Plate (pivoted directly on crossbar at Y = gantryHeight) */}
             <group
+              key="steel-pendulum-rig"
               ref={pendulumRef}
-              position={[0, traj.targetCenterY + chainL, 0]}
+              position={[0, gantryHeight, 0]}
             >
-              {/* Twin hanging chains */}
+              {/* Shackle collars around crossbar + full-length twin hanging chains */}
               {[-plateR * 0.52, plateR * 0.52].map((cz, i) => (
-                <mesh key={i} position={[0, -chainL * 0.5, cz]}>
-                  <cylinderGeometry args={[0.014, 0.014, chainL, 6]} />
-                  <meshStandardMaterial
-                    color={flirActive ? '#334155' : '#64748b'}
-                    metalness={0.85}
-                    roughness={0.35}
-                  />
-                </mesh>
+                <group key={i} position={[0, 0, cz]}>
+                  <mesh rotation={[Math.PI / 2, 0, 0]}>
+                    <cylinderGeometry args={[0.062, 0.062, 0.06, 10]} />
+                    <meshStandardMaterial
+                      color={flirActive ? '#5b6f8a' : '#475569'}
+                      emissive={flirActive ? '#304056' : '#000000'}
+                      emissiveIntensity={flirActive ? 0.5 : 0}
+                      metalness={flirActive ? 0.25 : 0.8}
+                      roughness={0.45}
+                    />
+                  </mesh>
+                  <mesh position={[0, -chainL * 0.5, 0]}>
+                    <cylinderGeometry args={[0.015, 0.015, chainL, 8]} />
+                    <meshStandardMaterial
+                      color={flirActive ? '#607490' : '#64748b'}
+                      emissive={flirActive ? '#34455d' : '#000000'}
+                      emissiveIntensity={flirActive ? 0.55 : 0}
+                      metalness={flirActive ? 0.25 : 0.85}
+                      roughness={0.38}
+                    />
+                  </mesh>
+                </group>
               ))}
 
               {/* AR500 Steel Gong Disc facing shooter (-X) */}
@@ -1342,9 +1374,11 @@ const TargetArrayRig: React.FC<{
                     args={[plateR, plateR, isArmor ? 0.14 : 0.032, 32]}
                   />
                   <meshStandardMaterial
-                    color={flirActive ? '#3b4a5e' : '#64748b'}
-                    metalness={flirActive ? 0.3 : 0.84}
-                    roughness={flirActive ? 0.65 : 0.34}
+                    color={flirActive ? '#6b809c' : '#64748b'}
+                    emissive={flirActive ? '#3e5068' : '#000000'}
+                    emissiveIntensity={flirActive ? 0.62 : 0}
+                    metalness={flirActive ? 0.2 : 0.84}
+                    roughness={flirActive ? 0.55 : 0.34}
                   />
                 </mesh>
                 {/* Painted front face facing -X */}
@@ -1354,10 +1388,10 @@ const TargetArrayRig: React.FC<{
                 >
                   <circleGeometry args={[plateR * 0.98, 32]} />
                   <meshStandardMaterial
-                    color={flirActive ? '#4b5e77' : '#ffffff'}
+                    color={flirActive ? '#7d93b0' : '#ffffff'}
                     map={flirActive ? null : gongFaceTex ?? undefined}
-                    emissive={flirActive ? '#334155' : '#0f172a'}
-                    emissiveIntensity={flirActive ? 0.35 : 0.06}
+                    emissive={flirActive ? '#4a5f7a' : '#0f172a'}
+                    emissiveIntensity={flirActive ? 0.72 : 0.06}
                     roughness={0.55}
                     metalness={0.18}
                   />
@@ -1384,14 +1418,18 @@ const TargetArrayRig: React.FC<{
               <mesh position={[0, 0.85, 0]}>
                 <boxGeometry args={[0.04, 1.7, 0.08]} />
                 <meshStandardMaterial
-                  color={flirActive ? '#1e293b' : '#475569'}
-                  metalness={0.7}
+                  color={flirActive ? '#445770' : '#475569'}
+                  emissive={flirActive ? '#243142' : '#000000'}
+                  emissiveIntensity={flirActive ? 0.45 : 0}
+                  metalness={flirActive ? 0.25 : 0.7}
                 />
               </mesh>
               <mesh position={[0, 1.55, 0]}>
                 <boxGeometry args={[0.03, 0.72, 0.44]} />
                 <meshStandardMaterial
-                  color={flirActive ? '#334155' : '#cbd5e1'}
+                  color={flirActive ? '#5a708c' : '#cbd5e1'}
+                  emissive={flirActive ? '#33445c' : '#000000'}
+                  emissiveIntensity={flirActive ? 0.55 : 0}
                   roughness={0.6}
                 />
               </mesh>
@@ -1399,13 +1437,15 @@ const TargetArrayRig: React.FC<{
           </group>
         ) : (
           /* Mode B: Translucent 10% FBI Ordnance Ballistic Gel Block on Test Bench */
-          <group position={[0, traj.targetCenterY, 0]}>
+          <group key="ballistic-gel-target" position={[0, traj.targetCenterY, 0]}>
             {/* Heavy Test Stand Table beneath Gel Block */}
             <mesh position={[gelLenM * 0.5, -gelHM * 0.5 - 0.05, 0]}>
               <boxGeometry args={[gelLenM + 0.36, 0.08, gelWM + 0.32]} />
               <meshStandardMaterial
-                color={flirActive ? '#1e293b' : '#475569'}
-                metalness={0.65}
+                color={flirActive ? '#4a5d76' : '#475569'}
+                emissive={flirActive ? '#283649' : '#000000'}
+                emissiveIntensity={flirActive ? 0.5 : 0}
+                metalness={flirActive ? 0.25 : 0.65}
                 roughness={0.45}
               />
             </mesh>
@@ -1423,15 +1463,17 @@ const TargetArrayRig: React.FC<{
                     args={[0.025, 0.028, traj.targetCenterY - gelHM * 0.5, 8]}
                   />
                   <meshStandardMaterial
-                    color={flirActive ? '#1e293b' : '#334155'}
-                    metalness={0.7}
+                    color={flirActive ? '#3f5169' : '#334155'}
+                    emissive={flirActive ? '#222f40' : '#000000'}
+                    emissiveIntensity={flirActive ? 0.45 : 0}
+                    metalness={flirActive ? 0.25 : 0.7}
                   />
                 </mesh>
               ))
             )}
 
-            {/* Translucent Amber Ballistic Gelatin Block */}
-            <group position={[0, 0, 0]}>
+            {/* Translucent Amber Ballistic Gelatin Block (explicit key + zeroed rotation) */}
+            <group key="ballistic-gel-block" position={[0, 0, 0]} rotation={[0, 0, 0]}>
               <mesh position={[gelLenM * 0.5, 0, 0]}>
                 <boxGeometry args={[gelLenM, gelHM, gelWM]} />
                 <meshPhysicalMaterial
@@ -1745,12 +1787,12 @@ const Range3DWorld: React.FC<{
   });
 
   const skyHex = flirActive
-    ? '#0d141e'
+    ? '#161f2c'
     : isLightTheme
       ? '#c7dff2'
       : '#162033';
   const fogHex = flirActive
-    ? '#111a26'
+    ? '#1b2636'
     : isLightTheme
       ? '#d9e7f3'
       : '#26344a';
@@ -1770,20 +1812,20 @@ const Range3DWorld: React.FC<{
       {/* Proving Ground Desert / Alpine Lighting */}
       <hemisphereLight
         args={[
-          flirActive ? '#475569' : isLightTheme ? '#e0f2fe' : '#94a3b8',
-          flirActive ? '#141e2c' : '#8c6947',
-          flirActive ? 0.85 : isLightTheme ? 1.15 : 0.92,
+          flirActive ? '#7488a3' : isLightTheme ? '#e0f2fe' : '#94a3b8',
+          flirActive ? '#263447' : '#8c6947',
+          flirActive ? 1.15 : isLightTheme ? 1.15 : 0.92,
         ]}
       />
       <directionalLight
         position={[240, 260, 180]}
-        intensity={flirActive ? 0.7 : isLightTheme ? 1.85 : 1.75}
+        intensity={flirActive ? 0.95 : isLightTheme ? 1.85 : 1.75}
         color={flirActive ? '#e2e8f0' : '#fff7ed'}
       />
       <directionalLight
         position={[-120, 95, -140]}
-        intensity={flirActive ? 0.35 : 0.55}
-        color={flirActive ? '#64748b' : '#bae6fd'}
+        intensity={flirActive ? 0.55 : 0.55}
+        color={flirActive ? '#8da1bc' : '#bae6fd'}
       />
 
       {/* Free OrbitControls (active strictly in Range Overview mode) */}
@@ -1801,7 +1843,9 @@ const Range3DWorld: React.FC<{
       <mesh geometry={terrainGeo} receiveShadow>
         <meshStandardMaterial
           vertexColors={!flirActive}
-          color={flirActive ? '#222f42' : '#ffffff'}
+          color={flirActive ? '#2b394d' : '#ffffff'}
+          emissive={flirActive ? '#17212f' : '#000000'}
+          emissiveIntensity={flirActive ? 0.55 : 0}
           roughness={0.92}
           metalness={0.04}
           flatShading
