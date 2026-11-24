@@ -58,8 +58,10 @@ export interface UiDictionary {
   };
   armory: {
     title: string;
+    mobileTitle: string;
     subtitle: string;
     filterAria: string;
+    hallsScrollMoreAria: string;
     categories: Record<ArmoryCategory | 'lmg' | 'shotgun' | 'archery', string>;
     showcaseBtn: string;
     showcaseTitle: string;
@@ -78,6 +80,7 @@ export interface UiDictionary {
     storyBtn: string;
     storyBtnTitle: string;
     enterBenchBtn: (shortTag: string) => string;
+    mobileEnterBenchBtn: string;
     caliberLabel: string;
     precisionLabel: string;
     precisionValue: (assemblies: number, parts: number) => string;
@@ -897,9 +900,11 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       immersiveBarAria: '纯净展示浮动控制栏',
     },
     armory: {
-      title: '枪械、弓弩与主战坦克 1:1 3D 数字兵器库',
+      title: '3D 数字兵器库',
+      mobileTitle: '3D 兵器库',
       subtitle: `${VAULT_EXHIBIT_ZH}款传奇名枪、特种复合弓弩与 1:1 主战坦克交互式陈列馆 · Google Gemini 中英研发史纪录片与全零件语音拆解导览`,
       filterAria: '装备类别筛选',
+      hallsScrollMoreAria: '向右滚动查看更多展厅（含重装甲大厅与航空重武）',
       categories: {
         all: '全部馆藏',
         assault: '突击/步枪/无托',
@@ -927,6 +932,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       storyBtn: '枪械研发故事',
       storyBtnTitle: '打开当前枪械完整四幕研发历史故事与双语语音纪录片',
       enterBenchBtn: (tag) => `进入 ${tag} 拆解台`,
+      mobileEnterBenchBtn: '拆解',
       caliberLabel: '口径规格',
       precisionLabel: '建模精度',
       precisionValue: (a, p) => `${a} 总成 / ${p} 零件`,
@@ -1886,9 +1892,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       immersiveBarAria: 'Clean showcase floating controls',
     },
     armory: {
-      title: '3D Digital Armory & Mechanical Cutaway Vault',
+      title: 'Digital Armory 3D',
+      mobileTitle: 'Armory 3D',
       subtitle: `${VAULT_EXHIBIT_COUNT} Iconic World Firearms, Compound Archery & 1:1 Main Battle Tanks · Google Gemini R&D Documentary & Component Voice Disassembly`,
       filterAria: 'Filter collection by category',
+      hallsScrollMoreAria:
+        'Scroll right for more halls (Heavy Armor & Heavy Ordnance)',
       categories: {
         all: 'All Vault',
         assault: 'Rifle / Carbine',
@@ -1916,6 +1925,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       storyBtn: 'R&D Story',
       storyBtnTitle: 'Open 4-Act Firearm R&D Documentary & Bilingual Voiceover',
       enterBenchBtn: (tag) => `Inspect ${tag}`,
+      mobileEnterBenchBtn: 'Inspect',
       caliberLabel: 'Caliber',
       precisionLabel: 'CAD Nodes',
       precisionValue: (a, p) => `${a} Groups / ${p} Parts`,

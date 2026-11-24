@@ -9,6 +9,7 @@ import {
   Crosshair,
   Flame,
   Maximize2,
+  Menu,
   RotateCcw,
   Scissors,
   Shield,
@@ -71,6 +72,7 @@ function formatOrdnanceVolume(ml: number): string {
 
 export const CartridgeLabView: React.FC = () => {
   const [matrixOpen, setMatrixOpen] = useState(false);
+  const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
   const dossierCollapsed = useSyncExternalStore(
     subscribeCartridgeDossierCollapsed,
     getCartridgeDossierCollapsed,
@@ -170,7 +172,9 @@ export const CartridgeLabView: React.FC = () => {
   return (
     <div className="cartridge-lab-overlay">
       {/* Top Exhibition Header */}
-      <header className="cartridge-header">
+      <header
+        className={`cartridge-header ${mobileToolsOpen ? 'is-mobile-expanded' : ''}`}
+      >
         <div className="brand-block">
           <button
             type="button"
@@ -191,14 +195,50 @@ export const CartridgeLabView: React.FC = () => {
               ? CARTRIDGE_WING_BADGES[lang].heavyOrdnance
               : CARTRIDGE_WING_BADGES[lang].smallArms}
           </div>
-          <div>
+          <div className="cartridge-title-wrap">
             <h1 className="brand-title">
-              {isTankGallery ? ui.tankOrdnanceTitle : ui.title}
+              <span className="cartridge-title-full">
+                {isTankGallery ? ui.tankOrdnanceTitle : ui.title}
+              </span>
+              <span className="cartridge-title-compact">
+                {isTankGallery
+                  ? isZh
+                    ? '1:1 坦克炮弹馆'
+                    : 'Heavy Ordnance'
+                  : isZh
+                    ? '1:1 实弹剖视馆'
+                    : 'Cartridge Lab'}
+              </span>
             </h1>
             <p className="brand-sub">
               {isTankGallery ? ui.tankOrdnanceSubtitle : ui.subtitle}
             </p>
           </div>
+
+          <button
+            type="button"
+            className={`toggle-chip cartridge-mobile-menu-btn ${
+              mobileToolsOpen ? 'active-cyan' : ''
+            }`}
+            aria-expanded={mobileToolsOpen}
+            aria-label={isZh ? '展开弹药馆工具栏' : 'Toggle lab controls'}
+            onClick={() => setMobileToolsOpen((prev) => !prev)}
+          >
+            {mobileToolsOpen ? (
+              <X size={14} aria-hidden="true" />
+            ) : (
+              <Menu size={14} aria-hidden="true" />
+            )}
+            <span>
+              {mobileToolsOpen
+                ? isZh
+                  ? '收起'
+                  : 'Close'
+                : isZh
+                  ? '工具'
+                  : 'Tools'}
+            </span>
+          </button>
         </div>
 
         <div className="cartridge-header-actions">

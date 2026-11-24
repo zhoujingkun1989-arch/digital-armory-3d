@@ -43,6 +43,21 @@
   gap: 8px;
 }
 
+.cartridge-title-wrap {
+  min-inline-size: 0;
+  flex: 1 1 auto;
+}
+
+.cartridge-title-compact {
+  display: none;
+}
+
+.cartridge-mobile-menu-btn {
+  display: none;
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
+
 .cartridge-header .brand-title {
   font-size: 14.5px;
   white-space: nowrap;
@@ -829,19 +844,72 @@
   }
 }
 
-@media (max-width: 440px) {
-  .cartridge-header .brand-block {
-    flex: 1 1 100%;
-    min-width: 0;
+@media (max-width: 640px) {
+  /* Compact <= 52px single-row Cartridge Lab mobile header with zero right-edge clipping */
+  .cartridge-header {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    padding: 5px 8px;
+    gap: 6px;
   }
 
-  .cartridge-header .brand-title {
-    font-size: 13.5px;
-    line-height: 1.25;
+  .cartridge-header .brand-block {
+    flex: 1 1 100%;
+    flex-wrap: nowrap;
+    min-width: 0;
+    gap: 6px;
   }
 
   .cartridge-header .cartridge-lab-badge {
-    font-size: 9.5px;
-    padding: 2px 7px;
+    display: none;
+  }
+
+  .cartridge-title-full {
+    display: none;
+  }
+
+  .cartridge-title-compact {
+    display: inline;
+  }
+
+  .cartridge-header .brand-title {
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  .cartridge-header .back-armory-btn,
+  .cartridge-header .cartridge-mobile-menu-btn {
+    display: inline-flex;
+    min-height: 36px;
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .cartridge-header:not(.is-mobile-expanded) .cartridge-header-actions {
+    display: none;
+  }
+
+  .cartridge-header.is-mobile-expanded .cartridge-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-inline-start: 0;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-divider);
+    overflow-x: visible;
+    gap: 5px;
+  }
+
+  .cartridge-dossier-card {
+    top: 64px;
+    left: 8px;
+  }
+}
+
+@media (max-width: 440px) {
+  .cartridge-header .brand-title {
+    font-size: 12.5px;
+    line-height: 1.2;
   }
 }

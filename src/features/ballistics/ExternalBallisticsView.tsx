@@ -9,12 +9,14 @@ import {
   Gauge,
   Layers,
   LineChart,
+  Menu,
   RotateCcw,
   Shield,
   SlidersHorizontal,
   Table2,
   Video,
   Wind,
+  X,
   Zap,
 } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
@@ -235,6 +237,7 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
 
   const [activeProjectiles, setActiveProjectiles] =
     useState<ExternalProjectileId[]>(initialProjectiles);
+  const [mobileHeaderMenuOpen, setMobileHeaderMenuOpen] = useState(false);
   const [focusedProjectile, setFocusedProjectile] =
     useState<ExternalProjectileId>(() =>
       resolvedInitialCaliber
@@ -1145,7 +1148,9 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
   return (
     <div className="eb-lab-screen" data-testid="external-ballistics-view">
       {/* ==================== Top Exhibition Header ==================== */}
-      <header className="eb-header">
+      <header
+        className={`eb-header ${mobileHeaderMenuOpen ? 'is-mobile-expanded' : ''}`}
+      >
         <div className="eb-brand-cluster">
           <button
             type="button"
@@ -1162,6 +1167,34 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
             <h1 className="eb-title">{ui.title}</h1>
             <p className="eb-subtitle">{ui.subtitle}</p>
           </div>
+
+          <button
+            type="button"
+            className={`eb-mobile-menu-btn ${
+              mobileHeaderMenuOpen ? 'is-active' : ''
+            }`}
+            aria-expanded={mobileHeaderMenuOpen}
+            aria-label={isZh ? '展开靶场工具菜单' : 'Toggle range menu'}
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              setMobileHeaderMenuOpen((prev) => !prev);
+            }}
+          >
+            {mobileHeaderMenuOpen ? (
+              <X size={14} aria-hidden="true" />
+            ) : (
+              <Menu size={14} aria-hidden="true" />
+            )}
+            <span>
+              {mobileHeaderMenuOpen
+                ? isZh
+                  ? '收起'
+                  : 'Close'
+                : isZh
+                  ? '工具'
+                  : 'Menu'}
+            </span>
+          </button>
         </div>
 
         <div className="eb-header-actions">

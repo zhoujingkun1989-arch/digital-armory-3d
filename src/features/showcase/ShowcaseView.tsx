@@ -446,7 +446,10 @@ export const ShowcaseView: React.FC = () => {
               onClick={returnToArmory}
             >
               <Layers size={14} aria-hidden="true" />
-              <span>{s.nav.launchArmory}</span>
+              <span className="showcase-launch-full">{s.nav.launchArmory}</span>
+              <span className="showcase-launch-compact">
+                {lang === 'zh' ? '兵器库' : 'Armory'}
+              </span>
               <ArrowRight size={14} aria-hidden="true" />
             </button>
           </div>
