@@ -226,9 +226,82 @@ export const A11Y_MODAL_SPECS = Object.freeze([
   }),
 ]);
 
+export const A11Y_HUD_SPECS = Object.freeze([
+  Object.freeze({
+    key: 'hud_fieldstrip',
+    kind: 'hud',
+    label: 'Field-Strip Guided HUD ([G])',
+    query: 'screen=workbench&weapon=ak15',
+    hudSelector: '.field-strip-hud',
+    triggerKey: Object.freeze({
+      key: 'g',
+      code: 'KeyG',
+      text: 'g',
+      modifiers: 0,
+      windowsVirtualKeyCode: 71,
+    }),
+  }),
+  Object.freeze({
+    key: 'hud_malfunction',
+    kind: 'hud',
+    label: 'Malfunction Diagnostics HUD ([J])',
+    query: 'screen=workbench&weapon=ak15',
+    hudSelector: '.malfunction-hud',
+    triggerKey: Object.freeze({
+      key: 'j',
+      code: 'KeyJ',
+      text: 'j',
+      modifiers: 0,
+      windowsVirtualKeyCode: 74,
+    }),
+  }),
+  Object.freeze({
+    key: 'hud_attachments',
+    kind: 'hud',
+    label: 'Modular Optics & Muzzle Bench HUD ([O])',
+    query: 'screen=workbench&weapon=m4a1',
+    hudSelector: '.attachment-bench-card',
+    triggerKey: Object.freeze({
+      key: 'o',
+      code: 'KeyO',
+      text: 'o',
+      modifiers: 0,
+      windowsVirtualKeyCode: 79,
+    }),
+  }),
+  Object.freeze({
+    key: 'hud_tank_crew',
+    kind: 'hud',
+    label: '1:1 Tank Crew FLIR & FCS HUD (?panel=crew)',
+    query: 'screen=workbench&weapon=ztz99a&panel=crew',
+    hudSelector: '.tank-crew-hud',
+  }),
+  Object.freeze({
+    key: 'hud_story_drawer',
+    kind: 'hud',
+    label: '4-Act Documentary R&D Story Drawer',
+    query: 'screen=workbench&weapon=m1911',
+    hudSelector: '.story-drawer',
+    triggerClickExpr: `(() => {
+      const btns = [...document.querySelectorAll('.top-bar button, .workbench-header button')];
+      const storyBtn = btns.find((b) =>
+        /story|r&d|history|研发|故事/i.test(
+          (b.textContent || '') + ' ' + (b.getAttribute('title') || '') + ' ' + (b.getAttribute('aria-label') || '')
+        )
+      );
+      if (storyBtn) {
+        storyBtn.click();
+        return true;
+      }
+      return false;
+    })()`,
+  }),
+]);
+
 export const ALL_A11Y_TARGET_SPECS = Object.freeze([
   ...A11Y_SCREEN_SPECS,
   ...A11Y_MODAL_SPECS,
+  ...A11Y_HUD_SPECS,
 ]);
 
 const MIME_TYPES = Object.freeze({
@@ -292,6 +365,7 @@ export function formatHelpText() {
     '',
     `Screens (${A11Y_SCREEN_SPECS.length}): ${A11Y_SCREEN_SPECS.map((s) => s.key).join(', ')}`,
     `Modals  (${A11Y_MODAL_SPECS.length}): ${A11Y_MODAL_SPECS.map((m) => m.key).join(', ')}`,
+    `HUDs    (${A11Y_HUD_SPECS.length}): ${A11Y_HUD_SPECS.map((h) => h.key).join(', ')}`,
     '',
   ].join('\n');
 }
@@ -439,7 +513,9 @@ export function buildA11yAuditTargets(origin, options = {}) {
         url,
         readySelector: spec.readySelector ?? null,
         expectedDialogSelector: spec.expectedDialogSelector ?? null,
+        hudSelector: spec.hudSelector ?? null,
         triggerKey: spec.triggerKey ?? null,
+        triggerClickExpr: spec.triggerClickExpr ?? null,
         fallbackTriggerKey: spec.fallbackTriggerKey ?? null,
       });
     }
@@ -633,6 +709,49 @@ export function evaluateDialogAccessibility(dialog = null, escapeResult = null) 
 }
 
 /**
+ * Rule 2b: Interactive Workbench HUD Landmark & Polite Live Region (WCAG 4.1.3)
+ */
+export function evaluateHudAccessibility(hud = null) {
+  const issues = [];
+  if (!hud || !hud.found) {
+    issues.push({
+      rule: 'hud_not_found',
+      severity: 'error',
+      count: 1,
+      message: 'Expected interactive Workbench HUD failed to open or is not visible',
+      samples: [],
+    });
+    return {
+      pass: false,
+      hudFound: false,
+      hasAriaLivePolite: false,
+      ariaLiveCount: 0,
+      issues,
+    };
+  }
+
+  const ariaLiveCount = Number(hud.ariaLivePoliteCount ?? 0);
+  const hasAriaLivePolite = ariaLiveCount >= 1;
+  if (!hasAriaLivePolite) {
+    issues.push({
+      rule: 'hud_missing_aria_live_polite',
+      severity: 'error',
+      count: 1,
+      message: `Active HUD (${hud.selector || 'unknown'}) lacks an aria-live="polite" telemetry/feedback region`,
+      samples: [{ selector: hud.selector ?? '' }],
+    });
+  }
+
+  return {
+    pass: issues.length === 0,
+    hudFound: true,
+    hasAriaLivePolite,
+    ariaLiveCount,
+    issues,
+  };
+}
+
+/**
  * Rule 3: Heading Hierarchy & Image Alt Hygiene (WCAG 1.1.1 / 1.3.1)
  */
 export function evaluateHeadingAndImageHygiene(probe = {}, isModal = false) {
@@ -722,15 +841,17 @@ export function evaluateMobileTouchTargets(
  */
 export function evaluateTargetAudit(target, probe = {}, runtime = {}) {
   const isModal = target.kind === 'modal';
+  const isHud = target.kind === 'hud';
   const isMobile = Boolean(target.profile?.mobile);
 
   const controls = evaluateControlAccessibility(probe.controls);
   const dialog = isModal
     ? evaluateDialogAccessibility(probe.dialog, probe.escapeResult)
     : null;
+  const hud = isHud ? evaluateHudAccessibility(probe.hud) : null;
   const headingsAndImages = evaluateHeadingAndImageHygiene(
     probe.headingsAndImages,
-    isModal
+    isModal || isHud
   );
   const mobile = isMobile
     ? evaluateMobileTouchTargets(probe.mobile)
@@ -746,6 +867,7 @@ export function evaluateTargetAudit(target, probe = {}, runtime = {}) {
   const issues = [
     ...controls.issues,
     ...(dialog ? dialog.issues : []),
+    ...(hud ? hud.issues : []),
     ...headingsAndImages.issues,
     ...(mobile ? mobile.issues : []),
   ];
@@ -786,6 +908,7 @@ export function evaluateTargetAudit(target, probe = {}, runtime = {}) {
     checks: {
       controls,
       dialog,
+      hud,
       headingsAndImages,
       mobile,
     },
@@ -848,9 +971,17 @@ export function summarizeA11yReport(results = []) {
 // In-Page DOM Accessibility Probe (Executed via CDP Runtime.evaluate)
 // ============================================================================
 
-export function buildDomProbeExpression({ isModal, isMobile, minTouchPx = MIN_MOBILE_TOUCH_TARGET_PX }) {
+export function buildDomProbeExpression({
+  isModal = false,
+  isHud = false,
+  hudSelector = null,
+  isMobile = false,
+  minTouchPx = MIN_MOBILE_TOUCH_TARGET_PX,
+}) {
   return `(() => {
     const isModal = ${JSON.stringify(Boolean(isModal))};
+    const isHud = ${JSON.stringify(Boolean(isHud))};
+    const hudSelector = ${JSON.stringify(hudSelector || null)};
     const isMobile = ${JSON.stringify(Boolean(isMobile))};
     const minTouchPx = ${Number(minTouchPx)};
 
@@ -947,11 +1078,31 @@ export function buildDomProbeExpression({ isModal, isMobile, minTouchPx = MIN_MO
       return '';
     };
 
-    // Detect topmost open modal dialog when auditing a modal target
+    // Detect topmost open modal dialog or active interactive Workbench HUD
     const openDialogs = [...document.querySelectorAll('dialog[open], [role="dialog"]')]
       .filter((el) => isVisible(el));
     const activeDialog = openDialogs.length > 0 ? openDialogs[openDialogs.length - 1] : null;
-    const scopeRoot = isModal && activeDialog ? activeDialog : document;
+    const activeHud = isHud && hudSelector
+      ? [...document.querySelectorAll(hudSelector)].find((el) => isVisible(el)) || null
+      : null;
+    const scopeRoot = isModal && activeDialog
+      ? activeDialog
+      : isHud && activeHud
+        ? activeHud
+        : document;
+
+    let hudInfo = { found: false, ariaLivePoliteCount: 0 };
+    if (isHud && activeHud) {
+      const politeRegions = activeHud.querySelectorAll('[aria-live="polite"]');
+      const selfPolite = activeHud.getAttribute('aria-live') === 'polite' ? 1 : 0;
+      hudInfo = {
+        found: true,
+        selector: describeEl(activeHud),
+        role: activeHud.getAttribute('role') || null,
+        ariaLabel: activeHud.getAttribute('aria-label') || null,
+        ariaLivePoliteCount: politeRegions.length + selfPolite,
+      };
+    }
 
     let dialogInfo = { found: false };
     if (isModal && activeDialog) {
@@ -1073,6 +1224,7 @@ export function buildDomProbeExpression({ isModal, isMobile, minTouchPx = MIN_MO
 
     return {
       dialog: dialogInfo,
+      hud: hudInfo,
       controls: {
         totalInteractive: interactiveEls.length,
         unlabeledButtons,
@@ -1360,6 +1512,47 @@ async function auditSingleTarget(cdp, target, timeoutMs) {
         await waitForSelector(cdp, target.readySelector, Math.min(timeoutMs, 10_000));
       }
       await sleep(500);
+    } else if (target.kind === 'hud') {
+      // Interactive Workbench HUD target
+      await waitForSelector(cdp, '.top-bar, .workbench-header, header', 10_000);
+      await sleep(550);
+      const hudSel = target.hudSelector || '[role="region"]';
+      if (target.triggerKey) {
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          await evalValue(cdp, 'document.activeElement?.blur?.()');
+          await dispatchCdpKey(cdp, target.triggerKey);
+          const opened = await waitForSelector(cdp, hudSel, 3_000);
+          if (opened) break;
+          await sleep(400);
+        }
+      } else if (target.triggerClickExpr) {
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          await evalValue(cdp, target.triggerClickExpr);
+          const opened = await waitForSelector(cdp, hudSel, 3_000);
+          if (opened) break;
+          await sleep(400);
+        }
+      } else {
+        await waitForSelector(cdp, hudSel, 8_000);
+      }
+      await sleep(450);
+
+      const probe = await evalValue(
+        cdp,
+        buildDomProbeExpression({
+          isModal: false,
+          isHud: true,
+          hudSelector: hudSel,
+          isMobile: target.profile.mobile,
+          minTouchPx: MIN_MOBILE_TOUCH_TARGET_PX,
+        })
+      );
+
+      return evaluateTargetAudit(target, probe, {
+        consoleErrors,
+        pageErrors,
+        durationMs: Date.now() - startedAt,
+      });
     } else {
       // Modal target
       let usedFallbackTrigger = false;

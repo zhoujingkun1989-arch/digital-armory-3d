@@ -18,7 +18,7 @@ interface A11yIssue {
 interface A11yTarget {
   id: string;
   key: string;
-  kind: 'screen' | 'modal';
+  kind: 'screen' | 'modal' | 'hud';
   label: string;
   profileId: string;
   profile: {
@@ -36,6 +36,7 @@ interface A11yAuditModule {
   A11Y_PROFILES: Record<string, { id: string; width: number; height: number; mobile: boolean }>;
   A11Y_SCREEN_SPECS: ReadonlyArray<{ key: string; kind: string }>;
   A11Y_MODAL_SPECS: ReadonlyArray<{ key: string; kind: string }>;
+  A11Y_HUD_SPECS: ReadonlyArray<{ key: string; kind: string }>;
   parseCliArgs: (argv?: string[]) => {
     url: string | null;
     distDir: string;
@@ -53,8 +54,10 @@ interface A11yAuditModule {
     options?: { profiles?: string[]; only?: string[] | null; lang?: string }
   ) => A11yTarget[];
   buildDomProbeExpression: (opts: {
-    isModal: boolean;
-    isMobile: boolean;
+    isModal?: boolean;
+    isHud?: boolean;
+    hudSelector?: string | null;
+    isMobile?: boolean;
     minTouchPx?: number;
   }) => string;
   evaluateControlAccessibility: (probe?: Record<string, unknown>) => {
@@ -66,6 +69,13 @@ interface A11yAuditModule {
     escapeResult?: Record<string, unknown> | null
   ) => {
     pass: boolean;
+    issues: A11yIssue[];
+  };
+  evaluateHudAccessibility: (hud?: Record<string, unknown> | null) => {
+    pass: boolean;
+    hudFound: boolean;
+    hasAriaLivePolite: boolean;
+    ariaLiveCount: number;
     issues: A11yIssue[];
   };
   evaluateHeadingAndImageHygiene: (
@@ -144,9 +154,11 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
       expect(stdout).toContain('--json');
       expect(stdout).toContain('shortcut_cmdk');
       expect(stdout).toContain('shortcut_help');
+      expect(stdout).toContain('hud_fieldstrip');
+      expect(stdout).toContain('hud_story_drawer');
     });
 
-    it('emits valid 51-target JSON matrix on --dry-run --json covering all 6 screens & 11 modals across 3 profiles', () => {
+    it('emits valid 66-target JSON matrix on --dry-run --json covering all 6 screens, 11 modals & 5 interactive HUDs across 3 profiles', () => {
       const stdout = execFileSync(
         process.execPath,
         [SCRIPT_PATH, '--dry-run', '--json'],
@@ -174,8 +186,9 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
       ]);
       expect(a11yMod.A11Y_SCREEN_SPECS).toHaveLength(6);
       expect(a11yMod.A11Y_MODAL_SPECS).toHaveLength(11);
-      expect(plan.totalTargets).toBe(51);
-      expect(plan.targets).toHaveLength(51);
+      expect(a11yMod.A11Y_HUD_SPECS).toHaveLength(5);
+      expect(plan.totalTargets).toBe(66);
+      expect(plan.targets).toHaveLength(66);
 
       const keys = new Set(plan.targets.map((t) => t.key));
       for (const requiredKey of [
@@ -196,6 +209,11 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
         'panel_causality',
         'shortcut_cmdk',
         'shortcut_help',
+        'hud_fieldstrip',
+        'hud_malfunction',
+        'hud_attachments',
+        'hud_tank_crew',
+        'hud_story_drawer',
       ]) {
         expect(keys.has(requiredKey)).toBe(true);
       }
@@ -203,7 +221,7 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
       const daylightTargets = plan.targets.filter(
         (t) => t.profileId === 'daylight_desktop'
       );
-      expect(daylightTargets).toHaveLength(17);
+      expect(daylightTargets).toHaveLength(22);
       for (const t of daylightTargets) {
         expect(t.url).toContain('env=blueprint_daylight');
         expect(t.viewport).toBe('1920x1080');
@@ -212,7 +230,7 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
       const mobileTargets = plan.targets.filter(
         (t) => t.profileId === 'dark_mobile'
       );
-      expect(mobileTargets).toHaveLength(17);
+      expect(mobileTargets).toHaveLength(22);
       for (const t of mobileTargets) {
         expect(t.viewport).toBe('390x844');
       }
@@ -333,6 +351,32 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
       );
       expect(missingDialog.pass).toBe(false);
       expect(missingDialog.issues[0].rule).toBe('dialog_not_found');
+    });
+
+    it('evaluates interactive Workbench HUD visibility and aria-live="polite" presence', () => {
+      const passHud = a11yMod.evaluateHudAccessibility({
+        found: true,
+        selector: 'section.field-strip-hud',
+        ariaLivePoliteCount: 2,
+      });
+      expect(passHud.pass).toBe(true);
+      expect(passHud.hudFound).toBe(true);
+      expect(passHud.hasAriaLivePolite).toBe(true);
+      expect(passHud.issues).toHaveLength(0);
+
+      const missingLive = a11yMod.evaluateHudAccessibility({
+        found: true,
+        selector: 'aside.tank-crew-hud',
+        ariaLivePoliteCount: 0,
+      });
+      expect(missingLive.pass).toBe(false);
+      expect(missingLive.issues.map((i) => i.rule)).toEqual([
+        'hud_missing_aria_live_polite',
+      ]);
+
+      const missingHud = a11yMod.evaluateHudAccessibility({ found: false });
+      expect(missingHud.pass).toBe(false);
+      expect(missingHud.issues.map((i) => i.rule)).toEqual(['hud_not_found']);
     });
 
     it('evaluates <h1> heading presence on screens and <img> alt attribute hygiene', () => {
