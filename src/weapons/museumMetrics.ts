@@ -1,13 +1,7 @@
-import {
-  PENETRATOR_IDS,
-  type ArmorTargetTankId,
-  type PenetratorId,
+import type {
+  ArmorTargetTankId,
+  PenetratorId,
 } from '../engine/physics/armorPenetration';
-import {
-  HISTORY_TIMELINE_NODES,
-  HISTORY_TIMELINE_TOURS,
-  TIMELINE_LINEAGES,
-} from '../features/timeline/historyTimelineSpecs';
 import { WEAPON_MANIFESTS, matchesArmoryCategory } from './manifests';
 import type { ArmoryCategory, WeaponId } from './types';
 
@@ -87,25 +81,26 @@ export const MUSEUM_BALLISTICS_PROFILE_COUNT = new Set(
   WEAPON_MANIFESTS.map((manifest) => manifest.caliberProfile)
 ).size;
 
-export const MUSEUM_PENETRATOR_COUNT = PENETRATOR_IDS.length;
+/**
+ * Lightweight metadata constants verified against lazy-loaded domain specs
+ * (`PENETRATOR_IDS`, `HISTORY_TIMELINE_NODES`, `TIMELINE_LINEAGES`,
+ * `HISTORY_TIMELINE_TOURS`) in `tests/acousticAndUxHardening.test.ts` so
+ * first-paint bundles never eagerly pull lazy modal data modules.
+ */
+export const MUSEUM_PENETRATOR_COUNT = 5;
 
 export const MUSEUM_PBR_SUITE_COUNT = 101;
 export const MUSEUM_PBR_WEBP_COUNT = 414;
 
-export const MUSEUM_TIMELINE_MIN_YEAR = Math.min(
-  ...HISTORY_TIMELINE_NODES.map((node) => node.year)
-);
-export const MUSEUM_TIMELINE_MAX_YEAR = Math.max(
-  2026,
-  ...HISTORY_TIMELINE_NODES.map((node) => node.year)
-);
+export const MUSEUM_TIMELINE_MIN_YEAR = 1894;
+export const MUSEUM_TIMELINE_MAX_YEAR = 2026;
 export const MUSEUM_TIMELINE_SPAN_LABEL =
   `${MUSEUM_TIMELINE_MIN_YEAR}–${MUSEUM_TIMELINE_MAX_YEAR}` as const;
 export const MUSEUM_TIMELINE_SPAN_ASCII =
   `${MUSEUM_TIMELINE_MIN_YEAR}-${MUSEUM_TIMELINE_MAX_YEAR}` as const;
-export const MUSEUM_TIMELINE_LINEAGE_COUNT = TIMELINE_LINEAGES.length;
-export const MUSEUM_TIMELINE_TOUR_COUNT = HISTORY_TIMELINE_TOURS.length;
-export const MUSEUM_TIMELINE_NODE_COUNT = HISTORY_TIMELINE_NODES.length;
+export const MUSEUM_TIMELINE_LINEAGE_COUNT = 6;
+export const MUSEUM_TIMELINE_TOUR_COUNT = 4;
+export const MUSEUM_TIMELINE_NODE_COUNT = MUSEUM_EXHIBIT_COUNT;
 
 export const MUSEUM_METRICS = {
   version: MUSEUM_VERSION,

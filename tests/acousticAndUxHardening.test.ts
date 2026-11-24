@@ -17,6 +17,7 @@ import {
   CARTRIDGE_LAB_ORDER,
   TANK_ORDNANCE_ORDER,
 } from '../src/engine/cartridges/cartridgeSpecs';
+import { PENETRATOR_IDS } from '../src/engine/physics/armorPenetration';
 import { EXTERNAL_PROJECTILE_ORDER } from '../src/engine/physics/externalBallistics';
 import {
   ARMORY_HOVER_PRELOAD_DEBOUNCE_MS,
@@ -50,6 +51,7 @@ import {
   MUSEUM_HEAVY_ORDNANCE_CALIBER_COUNT,
   MUSEUM_METRICS,
   MUSEUM_ORDNANCE_COUNT,
+  MUSEUM_PENETRATOR_COUNT,
   MUSEUM_SMALL_ARMS_CALIBER_COUNT,
   MUSEUM_TIMELINE_LINEAGE_COUNT,
   MUSEUM_TIMELINE_MAX_YEAR,
@@ -245,13 +247,28 @@ describe('V6.0 Acoustic Fidelity, SSOT Metrics, Cross-Lab UX & WCAG 2.1 AA Harde
     expect(MUSEUM_BALLISTICS_PROFILE_COUNT).toBe(
       EXTERNAL_PROJECTILE_ORDER.length
     );
-    expect(MUSEUM_TIMELINE_MIN_YEAR).toBe(1894);
-    expect(MUSEUM_TIMELINE_MAX_YEAR).toBe(2026);
+    expect(MUSEUM_PENETRATOR_COUNT).toBe(PENETRATOR_IDS.length);
+    expect(MUSEUM_TIMELINE_MIN_YEAR).toBe(
+      Math.min(...HISTORY_TIMELINE_NODES.map((n) => n.year))
+    );
+    expect(MUSEUM_TIMELINE_MAX_YEAR).toBe(
+      Math.max(2026, ...HISTORY_TIMELINE_NODES.map((n) => n.year))
+    );
     expect(MUSEUM_TIMELINE_LINEAGE_COUNT).toBe(TIMELINE_LINEAGES.length);
     expect(MUSEUM_TIMELINE_TOUR_COUNT).toBe(HISTORY_TIMELINE_TOURS.length);
     expect(MUSEUM_TIMELINE_NODE_COUNT).toBe(HISTORY_TIMELINE_NODES.length);
     expect(MUSEUM_METRICS.exhibitCount).toBe(MUSEUM_EXHIBIT_COUNT);
     expect(MUSEUM_METRICS.totalParts).toBe(MUSEUM_TOTAL_PARTS);
+
+    // Guard first-paint bundle splitting: museumMetrics.ts must NOT statically runtime-import lazy modal modules
+    const metricsSrc = fs.readFileSync(
+      path.join(ROOT, 'src/weapons/museumMetrics.ts'),
+      'utf8'
+    );
+    expect(metricsSrc).not.toMatch(/historyTimelineSpecs/);
+    expect(metricsSrc).not.toMatch(
+      /import\s*\{[^}]*\}\s*from\s*['"][^'"]*armorPenetration['"]/
+    );
   });
 
   it('has ZERO stale 27/29/731/v5.0/1898 exhibit count leaks across audited UI & i18n files and 0 CJK in EN', () => {
