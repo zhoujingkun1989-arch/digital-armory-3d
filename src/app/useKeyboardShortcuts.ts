@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useAttachmentStore } from '../engine/attachments/attachmentStore';
 import {
   getNarrationAudioSnapshot,
   stopNarrationAudio,
@@ -29,6 +30,7 @@ function isEditableElement(target: EventTarget | null): boolean {
  * - `G` (Workbench): Toggle hands-on guided military field-strip mode (`亲手快拆`)
  * - `J` (Workbench): Toggle classic firearm malfunction cutaway & clearing diagnostics (`故障排障`)
  * - `K` (Workbench): Toggle 1:1 3D armorer vernier caliper & envelope ruler (`游标卡尺`)
+ * - `O` (Workbench): Toggle Modular Optics & Muzzle Attachment Bench (`光学/枪口改装台`) — note `M` remains bound to SFX Mute
  * - `E` (Workbench): Toggle CAD hard-edge wireframe
  * - `L` (Workbench, Explode mode): Toggle 3D part leader labels
  * - `H` (All screens): Hide / Show all UI buttons & HUD panels for clean 3D showcase (`隐藏按钮`)
@@ -105,6 +107,11 @@ export function useKeyboardShortcuts(): void {
             }
             state.selectPart(null);
           }
+          return;
+        }
+        if (state.screen === 'workbench' && useAttachmentStore.getState().benchOpen) {
+          e.preventDefault();
+          useAttachmentStore.getState().setBenchOpen(false);
           return;
         }
         if (state.screen === 'workbench' && state.caliperActive) {
@@ -236,6 +243,9 @@ export function useKeyboardShortcuts(): void {
           break;
         case 'k':
           state.toggleCaliperMode();
+          break;
+        case 'o':
+          useAttachmentStore.getState().toggleBenchOpen();
           break;
         case 'e':
           state.toggleShowEdges();

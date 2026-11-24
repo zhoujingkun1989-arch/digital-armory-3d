@@ -3,6 +3,11 @@ import {
   getArcheryProjectileMeta,
   type ArcheryProjectileSpec,
 } from '../../engine/cartridges/cartridgeSpecs';
+import { DEFAULT_ATTACHMENT_LOADOUT } from '../../engine/attachments/attachmentSpecs';
+import {
+  getCachedCombinedAttachmentPhysics,
+  useAttachmentStore,
+} from '../../engine/attachments/attachmentStore';
 import { playbackClock } from '../../engine/clock/playbackClock';
 import {
   computeGasPortUncoverF,
@@ -267,6 +272,7 @@ interface TraceCache {
   isArchery: boolean;
   archeryMeta: ArcheryProjectileSpec | null;
   hasNativeArcherySpec: boolean;
+  velMult: number;
   peakValue: number;
   timing: Readonly<WeaponFiringTiming>;
   fMin: number;
@@ -381,7 +387,8 @@ function buildTraceCache(
   lang: LanguageCode,
   cssW: number,
   dpr: number,
-  zoomBore: boolean
+  zoomBore: boolean,
+  velMult: number
 ): TraceCache {
   const caliber = getWeaponManifest(weaponId).caliberProfile;
   const spec = getCaliberBallisticsSpec(caliber);
@@ -391,6 +398,7 @@ function buildTraceCache(
     : null;
   const hasNativeArcherySpec =
     isArchery && (spec.caliber as string) === (caliber as string);
+  const effectiveVelMult = isArchery ? 1 : velMult;
   const timing = getWeaponFiringTiming(weaponId);
   const effectiveExitF = isArchery && archeryMeta
     ? archeryMeta.caliber === 'arrow_400gr'
@@ -425,7 +433,7 @@ function buildTraceCache(
       evaluateInternalBallisticsInto(caliber, f, sample, timing);
     }
     pressure[i] = sample.pressureMPa;
-    velocity[i] = sample.velocityMps;
+    velocity[i] = sample.velocityMps * effectiveVelMult;
   }
   const peakValue =
     isArchery && archeryMeta
@@ -434,18 +442,19 @@ function buildTraceCache(
         : archeryMeta.peakDrawForceN
       : spec.peakPressureMPa;
   const topV =
-    isArchery && archeryMeta
+    (isArchery && archeryMeta
       ? hasNativeArcherySpec
         ? spec.muzzleVelocityMps
         : archeryMeta.muzzleVelocityMps
-      : spec.muzzleVelocityMps;
+      : spec.muzzleVelocityMps) * effectiveVelMult;
 
   const cache: TraceCache = {
-    key: `${weaponId}|${lang}|${cssW}|${dpr}|${zoomBore ? 1 : 0}`,
+    key: `${weaponId}|${lang}|${cssW}|${dpr}|${zoomBore ? 1 : 0}|${effectiveVelMult.toFixed(4)}`,
     caliber,
     isArchery,
     archeryMeta,
     hasNativeArcherySpec,
+    velMult: effectiveVelMult,
     peakValue,
     timing: isArchery && !hasNativeArcherySpec
       ? { ...timing, ignitionF: 0.32, muzzleExitF: effectiveExitF }
@@ -754,6 +763,17 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
   const archeryMeta = isArchery
     ? resolveArcheryMetaForWeapon(activeWeaponId, caliber as string)
     : null;
+  const attLoadout = useAttachmentStore(
+    (st) => st.loadouts[activeWeaponId] ?? DEFAULT_ATTACHMENT_LOADOUT
+  );
+  const attPhysics = getCachedCombinedAttachmentPhysics(
+    attLoadout.muzzle,
+    attLoadout.optic
+  );
+  const velMult = isArchery ? 1 : attPhysics.muzzleVelocityMultiplier;
+  const hasAttachmentMods =
+    !isArchery &&
+    (attLoadout.muzzle !== 'none' || attLoadout.optic !== 'none');
 
   useEffect(() => {
     if (!visible) return;
@@ -774,9 +794,16 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
     const ensureCache = (): TraceCache | null => {
       const cssW = Math.max(120, Math.round(canvas.clientWidth));
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      const key = `${activeWeaponId}|${lang}|${cssW}|${dpr}|${zoomBore ? 1 : 0}`;
+      const key = `${activeWeaponId}|${lang}|${cssW}|${dpr}|${zoomBore ? 1 : 0}|${velMult.toFixed(4)}`;
       if (!cache || cache.key !== key) {
-        cache = buildTraceCache(activeWeaponId, lang, cssW, dpr, zoomBore);
+        cache = buildTraceCache(
+          activeWeaponId,
+          lang,
+          cssW,
+          dpr,
+          zoomBore,
+          velMult
+        );
         canvas.width = Math.round(cssW * dpr);
         canvas.height = Math.round(HUD_HEIGHT * dpr);
       }
@@ -802,6 +829,8 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
         );
       } else {
         evaluateInternalBallisticsInto(c.caliber, f, sample, c.timing);
+        sample.velocityMps *= c.velMult;
+        sample.energyJ *= c.velMult * c.velMult;
       }
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -945,7 +974,7 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
       canvas.removeEventListener('pointerup', onPointerUp);
       canvas.removeEventListener('pointercancel', onPointerUp);
     };
-  }, [visible, activeWeaponId, caliber, lang, zoomBore]);
+  }, [visible, activeWeaponId, caliber, lang, zoomBore, velMult]);
 
   if (!visible) return null;
 
@@ -957,15 +986,21 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
       : lang === 'zh'
         ? spec.labelZh
         : spec.labelEn;
-  const isMegajoule = !isArchery && spec.muzzleEnergyJ >= 1_000_000;
+  const effectiveV0 = Math.round(spec.muzzleVelocityMps * velMult);
+  const effectiveE0 = spec.muzzleEnergyJ * velMult * velMult;
+  const isMegajoule = !isArchery && effectiveE0 >= 1_000_000;
   const headerEnergyStr = isMegajoule
-    ? `${(spec.muzzleEnergyJ / 1_000_000).toFixed(2)} MJ`
-    : `${Math.round(spec.muzzleEnergyJ).toLocaleString('en-US')} J`;
+    ? `${(effectiveE0 / 1_000_000).toFixed(2)} MJ`
+    : `${Math.round(effectiveE0).toLocaleString('en-US')} J`;
   const headerTitle = isArchery ? s.archeryTitle : s.title;
+  const recoilPctDelta = Math.round((attPhysics.recoilRiseMultiplier - 1) * 100);
+  const modSummary = hasAttachmentMods
+    ? ` · MOD ${attPhysics.soundDbDelta !== 0 ? `${attPhysics.soundDbDelta > 0 ? '+' : ''}${attPhysics.soundDbDelta} dB` : ''}${recoilPctDelta !== 0 ? ` ${recoilPctDelta > 0 ? '+' : ''}${recoilPctDelta}% ${lang === 'zh' ? '后坐' : 'Recoil'}` : ''}`
+    : '';
   const headerSummary =
     isArchery && archeryMeta
       ? `${caliberLabel} · ATA/IBO · ${s.archeryPeakDraw} ${archeryMeta.peakDrawForceLb} lb (${archeryMeta.peakDrawForceN} N) · ${s.muzzleVelocity} ${archeryMeta.velocityFps} FPS (${archeryMeta.muzzleVelocityMps} m/s) · ${s.archeryKinetic} ${archeryMeta.muzzleEnergyJ.toFixed(1)} J`
-      : `${caliberLabel} · ${spec.standard} · ${s.peak} ${spec.peakPressureMPa} MPa · ${s.muzzleVelocity} ${spec.muzzleVelocityMps} m/s · ${s.muzzleEnergy} ${headerEnergyStr}`;
+      : `${caliberLabel} · ${spec.standard} · ${s.peak} ${spec.peakPressureMPa} MPa · ${s.muzzleVelocity} ${effectiveV0} m/s · ${s.muzzleEnergy} ${headerEnergyStr}${modSummary}`;
 
   return (
     <div

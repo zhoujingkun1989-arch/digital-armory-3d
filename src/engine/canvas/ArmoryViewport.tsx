@@ -16,6 +16,7 @@ import {
   BallisticsSystem,
   WeaponRecoilGroup,
 } from '../actors/BallisticsSystem';
+import { AttachmentActor } from '../actors/AttachmentActor';
 import {
   CARTRIDGE_STAGE_DATUM_Y,
   CartridgeCutawayStage,
@@ -902,6 +903,7 @@ const DisassemblyRig: React.FC = () => {
                   />
                 ))}
                 <MagazineAmmoStack />
+                <AttachmentActor />
                 <BallisticsSystem worldFx={false} />
                 <MalfunctionActor />
               </WeaponRecoilGroup>

@@ -49,6 +49,7 @@ import {
 import type { EngineeringRole } from '../engine/materials/engineeringRoles';
 import { resetArmoryPhysics } from '../engine/physics/armoryPhysics';
 import { useCausalitySandboxStore } from '../engine/physics/causalitySandbox';
+import { useAttachmentStore } from '../engine/attachments/attachmentStore';
 import { useTankCrewStore } from '../engine/tank/tankCrewStore';
 import {
   type ExternalProjectileId,
@@ -1807,6 +1808,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     const activeId = get().activeWeaponId;
     resetWeaponPhysicsAndAction(activeId, true);
     useCausalitySandboxStore.getState().reset();
+    useAttachmentStore.getState().resetWeapon(activeId);
+    useAttachmentStore.getState().setBenchOpen(false);
     useTankCrewStore.getState().resetForWeapon(activeId);
     fieldStripStore.setTier('field', activeId);
     fieldStripStore.reset(activeId, true);

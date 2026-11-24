@@ -12,6 +12,10 @@ import type {
   WeaponPartSpec,
 } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import {
+  selectIsPartReplacedByAttachment,
+  useAttachmentStore,
+} from '../attachments/attachmentStore';
 import { caliperStore } from '../caliper/caliperStore';
 import { fieldStripStore } from '../fieldstrip/fieldStripStore';
 import {
@@ -247,6 +251,9 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     const engineeringTint = useAppStore((s) => s.engineeringTint);
     const focusedEngineeringRole = useAppStore((s) => s.focusedEngineeringRole);
     const isGroupHidden = useAppStore((s) => s.hiddenGroups[part.group]);
+    const isReplacedByAttachment = useAttachmentStore((s) =>
+      selectIsPartReplacedByAttachment(s, weaponId, part.id)
+    );
     const selectPart = useAppStore((s) => s.selectPart);
     const hoverPart = useAppStore((s) => s.hoverPart);
 
@@ -563,7 +570,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       }
     });
 
-    if (!geometry || isGroupHidden) return null;
+    if (!geometry || isGroupHidden || isReplacedByAttachment) return null;
 
     const isSectionCutShell = sectionCut && !!part.isShell && !isSelected;
     const isTransparent = isGhostByIsolate || isXrayHousing;
