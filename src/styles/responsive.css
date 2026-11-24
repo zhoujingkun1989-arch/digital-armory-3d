@@ -1,4 +1,64 @@
 /* ==================== Responsive Breakpoint Rules ==================== */
+
+/* Desktop hide for mobile-only CT presets & firing-card expand toggles */
+.live-section-presets-toggle,
+.firing-mobile-expand-btn {
+  display: none;
+}
+
+.firing-compact-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* Wide desktop (>= 1440px): single-row inline Live CT bar + quick-slice presets (<= 48px tall) */
+@media (min-width: 1440px) {
+  .live-section-bar.has-presets:not(.is-story-open) {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 8px;
+    max-width: min(1260px, calc(100vw - 28px));
+    padding: 5px 10px 5px 12px;
+    border-radius: 999px;
+  }
+
+  .live-section-bar.has-presets:not(.is-story-open) .live-section-main-row {
+    flex-wrap: nowrap;
+    gap: 6px;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .live-section-bar.has-presets:not(.is-story-open) .live-section-track-wrap {
+    width: clamp(92px, 8.5vw, 134px);
+    flex: 0 1 120px;
+  }
+
+  .live-section-bar.has-presets:not(.is-story-open) .live-section-presets-row {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 4px;
+    padding-top: 0;
+    padding-left: 8px;
+    border-top: none;
+    border-left: 1px solid rgba(148, 163, 184, 0.22);
+    flex-shrink: 0;
+  }
+
+  .live-section-bar.has-presets:not(.is-story-open) .live-section-preset-pill {
+    padding: 2.5px 7px;
+    font-size: 10px;
+    gap: 3px;
+  }
+
+  .live-section-bar.has-presets:not(.is-story-open) .live-section-preset-mm {
+    display: none;
+  }
+}
+
 @media (max-width: 1680px) {
   :root {
     --hud-top-offset: 100px;
@@ -791,6 +851,170 @@ a {
     right: 8px;
     width: auto;
     max-width: calc(100vw - 16px);
+  }
+
+  /* Zero-overlap mobile stacking: telemetry slot sits below collapsed BOM button,
+     and compact 2-line firing phase card sits cleanly below telemetry (<= 68px collapsed) */
+  .ballistics-telemetry-slot,
+  .ballistics-telemetry-slot.sidebar-collapsed {
+    top: calc(var(--hud-top-offset, 66px) + 40px);
+    left: 8px;
+    right: 8px;
+    width: auto;
+    min-width: 0;
+  }
+
+  .inspector-card.firing-compact-card {
+    top: calc(var(--hud-top-offset, 66px) + 84px);
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-width: calc(100vw - 16px);
+    padding: 6px 10px;
+    border-radius: 10px;
+  }
+
+  .inspector-card.firing-compact-card .firing-compact-head {
+    margin-bottom: 2px;
+  }
+
+  .inspector-card.firing-compact-card .guide-badge {
+    margin-bottom: 0;
+    font-size: 9.5px;
+    padding: 1.5px 6px;
+  }
+
+  .inspector-card.firing-compact-card .firing-mobile-expand-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-pill);
+    color: var(--color-text-secondary);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.16s ease, color 0.14s ease, border-color 0.14s ease;
+  }
+
+  .inspector-card.firing-compact-card.is-mobile-expanded .firing-mobile-expand-btn svg {
+    transform: rotate(180deg);
+  }
+
+  .inspector-card.firing-compact-card .guide-title {
+    font-size: 12px;
+    line-height: 1.25;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .inspector-card.firing-compact-card:not(.is-mobile-expanded) {
+    max-height: 76px;
+    overflow: hidden;
+  }
+
+  .inspector-card.firing-compact-card:not(.is-mobile-expanded) .guide-desc {
+    font-size: 11px;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .inspector-card.firing-compact-card.is-mobile-expanded {
+    max-height: 220px;
+    overflow-y: auto;
+  }
+
+  .inspector-card.firing-compact-card.is-mobile-expanded .guide-desc {
+    font-size: 11.5px;
+    line-height: 1.48;
+  }
+
+  /* Compact single-row mobile Live CT bar (~44px collapsed; presets & axis tools expand on demand) */
+  .live-section-bar:not(.is-box-mode) {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+    padding: 5px 8px;
+    gap: 5px;
+    border-radius: 12px;
+  }
+
+  .live-section-bar:not(.is-box-mode) .live-section-main-row {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    min-height: 32px;
+  }
+
+  .live-section-bar:not(.is-box-mode) .live-section-title {
+    display: none;
+  }
+
+  .live-section-bar:not(.is-box-mode) .live-section-readout {
+    min-width: 48px;
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+
+  .live-section-bar:not(.is-box-mode) .live-section-track-wrap {
+    order: 0;
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 72px;
+  }
+
+  .live-section-bar:not(.is-box-mode) .live-section-presets-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 7px;
+    font-size: 10px;
+    min-height: 28px;
+  }
+
+  .live-section-bar:not(.is-box-mode) .live-section-presets-toggle svg {
+    transition: transform 0.16s ease;
+  }
+
+  .live-section-bar.is-mobile-presets-open .live-section-presets-toggle svg {
+    transform: rotate(180deg);
+  }
+
+  .live-section-bar:not(.is-box-mode):not(.is-mobile-presets-open)
+    .live-section-axis-group,
+  .live-section-bar:not(.is-box-mode):not(.is-mobile-presets-open)
+    .live-section-btn:not(.live-section-presets-toggle),
+  .live-section-bar:not(.is-box-mode):not(.is-mobile-presets-open)
+    .live-section-presets-row {
+    display: none;
+  }
+
+  .live-section-bar.is-mobile-presets-open .live-section-main-row {
+    flex-wrap: wrap;
+  }
+
+  .live-section-bar.is-mobile-presets-open .live-section-presets-row {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    width: 100%;
+    padding-top: 4px;
+  }
+
+  .live-section-bar.is-mobile-presets-open
+    .live-section-presets-row::-webkit-scrollbar {
+    display: none;
   }
 
   .timeline-dock {

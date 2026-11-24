@@ -443,7 +443,7 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     backBtn: 'Back to Vault',
     backTitle: 'Return to 3D Armory Exhibition Vault',
     badge: '1,000M PROVING GROUND · RK4',
-    title: '1,000m External Ballistics, Wind Drift & Transonic Lab',
+    title: '1,000m External Ballistics & 3D Range',
     subtitle:
       '4th-Order Runge-Kutta 3-DOF Point-Mass Solver · G1/G7 Transonic Wave Drag · FFP Christmas-Tree Reticle & Sniper DOPE Card',
     dopeJumpBtn: 'DOPE Card',

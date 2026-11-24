@@ -96,9 +96,9 @@ export const ARMOR_PENETRATION_STRINGS: Record<
     layerTableTitle: '各介质装甲抗弹等效拆解明细',
     viewModes: {
       groupAria: '切换穿甲可视化视图模式',
-      theater3d: '3D 剖视剧场',
-      schematic2d: '2D 原理剖图',
-      split: '3D + 2D 双屏',
+      theater3d: '3D 剧场',
+      schematic2d: '2D 剖图',
+      split: '双屏',
     },
     theater: {
       title: '1:1 3D 实时慢动作复合装甲穿甲剖视剧场',
@@ -183,7 +183,7 @@ export const ARMOR_PENETRATION_STRINGS: Record<
     layerTableTitle: 'Layer-by-Layer Armor Defeat Breakdown',
     viewModes: {
       groupAria: 'Armor penetration visualization mode',
-      theater3d: '3D Cutaway Theater',
+      theater3d: '3D Theater',
       schematic2d: '2D Schematic',
       split: 'Split',
     },

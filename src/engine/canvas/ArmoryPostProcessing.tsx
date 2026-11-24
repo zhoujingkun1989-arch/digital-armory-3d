@@ -672,6 +672,37 @@ export function sampleRendererGpuTelemetry(
 }
 
 /**
+ * Renders one `EffectComposer` frame while preserving real accumulated scene
+ * draw-call & triangle counts whenever the GPU telemetry HUD is enabled.
+ * Without temporarily disabling `gl.info.autoReset`, each fullscreen post-processing
+ * pass (`OutputPass` / `SMAAPass`) wipes `gl.info.render` down to `1 call / 1 tri`.
+ * Zero-GC inside `useFrame`; always restores `gl.info.autoReset = true` in `finally`.
+ */
+export function renderComposerWithTelemetry(
+  composer: { render: (delta?: number) => void },
+  gl: Pick<THREE.WebGLRenderer, 'info'>,
+  deltaSec: number
+): boolean {
+  const clampedDelta = Math.min(deltaSec, 0.1);
+  if (!isGpuTelemetryEnabled()) {
+    if (!gl.info.autoReset) {
+      gl.info.autoReset = true;
+    }
+    composer.render(clampedDelta);
+    return false;
+  }
+
+  gl.info.autoReset = false;
+  gl.info.reset();
+  try {
+    composer.render(clampedDelta);
+    return sampleRendererGpuTelemetry(gl, deltaSec);
+  } finally {
+    gl.info.autoReset = true;
+  }
+}
+
+/**
  * Complete GPU teardown for Three.js r169 `GTAOPass`, disposing internal materials & cached
  * object maps that upstream `GTAOPass.dispose()` omits (`gtaoMaterial`, `blendMaterial`,
  * `depthTexture`, `_visibilityCache`).
@@ -900,6 +931,7 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
 
     return () => {
       rigRef.current = null;
+      gl.info.autoReset = true;
       renderPass.dispose();
       disposeGtaoPassResources(gtaoPass);
       bloomPass.dispose();
@@ -1082,12 +1114,8 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
       }
     }
 
-    rig.composer.render(Math.min(delta, 0.1));
-
-    // Zero-overhead GPU telemetry hook (strict single-boolean no-op when telemetry HUD is closed)
-    if (isGpuTelemetryEnabled()) {
-      sampleRendererGpuTelemetry(gl, delta);
-    }
+    // Zero-overhead GPU telemetry hook: preserves real scene draw calls & triangles across EffectComposer passes
+    renderComposerWithTelemetry(rig.composer, gl, delta);
   }, 1);
 
   return null;

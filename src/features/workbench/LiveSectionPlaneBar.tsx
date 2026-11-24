@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  ChevronDown,
   FlipHorizontal2,
   Pause,
   Play,
@@ -158,6 +159,7 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
   const sweepAmplitudeCm = sectionRange.sweepAmplitude;
 
   const [isSweeping, setIsSweeping] = useState(false);
+  const [mobilePresetsOpen, setMobilePresetsOpen] = useState(false);
   const phaseRef = useRef(0);
   const activeSweeping =
     isSweeping && sectionCut && sectionCutAxis !== 'box';
@@ -257,7 +259,9 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
     <div
       className={`live-section-bar ${
         isBoxMode ? 'is-box-mode' : 'has-presets'
-      } ${isStoryDrawerExpanded ? 'is-story-open' : ''}`}
+      } ${isStoryDrawerExpanded ? 'is-story-open' : ''} ${
+        mobilePresetsOpen ? 'is-mobile-presets-open' : ''
+      }`}
       role="region"
       aria-label={ui.barAria}
     >
@@ -371,6 +375,25 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
             <RotateCcw size={11} aria-hidden="true" />
             <span>{ui.resetLabel}</span>
           </button>
+
+          {!isBoxMode && quickPresets.length > 0 && (
+            <button
+              type="button"
+              className={`live-section-btn live-section-presets-toggle ${
+                mobilePresetsOpen ? 'is-active' : ''
+              }`}
+              data-testid="live-section-presets-toggle"
+              aria-expanded={mobilePresetsOpen}
+              title={presetsUi.groupAria}
+              onClick={() => {
+                playWorkbenchFoley('toggle_switch');
+                setMobilePresetsOpen((prev) => !prev);
+              }}
+            >
+              <span>{lang === 'zh' ? '预设' : 'Presets'}</span>
+              <ChevronDown size={11} aria-hidden="true" />
+            </button>
+          )}
 
           <button
             type="button"

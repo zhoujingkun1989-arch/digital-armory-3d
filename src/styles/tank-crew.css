@@ -65,7 +65,9 @@
 }
 
 .tank-crew-hud {
-  background: rgba(9, 13, 22, 0.9);
+  position: relative;
+  z-index: 6;
+  background: rgba(9, 13, 22, 0.92);
   border: 1px solid rgba(132, 204, 22, 0.36);
   border-radius: 12px;
   padding: 10px 12px;

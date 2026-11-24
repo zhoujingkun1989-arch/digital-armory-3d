@@ -173,6 +173,63 @@ interface ArmorSurfaceTextureSet {
   dispose: () => void;
 }
 
+export const ARMOR_THEATER_CAMERA_DISTANCE_MULT = 1.085;
+export const ARMOR_SPRITE_SCALE_X = 14.6;
+export const ARMOR_SPRITE_SCALE_Y = 5.0;
+
+export interface ArmorLayerSpriteLayout {
+  readonly tier: 0 | 1;
+  readonly leaderHeightCm: number;
+  readonly spriteOffsetYCm: number;
+  readonly spriteOffsetXCm: number;
+}
+
+/**
+ * Computes staggered even/odd vertical elevations and subtle horizontal fan offsets
+ * for 3D armor layer `THREE.Sprite` billboards so adjacent layers (e.g. `FY-4 ERA`
+ * + `RHA 110mm` on 44.1° sloped hulls) maintain generous visual separation and never touch.
+ */
+export function computeArmorLayerSpriteLayout(
+  layerIndex: number
+): ArmorLayerSpriteLayout {
+  const tier: 0 | 1 = layerIndex % 2 === 0 ? 0 : 1;
+  const leaderHeightCm = tier === 0 ? 4.2 : 11.4;
+  const spriteOffsetYCm = leaderHeightCm + ARMOR_SPRITE_SCALE_Y * 0.5 + 0.5;
+  const spriteOffsetXCm = layerIndex === 0 ? -1.4 : tier === 1 ? 1.2 : 0;
+  return {
+    tier,
+    leaderHeightCm,
+    spriteOffsetYCm,
+    spriteOffsetXCm,
+  };
+}
+
+/**
+ * Computes the framed default 3D Armor Theater camera position & look target,
+ * pulled back ~8.5% (`ARMOR_THEATER_CAMERA_DISTANCE_MULT`) so staggered top sprites
+ * on sloped glacis assemblies retain generous headroom below the HUD bar.
+ */
+export function computeArmorTheaterCameraPose(
+  layout: Pick<
+    ArmorTheaterLayout,
+    | 'recommendedCameraDistanceCm'
+    | 'recommendedTargetXCm'
+    | 'recommendedTargetYCm'
+  >
+): {
+  position: readonly [number, number, number];
+  target: readonly [number, number, number];
+} {
+  const dist =
+    layout.recommendedCameraDistanceCm * ARMOR_THEATER_CAMERA_DISTANCE_MULT;
+  const tx = layout.recommendedTargetXCm;
+  const ty = layout.recommendedTargetYCm + 2.5;
+  return {
+    position: [tx - dist * 0.16, ty + dist * 0.24, dist * 0.96],
+    target: [tx, ty, -4],
+  };
+}
+
 /**
  * Formats a concise, authentic 3D cutaway-face material badge stencil tag
  * (`FY-4 ERA`, `NERA`, `DU`, `RHA`, etc.) from an armor layer's domain metadata.
@@ -869,9 +926,8 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
       };
     }, [badgeSpriteMat, badgeTex]);
 
-    const badgeStaggerY = (layer.index % 2) * 5.6;
-    const leaderH = 4.8 + badgeStaggerY;
-    const badgeY = topEdgeY + leaderH + 2.2;
+    const spriteLayout = computeArmorLayerSpriteLayout(layer.index);
+    const leaderH = spriteLayout.leaderHeightCm;
     const badgePlate = badgeSpriteMat ? (
       <group
         name={`ArmorLayerBillboard-${layer.index}`}
@@ -890,10 +946,14 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
             opacity={0.88}
           />
         </mesh>
-        {/* Camera-facing THREE.Sprite billboard: razor-legible from any orbit angle */}
+        {/* Camera-facing THREE.Sprite billboard: staggered even/odd tier elevations prevent contact on tilted glacis */}
         <sprite
-          position={[0, badgeY - topEdgeY, 0]}
-          scale={[15.8, 5.4, 1]}
+          position={[
+            spriteLayout.spriteOffsetXCm,
+            spriteLayout.spriteOffsetYCm,
+            0,
+          ]}
+          scale={[ARMOR_SPRITE_SCALE_X, ARMOR_SPRITE_SCALE_Y, 1]}
           material={badgeSpriteMat}
           renderOrder={14}
         />
@@ -1463,26 +1523,29 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
     return layout.totalLosCm * Math.sin(layout.visualTiltRad);
   }, [layout.totalLosCm, layout.visualTiltRad]);
 
-  // Frame camera smoothly on target change or explicit camera reset button
+  // Frame camera smoothly on target change or explicit camera reset button (~8.5% wider headroom for staggered top sprites)
   const cameraFrameKey = `${layout.result.target.id}-${layout.result.zone.id}-${cameraResetTrigger}`;
   useEffect(() => {
-    const dist = layout.recommendedCameraDistanceCm;
-    const tx = layout.recommendedTargetXCm;
-    const ty = layout.recommendedTargetYCm;
-    // Hero 3/4 cutaway theater vantage: slightly above & in front of z = 0 cutaway plane
-    camera.position.set(tx - dist * 0.16, ty + dist * 0.24, dist * 0.96);
+    const camPose = computeArmorTheaterCameraPose(layout);
+    camera.position.set(
+      camPose.position[0],
+      camPose.position[1],
+      camPose.position[2]
+    );
     if (controlsRef.current) {
-      controlsRef.current.target.set(tx, ty, -4);
+      controlsRef.current.target.set(
+        camPose.target[0],
+        camPose.target[1],
+        camPose.target[2]
+      );
       controlsRef.current.update();
     } else {
-      camera.lookAt(tx, ty, -4);
+      camera.lookAt(camPose.target[0], camPose.target[1], camPose.target[2]);
     }
   }, [
     camera,
     cameraFrameKey,
-    layout.recommendedCameraDistanceCm,
-    layout.recommendedTargetXCm,
-    layout.recommendedTargetYCm,
+    layout,
   ]);
 
   // 60fps Zero-GC Simulation Loop (NO setState, NO object allocations!)
@@ -2376,7 +2439,7 @@ export const ArmorPenetration3DScene: React.FC<ArmorPenetration3DSceneProps> = (
                 toneMapping: THREE.AgXToneMapping,
                 toneMappingExposure: 1.08,
               }}
-              camera={{ fov: 38, near: 0.5, far: 1200, position: [-20, 32, 148] }}
+              camera={{ fov: 38, near: 0.5, far: 1200, position: [-22, 35, 161] }}
               onCreated={({ gl }) => {
                 canvasCleanupRef.current?.();
                 const dom = gl.domElement;

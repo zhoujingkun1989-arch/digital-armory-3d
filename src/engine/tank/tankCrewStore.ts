@@ -19,6 +19,10 @@ export interface TankCrewKinematicsSpec {
   weaponId: TankWeaponId;
   turretRingPivot: readonly [number, number, number];
   trunnionPivot: readonly [number, number, number];
+  /** Per-tank gunner optic eye offset `[forwardFromRingCm, heightAboveTrunnionCm, lateralRightCm]` */
+  gunnerEyeOffset: readonly [number, number, number];
+  /** Target look-point Y offset above `trunnionPivot[1]` (cm) along bore line */
+  gunnerLookOffsetY: number;
   elevLimitsDeg: readonly [number, number];
   defaultProjectileSpeedMps: number;
   sightNameZh: string;
@@ -146,6 +150,8 @@ export const TANK_CREW_SPECS: Readonly<
     weaponId: 'ztz99a',
     turretRingPivot: [22, 9.5, 0],
     trunnionPivot: [100, 38, 0],
+    gunnerEyeOffset: [-105, 86, 56],
+    gunnerLookOffsetY: 18,
     elevLimitsDeg: [-5, 14],
     defaultProjectileSpeedMps: 1780,
     sightNameZh: '152 式双稳上反热像周视猎-歼瞄准镜',
@@ -175,6 +181,10 @@ export const TANK_CREW_SPECS: Readonly<
     weaponId: 'm1a2',
     turretRingPivot: [20, 12, 0],
     trunnionPivot: [148, 44, 0],
+    // Raised +26 cm above legacy offset & shifted +70 cm forward to clear m1a2_crows_optics (maxY = 124 cm)
+    // so the Abrams GPS thermal crosshair has a 100% unobstructed sightline over the 120mm M256 barrel.
+    gunnerEyeOffset: [-35, 112, 58],
+    gunnerLookOffsetY: 38,
     elevLimitsDeg: [-10, 20],
     defaultProjectileSpeedMps: 1710,
     sightNameZh: 'GPS 炮手主瞄镜 + 3rd Gen FLIR 热成像',
@@ -207,6 +217,8 @@ export const TANK_CREW_SPECS: Readonly<
     weaponId: 'leopard2a7',
     turretRingPivot: [32, 46, 0],
     trunnionPivot: [138, 74, 0],
+    gunnerEyeOffset: [-105, 86, 56],
+    gunnerLookOffsetY: 18,
     elevLimitsDeg: [-9, 20],
     defaultProjectileSpeedMps: 1750,
     sightNameZh: 'EMES-15 激光测距 + ATTICA 热成像主瞄',
@@ -239,6 +251,8 @@ export const TANK_CREW_SPECS: Readonly<
     weaponId: 'tiger1',
     turretRingPivot: [18, 51, 0],
     trunnionPivot: [134, 102, 0],
+    gunnerEyeOffset: [-105, 86, 56],
+    gunnerLookOffsetY: 18,
     elevLimitsDeg: [-8, 15],
     defaultProjectileSpeedMps: 773,
     sightNameZh: 'Carl Zeiss TZF 9b 双目光学测距瞄准镜',
@@ -267,6 +281,45 @@ export const TANK_CREW_SPECS: Readonly<
     ]),
   },
 };
+
+export interface TankGunnerCameraPose {
+  readonly eye: readonly [number, number, number];
+  readonly target: readonly [number, number, number];
+}
+
+/**
+ * Computes unobstructed world-space gunner primary sight eye & target coordinates (cm)
+ * for any 1:1 MBT at the active turret azimuth angle.
+ */
+export function computeTankGunnerCameraPose(
+  weaponId: WeaponId | string,
+  turretYawDeg: number
+): TankGunnerCameraPose | null {
+  const spec = getTankCrewSpec(weaponId);
+  if (!spec) return null;
+  const yawRad = (turretYawDeg * Math.PI) / 180;
+  const dirX = Math.cos(-yawRad);
+  const dirZ = Math.sin(-yawRad);
+  const rightX = -dirZ;
+  const rightZ = dirX;
+  const [rx, , rz] = spec.turretRingPivot;
+  const [, ty] = spec.trunnionPivot;
+  const [fwdOffset, eyeHeightAboveTrunnion, lateralRight] =
+    spec.gunnerEyeOffset;
+
+  return {
+    eye: [
+      rx + dirX * fwdOffset + rightX * lateralRight,
+      ty + eyeHeightAboveTrunnion,
+      rz + dirZ * fwdOffset + rightZ * lateralRight,
+    ],
+    target: [
+      rx + dirX * 420,
+      ty + spec.gunnerLookOffsetY,
+      rz + dirZ * 420,
+    ],
+  };
+}
 
 export interface TankFcsSolution {
   rangeM: number;
