@@ -32,8 +32,26 @@ jobs:
       - name: Vitest full 34-exhibit V6.0 contract suite
         run: npm test
 
-      - name: Production Vite bundle build (< 800 kB chunks)
-        run: npm run build
+      - name: Production Vite bundle build (< 800 kB chunks · 0 circular chunks)
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/vite-build-root.log
+          if grep -q "Circular chunk" /tmp/vite-build-root.log; then
+            echo "ERROR: Circular chunk warning detected in root Vite build!" >&2
+            exit 1
+          fi
 
       - name: Asset & bundle budget audit (34/34 exhibits <= 12 MB · Pages < 1 GB)
         run: npm run assets:audit
+
+      - name: Subpath production build verification (/digital-armory-3d/)
+        shell: bash
+        run: |
+          set -euo pipefail
+          VITE_BASE_PATH=/digital-armory-3d/ npm run build 2>&1 | tee /tmp/vite-build-subpath.log
+          if grep -q "Circular chunk" /tmp/vite-build-subpath.log; then
+            echo "ERROR: Circular chunk warning detected in subpath Vite build!" >&2
+            exit 1
+          fi
+          grep -q "/digital-armory-3d/assets/" dist/index.html
