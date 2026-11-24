@@ -9,6 +9,7 @@ import type {
 } from '../engine/attachments/attachmentSpecs';
 import { useAttachmentStore } from '../engine/attachments/attachmentStore';
 import { playWorkbenchFoley } from '../engine/audio/mechanicalSoundEngine';
+import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
 import {
   CARTRIDGE_LAB_SPECS,
   isCaliberProfile,
@@ -60,6 +61,46 @@ export interface WorkbenchDeepLinkOptions {
 
 const VALID_SECTION_AXES = new Set<SectionCutAxis>(['z', 'x', 'y', 'box']);
 const SAFE_PART_ID_RE = /^[a-z0-9_]{2,64}$/;
+const DEFAULT_ENVIRONMENT_PRESET: ArmoryEnvironmentPreset = 'tactical_vault';
+
+/**
+ * Parses studio environment preset from URL query parameters:
+ * - `?env=blueprint_daylight` -> `'blueprint_daylight'`
+ * - `?env=gunsmith_bench` -> `'gunsmith_bench'`
+ * - `?env=tactical_vault` or `?env=dark_studio` -> `'tactical_vault'`
+ * - Fallback aliases when `env` is omitted or unrecognized:
+ *   `?theme=light` -> `'blueprint_daylight'`, `?theme=dark` -> `'tactical_vault'`
+ */
+export function parseEnvironmentPresetUrlParam(
+  rawEnv: string | null | undefined,
+  rawTheme?: string | null | undefined
+): ArmoryEnvironmentPreset | null {
+  if (rawEnv) {
+    const norm = rawEnv.trim().toLowerCase();
+    if (norm === 'blueprint_daylight') return 'blueprint_daylight';
+    if (norm === 'gunsmith_bench') return 'gunsmith_bench';
+    if (norm === 'tactical_vault' || norm === 'dark_studio') {
+      return 'tactical_vault';
+    }
+  }
+  if (rawTheme) {
+    const normTheme = rawTheme.trim().toLowerCase();
+    if (normTheme === 'light') return 'blueprint_daylight';
+    if (normTheme === 'dark') return 'tactical_vault';
+  }
+  return null;
+}
+
+/**
+ * Serializes studio environment preset into canonical `?env=` param, omitting
+ * the default dark studio preset (`tactical_vault`) so default URLs stay clean.
+ */
+export function serializeEnvironmentPresetUrlParam(
+  preset: ArmoryEnvironmentPreset | undefined
+): string | null {
+  if (!preset || preset === DEFAULT_ENVIRONMENT_PRESET) return null;
+  return preset;
+}
 
 export function parseSectionAxisUrlParam(
   raw: string | null | undefined
@@ -526,6 +567,18 @@ export function applyLocationToStore(searchOverride?: string): void {
     current.returnToArmory();
   }
 
+  // Hydrate studio lighting & UI theme preset after screen/mode transition so
+  // acoustic room auto-sync reflects both the target preset and target mode.
+  const parsedEnv = parseEnvironmentPresetUrlParam(
+    params.get('env'),
+    params.get('theme')
+  );
+  const targetEnv: ArmoryEnvironmentPreset =
+    parsedEnv ?? DEFAULT_ENVIRONMENT_PRESET;
+  if (useAppStore.getState().environmentPreset !== targetEnv) {
+    useAppStore.getState().setEnvironmentPreset(targetEnv);
+  }
+
   if (monographDeepLink.open) {
     const launchOptions: MonographModalLaunchOptions = {};
     if (monographDeepLink.styleMode) {
@@ -613,7 +666,8 @@ export function buildSearchString(
   splitShowdownPair?: { weaponA: WeaponId; weaponB: WeaponId },
   workbenchDeepLink?: WorkbenchDeepLinkOptions,
   scaleWallModalOpen?: boolean,
-  recoilLabOpen?: boolean
+  recoilLabOpen?: boolean,
+  environmentPreset?: ArmoryEnvironmentPreset
 ): string {
   const rawSearch =
     baseSearch ?? (typeof window !== 'undefined' ? window.location.search : '');
@@ -781,6 +835,16 @@ export function buildSearchString(
   ) {
     params.delete('panel');
   }
+  if (environmentPreset !== undefined) {
+    const serializedEnv =
+      serializeEnvironmentPresetUrlParam(environmentPreset);
+    if (serializedEnv) {
+      params.set('env', serializedEnv);
+    } else {
+      params.delete('env');
+    }
+    params.delete('theme');
+  }
   const browserDefaultLang = detectBrowserDefaultLanguage();
   const explicitParamLang = params.get('lang');
   if (lang !== browserDefaultLang || explicitParamLang === lang) {
@@ -816,6 +880,7 @@ export function useUrlStateSync(): void {
   const splitShowdownWeaponB = useAppStore((s) => s.splitShowdownWeaponB);
   const scaleWallModalOpen = useAppStore((s) => s.scaleWallModalOpen);
   const recoilLabOpen = useAppStore((s) => s.recoilLabOpen);
+  const environmentPreset = useAppStore((s) => s.environmentPreset);
   const activeLoadout = useAttachmentStore((s) => s.loadouts[activeWeaponId]);
   const activeMuzzle: MuzzleAttachmentId = activeLoadout?.muzzle ?? 'none';
   const activeOptic: OpticAttachmentId = activeLoadout?.optic ?? 'none';
@@ -908,7 +973,8 @@ export function useUrlStateSync(): void {
       live.splitShowdownWeaponA !== splitShowdownWeaponA ||
       live.splitShowdownWeaponB !== splitShowdownWeaponB ||
       live.scaleWallModalOpen !== scaleWallModalOpen ||
-      live.recoilLabOpen !== recoilLabOpen
+      live.recoilLabOpen !== recoilLabOpen ||
+      live.environmentPreset !== environmentPreset
     ) {
       return;
     }
@@ -934,7 +1000,8 @@ export function useUrlStateSync(): void {
         selectedPartId,
       },
       scaleWallModalOpen,
-      recoilLabOpen
+      recoilLabOpen,
+      environmentPreset
     );
     if (window.location.search === nextSearch) {
       prevScreenRef.current = screen;
@@ -968,5 +1035,6 @@ export function useUrlStateSync(): void {
     splitShowdownWeaponB,
     scaleWallModalOpen,
     recoilLabOpen,
+    environmentPreset,
   ]);
 }
