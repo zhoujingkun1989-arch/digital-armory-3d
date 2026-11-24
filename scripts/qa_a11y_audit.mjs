@@ -3,8 +3,9 @@
  * Digital Armory 3D — Automated WCAG 2.1 AA Keyboard, Focus-Trap, ARIA
  * & Mobile Touch-Target E2E Audit Harness
  *
- * Audits every major screen (6) and interactive modal/drawer (11) in headless
- * Chromium via native Node 22+ WebSocket CDP across:
+ * Audits 100% of app surfaces — every major screen (6), every interactive modal
+ * (14), and every Workbench interactive HUD (5) = 25 targets × 3 profiles (75 checks)
+ * in headless Chromium via native Node 22+ WebSocket CDP across:
  *   - Dark Studio Desktop      (1920x1080, env=tactical_vault)
  *   - Blueprint Daylight       (1920x1080, env=blueprint_daylight)
  *   - Mobile Portrait          (390x844,   env=tactical_vault, mobile=true)
@@ -223,6 +224,34 @@ export const A11Y_MODAL_SPECS = Object.freeze([
       modifiers: 8, // CDP modifier bit 8 = Shift
       windowsVirtualKeyCode: 191,
     }),
+  }),
+  Object.freeze({
+    key: 'panel_showdown',
+    kind: 'modal',
+    label: 'Mechanism Showdown Matrix (S)',
+    query: 'screen=armory',
+    expectedDialogSelector: 'dialog.showdown-dialog[open], [role="dialog"]',
+    triggerKey: Object.freeze({
+      key: 's',
+      code: 'KeyS',
+      text: 's',
+      modifiers: 0,
+      windowsVirtualKeyCode: 83,
+    }),
+  }),
+  Object.freeze({
+    key: 'panel_atlas',
+    kind: 'modal',
+    label: 'PBR Texture Atlas Inspector (?panel=atlas)',
+    query: 'screen=workbench&weapon=ak15&panel=atlas',
+    expectedDialogSelector: '.tex-modal-backdrop[role="dialog"], [role="dialog"]',
+  }),
+  Object.freeze({
+    key: 'panel_monograph',
+    kind: 'modal',
+    label: 'DK Monograph Print Studio (?panel=monograph)',
+    query: 'screen=workbench&weapon=ak15&panel=monograph',
+    expectedDialogSelector: 'dialog.monograph-dialog[open], [role="dialog"]',
   }),
 ]);
 
