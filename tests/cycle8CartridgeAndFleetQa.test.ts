@@ -1,0 +1,317 @@
+import { execFileSync } from 'node:child_process';
+import fs from 'node:fs';
+import path from 'node:path';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { describe, expect, it } from 'vitest';
+import {
+  getCartridgeHighlightLayer,
+  setCartridgeHighlightLayer,
+  subscribeCartridgeHighlightLayer,
+} from '../src/engine/actors/CartridgeCutawayStage';
+import {
+  CARTRIDGE_LAB_ORDER,
+  CARTRIDGE_LAB_SPECS,
+  TANK_ORDNANCE_ORDER,
+} from '../src/engine/cartridges/cartridgeSpecs';
+import {
+  ALL_CARTRIDGE_LAB_ORDER,
+  CARTRIDGE_DUEL_STRINGS,
+  type CartridgeSortKey,
+  computeCartridgeDuelMetrics,
+  computeCartridgeMomentumNs,
+  computeSectionalDensity,
+  formatMomentumNs,
+  formatRatioLabel,
+  getSuggestedDuelOpponent,
+  sortCartridgeOrder,
+} from '../src/features/cartridges/cartridgeDuelMath';
+import { CartridgeLabView } from '../src/features/cartridges/CartridgeLabView';
+
+const REPO_ROOT = path.resolve(__dirname, '..');
+const FLEET_SCRIPT = path.join(REPO_ROOT, 'scripts', 'qa_full_fleet_audit.mjs');
+const CJK_RE = /[\u4e00-\u9fff]/;
+const WP_BADGE_RE = /\bWP-\d+[a-z]?\b/i;
+
+function collectStrings(value: unknown): string[] {
+  if (typeof value === 'string') return [value];
+  if (typeof value === 'function') {
+    try {
+      const sample = (value as (...args: unknown[]) => unknown)('SD');
+      return typeof sample === 'string' ? [sample] : [];
+    } catch {
+      return [];
+    }
+  }
+  if (Array.isArray(value)) return value.flatMap(collectStrings);
+  if (value && typeof value === 'object') {
+    return Object.values(value).flatMap(collectStrings);
+  }
+  return [];
+}
+
+describe('Cycle 8A · Cross-Caliber Ballistic Duel & Sectional Density Engine', () => {
+  it('computes accurate Sectional Density (g/cm2 & lb/in2) and momentum across all 21 rounds', () => {
+    expect(ALL_CARTRIDGE_LAB_ORDER).toHaveLength(21);
+    expect(CARTRIDGE_LAB_ORDER).toHaveLength(17);
+    expect(TANK_ORDNANCE_ORDER).toHaveLength(4);
+
+    for (const cal of ALL_CARTRIDGE_LAB_ORDER) {
+      const spec = CARTRIDGE_LAB_SPECS[cal];
+      const sd = computeSectionalDensity(
+        spec.projectileMassG,
+        spec.bulletDiameterMm
+      );
+      const mom = computeCartridgeMomentumNs(
+        spec.projectileMassG,
+        spec.muzzleVelocityMps
+      );
+
+      expect(Number.isFinite(sd.metricGCm2), `${cal} metric SD`).toBe(true);
+      expect(sd.metricGCm2).toBeGreaterThan(0);
+      expect(Number.isFinite(sd.imperialLbIn2), `${cal} imperial SD`).toBe(true);
+      expect(sd.imperialLbIn2).toBeGreaterThan(0);
+      expect(mom).toBeGreaterThan(0);
+    }
+
+    // Classic ballistic SD benchmarks
+    const sd3006 = computeSectionalDensity(
+      CARTRIDGE_LAB_SPECS['30_06'].projectileMassG,
+      CARTRIDGE_LAB_SPECS['30_06'].bulletDiameterMm
+    );
+    expect(sd3006.imperialLbIn2).toBeGreaterThan(0.2);
+    expect(sd3006.imperialLbIn2).toBeLessThan(0.26);
+
+    const sd50 = computeSectionalDensity(
+      CARTRIDGE_LAB_SPECS['50_bmg'].projectileMassG,
+      CARTRIDGE_LAB_SPECS['50_bmg'].bulletDiameterMm
+    );
+    expect(sd50.imperialLbIn2).toBeGreaterThan(0.32);
+    expect(sd50.imperialLbIn2).toBeLessThan(0.42);
+
+    // Cross-gallery duel: 125mm APFSDS vs .50 BMG
+    const tankVs50 = computeCartridgeDuelMetrics(
+      CARTRIDGE_LAB_SPECS['125mm_apfsds'],
+      CARTRIDGE_LAB_SPECS['50_bmg']
+    );
+    expect(tankVs50.energyRatio).toBeGreaterThan(400);
+    expect(tankVs50.momentumRatio).toBeGreaterThan(200);
+    expect(tankVs50.oalRatio).toBeGreaterThan(6);
+    expect(tankVs50.velocityDeltaMps).toBeGreaterThan(800);
+
+    // Classic WWII rifle duel: .30-06 vs 7.92x57mm Mauser
+    const wwiiDuel = computeCartridgeDuelMetrics(
+      CARTRIDGE_LAB_SPECS['30_06'],
+      CARTRIDGE_LAB_SPECS['792_mauser']
+    );
+    expect(wwiiDuel.energyRatio).toBeGreaterThan(0.85);
+    expect(wwiiDuel.energyRatio).toBeLessThan(1.15);
+
+    expect(getSuggestedDuelOpponent('125mm_apfsds')).toBe('50_bmg');
+    expect(getSuggestedDuelOpponent('50_bmg')).toBe('125mm_apfsds');
+    expect(formatRatioLabel(488.4)).toBe('488x');
+    expect(formatRatioLabel(1.04)).toBe('1.04x');
+    expect(formatMomentumNs(8544)).toBe('8.54 kN·s');
+  });
+
+  it('sorts cartridge matrix non-destructively across all 8 sort keys in desc and asc order', () => {
+    const keys: CartridgeSortKey[] = [
+      'default',
+      'oal',
+      'charge',
+      'mass',
+      'pressure',
+      'velocity',
+      'energy',
+      'sd',
+    ];
+    const snapshot = [...CARTRIDGE_LAB_ORDER];
+
+    for (const key of keys) {
+      const desc = sortCartridgeOrder(CARTRIDGE_LAB_ORDER, key, 'desc');
+      const asc = sortCartridgeOrder(CARTRIDGE_LAB_ORDER, key, 'asc');
+      expect(desc).toHaveLength(17);
+      expect(asc).toHaveLength(17);
+      expect(CARTRIDGE_LAB_ORDER).toEqual(snapshot);
+    }
+
+    const byEnergyDesc = sortCartridgeOrder(CARTRIDGE_LAB_ORDER, 'energy', 'desc');
+    expect(byEnergyDesc[0]).toBe('50_bmg');
+
+    const byEnergyAsc = sortCartridgeOrder(CARTRIDGE_LAB_ORDER, 'energy', 'asc');
+    expect(CARTRIDGE_LAB_SPECS[byEnergyAsc[0]].muzzleEnergyJ).toBeLessThan(
+      CARTRIDGE_LAB_SPECS[byEnergyAsc[byEnergyAsc.length - 1]].muzzleEnergyJ
+    );
+
+    const bySdDesc = sortCartridgeOrder(CARTRIDGE_LAB_ORDER, 'sd', 'desc');
+    const topSd = computeSectionalDensity(
+      CARTRIDGE_LAB_SPECS[bySdDesc[0]].projectileMassG,
+      CARTRIDGE_LAB_SPECS[bySdDesc[0]].bulletDiameterMm
+    ).metricGCm2;
+    const bottomSd = computeSectionalDensity(
+      CARTRIDGE_LAB_SPECS[bySdDesc[bySdDesc.length - 1]].projectileMassG,
+      CARTRIDGE_LAB_SPECS[bySdDesc[bySdDesc.length - 1]].bulletDiameterMm
+    ).metricGCm2;
+    expect(topSd).toBeGreaterThan(bottomSd);
+
+    const tankByEnergy = sortCartridgeOrder(TANK_ORDNANCE_ORDER, 'energy', 'desc');
+    expect(tankByEnergy[0]).toBe('125mm_apfsds');
+  });
+});
+
+describe('Cycle 8A · Interactive 3D Anatomy Highlight Store, CartridgeLabView & Bilingual Hygiene', () => {
+  it('notifies subscribers cleanly on anatomy layer changes and resets safely to null', () => {
+    let calls = 0;
+    const unsub = subscribeCartridgeHighlightLayer(() => {
+      calls += 1;
+    });
+    try {
+      setCartridgeHighlightLayer(null);
+      const startCalls = calls;
+
+      setCartridgeHighlightLayer('core');
+      expect(getCartridgeHighlightLayer()).toBe('core');
+      expect(calls).toBe(startCalls + 1);
+
+      // Idempotent set does not spuriously notify
+      setCartridgeHighlightLayer('core');
+      expect(calls).toBe(startCalls + 1);
+
+      setCartridgeHighlightLayer('propellant');
+      expect(getCartridgeHighlightLayer()).toBe('propellant');
+      expect(calls).toBe(startCalls + 2);
+
+      setCartridgeHighlightLayer('primer');
+      expect(getCartridgeHighlightLayer()).toBe('primer');
+      expect(calls).toBe(startCalls + 3);
+
+      setCartridgeHighlightLayer(null);
+      expect(getCartridgeHighlightLayer()).toBeNull();
+    } finally {
+      unsub();
+      setCartridgeHighlightLayer(null);
+    }
+  });
+
+  it('enforces 0 CJK in EN CARTRIDGE_DUEL_STRINGS, 0 WP-XX leaks, and SSR-renders interactive anatomy + duel controls', () => {
+    expect(Object.keys(CARTRIDGE_DUEL_STRINGS.en).sort()).toEqual(
+      Object.keys(CARTRIDGE_DUEL_STRINGS.zh).sort()
+    );
+    for (const s of collectStrings(CARTRIDGE_DUEL_STRINGS.en)) {
+      expect(s, `EN duel string leaked CJK: ${s}`).not.toMatch(CJK_RE);
+      expect(s, `EN duel string leaked WP-XX: ${s}`).not.toMatch(WP_BADGE_RE);
+    }
+    for (const s of collectStrings(CARTRIDGE_DUEL_STRINGS.zh)) {
+      expect(s, `ZH duel string leaked WP-XX: ${s}`).not.toMatch(WP_BADGE_RE);
+    }
+
+    const html = renderToStaticMarkup(React.createElement(CartridgeLabView));
+    expect(html).toContain('data-testid="cartridge-anatomy-core"');
+    expect(html).toContain('data-testid="cartridge-anatomy-propellant"');
+    expect(html).toContain('data-testid="cartridge-anatomy-primer"');
+    expect(html).toContain('data-testid="cartridge-duel-toggle"');
+    expect(html).toContain('aria-pressed="false"');
+    expect(html).toContain('aria-expanded="false"');
+    expect(html).not.toMatch(WP_BADGE_RE);
+
+    const css = fs.readFileSync(
+      path.join(REPO_ROOT, 'src/styles/cartridges.css'),
+      'utf8'
+    );
+    expect(css).not.toMatch(WP_BADGE_RE);
+    expect(css).toContain('.c-note-row.is-interactive.is-highlighted');
+    expect(css).toContain('.cartridge-duel-toggle');
+    expect(css).toContain('min-height: 40px');
+    expect(css).toContain("@media (max-width: 440px)");
+  });
+});
+
+describe('Cycle 8A · Full 34-Exhibit Automated WebGL Fleet Audit Harness', () => {
+  it('registers npm run qa:fleet, passes node --check, prints --help, and builds exact 42-target full & 14-target quick plans dynamically', () => {
+    const pkg = JSON.parse(
+      fs.readFileSync(path.join(REPO_ROOT, 'package.json'), 'utf8')
+    ) as { scripts: Record<string, string> };
+    expect(pkg.scripts['qa:fleet']).toBe('node scripts/qa_full_fleet_audit.mjs');
+
+    // Syntax check
+    execFileSync(process.execPath, ['--check', FLEET_SCRIPT], {
+      cwd: REPO_ROOT,
+      encoding: 'utf8',
+    });
+
+    // Help text check
+    const helpOut = execFileSync(process.execPath, [FLEET_SCRIPT, '--help'], {
+      cwd: REPO_ROOT,
+      encoding: 'utf8',
+    });
+    expect(helpOut).toContain('--mode=quick|full');
+    expect(helpOut).toContain('--theme=dark|light');
+    expect(helpOut).toContain('--cut');
+    expect(helpOut).toContain('--json');
+
+    // Full mode dry-run: all 34 exhibits + 8 museum views = 42 targets
+    const fullDryRaw = execFileSync(
+      process.execPath,
+      [
+        FLEET_SCRIPT,
+        '--mode=full',
+        '--theme=light',
+        '--cut',
+        '--dry-run',
+        '--json',
+      ],
+      { cwd: REPO_ROOT, encoding: 'utf8' }
+    );
+    const fullPlan = JSON.parse(fullDryRaw) as {
+      dryRun: boolean;
+      mode: string;
+      theme: string;
+      cut: boolean;
+      exhibitTargets: number;
+      viewTargets: number;
+      totalTargets: number;
+      targets: Array<{ id: string; url: string }>;
+    };
+
+    expect(fullPlan.dryRun).toBe(true);
+    expect(fullPlan.mode).toBe('full');
+    expect(fullPlan.theme).toBe('light');
+    expect(fullPlan.cut).toBe(true);
+    expect(fullPlan.exhibitTargets).toBe(34);
+    expect(fullPlan.viewTargets).toBe(8);
+    expect(fullPlan.totalTargets).toBe(42);
+
+    const ak15Target = fullPlan.targets.find((t) => t.id === 'exhibit:ak15');
+    expect(ak15Target?.url).toContain('cut=1');
+    expect(ak15Target?.url).toContain('env=blueprint_daylight');
+
+    const viewIds = fullPlan.targets
+      .filter((t) => t.id.startsWith('view:'))
+      .map((t) => t.id);
+    expect(viewIds).toEqual([
+      'view:showcase',
+      'view:armory',
+      'view:cartridges',
+      'view:ballistics',
+      'view:split_showdown',
+      'view:panel_armor',
+      'view:panel_scalewall',
+      'view:panel_recoil',
+    ]);
+
+    // Quick mode dry-run: 6 representative exhibits + 8 museum views = 14 targets
+    const quickDryRaw = execFileSync(
+      process.execPath,
+      [FLEET_SCRIPT, '--mode=quick', '--dry-run', '--json'],
+      { cwd: REPO_ROOT, encoding: 'utf8' }
+    );
+    const quickPlan = JSON.parse(quickDryRaw) as {
+      exhibitTargets: number;
+      viewTargets: number;
+      totalTargets: number;
+    };
+    expect(quickPlan.exhibitTargets).toBe(6);
+    expect(quickPlan.viewTargets).toBe(8);
+    expect(quickPlan.totalTargets).toBe(14);
+  });
+});

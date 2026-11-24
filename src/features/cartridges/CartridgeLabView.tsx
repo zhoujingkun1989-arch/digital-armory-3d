@@ -1,8 +1,18 @@
-import React, { useEffect, useId, useState, useSyncExternalStore } from 'react';
+import React, {
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import {
+  ArrowDown,
   ArrowLeft,
   ArrowRight,
+  ArrowUp,
+  ArrowUpDown,
   Box,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Compass,
@@ -11,15 +21,21 @@ import {
   Maximize2,
   Menu,
   RotateCcw,
+  Scale,
   Scissors,
   Shield,
+  Sparkles,
   Table2,
   X,
 } from 'lucide-react';
 import {
+  type CartridgeAnatomyLayer,
   getCartridgeDossierCollapsed,
+  getCartridgeHighlightLayer,
   setCartridgeDossierCollapsed,
+  setCartridgeHighlightLayer,
   subscribeCartridgeDossierCollapsed,
+  subscribeCartridgeHighlightLayer,
 } from '../../engine/actors/CartridgeCutawayStage';
 import {
   CARTRIDGE_LAB_ORDER,
@@ -30,8 +46,20 @@ import {
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { getLocalizedShortWeaponLabel } from '../../i18n/weaponFallbacks';
 import { useAppStore } from '../../store/useAppStore';
+import type { CaliberProfile } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
+import {
+  CARTRIDGE_DUEL_STRINGS,
+  type CartridgeSortDir,
+  type CartridgeSortKey,
+  computeCartridgeDuelMetrics,
+  computeSectionalDensity,
+  formatMomentumNs,
+  formatRatioLabel,
+  getSuggestedDuelOpponent,
+  sortCartridgeOrder,
+} from './cartridgeDuelMath';
 import '../../styles/cartridges.css';
 
 const MAX_SMALL_ARMS_OAL_MM = 138.43; // .50 BMG reference 100% bar height
@@ -73,13 +101,29 @@ function formatOrdnanceVolume(ml: number): string {
 export const CartridgeLabView: React.FC = () => {
   const [matrixOpen, setMatrixOpen] = useState(false);
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
+  const [pinnedLayer, setPinnedLayer] = useState<CartridgeAnatomyLayer | null>(
+    null
+  );
+  const [duelOpen, setDuelOpen] = useState(false);
+  const [customOpponent, setCustomOpponent] = useState<CaliberProfile | null>(
+    null
+  );
+  const [sortKey, setSortKey] = useState<CartridgeSortKey>('default');
+  const [sortDir, setSortDir] = useState<CartridgeSortDir>('desc');
+
   const dossierCollapsed = useSyncExternalStore(
     subscribeCartridgeDossierCollapsed,
     getCartridgeDossierCollapsed,
     getCartridgeDossierCollapsed
   );
+  const highlightedLayer = useSyncExternalStore(
+    subscribeCartridgeHighlightLayer,
+    getCartridgeHighlightLayer,
+    getCartridgeHighlightLayer
+  );
   const explodeSliderId = useId();
   const tableCaptionId = useId();
+  const duelSelectId = useId();
 
   useEffect(() => {
     if (
@@ -88,7 +132,10 @@ export const CartridgeLabView: React.FC = () => {
     ) {
       setCartridgeDossierCollapsed(true);
     }
-    return () => setCartridgeDossierCollapsed(false);
+    return () => {
+      setCartridgeDossierCollapsed(false);
+      setCartridgeHighlightLayer(null);
+    };
   }, []);
 
   const lang = useAppStore((s) => s.lang);
@@ -114,9 +161,14 @@ export const CartridgeLabView: React.FC = () => {
   const openExternalBallistics = useAppStore((s) => s.openExternalBallistics);
 
   const ui = UI_STRINGS[lang].cartridgeLab;
+  const duelUi = CARTRIDGE_DUEL_STRINGS[lang];
   const isZh = lang === 'zh';
   const isTankGallery = isTankOrdnanceProfile(activeCaliber);
   const activeOrder = isTankGallery ? TANK_ORDNANCE_ORDER : CARTRIDGE_LAB_ORDER;
+  const sortedOrder = useMemo(
+    () => sortCartridgeOrder(activeOrder, sortKey, sortDir),
+    [activeOrder, sortKey, sortDir]
+  );
   const maxOalMm = isTankGallery
     ? MAX_TANK_ORDNANCE_OAL_MM
     : MAX_SMALL_ARMS_OAL_MM;
@@ -141,12 +193,63 @@ export const CartridgeLabView: React.FC = () => {
                     ? '三'
                     : String(caliberCount);
   const spec = CARTRIDGE_LAB_SPECS[activeCaliber];
+  const opponentCaliber =
+    customOpponent && customOpponent !== activeCaliber
+      ? customOpponent
+      : getSuggestedDuelOpponent(activeCaliber);
+  const opponentSpec = CARTRIDGE_LAB_SPECS[opponentCaliber];
+  const duelMetrics = useMemo(
+    () => computeCartridgeDuelMetrics(spec, opponentSpec),
+    [spec, opponentSpec]
+  );
   const primaryWeaponLabel = getLocalizedShortWeaponLabel(
     spec.primaryWeaponId,
     lang
   );
 
+  const handleToggleAnatomyLayer = (layer: CartridgeAnatomyLayer) => {
+    const next = pinnedLayer === layer ? null : layer;
+    setPinnedLayer(next);
+    setCartridgeHighlightLayer(next);
+  };
+
+  const handleHoverAnatomyLayer = (layer: CartridgeAnatomyLayer | null) => {
+    setCartridgeHighlightLayer(layer ?? pinnedLayer);
+  };
+
+  const handleSortColumn = (key: Exclude<CartridgeSortKey, 'default'>) => {
+    if (sortKey !== key) {
+      setSortKey(key);
+      setSortDir('desc');
+    } else if (sortDir === 'desc') {
+      setSortDir('asc');
+    } else {
+      setSortKey('default');
+      setSortDir('desc');
+    }
+  };
+
+  const getAriaSort = (
+    key: Exclude<CartridgeSortKey, 'default'>
+  ): 'ascending' | 'descending' | 'none' => {
+    if (sortKey !== key) return 'none';
+    return sortDir === 'asc' ? 'ascending' : 'descending';
+  };
+
+  const renderSortIcon = (key: Exclude<CartridgeSortKey, 'default'>) => {
+    if (sortKey !== key) {
+      return <ArrowUpDown size={11} className="c-sort-icon" aria-hidden="true" />;
+    }
+    return sortDir === 'asc' ? (
+      <ArrowUp size={11} className="c-sort-icon is-active" aria-hidden="true" />
+    ) : (
+      <ArrowDown size={11} className="c-sort-icon is-active" aria-hidden="true" />
+    );
+  };
+
   const handleSwitchGallery = (mode: 'small_arms' | 'tank_ordnance') => {
+    setPinnedLayer(null);
+    setCartridgeHighlightLayer(null);
     if (mode === 'tank_ordnance') {
       if (!isTankGallery) {
         selectLabCartridge('125mm_apfsds', false);
@@ -163,6 +266,7 @@ export const CartridgeLabView: React.FC = () => {
     '--col-case-oal': `"${ui.colCaseOal}"`,
     '--col-charge': `"${ui.colCharge}"`,
     '--col-projectile': `"${ui.colProjectile}"`,
+    '--col-sd': `"${duelUi.colSd}"`,
     '--col-pressure': `"${ui.colPressure}"`,
     '--col-velocity': `"${ui.colVelocity}"`,
     '--col-energy': `"${ui.colEnergy}"`,
@@ -440,27 +544,210 @@ export const CartridgeLabView: React.FC = () => {
               </div>
             </div>
 
-            {/* Internal Cutaway Anatomy Breakdown */}
-            <div className="cartridge-anatomy-notes">
-              <div className="c-note-row">
-                <span className="c-note-key">{ui.coreAnatomyLabel}</span>
-                <span className="c-note-val">
-                  {isZh ? spec.coreAnatomyZh : spec.coreAnatomyEn}
+            {/* Internal Cutaway Anatomy Breakdown (Interactive 3D Layer Highlight) */}
+            <div
+              className="cartridge-anatomy-notes"
+              onMouseLeave={() => handleHoverAnatomyLayer(null)}
+            >
+              <span className="c-anatomy-hint">
+                <Sparkles size={10} aria-hidden="true" />
+                <span>{duelUi.anatomyInteractiveHint}</span>
+              </span>
+              {(
+                [
+                  {
+                    layer: 'core' as const,
+                    label: ui.coreAnatomyLabel,
+                    value: isZh ? spec.coreAnatomyZh : spec.coreAnatomyEn,
+                  },
+                  {
+                    layer: 'propellant' as const,
+                    label: ui.propellantLabel,
+                    value: `${isZh ? spec.propellantTypeZh : spec.propellantTypeEn} (${Math.round(spec.propellantFillRatio * 100)}%)`,
+                  },
+                  {
+                    layer: 'primer' as const,
+                    label: ui.primerLabel,
+                    value: isZh ? spec.primerTypeZh : spec.primerTypeEn,
+                  },
+                ] as const
+              ).map((item) => {
+                const isActiveLayer = highlightedLayer === item.layer;
+                return (
+                  <button
+                    key={item.layer}
+                    type="button"
+                    data-testid={`cartridge-anatomy-${item.layer}`}
+                    className={`c-note-row is-interactive is-layer-${item.layer} ${
+                      isActiveLayer ? 'is-highlighted' : ''
+                    }`}
+                    aria-pressed={pinnedLayer === item.layer}
+                    onMouseEnter={() => handleHoverAnatomyLayer(item.layer)}
+                    onFocus={() => handleHoverAnatomyLayer(item.layer)}
+                    onBlur={() => handleHoverAnatomyLayer(null)}
+                    onClick={() => handleToggleAnatomyLayer(item.layer)}
+                  >
+                    <span className="c-note-key-row">
+                      <span className="c-note-key">{item.label}</span>
+                      {isActiveLayer && (
+                        <span className="c-note-active-pill">
+                          {duelUi.anatomyActivePill}
+                        </span>
+                      )}
+                    </span>
+                    <span className="c-note-val">{item.value}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Collapsible Cross-Caliber 1v1 Ballistic Duel Strip */}
+            <div className="cartridge-duel-box">
+              <button
+                type="button"
+                className={`cartridge-duel-toggle ${duelOpen ? 'is-open' : ''}`}
+                data-testid="cartridge-duel-toggle"
+                aria-expanded={duelOpen}
+                onClick={() => setDuelOpen((prev) => !prev)}
+              >
+                <span className="c-duel-toggle-left">
+                  <Scale size={12} aria-hidden="true" />
+                  <span>{duelUi.duelToggleLabel}</span>
                 </span>
-              </div>
-              <div className="c-note-row">
-                <span className="c-note-key">{ui.propellantLabel}</span>
-                <span className="c-note-val">
-                  {isZh ? spec.propellantTypeZh : spec.propellantTypeEn} (
-                  {Math.round(spec.propellantFillRatio * 100)}%)
-                </span>
-              </div>
-              <div className="c-note-row">
-                <span className="c-note-key">{ui.primerLabel}</span>
-                <span className="c-note-val">
-                  {isZh ? spec.primerTypeZh : spec.primerTypeEn}
-                </span>
-              </div>
+                <ChevronDown
+                  size={13}
+                  className={`c-duel-chevron ${duelOpen ? 'is-rotated' : ''}`}
+                  aria-hidden="true"
+                />
+              </button>
+
+              {duelOpen && (
+                <div
+                  className="cartridge-duel-panel"
+                  data-testid="cartridge-duel-panel"
+                >
+                  <label htmlFor={duelSelectId} className="sr-only">
+                    {duelUi.duelOpponentLabel}
+                  </label>
+                  <select
+                    id={duelSelectId}
+                    className="cartridge-duel-select"
+                    data-testid="cartridge-duel-select"
+                    value={opponentCaliber}
+                    onChange={(e) =>
+                      setCustomOpponent(e.target.value as CaliberProfile)
+                    }
+                  >
+                    <optgroup label={duelUi.duelGroupSmallArms}>
+                      {CARTRIDGE_LAB_ORDER.filter(
+                        (c) => c !== activeCaliber
+                      ).map((c) => (
+                        <option key={c} value={c}>
+                          {CARTRIDGE_LAB_SPECS[c].code} ·{' '}
+                          {CARTRIDGE_LAB_SPECS[c].oalMm.toFixed(1)} mm
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label={duelUi.duelGroupHeavyOrdnance}>
+                      {TANK_ORDNANCE_ORDER.filter(
+                        (c) => c !== activeCaliber
+                      ).map((c) => (
+                        <option key={c} value={c}>
+                          {CARTRIDGE_LAB_SPECS[c].code} ·{' '}
+                          {CARTRIDGE_LAB_SPECS[c].oalMm.toFixed(0)} mm
+                        </option>
+                      ))}
+                    </optgroup>
+                  </select>
+
+                  <div className="c-duel-stats-grid">
+                    <div className="c-duel-stat">
+                      <span>{duelUi.duelEnergyRatio}</span>
+                      <strong className="tabular">
+                        {formatRatioLabel(duelMetrics.energyRatio)}
+                      </strong>
+                    </div>
+                    <div className="c-duel-stat">
+                      <span>{duelUi.duelMomentum}</span>
+                      <strong className="tabular">
+                        {formatMomentumNs(duelMetrics.primaryMomentumNs)} vs{' '}
+                        {formatMomentumNs(duelMetrics.opponentMomentumNs)}
+                      </strong>
+                    </div>
+                    <div className="c-duel-stat">
+                      <span>{duelUi.duelSectionalDensity}</span>
+                      <strong className="tabular">
+                        {duelMetrics.primarySd.metricGCm2} /{' '}
+                        {duelMetrics.opponentSd.metricGCm2} g/cm² (
+                        {duelMetrics.primarySd.imperialLbIn2} lb/in²)
+                      </strong>
+                    </div>
+                    <div className="c-duel-stat">
+                      <span>{duelUi.duelPressureVelocity}</span>
+                      <strong className="tabular">
+                        {formatRatioLabel(duelMetrics.pressureRatio)} ·{' '}
+                        {duelMetrics.velocityDeltaMps >= 0 ? '+' : ''}
+                        {duelMetrics.velocityDeltaMps} m/s
+                      </strong>
+                    </div>
+                  </div>
+
+                  {/* Proportional OAL Bar */}
+                  <div className="c-duel-oal-block">
+                    <div className="c-duel-oal-head">
+                      <span>{duelUi.duelOalScale}</span>
+                      <strong className="tabular">
+                        {formatRatioLabel(duelMetrics.oalRatio)}
+                      </strong>
+                    </div>
+                    {(() => {
+                      const maxPairOal = Math.max(
+                        spec.oalMm,
+                        opponentSpec.oalMm,
+                        1
+                      );
+                      const primaryPct = Math.max(
+                        6,
+                        (spec.oalMm / maxPairOal) * 100
+                      );
+                      const oppPct = Math.max(
+                        6,
+                        (opponentSpec.oalMm / maxPairOal) * 100
+                      );
+                      return (
+                        <div className="c-duel-oal-bars">
+                          <div className="c-duel-oal-row">
+                            <span className="c-duel-code">{spec.code}</span>
+                            <div className="c-duel-bar-track">
+                              <div
+                                className="c-duel-bar-fill is-primary"
+                                style={{ width: `${primaryPct.toFixed(1)}%` }}
+                              />
+                            </div>
+                            <span className="c-duel-mm tabular">
+                              {spec.oalMm.toFixed(1)} mm
+                            </span>
+                          </div>
+                          <div className="c-duel-oal-row">
+                            <span className="c-duel-code">
+                              {opponentSpec.code}
+                            </span>
+                            <div className="c-duel-bar-track">
+                              <div
+                                className="c-duel-bar-fill is-opponent"
+                                style={{ width: `${oppPct.toFixed(1)}%` }}
+                              />
+                            </div>
+                            <span className="c-duel-mm tabular">
+                              {opponentSpec.oalMm.toFixed(1)} mm
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              )}
             </div>
 
             <p className="cartridge-highlight-copy">
@@ -578,18 +865,94 @@ export const CartridgeLabView: React.FC = () => {
                 <tr>
                   <th scope="col">{ui.colCaliber}</th>
                   <th scope="col">{ui.colStandard}</th>
-                  <th scope="col">{ui.colCaseOal}</th>
-                  <th scope="col">{ui.colCharge}</th>
-                  <th scope="col">{ui.colProjectile}</th>
-                  <th scope="col">{ui.colPressure}</th>
-                  <th scope="col">{ui.colVelocity}</th>
-                  <th scope="col">{ui.colEnergy}</th>
+                  <th scope="col" aria-sort={getAriaSort('oal')}>
+                    <button
+                      type="button"
+                      className="c-sort-th-btn"
+                      title={duelUi.sortColTitle(ui.colCaseOal)}
+                      onClick={() => handleSortColumn('oal')}
+                    >
+                      <span>{ui.colCaseOal}</span>
+                      {renderSortIcon('oal')}
+                    </button>
+                  </th>
+                  <th scope="col" aria-sort={getAriaSort('charge')}>
+                    <button
+                      type="button"
+                      className="c-sort-th-btn"
+                      title={duelUi.sortColTitle(ui.colCharge)}
+                      onClick={() => handleSortColumn('charge')}
+                    >
+                      <span>{ui.colCharge}</span>
+                      {renderSortIcon('charge')}
+                    </button>
+                  </th>
+                  <th scope="col" aria-sort={getAriaSort('mass')}>
+                    <button
+                      type="button"
+                      className="c-sort-th-btn"
+                      title={duelUi.sortColTitle(ui.colProjectile)}
+                      onClick={() => handleSortColumn('mass')}
+                    >
+                      <span>{ui.colProjectile}</span>
+                      {renderSortIcon('mass')}
+                    </button>
+                  </th>
+                  <th scope="col" aria-sort={getAriaSort('sd')}>
+                    <button
+                      type="button"
+                      className="c-sort-th-btn"
+                      data-testid="cartridge-sort-sd"
+                      title={duelUi.sortColTitle(duelUi.colSd)}
+                      onClick={() => handleSortColumn('sd')}
+                    >
+                      <span>{duelUi.colSd}</span>
+                      {renderSortIcon('sd')}
+                    </button>
+                  </th>
+                  <th scope="col" aria-sort={getAriaSort('pressure')}>
+                    <button
+                      type="button"
+                      className="c-sort-th-btn"
+                      title={duelUi.sortColTitle(ui.colPressure)}
+                      onClick={() => handleSortColumn('pressure')}
+                    >
+                      <span>{ui.colPressure}</span>
+                      {renderSortIcon('pressure')}
+                    </button>
+                  </th>
+                  <th scope="col" aria-sort={getAriaSort('velocity')}>
+                    <button
+                      type="button"
+                      className="c-sort-th-btn"
+                      title={duelUi.sortColTitle(ui.colVelocity)}
+                      onClick={() => handleSortColumn('velocity')}
+                    >
+                      <span>{ui.colVelocity}</span>
+                      {renderSortIcon('velocity')}
+                    </button>
+                  </th>
+                  <th scope="col" aria-sort={getAriaSort('energy')}>
+                    <button
+                      type="button"
+                      className="c-sort-th-btn"
+                      title={duelUi.sortColTitle(ui.colEnergy)}
+                      onClick={() => handleSortColumn('energy')}
+                    >
+                      <span>{ui.colEnergy}</span>
+                      {renderSortIcon('energy')}
+                    </button>
+                  </th>
                   <th scope="col">{ui.colWeapons}</th>
                 </tr>
               </thead>
               <tbody>
-                {activeOrder.map((cal) => {
+                {sortedOrder.map((cal) => {
                   const row = CARTRIDGE_LAB_SPECS[cal];
+                  const sd = computeSectionalDensity(
+                    row.projectileMassG,
+                    row.bulletDiameterMm
+                  );
                   const isSelected = cal === activeCaliber;
                   return (
                     <tr
@@ -611,6 +974,9 @@ export const CartridgeLabView: React.FC = () => {
                       <td data-col="projectile">
                         {formatOrdnanceMass(row.projectileMassG)}
                         {!isTankGallery && ` (${row.projectileGrain} gr)`}
+                      </td>
+                      <td data-col="sd" className="tabular">
+                        {sd.metricGCm2.toFixed(1)} ({sd.imperialLbIn2.toFixed(3)})
                       </td>
                       <td data-col="pressure">{row.peakPressureMPa} MPa</td>
                       <td data-col="velocity">{row.muzzleVelocityMps} m/s</td>

@@ -34,6 +34,7 @@
     "assets:audit": "node scripts/audit_asset_budget.mjs",
     "qa:visual": "node scripts/qa_visual_gate.mjs",
     "qa:perf": "node scripts/qa_perf_soak.mjs",
+    "qa:fleet": "node scripts/qa_full_fleet_audit.mjs",
     "textures:build": "python3 scripts/build_textures.py --regenerate",
     "narrations:build": "python3 scripts/build_narrations.py"
   },
