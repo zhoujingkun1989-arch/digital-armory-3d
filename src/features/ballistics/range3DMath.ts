@@ -1037,3 +1037,400 @@ export function evaluateRangeCameraPoseInto(
   out.fovDeg = 38 - blend * 4;
   return out;
 }
+
+// ============================================================================
+// Cycle 3B · Deterministic 5-Round Ballistic Dispersion & MOA / CEP50 Solver
+// ============================================================================
+
+/** Exact centimeters subtended by 1.0 MOA (1/60 deg) at 100 meters: 10000 * tan(pi/10800) */
+export const CM_PER_MOA_AT_100M = 2.9088820867;
+export const GROUPING_STRING_SHOT_COUNT = 5;
+
+export interface ProjectileDispersionProfile {
+  /** Inherent platform/ammunition 5-shot angular precision (MOA) */
+  moaBase: number;
+  /** Muzzle velocity standard deviation (m/s), producing vertical stringing downrange */
+  mvSdMps: number;
+  /** Live micro crosswind gust standard deviation (m/s) */
+  windGustSdMps: number;
+  /** Staggered launch cadence between shots in a 5-round string (seconds) */
+  staggerIntervalS: number;
+}
+
+export interface GroupingShotResult {
+  shotIndex: number;
+  shotNumber: number;
+  fireDelayS: number;
+  impactTimeS: number;
+  /** Lateral impact offset from target center (+right / -left, cm) */
+  offsetZCm: number;
+  /** Vertical impact offset from target center (+high / -low, cm) */
+  offsetYCm: number;
+  radialErrorCm: number;
+  /** Normalized radial distance from gong center (0 = dead center, 1 = rim, >1 = miss) */
+  normalizedRadius01: number;
+  hit: boolean;
+  hitZone: SteelHitZone;
+  muzzleVelDeltaMps: number;
+  windGustDeltaMps: number;
+}
+
+export interface RangeGroupingResult {
+  projectileId: ExternalProjectileId;
+  seed: number;
+  shotCount: number;
+  targetRangeM: number;
+  plateRadiusCm: number;
+  dispersionProfile: ProjectileDispersionProfile;
+  shots: readonly GroupingShotResult[];
+  hitCount: number;
+  /** Mean Point of Impact (MPI) relative to target center (`x` = lateral Z, `y` = vertical Y, cm) */
+  groupCenterOffsetCm: { x: number; y: number };
+  /** Maximum center-to-center distance between any two impacts in the 5-shot group (cm) */
+  extremeSpreadCm: number;
+  /** Extreme spread expressed in Minutes of Angle (MOA) at `targetRangeM` */
+  extremeSpreadMoa: number;
+  /** Average radial distance of all 5 shots from the group centroid (cm) */
+  meanRadiusCm: number;
+  /** 50% Circular Error Probable radius enclosing half of impacts (cm) */
+  cep50Cm: number;
+  /** Pair of shot indices `(i, j)` defining the Extreme Spread span */
+  extremeSpreadPair: readonly [number, number];
+  staggerIntervalS: number;
+  totalStringTimelineS: number;
+}
+
+const DISPERSION_TABLE: Readonly<
+  Partial<Record<ExternalProjectileId, ProjectileDispersionProfile>>
+> = {
+  // Match sniper & smoothbore APFSDS heavy cannons
+  '125mm_apfsds': {
+    moaBase: 0.38,
+    mvSdMps: 4.5,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.34,
+  },
+  '120mm_apfsds': {
+    moaBase: 0.38,
+    mvSdMps: 4.2,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.34,
+  },
+  '338_lapua': {
+    moaBase: 0.55,
+    mvSdMps: 3.2,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.26,
+  },
+  '88mm_pzgr39': {
+    moaBase: 0.85,
+    mvSdMps: 6.2,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.34,
+  },
+  '50_bmg': {
+    moaBase: 1.05,
+    mvSdMps: 5.5,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.28,
+  },
+  // Military rifles & carbines
+  '762_nato': {
+    moaBase: 1.25,
+    mvSdMps: 4.8,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.22,
+  },
+  '556_nato': {
+    moaBase: 1.4,
+    mvSdMps: 5.2,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.2,
+  },
+  '545_m74': {
+    moaBase: 1.4,
+    mvSdMps: 5.4,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.2,
+  },
+  '473_caseless': {
+    moaBase: 1.35,
+    mvSdMps: 4.6,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.16,
+  },
+  '792_mauser': {
+    moaBase: 1.75,
+    mvSdMps: 6.0,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.22,
+  },
+  '30_06': {
+    moaBase: 1.85,
+    mvSdMps: 6.2,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.24,
+  },
+  '57_28': {
+    moaBase: 1.9,
+    mvSdMps: 5.0,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.18,
+  },
+  '9x39_subsonic': {
+    moaBase: 1.75,
+    mvSdMps: 4.5,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.22,
+  },
+  '762_m43': {
+    moaBase: 2.3,
+    mvSdMps: 7.5,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.22,
+  },
+  '30_30_win': {
+    moaBase: 2.2,
+    mvSdMps: 7.0,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.26,
+  },
+  // 30mm 7-barrel rotary cannon (~4.8 MIL / ~16.5 MOA characteristic Gatling cone)
+  '30x173_gau8': {
+    moaBase: 16.5,
+    mvSdMps: 8.5,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.14,
+  },
+  // Sidearms & revolvers
+  '357_magnum': {
+    moaBase: 3.5,
+    mvSdMps: 6.2,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.22,
+  },
+  '50_ae': {
+    moaBase: 3.6,
+    mvSdMps: 6.8,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.24,
+  },
+  '9mm_para': {
+    moaBase: 3.9,
+    mvSdMps: 6.4,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.19,
+  },
+  '45_acp': {
+    moaBase: 4.3,
+    mvSdMps: 6.8,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.2,
+  },
+  // Shotgun & compound archery
+  '12_gauge': {
+    moaBase: 6.2,
+    mvSdMps: 9.0,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.28,
+  },
+  bolt_400gr: {
+    moaBase: 1.25,
+    mvSdMps: 1.1,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.28,
+  },
+  arrow_400gr: {
+    moaBase: 1.85,
+    mvSdMps: 1.3,
+    windGustSdMps: 0.4,
+    staggerIntervalS: 0.28,
+  },
+};
+
+/**
+ * Resolves the authentic inherent precision, muzzle-velocity SD, and micro-gust
+ * dispersion parameters for any of the 23 external-ballistics profiles.
+ */
+export function getProjectileDispersionProfile(
+  spec: ExternalProjectileSpec
+): ProjectileDispersionProfile {
+  const exact = DISPERSION_TABLE[spec.id];
+  if (exact) return exact;
+  if (spec.category === 'armor') {
+    return { moaBase: 0.5, mvSdMps: 5.0, windGustSdMps: 0.4, staggerIntervalS: 0.3 };
+  }
+  if (spec.category === 'sniper') {
+    return { moaBase: 0.8, mvSdMps: 4.0, windGustSdMps: 0.4, staggerIntervalS: 0.26 };
+  }
+  if (spec.category === 'pistol') {
+    return { moaBase: 4.0, mvSdMps: 6.5, windGustSdMps: 0.4, staggerIntervalS: 0.2 };
+  }
+  return { moaBase: 1.8, mvSdMps: 5.8, windGustSdMps: 0.4, staggerIntervalS: 0.22 };
+}
+
+/** Deterministic Mulberry32 PRNG for reproducible seeded ballistic strings. */
+function createSeededPrng(seed: number): () => number {
+  let state = (seed >>> 0) || 0x9e3779b9;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Standard normal variate N(0, 1) via Box-Muller transform, clamped to ±2.6σ for realistic bounds. */
+function sampleClampedNormal(rand: () => number): number {
+  const u1 = Math.max(1e-6, rand());
+  const u2 = rand();
+  const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+  return clamp(z, -2.6, 2.6);
+}
+
+/**
+ * Computes a deterministic seeded 5-round ballistic grouping string around a
+ * solved `RangeTrajectory3D` nominal point of impact, combining:
+ *   1. Platform inherent circular dispersion (`moaBase`)
+ *   2. Muzzle velocity SD (`mvSdMps`) vertical drop stringing (`Δy ≈ g·ToF²·(Δv/v0)`)
+ *   3. Micro crosswind gust jitter (`±0.4 m/s`) lateral lag drift (`Δz ≈ (ToF - R/v0)·ΔW`)
+ */
+export function computeFiveRoundGrouping(
+  traj: RangeTrajectory3D,
+  seed = 104729
+): RangeGroupingResult {
+  const profile = getProjectileDispersionProfile(traj.spec);
+  const rand = createSeededPrng(seed);
+
+  const rangeM = Math.max(1, traj.targetRangeM);
+  const cmPerMoa = (rangeM / 100) * CM_PER_MOA_AT_100M;
+  // Expected 5-shot extreme spread for bivariate normal is ~2.45σ -> calibrate σ so ES matches moaBase
+  const sigmaMechCm = (profile.moaBase / 2.45) * cmPerMoa;
+
+  const baseZCm = traj.steelImpact.impactOffsetZCm;
+  const baseYCm = traj.steelImpact.impactOffsetYCm;
+  const plateRadiusCm = traj.steelImpact.plateRadiusM * 100;
+  const v0 = Math.max(60, traj.spec.muzzleVelocityMps);
+  const tof = Math.max(0.005, traj.totalFlightTimeS);
+  const lagTimeS = Math.max(0, tof - rangeM / v0);
+
+  const shots: GroupingShotResult[] = [];
+  let sumZ = 0;
+  let sumY = 0;
+  let hitCount = 0;
+
+  for (let i = 0; i < GROUPING_STRING_SHOT_COUNT; i++) {
+    const gHoriz = sampleClampedNormal(rand);
+    const gVert = sampleClampedNormal(rand);
+    const gVel = sampleClampedNormal(rand);
+    const gWind = sampleClampedNormal(rand);
+
+    const muzzleVelDeltaMps = gVel * profile.mvSdMps;
+    const windGustDeltaMps = clamp(
+      gWind * profile.windGustSdMps,
+      -profile.windGustSdMps * 2.2,
+      profile.windGustSdMps * 2.2
+    );
+
+    // Faster round arrives earlier -> less gravity drop (+Y); slower round drops lower (-Y)
+    const verticalMvStringingCm =
+      9.80665 * tof * tof * (muzzleVelDeltaMps / v0) * 100;
+    // Crosswind micro-gust shifts lateral impact proportionally to aerodynamic lag time
+    const lateralWindJitterCm = lagTimeS * windGustDeltaMps * 100;
+
+    const offsetZCm = baseZCm + gHoriz * sigmaMechCm + lateralWindJitterCm;
+    const offsetYCm = baseYCm + gVert * sigmaMechCm + verticalMvStringingCm;
+    const radialErrorCm = Math.hypot(offsetZCm, offsetYCm);
+    const normalizedRadius01 = radialErrorCm / Math.max(1e-3, plateRadiusCm);
+
+    const hit = !traj.stalledShort && radialErrorCm <= plateRadiusCm;
+    let hitZone: SteelHitZone = 'miss';
+    if (hit) {
+      hitCount += 1;
+      if (normalizedRadius01 <= 0.32) hitZone = 'bullseye';
+      else if (normalizedRadius01 <= 0.84) hitZone = 'plate';
+      else hitZone = 'edge';
+    }
+
+    const fireDelayS = i * profile.staggerIntervalS;
+    const impactTimeS = fireDelayS + traj.totalFlightTimeS;
+
+    sumZ += offsetZCm;
+    sumY += offsetYCm;
+    shots.push({
+      shotIndex: i,
+      shotNumber: i + 1,
+      fireDelayS,
+      impactTimeS,
+      offsetZCm,
+      offsetYCm,
+      radialErrorCm,
+      normalizedRadius01,
+      hit,
+      hitZone,
+      muzzleVelDeltaMps,
+      windGustDeltaMps,
+    });
+  }
+
+  const n = shots.length;
+  const meanZ = sumZ / n;
+  const meanY = sumY / n;
+
+  // Exact pairwise Extreme Spread (center-to-center maximum span)
+  let extremeSpreadCm = 0;
+  let esPairA = 0;
+  let esPairB = 1;
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      const dist = Math.hypot(
+        shots[i].offsetZCm - shots[j].offsetZCm,
+        shots[i].offsetYCm - shots[j].offsetYCm
+      );
+      if (dist > extremeSpreadCm) {
+        extremeSpreadCm = dist;
+        esPairA = i;
+        esPairB = j;
+      }
+    }
+  }
+
+  // Mean Radius & sample standard deviations around group centroid for CEP50
+  let sumCentroidDist = 0;
+  let sumSqZ = 0;
+  let sumSqY = 0;
+  for (let i = 0; i < n; i++) {
+    const dz = shots[i].offsetZCm - meanZ;
+    const dy = shots[i].offsetYCm - meanY;
+    sumCentroidDist += Math.hypot(dz, dy);
+    sumSqZ += dz * dz;
+    sumSqY += dy * dy;
+  }
+  const meanRadiusCm = sumCentroidDist / n;
+  const sampleStdZ = Math.sqrt(sumSqZ / Math.max(1, n - 1));
+  const sampleStdY = Math.sqrt(sumSqY / Math.max(1, n - 1));
+  // Standard ballistic elliptical CEP50 estimator: 0.5887 * (σ_x + σ_y)
+  const cep50Cm = 0.5887 * (sampleStdZ + sampleStdY);
+  const extremeSpreadMoa = extremeSpreadCm / Math.max(1e-6, cmPerMoa);
+  const totalStringTimelineS =
+    shots[n - 1].impactTimeS + traj.postImpactDurationS;
+
+  return {
+    projectileId: traj.projectileId,
+    seed,
+    shotCount: n,
+    targetRangeM: rangeM,
+    plateRadiusCm,
+    dispersionProfile: profile,
+    shots,
+    hitCount,
+    groupCenterOffsetCm: { x: meanZ, y: meanY },
+    extremeSpreadCm,
+    extremeSpreadMoa,
+    meanRadiusCm,
+    cep50Cm,
+    extremeSpreadPair: [esPairA, esPairB],
+    staggerIntervalS: profile.staggerIntervalS,
+    totalStringTimelineS,
+  };
+}

@@ -191,6 +191,18 @@ export interface ExternalBallisticsUiCopy {
   controlsDeckToggleExpand: string;
   controlsDeckToggleCollapse: string;
   controlsDeckSummaryLabel: string;
+  range3dString5Btn: string;
+  range3dString5Title: string;
+  range3dClearMarksBtn: string;
+  range3dClearMarksTitle: string;
+  range3dScorecardTitle: string;
+  range3dMetricEs: string;
+  range3dMetricMr: string;
+  range3dMetricCep50: string;
+  range3dMetricHits: string;
+  range3dMetricMpi: string;
+  range3dDownloadCardBtn: string;
+  range3dDownloadCardTitle: string;
 }
 
 export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
@@ -401,6 +413,18 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     controlsDeckToggleExpand: '展开弹种与大气参数控制台',
     controlsDeckToggleCollapse: '收起参数控制台',
     controlsDeckSummaryLabel: '射场参数',
+    range3dString5Btn: '5 发连射散布',
+    range3dString5Title: '发射 5 发精度散布组并实时解算 MOA / CEP50 成绩单',
+    range3dClearMarksBtn: '清除弹痕',
+    range3dClearMarksTitle: '清除钢靶累计弹痕与 5 发散布成绩单',
+    range3dScorecardTitle: '5 发连射散布成绩单',
+    range3dMetricEs: '最大散布 (ES)',
+    range3dMetricMr: '平均半径 (MR)',
+    range3dMetricCep50: 'CEP50 偏差',
+    range3dMetricHits: '钢靶命中',
+    range3dMetricMpi: '弹着中心偏移',
+    range3dDownloadCardBtn: '导出 PNG 靶纸',
+    range3dDownloadCardTitle: '下载 1200×800 高清工程靶纸成绩单 PNG',
   },
 
   en: {
@@ -617,6 +641,18 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     controlsDeckToggleExpand: 'Expand Caliber & Atmosphere Controls',
     controlsDeckToggleCollapse: 'Collapse Controls',
     controlsDeckSummaryLabel: 'Range Config',
+    range3dString5Btn: '5-Rd String',
+    range3dString5Title: 'Fire a 5-round precision string and compute MOA / CEP50 grouping',
+    range3dClearMarksBtn: 'Clear Marks',
+    range3dClearMarksTitle: 'Clear persistent AR500 impact chips and grouping scorecard',
+    range3dScorecardTitle: '5-RD GROUPING SCORECARD',
+    range3dMetricEs: 'Extreme Spread',
+    range3dMetricMr: 'Mean Radius',
+    range3dMetricCep50: 'CEP50',
+    range3dMetricHits: 'Hits',
+    range3dMetricMpi: 'Group Offset',
+    range3dDownloadCardBtn: 'Export Target PNG',
+    range3dDownloadCardTitle: 'Download 1200x800 engineering range target card PNG',
   },
 };
 

@@ -8,6 +8,7 @@
 
 let sharedCtx: AudioContext | null = null;
 let sharedNoiseBuffer: AudioBuffer | null = null;
+let sharedCompressor: DynamicsCompressorNode | null = null;
 
 function getAudioContext(): AudioContext | null {
   if (typeof window === 'undefined') return null;
@@ -27,6 +28,70 @@ function getAudioContext(): AudioContext | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * Shared soft-limiting bus so staggered 5-round precision strings and simultaneous
+ * AR500 steel gong pings stack organically with zero digital clipping.
+ */
+function getRangeMasterDestination(ctx: AudioContext): AudioNode {
+  if (sharedCompressor && sharedCompressor.context === ctx) {
+    return sharedCompressor;
+  }
+  if (typeof ctx.createDynamicsCompressor === 'function') {
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.setValueAtTime(-10, ctx.currentTime);
+    comp.knee.setValueAtTime(14, ctx.currentTime);
+    comp.ratio.setValueAtTime(6, ctx.currentTime);
+    comp.attack.setValueAtTime(0.002, ctx.currentTime);
+    comp.release.setValueAtTime(0.14, ctx.currentTime);
+    comp.connect(ctx.destination);
+    sharedCompressor = comp;
+    return comp;
+  }
+  return ctx.destination;
+}
+
+export interface SteelGongResonanceProfile {
+  /** Fundamental Bessel mode gain weight (highest at dead-center bullseye, damped at rim) */
+  fundamentalGain: number;
+  /** High-order edge modal gain boost (subtle at center, sharper at plate rim) */
+  edgeOvertoneBoost: number;
+  /** Overall sustain decay multiplier (center rings bright & long; edge decays shorter) */
+  decayMultiplier: number;
+  /** Slight upward pitch shift for stiff edge strikes (`1.0` center -> `1.07` rim) */
+  pitchRatio: number;
+  /** Splash filter cutoff frequency (Hz) */
+  splashHighpassHz: number;
+}
+
+/**
+ * Pure Bessel-plate acoustic model mapping normalized impact radius (`0 = center`,
+ * `1 = outer rim`) to circular AR500 steel gong resonance harmonics & sustain decay.
+ */
+export function computeSteelGongResonanceProfile(
+  normalizedRadius01: number,
+  isArmor: boolean
+): SteelGongResonanceProfile {
+  const r = Math.max(
+    0,
+    Math.min(1, Number.isFinite(normalizedRadius01) ? normalizedRadius01 : 0)
+  );
+  // Center bullseye excites the (0,1) axisymmetric fundamental maximally -> long, bright ring.
+  // Edge impacts shift energy into faster-damped radial/azimuthal modes -> shorter, crisp clink.
+  const fundamentalGain = 1.0 - 0.48 * r * r;
+  const edgeOvertoneBoost = 0.85 + 0.65 * r;
+  const decayMultiplier = 1.14 - 0.62 * Math.pow(r, 1.15);
+  const pitchRatio = 1.0 + 0.068 * r;
+  const splashHighpassHz = (isArmor ? 1100 : 2550) * (1.0 + 0.35 * r);
+
+  return {
+    fundamentalGain,
+    edgeOvertoneBoost,
+    decayMultiplier,
+    pitchRatio,
+    splashHighpassHz,
+  };
 }
 
 function getNoiseBuffer(ctx: AudioContext): AudioBuffer {
@@ -54,16 +119,17 @@ export function playRangeMuzzleLaunch(
   energyJ: number,
   isArchery: boolean,
   isArmor: boolean,
-  muted: boolean
+  muted: boolean,
+  delaySec = 0
 ): void {
   if (muted) return;
   const ctx = getAudioContext();
   if (!ctx) return;
 
-  const now = ctx.currentTime;
+  const now = ctx.currentTime + Math.max(0, delaySec);
   const master = ctx.createGain();
-  master.gain.setValueAtTime(isArchery ? 0.14 : isArmor ? 0.28 : 0.2, now);
-  master.connect(ctx.destination);
+  master.gain.setValueAtTime(isArchery ? 0.14 : isArmor ? 0.25 : 0.19, now);
+  master.connect(getRangeMasterDestination(ctx));
 
   if (isArchery) {
     // Crisp bowstring snap + carbon shaft whoosh
@@ -116,33 +182,37 @@ export function playRangeMuzzleLaunch(
 /**
  * Synthesizes an authentic circular AR500 steel gong "PING!" using inharmonic
  * circular-plate Bessel vibrational modes plus metallic strike transient.
+ * Center bullseye strikes ring bright & long; edge impacts decay higher & shorter.
  */
 export function playSteelTargetPing(
   energyJ: number,
   isArmor: boolean,
-  muted: boolean
+  muted: boolean,
+  normalizedRadius01 = 0,
+  delaySec = 0
 ): void {
   if (muted) return;
   const ctx = getAudioContext();
   if (!ctx) return;
 
-  const now = ctx.currentTime;
+  const now = ctx.currentTime + Math.max(0, delaySec);
+  const resonance = computeSteelGongResonanceProfile(normalizedRadius01, isArmor);
   const energyScale = Math.min(
-    1.15,
+    1.12,
     Math.max(0.45, Math.log10(Math.max(20, energyJ)) / 4.2)
   );
   const master = ctx.createGain();
-  master.gain.setValueAtTime(0.24 * energyScale, now);
-  master.connect(ctx.destination);
+  master.gain.setValueAtTime(0.22 * energyScale, now);
+  master.connect(getRangeMasterDestination(ctx));
 
   // Sharp metallic jacket splash transient
   const splash = ctx.createBufferSource();
   splash.buffer = getNoiseBuffer(ctx);
   const hp = ctx.createBiquadFilter();
   hp.type = 'highpass';
-  hp.frequency.setValueAtTime(isArmor ? 1100 : 2600, now);
+  hp.frequency.setValueAtTime(resonance.splashHighpassHz, now);
   const splashGain = ctx.createGain();
-  splashGain.gain.setValueAtTime(0.55, now);
+  splashGain.gain.setValueAtTime(0.52, now);
   splashGain.gain.exponentialRampToValueAtTime(0.001, now + 0.032);
   splash.connect(hp);
   hp.connect(splashGain);
@@ -151,15 +221,32 @@ export function playSteelTargetPing(
   splash.stop(now + 0.04);
 
   // Circular steel plate modal frequencies (inharmonic ratios: 1, 1.59, 2.14, 2.92)
-  const f0 = isArmor ? 328 : 886;
+  const f0 = (isArmor ? 328 : 886) * resonance.pitchRatio;
   const modes: readonly [ratio: number, gain: number, decay: number][] = [
-    [1.0, 0.55, isArmor ? 1.65 : 1.18],
-    [1.593, 0.36, isArmor ? 1.25 : 0.88],
-    [2.136, 0.22, isArmor ? 0.85 : 0.62],
-    [2.918, 0.14, isArmor ? 0.52 : 0.38],
+    [
+      1.0,
+      0.56 * resonance.fundamentalGain,
+      (isArmor ? 1.65 : 1.18) * resonance.decayMultiplier,
+    ],
+    [
+      1.593,
+      0.34 * (0.9 + 0.25 * resonance.edgeOvertoneBoost),
+      (isArmor ? 1.25 : 0.88) * resonance.decayMultiplier,
+    ],
+    [
+      2.136,
+      0.21 * resonance.edgeOvertoneBoost,
+      (isArmor ? 0.85 : 0.62) * resonance.decayMultiplier * 0.92,
+    ],
+    [
+      2.918,
+      0.14 * resonance.edgeOvertoneBoost,
+      (isArmor ? 0.52 : 0.38) * resonance.decayMultiplier * 0.85,
+    ],
   ];
 
   for (const [ratio, modeAmp, decayS] of modes) {
+    const safeDecay = Math.max(0.09, decayS);
     const osc = ctx.createOscillator();
     const g = ctx.createGain();
     osc.type = ratio === 1.0 ? 'sine' : 'triangle';
@@ -168,31 +255,35 @@ export function playSteelTargetPing(
     osc.frequency.exponentialRampToValueAtTime(f0 * ratio * 0.992, now + 0.09);
 
     g.gain.setValueAtTime(0.0001, now);
-    g.gain.linearRampToValueAtTime(modeAmp, now + 0.003);
-    g.gain.exponentialRampToValueAtTime(0.0008, now + decayS);
+    g.gain.linearRampToValueAtTime(Math.max(0.01, modeAmp), now + 0.003);
+    g.gain.exponentialRampToValueAtTime(0.0008, now + safeDecay);
 
     osc.connect(g);
     g.connect(master);
     osc.start(now);
-    osc.stop(now + decayS + 0.03);
+    osc.stop(now + safeDecay + 0.03);
   }
 }
 
 /**
  * Synthesizes a dampened hydrodynamic cavitation thump when striking ballistic gel.
  */
-export function playBallisticGelThump(energyJ: number, muted: boolean): void {
+export function playBallisticGelThump(
+  energyJ: number,
+  muted: boolean,
+  delaySec = 0
+): void {
   if (muted) return;
   const ctx = getAudioContext();
   if (!ctx) return;
 
-  const now = ctx.currentTime;
+  const now = ctx.currentTime + Math.max(0, delaySec);
   const master = ctx.createGain();
   master.gain.setValueAtTime(
-    Math.min(0.26, 0.12 + Math.log10(Math.max(10, energyJ)) * 0.03),
+    Math.min(0.24, 0.12 + Math.log10(Math.max(10, energyJ)) * 0.03),
     now
   );
-  master.connect(ctx.destination);
+  master.connect(getRangeMasterDestination(ctx));
 
   const osc = ctx.createOscillator();
   const g = ctx.createGain();
@@ -210,12 +301,12 @@ export function playBallisticGelThump(energyJ: number, muted: boolean): void {
 /**
  * Synthesizes a soft muffled earthen berm thud on target miss.
  */
-export function playDirtBermMiss(muted: boolean): void {
+export function playDirtBermMiss(muted: boolean, delaySec = 0): void {
   if (muted) return;
   const ctx = getAudioContext();
   if (!ctx) return;
 
-  const now = ctx.currentTime;
+  const now = ctx.currentTime + Math.max(0, delaySec);
   const noise = ctx.createBufferSource();
   noise.buffer = getNoiseBuffer(ctx);
   const lp = ctx.createBiquadFilter();
@@ -226,7 +317,7 @@ export function playDirtBermMiss(muted: boolean): void {
   g.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
   noise.connect(lp);
   lp.connect(g);
-  g.connect(ctx.destination);
+  g.connect(getRangeMasterDestination(ctx));
   noise.start(now);
   noise.stop(now + 0.16);
 }
