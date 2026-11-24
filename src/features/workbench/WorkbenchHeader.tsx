@@ -6,6 +6,7 @@ import {
   BookOpen,
   Box,
   Camera,
+  Check,
   ChevronDown,
   Clock,
   Compass,
@@ -17,6 +18,7 @@ import {
   Image as ImageIcon,
   Keyboard,
   Layers,
+  Link2,
   Menu,
   Palette,
   Printer,
@@ -37,6 +39,10 @@ import {
   X,
 } from 'lucide-react';
 import { openKeyboardShortcutsModal } from '../../app/useKeyboardShortcuts';
+import {
+  copyCurrent3dViewLink,
+  subscribeCopyViewLinkToast,
+} from '../../app/useUrlStateSync';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { DEFAULT_ATTACHMENT_LOADOUT } from '../../engine/attachments/attachmentSpecs';
 import { useAttachmentStore } from '../../engine/attachments/attachmentStore';
@@ -134,9 +140,34 @@ export const WorkbenchHeader: React.FC = () => {
 
   const [toolsMenuOpen, setToolsMenuOpen] = useState(false);
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
+  const [copyLinkToastVisible, setCopyLinkToastVisible] = useState(false);
   const toolsPopoverRef = useRef<HTMLDivElement>(null);
+  const copyToastTimerRef = useRef<number | null>(null);
   const isToolsMenuOpen = toolsMenuOpen && !hudHidden;
   const isMobileToolsOpen = mobileToolsOpen && !hudHidden;
+
+  useEffect(() => {
+    return subscribeCopyViewLinkToast(() => {
+      setCopyLinkToastVisible(true);
+      if (typeof window !== 'undefined') {
+        if (copyToastTimerRef.current !== null) {
+          window.clearTimeout(copyToastTimerRef.current);
+        }
+        copyToastTimerRef.current = window.setTimeout(() => {
+          setCopyLinkToastVisible(false);
+          copyToastTimerRef.current = null;
+        }, 1800);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (copyToastTimerRef.current !== null && typeof window !== 'undefined') {
+        window.clearTimeout(copyToastTimerRef.current);
+      }
+    };
+  }, []);
 
   const { bundle } = useWeaponNarration(activeWeaponId);
   const manifest = getWeaponManifest(activeWeaponId);
@@ -773,6 +804,22 @@ export const WorkbenchHeader: React.FC = () => {
                     <Activity size={13} aria-hidden="true" />
                     <span>{ui.gpuTelemetryChip}</span>
                   </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    data-testid="wb-copy-view-link-btn"
+                    onClick={() => {
+                      playWorkbenchFoley('preset_detent');
+                      setToolsMenuOpen(false);
+                      void copyCurrent3dViewLink();
+                    }}
+                    title={ui.copyViewLinkTitle}
+                  >
+                    <Link2 size={13} aria-hidden="true" />
+                    <span>{ui.copyViewLinkBtn}</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -842,6 +889,18 @@ export const WorkbenchHeader: React.FC = () => {
           <span>{ui.resetChip}</span>
         </button>
       </div>
+
+      {copyLinkToastVisible && (
+        <div
+          className="wb-copy-link-toast"
+          role="status"
+          aria-live="polite"
+          data-testid="wb-copy-link-toast"
+        >
+          <Check size={13} aria-hidden="true" />
+          <span>{ui.copyViewLinkToast}</span>
+        </div>
+      )}
     </header>
   );
 };

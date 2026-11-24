@@ -238,6 +238,10 @@ export interface UiDictionary {
     gpuTelemetryCmdSub: string;
     shortcutsChip: string;
     shortcutsChipTitle: string;
+    copyViewLinkBtn: string;
+    copyViewLinkTitle: string;
+    copyViewLinkToast: string;
+    copyViewLinkCmdSub: string;
   };
   bom: {
     collapsedBtn: (count: number) => string;
@@ -314,6 +318,10 @@ export interface UiDictionary {
     gasFlowTitle: string;
     sfxPill: string;
     sfxTitle: string;
+    cinemaDemoPill: string;
+    cinemaDemoTitle: string;
+    cinemaDemoCmdTitle: string;
+    cinemaDemoCmdSub: string;
     selectorGroupAria: string;
     selectorShort: Record<FireSelectorMode, string>;
     selectorBlockedHint: string;
@@ -1113,6 +1121,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         '切换实时 FPS、P95 帧耗时、Draw Calls、GPU 显存对象与 KTX2/LRU 缓存面板',
       shortcutsChip: '热键',
       shortcutsChipTitle: '查看工作台全部单键快捷键参考 (?)',
+      copyViewLinkBtn: '复制 3D 视角链接',
+      copyViewLinkTitle:
+        '复制包含当前展品、剖切轴位、X-Ray、改装套件与选中零件的精确直达 URL',
+      copyViewLinkToast: '已复制当前 3D 视角直达链接',
+      copyViewLinkCmdSub:
+        '复制当前完整 3D 剖视、改装与选中零件直达 URL 到剪贴板',
     },
     bom: {
       collapsedBtn: (n) => `零件目录 (${n})`,
@@ -1217,6 +1231,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         '显示/隐藏 60fps 高压火药燃气膛内膨胀、导气孔分流与活塞/气匙冲击流线',
       sfxPill: '实弹声场',
       sfxTitle: `开启/静音立体声卷积混响与 ${ORDNANCE_TOTAL} 口径实弹/主炮合成声效 (M)`,
+      cinemaDemoPill: '慢动作剖视',
+      cinemaDemoTitle:
+        '一键启动 0.25x 电影级慢动作纵剖演示：同步开启 CT 剖切、燃气流向、膛压示波器与特写机位',
+      cinemaDemoCmdTitle: '一键慢动作剖视演示',
+      cinemaDemoCmdSub:
+        '一键切换 0.25x 击发循环 + 实时 CT 纵剖 + 高压燃气流向 + 膛压示波器 + 剖视特写机位',
       selectorGroupAria: '快慢机火控档位切换 (V)',
       selectorShort: {
         safe: '保险 SAFE',
@@ -2113,6 +2133,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Inspect live FPS, P95 frame time, draw calls, GPU resources, and KTX2/LRU cache stats',
       shortcutsChip: 'Keys',
       shortcutsChipTitle: 'View all workbench keyboard shortcuts (?)',
+      copyViewLinkBtn: 'Copy 3D View Link',
+      copyViewLinkTitle:
+        'Copy exact shareable URL capturing active exhibit, cutaway axis/slice, X-Ray, attachments, and selected part',
+      copyViewLinkToast: 'Copied 3D View Link',
+      copyViewLinkCmdSub:
+        'Copy exact shareable 3D cutaway, attachment, and part deep-link URL to clipboard',
     },
     bom: {
       collapsedBtn: (n) => `BOM Parts (${n})`,
@@ -2220,6 +2246,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Toggle 60fps propellant bore expansion, gas-port tap & piston/BCG flow streamlines',
       sfxPill: 'Acoustic SFX',
       sfxTitle: `Toggle stereo convolution IR & ${ORDNANCE_TOTAL}-caliber waveguide ballistic & cannon Web Audio SFX (M)`,
+      cinemaDemoPill: 'Slow-Mo Cutaway',
+      cinemaDemoTitle:
+        '1-click 0.25x cinema cutaway demo: enables live CT section, gas flow vectors, ballistics oscilloscope & cutaway focus',
+      cinemaDemoCmdTitle: 'Slow-Mo Cutaway Cinema Demo',
+      cinemaDemoCmdSub:
+        '1-click 0.25x live firing + CT cutaway + gas flow + chamber pressure HUD + cutaway focus camera',
       selectorGroupAria: 'Fire-control selector mode (V)',
       selectorShort: {
         safe: 'SAFE',
