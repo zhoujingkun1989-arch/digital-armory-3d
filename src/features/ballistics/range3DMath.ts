@@ -1811,3 +1811,330 @@ export function computeTargetCamPose(
     createMutableCameraPose3D()
   );
 }
+
+// ============================================================================
+// Cycle 17C · AR500 Impact Spark Burst, Gelatin Vapor Flash & Alpine Sky Sync
+// ============================================================================
+
+export const RANGE_IMPACT_SPARK_COUNT = 28;
+export const RANGE_IMPACT_SPARK_WINDOW_S = 0.55;
+export const RANGE_IMPACT_BURST_MAX_WINDOW_S = 0.6;
+
+export interface RangeImpactBurstState {
+  /** True while steel sparks, berm dust plume, or gelatin entry vapor flash is active */
+  active: boolean;
+  /** Elapsed time since projectile impact in seconds (`0` when inactive) */
+  elapsedSec: number;
+  /** Golden-white AR500 steel-gong impact spark burst intensity `[0, 1]` (`0` on gel) */
+  sparkIntensity01: number;
+  /** Translucent 10% ballistic gelatin entry vapor/mist shock flash intensity `[0, 1]` */
+  gelVaporIntensity01: number;
+  /** Gelatin entry vapor flash expansion progress `[0, 1]` */
+  gelVaporScale01: number;
+  /** Downrange berm dust plume intensity `[0, 1]` behind steel gong (`0` on gel) */
+  bermDustIntensity01: number;
+  /** Downrange berm dust plume expansion progress `[0, 1]` */
+  bermDustProgress01: number;
+}
+
+export interface RangeSparkSeed {
+  readonly azimuthRad: number;
+  readonly radialSpeedMps: number;
+  readonly backSpeedMps: number;
+  readonly liftSpeedMps: number;
+  readonly lifeFrac: number;
+  readonly sizeM: number;
+}
+
+export interface RangeSparkParticleOut {
+  visible: boolean;
+  x: number;
+  y: number;
+  z: number;
+  rotY: number;
+  rotZ: number;
+  scaleX: number;
+  scaleY: number;
+  scaleZ: number;
+  heat01: number;
+}
+
+export interface Range3DThemePalette {
+  readonly isAlpineDaylight: boolean;
+  readonly skyZenithHex: string;
+  readonly skyUpperHex: string;
+  readonly skyMidHex: string;
+  readonly skyHorizonHex: string;
+  readonly skyLowerHex: string;
+  readonly skyGroundHex: string;
+  readonly backgroundHex: string;
+  readonly fogHex: string;
+  readonly fogNear: number;
+  readonly fogFar: number;
+  readonly hemiSkyHex: string;
+  readonly hemiGroundHex: string;
+  readonly hemiIntensity: number;
+  readonly sunKeyHex: string;
+  readonly sunKeyIntensity: number;
+  readonly fillLightHex: string;
+  readonly fillLightIntensity: number;
+  readonly terrainTintHex: string;
+  readonly terrainBumpScale: number;
+  readonly laneCurbHex: string;
+  readonly laneCurbOpacity: number;
+}
+
+const RANGE_DARK_TWILIGHT_PALETTE: Range3DThemePalette = {
+  isAlpineDaylight: false,
+  skyZenithHex: '#070e1c',
+  skyUpperHex: '#10203a',
+  skyMidHex: '#243a59',
+  skyHorizonHex: '#4c5163',
+  skyLowerHex: '#2a3344',
+  skyGroundHex: '#121826',
+  backgroundHex: '#162033',
+  fogHex: '#26344a',
+  fogNear: 480,
+  fogFar: 1620,
+  hemiSkyHex: '#94a3b8',
+  hemiGroundHex: '#8c6947',
+  hemiIntensity: 0.92,
+  sunKeyHex: '#fff7ed',
+  sunKeyIntensity: 1.75,
+  fillLightHex: '#bae6fd',
+  fillLightIntensity: 0.55,
+  terrainTintHex: '#ffffff',
+  terrainBumpScale: 0.72,
+  laneCurbHex: '#f59e0b',
+  laneCurbOpacity: 0.42,
+};
+
+const RANGE_ALPINE_DAYLIGHT_PALETTE: Range3DThemePalette = {
+  isAlpineDaylight: true,
+  skyZenithHex: '#dce8f5',
+  skyUpperHex: '#e3edf8',
+  skyMidHex: '#e9f2fa',
+  skyHorizonHex: '#eff5fc',
+  skyLowerHex: '#dde5ee',
+  skyGroundHex: '#b8c3cf',
+  backgroundHex: '#dce8f5',
+  fogHex: '#eff5fc',
+  fogNear: 520,
+  fogFar: 1760,
+  hemiSkyHex: '#f8fbff',
+  hemiGroundHex: '#9aa8b8',
+  hemiIntensity: 1.28,
+  sunKeyHex: '#fffdf7',
+  sunKeyIntensity: 2.15,
+  fillLightHex: '#bae6fd',
+  fillLightIntensity: 0.65,
+  terrainTintHex: '#eef2f6',
+  terrainBumpScale: 0.68,
+  laneCurbHex: '#0284c7',
+  laneCurbOpacity: 0.52,
+};
+
+/**
+ * Pure theme resolver shifting the 1,000m Proving Ground to a crisp high-altitude
+ * Alpine Morning proving ground (`#dce8f5` zenith -> `#eff5fc` horizon) when
+ * `environmentPreset === 'blueprint_daylight'`, while preserving Dark Twilight
+ * lighting 100% unchanged for `tactical_vault` / `gunsmith_bench`.
+ */
+export function resolveRange3DThemePalette(
+  environmentPreset: string | null | undefined
+): Range3DThemePalette {
+  return environmentPreset === 'blueprint_daylight'
+    ? RANGE_ALPINE_DAYLIGHT_PALETTE
+    : RANGE_DARK_TWILIGHT_PALETTE;
+}
+
+export const RANGE_SPARK_SEEDS: readonly RangeSparkSeed[] = (() => {
+  const seeds: RangeSparkSeed[] = [];
+  let s = 0x91e10da5;
+  const nextRand = (): number => {
+    s = (Math.imul(s, 1664525) + 1013904223) >>> 0;
+    return s / 0xffffffff;
+  };
+  for (let i = 0; i < RANGE_IMPACT_SPARK_COUNT; i++) {
+    // Evenly fanned radial azimuth with organic jitter so sparks splash 360° across plate face
+    const baseTheta = (i / RANGE_IMPACT_SPARK_COUNT) * Math.PI * 2;
+    const azimuthRad = baseTheta + (nextRand() - 0.5) * 0.24;
+    seeds.push({
+      azimuthRad,
+      radialSpeedMps: 3.4 + nextRand() * 9.8,
+      backSpeedMps: 0.95 + nextRand() * 3.4,
+      liftSpeedMps: 1.2 + nextRand() * 2.2,
+      lifeFrac: 0.5 + nextRand() * 0.5,
+      sizeM: 0.0085 + nextRand() * 0.0095,
+    });
+  }
+  return seeds;
+})();
+
+export function createMutableRangeImpactBurstState(): RangeImpactBurstState {
+  return {
+    active: false,
+    elapsedSec: 0,
+    sparkIntensity01: 0,
+    gelVaporIntensity01: 0,
+    gelVaporScale01: 0,
+    bermDustIntensity01: 0,
+    bermDustProgress01: 0,
+  };
+}
+
+export function createMutableRangeSparkParticle(): RangeSparkParticleOut {
+  return {
+    visible: false,
+    x: 0,
+    y: 0,
+    z: 0,
+    rotY: 0,
+    rotZ: 0,
+    scaleX: 0,
+    scaleY: 0,
+    scaleZ: 0,
+    heat01: 0,
+  };
+}
+
+/**
+ * Zero-GC evaluator writing AR500 steel-gong impact spark burst, berm dust plume,
+ * or 10% ballistic gelatin entry vapor shock flash state into `out`.
+ * Strictly inactive pre-impact (`flightTimeSec < impactTimeSec`) and after `0.6s`.
+ */
+export function writeRangeImpactBurstStateInto(
+  flightTimeSec: number,
+  impactTimeSec: number,
+  isGelatinTarget: boolean,
+  out: RangeImpactBurstState
+): RangeImpactBurstState {
+  out.active = false;
+  out.elapsedSec = 0;
+  out.sparkIntensity01 = 0;
+  out.gelVaporIntensity01 = 0;
+  out.gelVaporScale01 = 0;
+  out.bermDustIntensity01 = 0;
+  out.bermDustProgress01 = 0;
+
+  if (
+    !Number.isFinite(flightTimeSec) ||
+    !Number.isFinite(impactTimeSec) ||
+    impactTimeSec < 0 ||
+    flightTimeSec < impactTimeSec
+  ) {
+    return out;
+  }
+
+  const elapsed = flightTimeSec - impactTimeSec;
+  if (elapsed > RANGE_IMPACT_BURST_MAX_WINDOW_S) {
+    return out;
+  }
+
+  out.elapsedSec = elapsed;
+
+  if (isGelatinTarget) {
+    // Suppress metallic sparks on 10% ballistic gelatin; emit crisp translucent entry vapor flash
+    const gelWindowS = 0.44;
+    if (elapsed <= gelWindowS) {
+      const u = clamp(elapsed / gelWindowS, 0, 1);
+      const onset = Math.sin(clamp(u / 0.14, 0, 1) * Math.PI * 0.5);
+      const decay = Math.pow(1 - u, 1.55);
+      out.gelVaporIntensity01 = (0.35 + 0.65 * onset) * decay;
+      out.gelVaporScale01 = 1 - Math.pow(1 - u, 2.2);
+      out.active = out.gelVaporIntensity01 > 0.005;
+    }
+    return out;
+  }
+
+  // AR500 Steel Gong hit: golden-white kinetic spark burst (0.55s) + berm dust plume (0.60s)
+  if (elapsed <= RANGE_IMPACT_SPARK_WINDOW_S) {
+    const sparkU = clamp(elapsed / RANGE_IMPACT_SPARK_WINDOW_S, 0, 1);
+    out.sparkIntensity01 = Math.pow(1 - sparkU, 1.42);
+  }
+  const dustU = clamp(elapsed / RANGE_IMPACT_BURST_MAX_WINDOW_S, 0, 1);
+  const dustRise = Math.sin(clamp(dustU / 0.2, 0, 1) * Math.PI * 0.5);
+  out.bermDustProgress01 = dustU;
+  out.bermDustIntensity01 = dustRise * Math.pow(1 - dustU, 1.25);
+  out.active =
+    out.sparkIntensity01 > 0.005 || out.bermDustIntensity01 > 0.005;
+  return out;
+}
+
+/**
+ * Pure allocating wrapper for `writeRangeImpactBurstStateInto`.
+ */
+export function computeRangeImpactBurstState(
+  flightTimeSec: number,
+  impactTimeSec: number,
+  isGelatinTarget: boolean
+): RangeImpactBurstState {
+  return writeRangeImpactBurstStateInto(
+    flightTimeSec,
+    impactTimeSec,
+    isGelatinTarget,
+    createMutableRangeImpactBurstState()
+  );
+}
+
+/**
+ * Zero-GC per-spark evaluator for the 28-instance AR500 golden-white radial
+ * impact spark burst (gravity arc + radial splash across plate face).
+ */
+export function evaluateRangeSparkParticleInto(
+  burst: Readonly<RangeImpactBurstState>,
+  hitX: number,
+  hitY: number,
+  hitZ: number,
+  index: number,
+  isArmor: boolean,
+  out: RangeSparkParticleOut
+): RangeSparkParticleOut {
+  if (
+    !burst.active ||
+    burst.sparkIntensity01 <= 0.005 ||
+    burst.elapsedSec > RANGE_IMPACT_SPARK_WINDOW_S
+  ) {
+    out.visible = false;
+    out.scaleX = 0;
+    out.scaleY = 0;
+    out.scaleZ = 0;
+    out.heat01 = 0;
+    return out;
+  }
+
+  const seed = RANGE_SPARK_SEEDS[index % RANGE_SPARK_SEEDS.length];
+  const lifeS = RANGE_IMPACT_SPARK_WINDOW_S * seed.lifeFrac;
+  if (burst.elapsedSec > lifeS) {
+    out.visible = false;
+    out.scaleX = 0;
+    out.scaleY = 0;
+    out.scaleZ = 0;
+    out.heat01 = 0;
+    return out;
+  }
+
+  const t = burst.elapsedSec;
+  const age01 = clamp(t / lifeS, 0, 1);
+  const drag = 1 - 0.35 * age01;
+  const vx = -seed.backSpeedMps * drag;
+  const vy0 = Math.sin(seed.azimuthRad) * seed.radialSpeedMps * 0.78 + seed.liftSpeedMps;
+  const vy = vy0 * drag - 9.81 * t;
+  const vz = Math.cos(seed.azimuthRad) * seed.radialSpeedMps * drag;
+
+  out.visible = true;
+  out.x = hitX - 0.045 + vx * t;
+  out.y = Math.max(0.04, hitY + vy0 * t * drag - 0.5 * 9.81 * t * t);
+  out.z = hitZ + vz * t;
+
+  const horiz = Math.hypot(vx, vz) || 1e-5;
+  out.rotY = Math.atan2(-vz, vx);
+  out.rotZ = Math.atan2(vy, horiz);
+
+  const sz = seed.sizeM * (1 - 0.72 * age01) * (isArmor ? 2.3 : 1.15);
+  out.scaleX = sz * 9.0;
+  out.scaleY = sz;
+  out.scaleZ = sz;
+  out.heat01 = clamp((1 - 0.62 * age01) * burst.sparkIntensity01, 0, 1);
+  return out;
+}
