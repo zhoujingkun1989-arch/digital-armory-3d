@@ -189,6 +189,12 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
         labelEn: 'Open 17-Plate Collector Monograph Print Studio',
       },
       {
+        id: 'armory-arrow-nav',
+        keys: ['← / →'],
+        labelZh: '在 3D 展馆中左右切换展品',
+        labelEn: 'Browse Armory Vault exhibits',
+      },
+      {
         id: 'escape',
         keys: ['Esc'],
         labelZh: '逐层关闭弹窗、取消零件选中或返回军械库',
