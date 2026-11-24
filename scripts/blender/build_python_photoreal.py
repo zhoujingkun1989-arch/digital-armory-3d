@@ -157,47 +157,75 @@ if "--postprocess" in sys.argv:
         scale: float,
         fill: int = 255,
     ) -> None:
-        """Crisp heraldic Rampant Colt rearing stallion silhouette w/ broken-spear ground bar."""
+        """High-resolution sculpted heraldic Rampant Colt rearing stallion silhouette w/ broken spear & globe bar."""
+        def _pt(ux: float, uy: float) -> tuple[float, float]:
+            return (cx + ux * scale, cy + uy * scale)
+
+        # Graceful curved horse silhouette (arching crest, sculpted muzzle, raised forelegs, muscular hindquarter)
         pts_body = [
-            (cx - 0.12 * scale, cy + 0.36 * scale),  # Hind hoof left
-            (cx - 0.22 * scale, cy + 0.14 * scale),  # Hock
-            (cx - 0.17 * scale, cy - 0.07 * scale),  # Croup
-            (cx - 0.06 * scale, cy - 0.23 * scale),  # Back arch
-            (cx - 0.02 * scale, cy - 0.42 * scale),  # Crest of neck
-            (cx + 0.09 * scale, cy - 0.48 * scale),  # Poll / ears
-            (cx + 0.24 * scale, cy - 0.38 * scale),  # Muzzle
-            (cx + 0.13 * scale, cy - 0.28 * scale),  # Throat
-            (cx + 0.14 * scale, cy - 0.12 * scale),  # Chest
-            (cx + 0.32 * scale, cy - 0.23 * scale),  # Raised foreleg upper
-            (cx + 0.39 * scale, cy - 0.10 * scale),  # Upper fore hoof
-            (cx + 0.16 * scale, cy - 0.02 * scale),  # Forearm
-            (cx + 0.29 * scale, cy + 0.07 * scale),  # Lower foreleg
-            (cx + 0.23 * scale, cy + 0.17 * scale),  # Lower fore hoof
-            (cx + 0.06 * scale, cy + 0.05 * scale),  # Brisket
-            (cx + 0.02 * scale, cy + 0.20 * scale),  # Belly
-            (cx + 0.10 * scale, cy + 0.38 * scale),  # Hind hoof right
-            (cx - 0.02 * scale, cy + 0.23 * scale),  # Inner thigh
+            _pt(-0.14,  0.37),  # Left hind hoof
+            _pt(-0.18,  0.29),
+            _pt(-0.24,  0.14),  # Hock
+            _pt(-0.22,  0.00),  # Haunch
+            _pt(-0.18, -0.10),  # Croup
+            _pt(-0.11, -0.18),  # Saddle hollow
+            _pt(-0.07, -0.27),  # Withers
+            _pt(-0.06, -0.37),  # Arching neck crest
+            _pt(-0.01, -0.45),  # Poll
+            _pt( 0.06, -0.50),  # Pricked ear tip
+            _pt( 0.11, -0.44),  # Forehead
+            _pt( 0.23, -0.37),  # Muzzle bridge
+            _pt( 0.24, -0.32),  # Nose tip
+            _pt( 0.16, -0.29),  # Jawline
+            _pt( 0.11, -0.26),  # Throat latch
+            _pt( 0.14, -0.15),  # Chest
+            _pt( 0.26, -0.23),  # Raised left knee
+            _pt( 0.37, -0.16),  # Fore cannon
+            _pt( 0.39, -0.10),  # Raised left hoof
+            _pt( 0.32, -0.09),
+            _pt( 0.23, -0.14),
+            _pt( 0.15, -0.04),  # Breast
+            _pt( 0.28,  0.04),  # Lower foreleg knee
+            _pt( 0.30,  0.14),  # Lower fore hoof
+            _pt( 0.23,  0.16),
+            _pt( 0.16,  0.06),
+            _pt( 0.06,  0.05),  # Brisket
+            _pt( 0.03,  0.15),  # Flank
+            _pt( 0.09,  0.26),  # Right hind cannon
+            _pt( 0.12,  0.37),  # Right hind hoof
+            _pt( 0.04,  0.37),
+            _pt( 0.00,  0.24),  # Inner gaskin
+            _pt(-0.06,  0.19),  # Inner thigh
+            _pt(-0.10,  0.28),
+            _pt(-0.09,  0.37),
         ]
         draw.polygon(pts_body, fill=fill)
+        # Flowing arched heraldic mane & tail
+        pts_mane = [
+            _pt(-0.07, -0.28),
+            _pt(-0.15, -0.32),
+            _pt(-0.14, -0.40),
+            _pt(-0.07, -0.44),
+            _pt(-0.02, -0.43),
+            _pt(-0.06, -0.35),
+        ]
+        draw.polygon(pts_mane, fill=fill)
         pts_tail = [
-            (cx - 0.16 * scale, cy - 0.05 * scale),
-            (cx - 0.34 * scale, cy + 0.05 * scale),
-            (cx - 0.39 * scale, cy + 0.23 * scale),
-            (cx - 0.26 * scale, cy + 0.17 * scale),
+            _pt(-0.18, -0.08),
+            _pt(-0.29, -0.04),
+            _pt(-0.37,  0.08),
+            _pt(-0.40,  0.24),
+            _pt(-0.32,  0.22),
+            _pt(-0.28,  0.10),
+            _pt(-0.20,  0.03),
         ]
         draw.polygon(pts_tail, fill=fill)
-        # Broken spear held in forelegs & ground bar
-        w_line = max(2, int(round(0.042 * scale)))
-        draw.line(
-            [(cx - 0.36 * scale, cy + 0.40 * scale), (cx + 0.36 * scale, cy + 0.40 * scale)],
-            fill=fill,
-            width=w_line,
-        )
-        draw.line(
-            [(cx + 0.05 * scale, cy - 0.33 * scale), (cx + 0.34 * scale, cy - 0.02 * scale)],
-            fill=fill,
-            width=max(2, int(round(0.028 * scale))),
-        )
+        # Ground bar + iconic broken spear held in forelegs & mouth
+        w_bar = max(2, int(round(0.042 * scale)))
+        w_spr = max(2, int(round(0.026 * scale)))
+        draw.line([_pt(-0.36, 0.40), _pt(0.36, 0.40)], fill=fill, width=w_bar)
+        draw.line([_pt(0.04, -0.36), _pt(0.36, -0.02)], fill=fill, width=w_spr)
+        draw.line([_pt(0.02, -0.34), _pt(-0.16, -0.26)], fill=fill, width=w_spr)
 
     def _draw_spaced_text(
         draw: ImageDraw.ImageDraw,
@@ -499,16 +527,16 @@ if "--postprocess" in sys.argv:
 
         # Apply high-contrast matte deeply-carved walnut checkering vs glossy oil-rubbed walnut border!
         valley_w = np.clip(1.0 - diamonds_all, 0.0, 1.0) * chk_active
-        albedo *= 1.0 - 0.44 * valley_w[..., None] - 0.48 * chk_border[..., None]
+        albedo *= 1.0 - 0.50 * valley_w[..., None] - 0.54 * chk_border[..., None]
         # Warm burnished highlights on raised diamond pyramid crowns so checkering gleams at studio distance!
-        albedo[..., 0] = np.clip(albedo[..., 0] + 0.055 * np.power(diamonds_all, 1.8) * chk_active, 0.0, 1.0)
-        albedo[..., 1] = np.clip(albedo[..., 1] + 0.028 * np.power(diamonds_all, 1.8) * chk_active, 0.0, 1.0)
+        albedo[..., 0] = np.clip(albedo[..., 0] + 0.068 * np.power(diamonds_all, 1.7) * chk_active, 0.0, 1.0)
+        albedo[..., 1] = np.clip(albedo[..., 1] + 0.034 * np.power(diamonds_all, 1.7) * chk_active, 0.0, 1.0)
 
-        chk_rgh = 0.82 - 0.24 * diamonds_all
+        chk_rgh = 0.84 - 0.28 * diamonds_all
         _mix(rgh, chk_rgh, chk_active * 0.98)
-        _mix(rgh, 0.86, chk_border * 0.90)
-        ao *= (1.0 - 0.52 * valley_w) * (1.0 - 0.48 * chk_border)
-        decal_height += 0.92 * (diamonds_all - 0.5) * chk_active - 0.72 * chk_border
+        _mix(rgh, 0.88, chk_border * 0.92)
+        ao *= (1.0 - 0.56 * valley_w) * (1.0 - 0.52 * chk_border)
+        decal_height += 0.98 * (diamonds_all - 0.5) * chk_active - 0.78 * chk_border
 
         # ------------------------------------------------------------------
         # 2) Dedicated 286x286 px 24K Gold-Brass Colt Rampant Medallions
@@ -551,15 +579,15 @@ if "--postprocess" in sys.argv:
         stip = rng_g.uniform(-1.0, 1.0, size=(h, w)).astype(np.float32)
         stip = ndimage.gaussian_filter(stip, sigma=0.7)
 
-        _mix(albedo, (0.82, 0.63, 0.22), med_disc * (1.0 - rel_bev) * 0.90)
-        _mix(albedo, (0.98, 0.84, 0.38), med_disc * rel_bev * 0.98)
-        _mix(rgh, 0.25, med_disc * (1.0 - rel_bev) * 0.92)
-        _mix(rgh, 0.14, med_disc * rel_bev * 0.96)
-        _mix(met, 0.95, med_disc * 0.98)
-        ao *= 1.0 - 0.14 * med_disc * (1.0 - rel_bev)
-        decal_height += med_disc * (0.56 * rel_bev + 0.055 * stip * (1.0 - rel_bev))
+        _mix(albedo, (0.74, 0.55, 0.17), med_disc * (1.0 - rel_bev) * 0.94)
+        _mix(albedo, (1.00, 0.86, 0.36), med_disc * rel_bev * 0.99)
+        _mix(rgh, 0.26, med_disc * (1.0 - rel_bev) * 0.92)
+        _mix(rgh, 0.13, med_disc * rel_bev * 0.96)
+        _mix(met, 0.97, med_disc * 0.98)
+        ao *= 1.0 - 0.20 * med_disc * (1.0 - rel_bev)
+        decal_height += med_disc * (0.64 * rel_bev + 0.055 * stip * (1.0 - rel_bev))
 
-        decal_nrm = _height_to_normal_01(decal_height, strength=4.6)
+        decal_nrm = _height_to_normal_01(decal_height, strength=5.2)
         nrm_final = _rnm_blend(nrm, decal_nrm)
 
         rgh = np.clip(rgh, 0.12, 0.94)
@@ -999,10 +1027,10 @@ def _build_american_walnut_mat() -> bpy.types.Material:
     pore_m.inputs["To Max"].default_value = 1.0
     nt.links.new(n_pore.outputs["Fac"], pore_m.inputs["Value"])
 
-    # Authentic rich warm reddish-brown hand-rubbed Colt American Black Walnut palette
-    c_dark = srgb_to_lin(0.205, 0.096, 0.044)
-    c_mid = srgb_to_lin(0.430, 0.214, 0.098)
-    c_warm = srgb_to_lin(0.585, 0.315, 0.150)
+    # Authentic rich warm reddish-chestnut hand-rubbed Colt American Black Walnut palette
+    c_dark = srgb_to_lin(0.175, 0.078, 0.034)
+    c_mid = srgb_to_lin(0.395, 0.192, 0.084)
+    c_warm = srgb_to_lin(0.565, 0.295, 0.136)
 
     mix1 = nt.nodes.new("ShaderNodeMix")
     mix1.data_type = "RGBA"
@@ -1027,23 +1055,23 @@ def _build_american_walnut_mat() -> bpy.types.Material:
     # Darken elongated open walnut pores
     pore_mul = nt.nodes.new("ShaderNodeMath")
     pore_mul.operation = "MULTIPLY"
-    pore_mul.inputs[1].default_value = 0.54
+    pore_mul.inputs[1].default_value = 0.56
     nt.links.new(pore_m.outputs["Result"], pore_mul.inputs[0])
 
     mix_p = nt.nodes.new("ShaderNodeMix")
     mix_p.data_type = "RGBA"
-    mix_p.inputs[7].default_value = srgb_to_lin(0.115, 0.052, 0.024)
+    mix_p.inputs[7].default_value = srgb_to_lin(0.105, 0.046, 0.020)
     nt.links.new(pore_mul.outputs["Value"], mix_p.inputs[0])
     nt.links.new(mix2.outputs[2], mix_p.inputs[6])
     nt.links.new(mix_p.outputs[2], bsdf.inputs["Base Color"])
 
-    # Glossy hand-rubbed linseed oil palm finish (R=0.29..0.44), slightly rougher inside open pores
+    # Glossy hand-rubbed linseed oil palm finish (R=0.28..0.40), slightly rougher inside open pores
     r_wood = nt.nodes.new("ShaderNodeMapRange")
     r_wood.clamp = True
     r_wood.inputs["From Min"].default_value = 0.20
     r_wood.inputs["From Max"].default_value = 0.80
-    r_wood.inputs["To Min"].default_value = 0.29
-    r_wood.inputs["To Max"].default_value = 0.43
+    r_wood.inputs["To Min"].default_value = 0.28
+    r_wood.inputs["To Max"].default_value = 0.40
     nt.links.new(n_burl.outputs["Fac"], r_wood.inputs["Value"])
 
     r_pore = nt.nodes.new("ShaderNodeMath")
@@ -1058,14 +1086,14 @@ def _build_american_walnut_mat() -> bpy.types.Material:
     # Tactile wood fiber + depressed open pores bump + subtle bevel
     h_pore = nt.nodes.new("ShaderNodeMath")
     h_pore.operation = "MULTIPLY"
-    h_pore.inputs[1].default_value = -0.35
+    h_pore.inputs[1].default_value = -0.38
     nt.links.new(pore_m.outputs["Result"], h_pore.inputs[0])
 
     bev = nt.nodes.new("ShaderNodeBevel")
     bev.samples = 4
     bev.inputs["Radius"].default_value = 0.028
     bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.14
+    bump.inputs["Strength"].default_value = 0.16
     bump.inputs["Distance"].default_value = 0.018
     nt.links.new(h_pore.outputs["Value"], bump.inputs["Height"])
     nt.links.new(bev.outputs["Normal"], bump.inputs["Normal"])
@@ -1076,92 +1104,92 @@ def _build_american_walnut_mat() -> bpy.types.Material:
 
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
-        # --- Legendary Colt "Royal Blue" Luminous Satin-Gloss Hot-Salt Blued Steel ---
-        # Calibrated specifically for Three.js WebGL 2.0 AgX + `tactical_vault.hdr` so vertical flats
-        # glow rich midnight cobalt-blue (NEVER crushed black!), while curved cylinder & trigger guard
-        # retain liquid mirror specular highlights!
+        # --- Legendary Colt "Royal Blue" Luminous Liquid-Mirror Hot-Salt Blued Steel ---
+        # Calibrated specifically for Three.js WebGL 2.0 AgX + `tactical_vault.hdr` (`R=0.16..0.34`):
+        # Deep midnight cobalt-blue metallic steel (NEVER flat dusty denim, NEVER crushed black!)
+        # catching bright specular studio ribbons across beveled frame flats, rib vents & 6-flute cylinder!
         "M_RoyalBlueMirror": _build_pbr_mat(
             "M_RoyalBlueMirror",
-            base_srgb=(0.255, 0.315, 0.435),
-            roughness=0.255,
-            metallic=0.86,
-            bevel_r=0.028,
-            edge_wear=0.55,
-            edge_srgb=(0.56, 0.64, 0.78),
-            grain_scale=46.0,
-            grain_bump=0.012,
-            aniso_stretch=(0.35, 3.8, 3.8),
-            rough_var=0.036,
-        ),
-        # Dedicated liquid-gloss Royal Blue for curved fluted cylinder & swept oval trigger guard!
-        "M_RoyalBlueCylinder": _build_pbr_mat(
-            "M_RoyalBlueCylinder",
-            base_srgb=(0.245, 0.305, 0.425),
-            roughness=0.195,
-            metallic=0.90,
-            bevel_r=0.024,
-            edge_wear=0.48,
-            edge_srgb=(0.64, 0.72, 0.84),
+            base_srgb=(0.188, 0.246, 0.372),
+            roughness=0.205,
+            metallic=0.91,
+            bevel_r=0.032,
+            edge_wear=0.52,
+            edge_srgb=(0.64, 0.72, 0.86),
             grain_scale=48.0,
             grain_bump=0.009,
-            aniso_stretch=(0.40, 3.6, 3.6),
+            aniso_stretch=(0.35, 3.8, 3.8),
             rough_var=0.028,
+        ),
+        # Dedicated liquid-gloss Royal Blue for deeply fluted 6-shot cylinder & swept oval trigger guard!
+        "M_RoyalBlueCylinder": _build_pbr_mat(
+            "M_RoyalBlueCylinder",
+            base_srgb=(0.178, 0.236, 0.362),
+            roughness=0.175,
+            metallic=0.93,
+            bevel_r=0.026,
+            edge_wear=0.50,
+            edge_srgb=(0.68, 0.76, 0.90),
+            grain_scale=50.0,
+            grain_bump=0.007,
+            aniso_stretch=(0.40, 3.6, 3.6),
+            rough_var=0.022,
         ),
         # Hand-fitted removable sideplate w/ crisp subtle tonal contrast & bright perimeter seam highlight!
         "M_SideplateMirror": _build_pbr_mat(
             "M_SideplateMirror",
-            base_srgb=(0.275, 0.338, 0.462),
-            roughness=0.240,
-            metallic=0.87,
-            bevel_r=0.030,
+            base_srgb=(0.204, 0.264, 0.395),
+            roughness=0.195,
+            metallic=0.91,
+            bevel_r=0.034,
             edge_wear=0.64,
-            edge_srgb=(0.66, 0.74, 0.88),
-            grain_scale=46.0,
-            grain_bump=0.010,
+            edge_srgb=(0.70, 0.78, 0.92),
+            grain_scale=48.0,
+            grain_bump=0.008,
             aniso_stretch=(0.35, 3.8, 3.8),
-            rough_var=0.032,
+            rough_var=0.026,
         ),
         "M_RoyalBlueDeep": _build_pbr_mat(
             "M_RoyalBlueDeep",
-            base_srgb=(0.205, 0.256, 0.356),
-            roughness=0.245,
-            metallic=0.88,
-            bevel_r=0.022,
-            edge_wear=0.60,
-            edge_srgb=(0.64, 0.72, 0.84),
-            grain_scale=38.0,
-            grain_bump=0.014,
+            base_srgb=(0.158, 0.208, 0.318),
+            roughness=0.215,
+            metallic=0.91,
+            bevel_r=0.024,
+            edge_wear=0.58,
+            edge_srgb=(0.66, 0.74, 0.86),
+            grain_scale=40.0,
+            grain_bump=0.012,
             aniso_stretch=(0.45, 3.0, 3.0),
-            rough_var=0.032,
+            rough_var=0.028,
         ),
         # Matte sandblasted anti-glare top ventilated rib & frame sighting plane
         "M_RibMatte": _build_pbr_mat(
             "M_RibMatte",
-            base_srgb=(0.185, 0.222, 0.295),
-            roughness=0.49,
-            metallic=0.80,
-            bevel_r=0.016,
-            edge_wear=0.34,
-            edge_srgb=(0.54, 0.62, 0.74),
+            base_srgb=(0.165, 0.205, 0.285),
+            roughness=0.44,
+            metallic=0.84,
+            bevel_r=0.018,
+            edge_wear=0.36,
+            edge_srgb=(0.56, 0.64, 0.76),
             grain_scale=72.0,
-            grain_bump=0.045,
-            voronoi_grain=0.65,
+            grain_bump=0.042,
+            voronoi_grain=0.62,
             voronoi_scale=96.0,
-            rough_var=0.042,
+            rough_var=0.038,
         ),
         # Bright jewel-polished stainless / case-hardened hammer sides & internal lockwork
         "M_JewelSteel": _build_pbr_mat(
             "M_JewelSteel",
-            base_srgb=(0.79, 0.82, 0.86),
-            roughness=0.16,
-            metallic=0.96,
+            base_srgb=(0.82, 0.85, 0.89),
+            roughness=0.145,
+            metallic=0.97,
             bevel_r=0.022,
             edge_wear=0.16,
-            edge_srgb=(0.92, 0.94, 0.96),
+            edge_srgb=(0.94, 0.96, 0.98),
             grain_scale=32.0,
-            grain_bump=0.016,
+            grain_bump=0.014,
             aniso_stretch=(0.40, 3.4, 3.4),
-            rough_var=0.026,
+            rough_var=0.022,
         ),
         # Tempered blued-grey spring steel for internal leaf/wire/coil details
         "M_SpringSteel": _build_pbr_mat(
@@ -1188,8 +1216,8 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # Baughman ramped front sight orange-red acrylic target insert
         "M_SightRedInsert": _build_pbr_mat(
             "M_SightRedInsert",
-            base_srgb=(0.88, 0.18, 0.055),
-            roughness=0.22,
+            base_srgb=(0.92, 0.16, 0.045),
+            roughness=0.18,
             metallic=0.02,
             bevel_r=0.010,
             grain_scale=28.0,
@@ -1285,13 +1313,13 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         "W_AmericanWalnut": _build_american_walnut_mat(),
         "W_GoldMedallion": _build_pbr_mat(
             "W_GoldMedallion",
-            base_srgb=(0.92, 0.75, 0.29),
-            roughness=0.16,
-            metallic=0.95,
+            base_srgb=(0.95, 0.77, 0.27),
+            roughness=0.14,
+            metallic=0.97,
             bevel_r=0.014,
             grain_scale=32.0,
             grain_bump=0.008,
-            rough_var=0.018,
+            rough_var=0.016,
         ),
         "W_BrassEscutcheon": _build_pbr_mat(
             "W_BrassEscutcheon",
@@ -1989,6 +2017,7 @@ def finish_part(
     bevel_segs: int = 2,
     sharp_deg: float = 34.0,
     weighted_normals: bool = True,
+    lock_flat_walls: bool = False,
 ) -> bpy.types.Object:
     select_only([obj], obj)
     if bevel_w > 0.0:
@@ -2019,11 +2048,20 @@ def finish_part(
         bmesh.ops.reverse_faces(bm, faces=bm.faces)
 
     angle_rad = math.radians(sharp_deg)
+    flat_rad = math.radians(10.0)
     for f in bm.faces:
         f.smooth = True
     for e in bm.edges:
         if len(e.link_faces) == 2:
-            e.smooth = e.calc_face_angle(0.0) < angle_rad
+            ang = e.calc_face_angle(0.0)
+            is_flat_wall_edge = False
+            if lock_flat_walls and ang > flat_rad:
+                f0, f1 = e.link_faces[0], e.link_faces[1]
+                if (abs(f0.normal.y) > 0.985 or abs(f1.normal.y) > 0.985) and (
+                    f0.calc_area() > 0.06 or f1.calc_area() > 0.06
+                ):
+                    is_flat_wall_edge = True
+            e.smooth = (ang < angle_rad) and (not is_flat_wall_edge)
         else:
             e.smooth = False
     bm.to_mesh(obj.data)
@@ -2101,7 +2139,7 @@ def build_python_barrel(mats: dict) -> bpy.types.Object:
         belly_r_z = 0.440 * zs
         belly_r_y = 0.440 - y_bot_lift
         belly = []
-        n_arc = 16
+        n_arc = 22
         for i in range(1, n_arc):
             a = -math.pi * (i / n_arc)  # 0 -> -pi (right -> bottom -> left)
             belly.append((math.cos(a) * belly_r_z, belly_cy + math.sin(a) * belly_r_y))
@@ -2111,7 +2149,9 @@ def build_python_barrel(mats: dict) -> bpy.types.Object:
     stations = [
         (3.55,  barrel_underlug_section(0.955, 0.025)),  # Crisp breech shoulder chamfer
         (3.60,  barrel_underlug_section(1.000, 0.000)),
-        (10.50, barrel_underlug_section(0.988, 0.004)),
+        (7.20,  barrel_underlug_section(0.994, 0.002)),
+        (11.00, barrel_underlug_section(0.986, 0.005)),
+        (14.80, barrel_underlug_section(0.976, 0.009)),
         (17.28, barrel_underlug_section(0.968, 0.012)),  # Classic subtle Colt muzzle taper
         (17.36, barrel_underlug_section(0.952, 0.022)),
         (17.42, barrel_underlug_section(0.895, 0.065)),  # Sleek beveled target muzzle face!
@@ -2142,17 +2182,17 @@ def build_python_barrel(mats: dict) -> bpy.types.Object:
         (3.58, 3.66),
         (3.55, 3.63),
     ]
-    rib_blank = mk_extrude_z("brl_rib_blank", rib_pts, -0.35, 0.35, bevel=0.032, bevel_segs=3, mat=m_rb)
+    rib_blank = mk_extrude_z("brl_rib_blank", rib_pts, -0.35, 0.35, bevel=0.036, bevel_segs=3, mat=m_rb)
 
-    # 3 crisp beveled cooling vent cutters (flared bevel cuffs on both Z flanks catch studio rim highlights!)
+    # 3 crisp beveled cooling vent cutters w/ true 45-deg stepped mouth chamfers catching gleaming Royal Blue rim lights!
     vent_cutters = []
     for vi, (vx0, vx1) in enumerate(((4.95, 7.55), (8.75, 11.35), (12.55, 15.15))):
-        core_poly = _rounded_rect_2d(vx0, vx1, 2.94, 3.40, r=0.085, arc_segs=5)
+        core_poly = _rounded_rect_2d(vx0, vx1, 2.94, 3.40, r=0.090, arc_segs=6)
         vent_cutters.append(mk_extrude_z(f"c_vent_{vi}", core_poly, -0.55, 0.55, mat=m_rb))
-        # Subtle 45-deg beveled mouth flares on left & right rib walls
-        flare_poly = _rounded_rect_2d(vx0 - 0.035, vx1 + 0.035, 2.905, 3.435, r=0.105, arc_segs=5)
-        vent_cutters.append(mk_extrude_z(f"c_vent_flL_{vi}", flare_poly, -0.45, -0.315, bevel=0.022, bevel_segs=1, mat=m_rb))
-        vent_cutters.append(mk_extrude_z(f"c_vent_flR_{vi}", flare_poly, 0.315, 0.45, bevel=0.022, bevel_segs=1, mat=m_rb))
+        # Crisp single-step 45-deg beveled mouth flares on left & right rib walls (optically mirror-flat cheeks!)
+        flare_poly = _rounded_rect_2d(vx0 - 0.038, vx1 + 0.038, 2.902, 3.438, r=0.110, arc_segs=6)
+        vent_cutters.append(mk_extrude_z(f"c_vent_flL_{vi}", flare_poly, -0.46, -0.312, bevel=0.024, bevel_segs=1, mat=m_rb))
+        vent_cutters.append(mk_extrude_z(f"c_vent_flR_{vi}", flare_poly, 0.312, 0.46, bevel=0.024, bevel_segs=1, mat=m_rb))
     rib_vented = bool_subtract(rib_blank, vent_cutters, solver="EXACT")
 
     # Unite sculpted barrel+underlug, threaded shank & 3-port ventilated rib into ONE watertight forging!
@@ -2227,11 +2267,11 @@ def build_python_barrel(mats: dict) -> bpy.types.Object:
     )
 
     obj = join_objects([barrel_solid, rifling, crown_ring], "python_barrel")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=32.0, lock_flat_walls=True)
 
 
 def build_python_front_sight(mats: dict) -> bpy.types.Object:
-    """U-02: Pinned Baughman Ramped Target Front Sight w/ Vivid Red-Orange Insert & Serrated Ramp.
+    """U-02: Pinned Baughman Ramped Target Front Sight w/ Vivid Red-Orange Insert & True 3D Serrated Ramp.
     assembledPos = [16.35, 3.82, 0]."""
     m_dk = mats["M_RoyalBlueDeep"]
     m_red = mats["M_SightRedInsert"]
@@ -2245,43 +2285,54 @@ def build_python_front_sight(mats: dict) -> bpy.types.Object:
         ( 0.42,  0.33),
         (-0.78, -0.04),
     ]
-    blade = mk_extrude_z("fs_blade", blade_xy, -0.14, 0.14, bevel=0.022, bevel_segs=2, mat=m_dk)
+    blade = mk_extrude_z("fs_blade", blade_xy, -0.145, 0.145, bevel=0.024, bevel_segs=3, mat=m_dk)
 
-    # Carve clean pocket along rear ramp for the flush-inlaid glossy orange-red insert!
+    # Carve clean pocket along rear ramp for bold glossy red-orange insert + 7 crisp anti-glare ramp serrations!
     ins_cut_xy = [
-        (-0.58,  0.01),
-        ( 0.40,  0.30),
-        ( 0.34,  0.15),
-        (-0.50, -0.08),
+        (-0.62,  0.005),
+        ( 0.41,  0.315),
+        ( 0.34,  0.150),
+        (-0.52, -0.085),
     ]
-    blade = bool_subtract(blade, [mk_extrude_z("c_ins", ins_cut_xy, -0.095, 0.095, mat=m_dk)])
+    fs_cuts = [mk_extrude_z("c_ins", ins_cut_xy, -0.105, 0.105, mat=m_dk)]
+    # 7 crisp anti-glare horizontal ramp serration cuts across outer steel ramp shoulders
+    ramp_ang = math.atan2(0.33 - (-0.04), 0.42 - (-0.78))  # ~0.299 rad
+    for si in range(7):
+        u = (si + 0.5) / 7.0
+        sx = -0.68 + u * 1.02
+        sy = -0.01 + u * 0.315
+        fs_cuts.append(
+            mk_box(f"c_fs_ser_{si}", 0.045, 0.036, 0.34, [("rz", ramp_ang), ("t", sx, sy + 0.014, 0.0)], m_dk)
+        )
+    blade = bool_subtract(blade, fs_cuts, solver="EXACT")
 
+    # Vivid glossy red-orange acrylic insert proudly seated flush-plus in the milled ramp pocket!
     red_xy = [
-        (-0.56,  0.015),
-        ( 0.38,  0.295),
-        ( 0.33,  0.165),
-        (-0.48, -0.065),
+        (-0.60,  0.018),
+        ( 0.40,  0.320),
+        ( 0.34,  0.165),
+        (-0.50, -0.065),
     ]
-    red_ins = mk_extrude_z("fs_red", red_xy, -0.09, 0.09, bevel=0.012, bevel_segs=2, mat=m_red)
+    red_ins = mk_extrude_z("fs_red", red_xy, -0.102, 0.102, bevel=0.014, bevel_segs=2, mat=m_red)
 
     # Transverse stainless retention cross-pin
-    pin = mk_cyl("fs_pin", 0.055, 0.055, 0.36, "z", 20, [("t", 0.05, -0.12, 0.0)], m_st, bevel=0.010)
+    pin = mk_cyl("fs_pin", 0.055, 0.055, 0.36, "z", 22, [("t", 0.05, -0.12, 0.0)], m_st, bevel=0.010)
 
     obj = join_objects([blade, red_ins, pin], "python_front_sight")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
 
 
 def build_python_rear_sight(mats: dict) -> bpy.types.Object:
-    """U-03: Colt Accro Micrometric Adjustable Target Rear Sight w/ White U-Outline & Click Screws.
+    """U-03: Colt Accro Micrometric Adjustable Target Rear Sight w/ White U-Outline & Knurled Click Screws.
     assembledPos = [-2.15, 3.76, 0]."""
     m_dk = mats["M_RoyalBlueDeep"]
     m_wht = mats["M_SightWhiteInlay"]
     m_st = mats["M_JewelSteel"]
 
-    base = mk_box("rs_base", 2.12, 0.34, 0.94, [("t", -0.02, -0.04, 0.0)], m_dk, bevel=0.032, bevel_segs=2)
+    base = mk_box("rs_base", 2.12, 0.34, 0.94, [("t", -0.02, -0.04, 0.0)], m_dk, bevel=0.036, bevel_segs=3)
 
     # Protective beveled ear rear sight blade w/ milled crisp square U-notch
-    blade_raw = mk_box("rs_blade", 0.24, 0.42, 1.04, [("t", -0.82, 0.15, 0.0)], m_dk, bevel=0.026, bevel_segs=2)
+    blade_raw = mk_box("rs_blade", 0.24, 0.42, 1.04, [("t", -0.82, 0.15, 0.0)], m_dk, bevel=0.028, bevel_segs=3)
     blade = bool_subtract(blade_raw, [mk_box("c_notch", 0.44, 0.23, 0.30, [("t", -0.82, 0.295, 0.0)], m_dk)])
 
     # Crisp white target U-outline around square notch on rear (-X) face
@@ -2289,14 +2340,14 @@ def build_python_rear_sight(mats: dict) -> bpy.types.Object:
     w_r = mk_box("rs_wr", 0.032, 0.18, 0.050, [("t", -0.942, 0.26,  0.175)], m_wht, bevel=0.005, bevel_segs=1)
     w_b = mk_box("rs_wb", 0.032, 0.046, 0.400, [("t", -0.942, 0.16,  0.000)], m_wht, bevel=0.005, bevel_segs=1)
 
-    # Micrometric slotted top elevation click screw & right-side windage click screw
-    elev_raw = mk_cyl("rs_elev", 0.16, 0.16, 0.14, "y", 24, [("t", -0.18, 0.16, 0.0)], m_st, bevel=0.016)
-    elev = bool_subtract(elev_raw, [mk_box("c_eslot", 0.34, 0.055, 0.038, [("t", -0.18, 0.225, 0.0)], m_st)])
+    # Micrometric knurled & slotted top elevation click screw & right-side windage click screw
+    elev_raw = mk_knurled_cyl("rs_elev", 0.165, 0.14, "y", flutes=20, depth=0.012, xform=[("t", -0.18, 0.16, 0.0)], mat=m_st)
+    elev = bool_subtract(elev_raw, [mk_box("c_eslot", 0.36, 0.055, 0.038, [("t", -0.18, 0.225, 0.0)], m_st)])
 
-    wind_raw = mk_cyl("rs_wind", 0.14, 0.14, 0.22, "z", 24, [("t", -0.76, 0.12, 0.54)], m_st, bevel=0.016)
-    wind = bool_subtract(wind_raw, [mk_box("c_wslot", 0.038, 0.30, 0.055, [("t", -0.76, 0.12, 0.645)], m_st)])
+    wind_raw = mk_knurled_cyl("rs_wind", 0.145, 0.22, "z", flutes=18, depth=0.012, xform=[("t", -0.76, 0.12, 0.54)], mat=m_st)
+    wind = bool_subtract(wind_raw, [mk_box("c_wslot", 0.038, 0.32, 0.055, [("t", -0.76, 0.12, 0.645)], m_st)])
 
-    hinge = mk_cyl("rs_hinge", 0.055, 0.055, 0.98, "z", 18, [("t", 0.78, -0.04, 0.0)], m_st, bevel=0.010)
+    hinge = mk_cyl("rs_hinge", 0.055, 0.055, 0.98, "z", 20, [("t", 0.78, -0.04, 0.0)], m_st, bevel=0.010)
 
     obj = join_objects([base, blade, w_l, w_r, w_b, elev, wind, hinge], "python_rear_sight")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
@@ -2382,24 +2433,24 @@ def build_python_frame(mats: dict) -> bpy.types.Object:
     frame_xy.append((-3.60, -1.32))
     frame_xy.append(( 0.72, -1.24))
     # Smoothly radiused Colt Python crane-housing contour flowing organically upward into barrel boss!
-    frame_xy += _quad_bez((0.72, -1.24), (2.25, -1.26), (3.12, -1.04), 10)
-    frame_xy += _quad_bez((3.12, -1.04), (3.65, -0.82), (3.65,  0.18), 10)
+    frame_xy += _quad_bez((0.72, -1.24), (2.45, -1.24), (3.26, -0.96), 14)
+    frame_xy += _quad_bez((3.26, -0.96), (3.65, -0.72), (3.65,  0.22), 14)
 
-    base_forging = mk_extrude_z("frm_base", frame_xy, -0.66, 0.66, bevel=0.068, bevel_segs=3, mat=m_rb)
+    base_forging = mk_extrude_z("frm_base", frame_xy, -0.66, 0.66, bevel=0.076, bevel_segs=4, mat=m_rb)
 
     # 2. Gracefully Curved Organic Oval Trigger Guard Bow (Swept Elliptical Cross-Section — ZERO FLAT BOX!)
-    #    Centerline sweeps from rear root (-3.62, -1.36) -> bottom oval (-1.48, -3.48) -> front bow (0.64, -1.30)
+    #    Centerline sweeps from rear root (-3.62, -1.24) -> bottom oval (-1.52, -3.50) -> front bow (0.66, -1.22)
     tg_spine_2d: list[tuple[float, float]] = [(-3.62, -1.24)]
-    tg_spine_2d += _quad_bez((-3.62, -1.24), (-3.80, -3.48), (-1.52, -3.50), 14)
-    tg_spine_2d += _quad_bez((-1.52, -3.50), ( 0.64, -3.50), ( 0.66, -1.22), 14)
+    tg_spine_2d += _quad_bez((-3.62, -1.24), (-3.80, -3.48), (-1.52, -3.50), 20)
+    tg_spine_2d += _quad_bez((-1.52, -3.50), ( 0.64, -3.50), ( 0.66, -1.22), 20)
     tg_spine_3d = [(x, y, 0.0) for (x, y) in tg_spine_2d]
     tg_radii = []
     for i, (x, y) in enumerate(tg_spine_2d):
         u = i / max(1, len(tg_spine_2d) - 1)
-        # Slightly thicker roots where bow blends into frame, sleek sculpted 0.22x0.43 elliptical guard bow!
+        # Slightly thicker roots where bow blends into frame, sleek sculpted 0.22x0.44 elliptical guard bow!
         root_flare = 1.0 + 0.18 * ((2.0 * u - 1.0) ** 4)
         tg_radii.append((0.22 * root_flare, 0.44 * root_flare))
-    trigger_guard = mk_swept_tube("frm_tguard", tg_spine_3d, tg_radii, ring_segs=20, closed_loop=False, mat=m_cyl)
+    trigger_guard = mk_swept_tube("frm_tguard", tg_spine_3d, tg_radii, ring_segs=28, closed_loop=False, mat=m_cyl)
 
     # 3. Sculpted Hemispherical Recoil Shield behind cylinder (X in [-2.68, -2.24], R=1.92 around [1.17, 0])
     recoil_shield = mk_lathe_x(
@@ -2495,7 +2546,7 @@ def build_python_frame(mats: dict) -> bpy.types.Object:
     ]
 
     obj = join_objects([milled_frame] + studs, "python_frame")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=32.0, lock_flat_walls=True)
 
 
 def build_python_sideplate(mats: dict) -> bpy.types.Object:
@@ -2510,9 +2561,9 @@ def build_python_sideplate(mats: dict) -> bpy.types.Object:
         ( 2.04,  2.42),
         ( 0.45,  2.42),
     ]
-    outer_xy += _quad_bez((0.45, 2.42), (-1.35, 1.95), (-1.52, 0.55), 10)
-    outer_xy += _quad_bez((-1.52, 0.55), (-1.82, -1.15), (-2.06, -2.42), 10)
-    outer_plate = mk_extrude_z("sp_out", outer_xy, -0.06, 0.132, bevel=0.028, bevel_segs=3, mat=m_rb)
+    outer_xy += _quad_bez((0.45, 2.42), (-1.35, 1.95), (-1.52, 0.55), 14)
+    outer_xy += _quad_bez((-1.52, 0.55), (-1.82, -1.15), (-2.06, -2.42), 14)
+    outer_plate = mk_extrude_z("sp_out", outer_xy, -0.06, 0.132, bevel=0.034, bevel_segs=4, mat=m_rb)
 
     inner_xy: list[tuple[float, float]] = [
         ( 1.88, -2.22),
@@ -2532,7 +2583,7 @@ def build_python_sideplate(mats: dict) -> bpy.types.Object:
         for i, (sx, sy) in enumerate(screw_coords)
     ]
     plate = bool_subtract(plate, cuts, solver="EXACT")
-    return finish_part(plate, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(plate, bevel_w=0.0, sharp_deg=32.0, lock_flat_walls=True)
 
 
 def build_python_sideplate_screws(mats: dict) -> bpy.types.Object:
@@ -2610,30 +2661,32 @@ def _eval_python_grip_xy(su: float, sv: float) -> tuple[float, float]:
         # Authentic Colt Python upper ergonomic thumb/knuckle sweep clearing Rampant Colt & sideplate screws!
         fx, fy = qbez((4.05, 2.05), (3.28, 3.35), (2.98, 4.95), (sv - 0.72) / 0.28)
 
-    # Smooth organic corner rounding at extreme corners
-    cu = max(0.0, abs(2.0 * su - 1.0) - 0.84) / 0.16
-    cv = max(0.0, abs(2.0 * sv - 1.0) - 0.88) / 0.12
-    shrink = 0.036 * (cu * cu) * (cv * cv)
+    # Smooth organic corner rounding at extreme corners & sculpted target palm-swell ergonomics!
+    cu = max(0.0, abs(2.0 * su - 1.0) - 0.80) / 0.20
+    cv = max(0.0, abs(2.0 * sv - 1.0) - 0.84) / 0.16
+    shrink = 0.052 * (cu * cu) * (cv * cv)
     su_e = 0.5 + (su - 0.5) * (1.0 - shrink)
 
     lx = bx + (fx - bx) * su_e
     ly = by + (fy - by) * su_e
     # Graceful domed upper collar arch cleanly above the centered 24K Gold Colt Medallion
-    ly += 0.25 * math.sin(math.pi * su_e) * (sv ** 3)
+    ly += 0.26 * math.sin(math.pi * su_e) * (sv ** 2.6)
     return (lx, ly)
 
 
 def _eval_python_grip_z_outer(su: float, sv: float, sign_z: float) -> float:
     """Lush ergonomic double-curved Colt Target palm-swell profile in grip-local Z.
-    Swells organically to Z_local = +-0.62 (world Z = +-1.44 cm -> full 28.8 mm target palm grip!)
-    and rolls smoothly into the steel frame & frontstrap/backstrap edges."""
+    Swells organically to Z_local = +-0.63 (world Z = +-1.45 cm -> full 29.0 mm target palm grip!)
+    with sculpted mid-palm crown, gentle high thumb-web concave relief, and silky rolled edges."""
     du = min(1.0, abs(2.0 * su - 1.0))
     dv = min(1.0, abs(2.0 * sv - 1.0))
-    arch_u = math.pow(max(0.0, 1.0 - du * du), 0.45)
-    arch_v = math.pow(max(0.0, 1.0 - dv * dv * 0.84), 0.34)
+    arch_u = math.pow(max(0.0, 1.0 - du * du), 0.42)
+    arch_v = math.pow(max(0.0, 1.0 - dv * dv * 0.86), 0.34)
+    palm_crown = 0.065 * math.exp(-((sv - 0.42) / 0.24) ** 2) * math.exp(-((su - 0.48) / 0.30) ** 2)
+    thumb_relief = -0.055 * math.exp(-((sv - 0.78) / 0.13) ** 2) * math.exp(-((su - 0.24) / 0.22) ** 2)
     palm_bias = 1.0 - 0.16 * (sv ** 2)
-    z_swell = 0.15 + 0.47 * arch_u * (0.48 + 0.52 * arch_v) * palm_bias
-    return sign_z * z_swell
+    z_swell = 0.135 + 0.455 * arch_u * (0.48 + 0.52 * arch_v) * palm_bias + palm_crown + thumb_relief
+    return sign_z * max(0.11, min(0.635, z_swell))
 
 
 def _build_python_walnut_grip(side: str, mats: dict) -> bpy.types.Object:
@@ -2654,7 +2707,7 @@ def _build_python_walnut_grip(side: str, mats: dict) -> bpy.types.Object:
     u_lo, u_hi = (0.515, 0.980) if side == "right" else (0.020, 0.485)
     v_lo, v_hi = 0.180, 0.985
 
-    nu, nv = 34, 52
+    nu, nv = 42, 64
     bm = bmesh.new()
     uv_layer = bm.loops.layers.uv.verify()
 
@@ -2909,19 +2962,19 @@ def build_python_hammer(mats: dict) -> bpy.types.Object:
         lambda tx, ty, tz, nx, ny, nz: abs(nz) < 0.42 and ty > 0.85,
     )
 
-    # Wide flared target thumb-spur pad seated solidly on upper hammer neck w/ 9 transverse checkering ridges!
+    # Wide flared target thumb-spur pad seated solidly on upper hammer neck w/ 11 crisp checkering ridges!
     spur_pad = mk_box(
-        "ham_spur", 1.24, 0.16, 0.60, [("rz", -0.30), ("t", -1.34, 2.60, 0.0)], m_dk, bevel=0.028, bevel_segs=2
+        "ham_spur", 1.26, 0.16, 0.62, [("rz", -0.30), ("t", -1.34, 2.60, 0.0)], m_dk, bevel=0.030, bevel_segs=3
     )
     parts = [body, spur_pad]
-    for i in range(-4, 5):
+    for i in range(-5, 6):
         parts.append(
             mk_box(
                 f"ham_chk_{i}",
-                0.050,
-                0.055,
-                0.54,
-                [("rz", -0.30), ("t", -1.34 + i * 0.122, 2.675 - i * 0.036, 0.0)],
+                0.046,
+                0.062,
+                0.56,
+                [("rz", -0.30), ("t", -1.34 + i * 0.104, 2.678 - i * 0.031, 0.0)],
                 m_dk,
                 bevel=0.010,
                 bevel_segs=1,
@@ -2971,16 +3024,16 @@ def build_python_trigger(mats: dict) -> bpy.types.Object:
     trig_xy += _quad_bez((-0.18, -1.95), ( 0.18, -1.12), (-0.12, -0.28), 14)
     trig_xy.append((-0.55,  0.15))
 
-    body_raw = mk_extrude_z("trg_body", trig_xy, -0.16, 0.16, bevel=0.026, bevel_segs=3, mat=m_rb)
-    body = bool_subtract(body_raw, [mk_cyl("c_trg_piv", 0.125, 0.125, 0.45, "z", 22, mat=m_rb)])
+    body_raw = mk_extrude_z("trg_body", trig_xy, -0.178, 0.178, bevel=0.028, bevel_segs=3, mat=m_rb)
+    body = bool_subtract(body_raw, [mk_cyl("c_trg_piv", 0.125, 0.125, 0.48, "z", 24, mat=m_rb)])
 
-    # 4 crisp curved longitudinal anti-slip finger ridges following the exact target trigger arc!
+    # 4 crisp curved longitudinal anti-slip finger ridges following the exact wide target trigger arc!
     parts = [body]
-    arc_pts_2d = _quad_bez((0.33, -0.34), (0.55, -1.14), (0.14, -1.88), 12)
-    for gi, z_off in enumerate((-0.105, -0.035, 0.035, 0.105)):
+    arc_pts_2d = _quad_bez((0.33, -0.34), (0.55, -1.14), (0.14, -1.88), 16)
+    for gi, z_off in enumerate((-0.118, -0.040, 0.040, 0.118)):
         spine = [(x, y, z_off) for (x, y) in arc_pts_2d]
-        radii = [(0.020, 0.019) for _ in spine]
-        parts.append(mk_swept_tube(f"trg_grv_{gi}", spine, radii, ring_segs=8, mat=m_dk))
+        radii = [(0.026, 0.022) for _ in spine]
+        parts.append(mk_swept_tube(f"trg_grv_{gi}", spine, radii, ring_segs=10, mat=m_dk))
 
     # Stainless hand-pawl crank pin on left rear tail
     parts.append(mk_cyl("trg_pin", 0.065, 0.065, 0.24, "z", 18, [("t", -0.32, 0.28, -0.18)], m_st, bevel=0.010))
@@ -3173,12 +3226,19 @@ def build_python_cylinder(mats: dict) -> bpy.types.Object:
     m_st = mats["M_JewelSteel"]
 
     # 72 radial segments (exact multiple of 6 -> 12 segments per 60-deg chamber!)
+    # Subdivided axial edge loops along cylinder wall prevent stretched diagonal triangles around flutes & notches!
     blank = mk_lathe_x(
         "python_cylinder",
         [
             (0.34, -2.08),
-            (1.93, -2.08),
-            (1.97, -2.03),
+            (1.92, -2.08),
+            (1.97, -2.02),
+            (1.97, -1.62),
+            (1.97, -1.26),
+            (1.97, -0.58),
+            (1.97,  0.05),
+            (1.97,  0.70),
+            (1.97,  1.35),
             (1.97,  1.83),
             (1.94,  1.90),
             (1.83,  2.08),  # Iconic Colt beveled front cylinder nose
@@ -3195,12 +3255,14 @@ def build_python_cylinder(mats: dict) -> bpy.types.Object:
         cy = math.cos(ang) * 1.18
         cz = math.sin(ang) * 1.18
 
-        # Stepped .357 Magnum chamber bore (case wall r=0.495 -> bullet throat r=0.475) + rim counterbore!
+        # Stepped .357 Magnum chamber bore w/ crisp 45-deg chamfered rear charge-hole lead-in & rim counterbore!
         ch_cut = mk_lathe_x(
             f"c_ch_{k}",
             [
                 (0.000, -2.20),
-                (0.558, -2.20),
+                (0.602, -2.20),
+                (0.598, -2.075), # Crisp 45-deg rear charge-hole chamfer mouth!
+                (0.558, -2.035),
                 (0.558, -1.89),  # Recessed rimmed .357 counterbore
                 (0.495, -1.87),
                 (0.492,  1.20),  # Straight-wall case chamber
@@ -3208,28 +3270,42 @@ def build_python_cylinder(mats: dict) -> bpy.types.Object:
                 (0.474,  2.20),
                 (0.000,  2.20),
             ],
-            segs=32,
+            segs=36,
             xform=[("t", 0.0, cy, cz)],
             mat=m_st,
         )
         cutters.append(ch_cut)
 
-        # Deeply scalloped rounded-end Colt Python flute at (k + 0.5) * 60 deg!
+        # Deeply scalloped rounded-end Colt Python flute at (k + 0.5) * 60 deg w/ sleek beveled entry rim!
         f_ang = ang + math.pi / 6.0
-        fy = math.cos(f_ang) * 2.175
-        fz = math.sin(f_ang) * 2.175
+        fy = math.cos(f_ang) * 2.155
+        fz = math.sin(f_ang) * 2.155
         # Smooth watertight capsule flute cutter (lathed around +X so front/rear scallops are razor-smooth!)
-        flute_prof = [(0.000, -1.255)]
-        n_cap = 8
+        flute_prof = [(0.000, -1.270)]
+        n_cap = 10
         for s in range(1, n_cap + 1):
             a = -math.pi * 0.5 + (math.pi * 0.5) * (s / n_cap)
-            flute_prof.append((0.462 * math.cos(a), -0.795 + 0.460 * math.sin(a)))
+            flute_prof.append((0.478 * math.cos(a), -0.790 + 0.480 * math.sin(a)))
         for s in range(0, n_cap + 1):
             a = (math.pi * 0.5) * (s / n_cap)
-            flute_prof.append((0.462 * math.cos(a), 1.555 + 0.460 * math.sin(a)))
-        flute_prof.append((0.000, 2.015))
+            flute_prof.append((0.478 * math.cos(a), 1.545 + 0.480 * math.sin(a)))
+        flute_prof.append((0.000, 2.025))
         cutters.append(
-            mk_lathe_x(f"c_flute_{k}", flute_prof, segs=28, xform=[("t", 0.0, fy, fz)], mat=m_rb)
+            mk_lathe_x(f"c_flute_{k}", flute_prof, segs=32, xform=[("t", 0.0, fy, fz)], mat=m_rb)
+        )
+        # Subtle wide chamfered flute-rim bevel collar catching bright cobalt-blue studio highlights!
+        fy_b = math.cos(f_ang) * 2.265
+        fz_b = math.sin(f_ang) * 2.265
+        flute_bev = [(0.000, -1.300)]
+        for s in range(1, 8):
+            a = -math.pi * 0.5 + (math.pi * 0.5) * (s / 8)
+            flute_bev.append((0.520 * math.cos(a), -0.790 + 0.510 * math.sin(a)))
+        for s in range(0, 9):
+            a = (math.pi * 0.5) * (s / 8)
+            flute_bev.append((0.520 * math.cos(a), 1.545 + 0.510 * math.sin(a)))
+        flute_bev.append((0.000, 2.055))
+        cutters.append(
+            mk_lathe_x(f"c_fbev_{k}", flute_bev, segs=28, xform=[("t", 0.0, fy_b, fz_b)], mat=m_rb)
         )
 
         # Beveled rectangular cylinder locking-bolt notch at `ang + pi` + authentic Colt sloped lead-in ramp!
@@ -3241,7 +3317,7 @@ def build_python_cylinder(mats: dict) -> bpy.types.Object:
             0.30,
             [("t", -0.92, 1.96, 0.0), ("rx", n_ang)],
             m_bore,
-            bevel=0.025,
+            bevel=0.028,
             bevel_segs=2,
         )
         # Tangential sloped lead-in ramp entering each locking notch (signature revolver craftsmanship!)
@@ -3252,16 +3328,16 @@ def build_python_cylinder(mats: dict) -> bpy.types.Object:
             0.38,
             [("rx", -0.24), ("t", -0.92, 1.99, -0.24), ("rx", n_ang)],
             m_rb,
-            bevel=0.018,
-            bevel_segs=1,
+            bevel=0.020,
+            bevel_segs=2,
         )
         cutters.extend([notch, ramp])
 
     # Recessed rear ratchet star pocket (R=1.24, X in [-2.12, -1.94])
-    cutters.append(mk_cyl("c_star_pkt", 1.24, 1.24, 0.22, "x", 48, [("t", -2.03, 0.0, 0.0)], m_bore))
+    cutters.append(mk_cyl("c_star_pkt", 1.24, 1.24, 0.22, "x", 54, [("t", -2.03, 0.0, 0.0)], m_bore))
 
     cyl = bool_subtract(blank, cutters, solver="EXACT")
-    return finish_part(cyl, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(cyl, bevel_w=0.0, sharp_deg=32.0)
 
 
 def build_python_extractor_star(mats: dict) -> bpy.types.Object:
@@ -3269,7 +3345,7 @@ def build_python_extractor_star(mats: dict) -> bpy.types.Object:
     assembledPos = [-0.65, 1.17, 0]."""
     m_st = mats["M_JewelSteel"]
 
-    disc = mk_cyl("es_disc", 1.22, 1.22, 0.20, "x", 48, [("t", -1.43, 0.0, 0.0)], m_st, bevel=0.016)
+    disc = mk_cyl("es_disc", 1.22, 1.22, 0.20, "x", 54, [("t", -1.43, 0.0, 0.0)], m_st, bevel=0.022, bevel_segs=2)
     cuts = []
     for k in range(6):
         ang = k * math.pi / 3.0
@@ -3280,7 +3356,7 @@ def build_python_extractor_star(mats: dict) -> bpy.types.Object:
                 0.495,
                 0.38,
                 "x",
-                28,
+                32,
                 [("t", -1.43, math.cos(ang) * 1.18, math.sin(ang) * 1.18)],
                 m_st,
             )
@@ -3288,18 +3364,30 @@ def build_python_extractor_star(mats: dict) -> bpy.types.Object:
     star_head = bool_subtract(disc, cuts, solver="EXACT")
 
     parts = [star_head]
-    # 6 crisp asymmetric indexing ratchet teeth around rear hub engaged by `python_hand`
+    # 6 crisp chamfered asymmetric indexing ratchet teeth around rear hub engaged by `python_hand`
+    tooth_zy = [(-0.08, 0.30), (0.09, 0.30), (0.11, 0.56), (-0.02, 0.54)]
     for k in range(6):
         ang = k * math.pi / 3.0
         parts.append(
-            mk_box(
+            mk_extrude_x(
                 f"es_tooth_{k}",
-                0.18,
-                0.22,
+                tooth_zy,
+                -1.60,
+                -1.42,
+                bevel=0.018,
+                bevel_segs=2,
+                xform=[("rx", ang)],
+                mat=m_st,
+            )
+            if "mk_extrude_x" in globals()
+            else mk_box(
+                f"es_tooth_{k}",
+                0.19,
+                0.24,
                 0.16,
-                [("rx", 0.32), ("t", -1.51, 0.42, 0.0), ("rx", ang)],
+                [("rx", 0.34), ("t", -1.51, 0.43, 0.0), ("rx", ang)],
                 m_st,
-                bevel=0.016,
+                bevel=0.020,
                 bevel_segs=2,
             )
         )
@@ -4123,8 +4211,9 @@ def verify_meshes(all_objs: list[bpy.types.Object]) -> dict:
     return report
 
 
-def export_draco_glb(all_objs: list[bpy.types.Object]) -> None:
-    _set_identity_layout(all_objs)
+def triangulate_keep_normals(all_objs: list[bpy.types.Object]) -> None:
+    """Locks custom WeightedNormal loop normals into beauty triangles BEFORE Cycles NORMAL baking & glTF export,
+    eliminating ALL diagonal triangulation streaks across curved Royal Blue cylinder flutes & frame flats!"""
     for o in all_objs:
         select_only([o], o)
         mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
@@ -4133,6 +4222,9 @@ def export_draco_glb(all_objs: list[bpy.types.Object]) -> None:
         mod.keep_custom_normals = True
         bpy.ops.object.modifier_apply(modifier=mod.name)
 
+
+def export_draco_glb(all_objs: list[bpy.types.Object]) -> None:
+    _set_identity_layout(all_objs)
     select_only(all_objs, all_objs[0])
     bpy.ops.export_scene.gltf(
         filepath=str(MODELS_OUT),
@@ -4351,6 +4443,9 @@ def main() -> None:
     print("[UV] Unwrapping & packing 2 dedicated 2K PBR suites: metal (21 parts), walnut (2 parts)...")
     unwrap_metal_atlas(metal_objs)
     unwrap_walnut_atlas(walnut_objs)
+
+    # Lock custom WeightedNormals into beauty triangles BEFORE Cycles NORMAL baking & Draco export!
+    triangulate_keep_normals(all_objs)
 
     # Strict UV area & bounds audit across both atlases!
     for label, group in (("metal", metal_objs), ("walnut", walnut_objs)):

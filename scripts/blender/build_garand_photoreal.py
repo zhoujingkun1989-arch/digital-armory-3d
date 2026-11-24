@@ -322,7 +322,7 @@ if "--postprocess" in sys.argv:
         _mix(rgh, 0.72, stamp_w * 0.85)
         ao *= 1.0 - 0.36 * stamp_w
 
-        # Hand-burnished linseed-oil sheen on ergonomic pistol-grip wrist (X in [-19, -9])
+        # Hand-burnished linseed-oil sheen on ergonomic pistol-grip wrist & forend (X in [-19, -9])
         u_grid = (np.arange(w, dtype=np.float32)[None, :] + 0.5) / w
         v_grid = 1.0 - (np.arange(h, dtype=np.float32)[:, None] + 0.5) / h
         left_band = (v_grid >= 0.680) & (v_grid <= 0.985) & (u_grid >= 0.015) & (u_grid <= 0.985)
@@ -330,13 +330,13 @@ if "--postprocess" in sys.argv:
         wrist_l = left_band.astype(np.float32) * np.exp(-((u_grid - 0.33) / 0.14) ** 2)
         wrist_r = right_band.astype(np.float32) * np.exp(-((u_grid - 0.67) / 0.14) ** 2)
         burnish = np.clip(wrist_l + wrist_r, 0.0, 1.0)
-        rgh = np.clip(rgh - 0.08 * burnish, 0.28, 0.92)
+        rgh = np.clip(rgh - 0.06 * burnish, 0.30, 0.90)
 
-        decal_h = -0.68 * stamp_bev
-        decal_nrm = _height_to_normal_01(decal_h, strength=4.2)
+        decal_h = -0.74 * stamp_bev
+        decal_nrm = _height_to_normal_01(decal_h, strength=4.8)
         nrm_final = _rnm_blend(nrm, decal_nrm)
 
-        rgh = np.clip(rgh, 0.24, 0.92)
+        rgh = np.clip(rgh, 0.24, 0.90)
         met = np.clip(met, 0.00, 0.95)
         orm = np.stack((ao, rgh, met), axis=-1)
 
@@ -479,26 +479,26 @@ if "--postprocess" in sys.argv:
         _paste_uv_band(brass_rub, clip_brs, 0.500, 0.985, 0.495, 0.665)
 
         # Apply crisp recessed steel rollmarks (silver-white dry-brushed inside groove for museum legibility!)
-        eng_bev = _bevel_mask(engraving, width_px=2.0)
-        eng_m = np.clip(engraving * 0.92, 0.0, 1.0)
-        # Deep stamped groove with subtle oxidized silver-chalk contrast so heel rollmark pops in studio shots!
-        _mix(albedo, (0.56, 0.59, 0.58), eng_m * 0.72)
-        _mix(rgh, 0.54, eng_m * 0.75)
-        ao *= 1.0 - 0.30 * eng_m
+        eng_bev = _bevel_mask(engraving, width_px=2.2)
+        eng_m = np.clip(engraving * 0.95, 0.0, 1.0)
+        # Deep stamped groove with crisp oxidized silver-chalk contrast so Springfield heel rollmark pops in studio shots!
+        _mix(albedo, (0.62, 0.65, 0.64), eng_m * 0.78)
+        _mix(rgh, 0.50, eng_m * 0.78)
+        ao *= 1.0 - 0.34 * eng_m
 
         # Crisp ivory-white lacquer infill on T105 elevation & windage range numerals
-        wht_m = np.clip(white_fill * 0.95, 0.0, 1.0)
-        _mix(albedo, (0.88, 0.87, 0.82), wht_m * 0.88)
-        _mix(rgh, 0.46, wht_m * 0.85)
-        _mix(met, 0.08, wht_m * 0.88)
+        wht_m = np.clip(white_fill * 0.96, 0.0, 1.0)
+        _mix(albedo, (0.91, 0.90, 0.85), wht_m * 0.90)
+        _mix(rgh, 0.44, wht_m * 0.85)
+        _mix(met, 0.06, wht_m * 0.90)
 
         # Subtle warm golden .30-06 brass rub along en-bloc clip walls
-        brs_m = np.clip(brass_rub * 0.45, 0.0, 1.0)
-        _mix(albedo, (0.64, 0.52, 0.24), brs_m * 0.42)
-        _mix(rgh, 0.26, brs_m * 0.40)
+        brs_m = np.clip(brass_rub * 0.50, 0.0, 1.0)
+        _mix(albedo, (0.68, 0.55, 0.25), brs_m * 0.46)
+        _mix(rgh, 0.24, brs_m * 0.44)
 
-        decal_h = -0.62 * eng_bev
-        decal_nrm = _height_to_normal_01(decal_h, strength=4.2)
+        decal_h = -0.70 * eng_bev
+        decal_nrm = _height_to_normal_01(decal_h, strength=4.8)
         nrm_final = _rnm_blend(nrm, decal_nrm)
 
         rgh = np.clip(rgh, 0.14, 0.88)
@@ -569,15 +569,15 @@ if "--postprocess" in sys.argv:
         diam = np.minimum(tri1, tri2).astype(np.float32)
 
         valley = (1.0 - diam) * chk_mask
-        crest = np.power(diam, 2.2) * chk_mask
-        albedo *= 1.0 - 0.34 * valley[..., None]
-        albedo = np.clip(albedo + 0.08 * crest[..., None], 0.0, 1.0)
-        _mix(rgh, 0.56, valley * 0.85)
-        _mix(rgh, 0.24, crest * 0.85)
-        ao *= 1.0 - 0.38 * valley
+        crest = np.power(diam, 2.0) * chk_mask
+        albedo *= 1.0 - 0.38 * valley[..., None]
+        albedo = np.clip(albedo + 0.11 * crest[..., None], 0.0, 1.0)
+        _mix(rgh, 0.56, valley * 0.88)
+        _mix(rgh, 0.22, crest * 0.88)
+        ao *= 1.0 - 0.42 * valley
 
-        decal_h = 0.72 * (diam - 0.5) * chk_mask
-        decal_nrm = _height_to_normal_01(decal_h, strength=4.5)
+        decal_h = 0.82 * (diam - 0.5) * chk_mask
+        decal_nrm = _height_to_normal_01(decal_h, strength=5.4)
         nrm_final = _rnm_blend(nrm, decal_nrm)
 
         rgh = np.clip(rgh, 0.13, 0.88)
@@ -999,58 +999,58 @@ def _build_garand_walnut_mat(name: str = "W_AmericanWalnut", is_bedding: bool = 
 
     # Cathedral walnut heartwood rings stretched along +X (rifle axis!)
     map_wood = nt.nodes.new("ShaderNodeMapping")
-    map_wood.inputs["Scale"].default_value = (0.065, 0.72, 0.58)
+    map_wood.inputs["Scale"].default_value = (0.058, 0.78, 0.62)
     nt.links.new(rot_g.outputs["Vector"], map_wood.inputs["Vector"])
 
     wave = nt.nodes.new("ShaderNodeTexWave")
     wave.wave_type = "RINGS"
     wave.rings_direction = "X"
     wave.wave_profile = "SIN"
-    wave.inputs["Scale"].default_value = 1.05
-    wave.inputs["Distortion"].default_value = 7.8
-    wave.inputs["Detail"].default_value = 6.5
-    wave.inputs["Detail Scale"].default_value = 1.55
-    wave.inputs["Detail Roughness"].default_value = 0.56
+    wave.inputs["Scale"].default_value = 1.15
+    wave.inputs["Distortion"].default_value = 9.2
+    wave.inputs["Detail"].default_value = 7.5
+    wave.inputs["Detail Scale"].default_value = 1.65
+    wave.inputs["Detail Roughness"].default_value = 0.58
     nt.links.new(map_wood.outputs["Vector"], wave.inputs["Vector"])
 
     # Secondary fine straight fiber streaks along +X
     map_fib = nt.nodes.new("ShaderNodeMapping")
-    map_fib.inputs["Scale"].default_value = (0.28, 3.8, 3.8)
+    map_fib.inputs["Scale"].default_value = (0.24, 4.2, 4.2)
     nt.links.new(rot_g.outputs["Vector"], map_fib.inputs["Vector"])
 
     n_fib = nt.nodes.new("ShaderNodeTexNoise")
-    n_fib.inputs["Scale"].default_value = 1.9
-    n_fib.inputs["Detail"].default_value = 7.0
-    n_fib.inputs["Distortion"].default_value = 0.65
+    n_fib.inputs["Scale"].default_value = 2.1
+    n_fib.inputs["Detail"].default_value = 7.5
+    n_fib.inputs["Distortion"].default_value = 0.78
     nt.links.new(map_fib.outputs["Vector"], n_fib.inputs["Vector"])
 
     # Elongated dark American Black Walnut open vessel pores along +X
     map_pore = nt.nodes.new("ShaderNodeMapping")
-    map_pore.inputs["Scale"].default_value = (1.15, 16.0, 16.0)
+    map_pore.inputs["Scale"].default_value = (1.25, 18.0, 18.0)
     nt.links.new(rot_g.outputs["Vector"], map_pore.inputs["Vector"])
 
     n_pore = nt.nodes.new("ShaderNodeTexNoise")
-    n_pore.inputs["Scale"].default_value = 2.6
-    n_pore.inputs["Detail"].default_value = 4.0
+    n_pore.inputs["Scale"].default_value = 2.8
+    n_pore.inputs["Detail"].default_value = 4.5
     nt.links.new(map_pore.outputs["Vector"], n_pore.inputs["Vector"])
 
     pore_m = nt.nodes.new("ShaderNodeMapRange")
     pore_m.clamp = True
-    pore_m.inputs["From Min"].default_value = 0.60
-    pore_m.inputs["From Max"].default_value = 0.77
+    pore_m.inputs["From Min"].default_value = 0.59
+    pore_m.inputs["From Max"].default_value = 0.76
     pore_m.inputs["To Min"].default_value = 0.0
     pore_m.inputs["To Max"].default_value = 1.0
     nt.links.new(n_pore.outputs["Fac"], pore_m.inputs["Value"])
 
-    # Authentic warm medium-dark WWII Springfield linseed-oil American Black Walnut sRGB palette!
+    # Authentic warm hand-rubbed raw linseed-oil WWII Springfield American Black Walnut sRGB palette!
     if is_bedding:
-        c_dark = srgb_to_lin(0.145, 0.075, 0.036)
-        c_mid  = srgb_to_lin(0.245, 0.132, 0.068)
-        c_warm = srgb_to_lin(0.320, 0.180, 0.095)
+        c_dark = srgb_to_lin(0.145, 0.072, 0.034)
+        c_mid  = srgb_to_lin(0.255, 0.136, 0.068)
+        c_warm = srgb_to_lin(0.340, 0.192, 0.098)
     else:
-        c_dark = srgb_to_lin(0.165, 0.082, 0.039)
-        c_mid  = srgb_to_lin(0.320, 0.172, 0.086)
-        c_warm = srgb_to_lin(0.455, 0.258, 0.132)
+        c_dark = srgb_to_lin(0.155, 0.074, 0.033)
+        c_mid  = srgb_to_lin(0.355, 0.184, 0.086)
+        c_warm = srgb_to_lin(0.515, 0.285, 0.138)
 
     mix1 = nt.nodes.new("ShaderNodeMix")
     mix1.data_type = "RGBA"
@@ -1060,10 +1060,10 @@ def _build_garand_walnut_mat(name: str = "W_AmericanWalnut", is_bedding: bool = 
 
     fib_f = nt.nodes.new("ShaderNodeMapRange")
     fib_f.clamp = True
-    fib_f.inputs["From Min"].default_value = 0.30
-    fib_f.inputs["From Max"].default_value = 0.76
+    fib_f.inputs["From Min"].default_value = 0.28
+    fib_f.inputs["From Max"].default_value = 0.75
     fib_f.inputs["To Min"].default_value = 0.0
-    fib_f.inputs["To Max"].default_value = 0.56
+    fib_f.inputs["To Max"].default_value = 0.58
     nt.links.new(n_fib.outputs["Fac"], fib_f.inputs["Value"])
 
     mix2 = nt.nodes.new("ShaderNodeMix")
@@ -1075,23 +1075,23 @@ def _build_garand_walnut_mat(name: str = "W_AmericanWalnut", is_bedding: bool = 
     # Darken elongated open walnut pores
     pore_mul = nt.nodes.new("ShaderNodeMath")
     pore_mul.operation = "MULTIPLY"
-    pore_mul.inputs[1].default_value = 0.52
+    pore_mul.inputs[1].default_value = 0.56
     nt.links.new(pore_m.outputs["Result"], pore_mul.inputs[0])
 
     mix_p = nt.nodes.new("ShaderNodeMix")
     mix_p.data_type = "RGBA"
-    mix_p.inputs[7].default_value = srgb_to_lin(0.095, 0.044, 0.020)
+    mix_p.inputs[7].default_value = srgb_to_lin(0.088, 0.040, 0.018)
     nt.links.new(pore_mul.outputs["Value"], mix_p.inputs[0])
     nt.links.new(mix2.outputs[2], mix_p.inputs[6])
     nt.links.new(mix_p.outputs[2], bsdf.inputs["Base Color"])
 
-    # Hand-rubbed raw linseed oil finish (R=0.38..0.54 on outer stock, 0.62 inside bedding cavity)
+    # Refined satin hand-rubbed raw linseed oil finish (R=0.34..0.44 on outer stock, 0.56..0.66 inside bedding)
     r_wood = nt.nodes.new("ShaderNodeMapRange")
     r_wood.clamp = True
     r_wood.inputs["From Min"].default_value = 0.20
     r_wood.inputs["From Max"].default_value = 0.80
-    r_wood.inputs["To Min"].default_value = 0.56 if is_bedding else 0.38
-    r_wood.inputs["To Max"].default_value = 0.68 if is_bedding else 0.52
+    r_wood.inputs["To Min"].default_value = 0.56 if is_bedding else 0.34
+    r_wood.inputs["To Max"].default_value = 0.66 if is_bedding else 0.44
     nt.links.new(n_fib.outputs["Fac"], r_wood.inputs["Value"])
 
     r_pore = nt.nodes.new("ShaderNodeMath")
@@ -1106,21 +1106,21 @@ def _build_garand_walnut_mat(name: str = "W_AmericanWalnut", is_bedding: bool = 
     # Tactile wood fiber & depressed open pore bump + subtle bevel
     h_pore = nt.nodes.new("ShaderNodeMath")
     h_pore.operation = "MULTIPLY"
-    h_pore.inputs[1].default_value = -0.36
+    h_pore.inputs[1].default_value = -0.38
     nt.links.new(pore_m.outputs["Result"], h_pore.inputs[0])
 
     h_fib = nt.nodes.new("ShaderNodeMath")
     h_fib.operation = "MULTIPLY_ADD"
-    h_fib.inputs[1].default_value = 0.18
+    h_fib.inputs[1].default_value = 0.21
     nt.links.new(n_fib.outputs["Fac"], h_fib.inputs[0])
     nt.links.new(h_pore.outputs["Value"], h_fib.inputs[2])
 
     bev = nt.nodes.new("ShaderNodeBevel")
     bev.samples = 4
-    bev.inputs["Radius"].default_value = 0.025
+    bev.inputs["Radius"].default_value = 0.028
     bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.18
-    bump.inputs["Distance"].default_value = 0.020
+    bump.inputs["Strength"].default_value = 0.22
+    bump.inputs["Distance"].default_value = 0.022
     nt.links.new(h_fib.outputs["Value"], bump.inputs["Height"])
     nt.links.new(bev.outputs["Normal"], bump.inputs["Normal"])
     nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
@@ -1135,106 +1135,106 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         "W_WalnutBedding":  _build_garand_walnut_mat("W_WalnutBedding", is_bedding=True),
         "W_ParkerizedHW": _build_pbr_mat(
             "W_ParkerizedHW",
-            base_srgb=(0.228, 0.244, 0.238),
-            roughness=0.35,
-            metallic=0.82,
+            base_srgb=(0.224, 0.240, 0.234),
+            roughness=0.33,
+            metallic=0.84,
             bevel_r=0.022,
-            edge_wear=0.52,
-            edge_srgb=(0.74, 0.76, 0.79),
+            edge_wear=0.56,
+            edge_srgb=(0.76, 0.78, 0.81),
             grain_scale=64.0,
-            grain_bump=0.042,
-            voronoi_grain=0.56,
-            voronoi_scale=90.0,
+            grain_bump=0.040,
+            voronoi_grain=0.54,
+            voronoi_scale=92.0,
             rough_var=0.036,
         ),
         "W_BurnishedSwivel": _build_pbr_mat(
             "W_BurnishedSwivel",
-            base_srgb=(0.36, 0.39, 0.41),
-            roughness=0.28,
-            metallic=0.88,
+            base_srgb=(0.38, 0.41, 0.43),
+            roughness=0.25,
+            metallic=0.90,
             bevel_r=0.018,
-            edge_wear=0.38,
-            edge_srgb=(0.78, 0.80, 0.84),
+            edge_wear=0.40,
+            edge_srgb=(0.80, 0.82, 0.86),
             grain_scale=34.0,
-            grain_bump=0.024,
-            rough_var=0.030,
+            grain_bump=0.022,
+            rough_var=0.028,
         ),
 
         # --- Receiver Atlas Materials (garand_v3_receiver) ---
         # WWII Springfield Zinc/Manganese Parkerized Forged Steel (rich greenish-slate, NEVER pitch black!)
         "R_ParkerizedForged": _build_pbr_mat(
             "R_ParkerizedForged",
-            base_srgb=(0.226, 0.242, 0.236),
-            roughness=0.36,
-            metallic=0.80,
+            base_srgb=(0.224, 0.242, 0.234),
+            roughness=0.33,
+            metallic=0.83,
             bevel_r=0.030,
-            edge_wear=0.56,
-            edge_srgb=(0.74, 0.77, 0.80),
-            grain_scale=66.0,
-            grain_bump=0.046,
-            voronoi_grain=0.58,
-            voronoi_scale=94.0,
-            rough_var=0.038,
+            edge_wear=0.60,
+            edge_srgb=(0.76, 0.79, 0.82),
+            grain_scale=68.0,
+            grain_bump=0.044,
+            voronoi_grain=0.56,
+            voronoi_scale=96.0,
+            rough_var=0.036,
         ),
         "R_ParkerizedDark": _build_pbr_mat(
             "R_ParkerizedDark",
-            base_srgb=(0.194, 0.208, 0.204),
-            roughness=0.39,
-            metallic=0.81,
+            base_srgb=(0.192, 0.208, 0.202),
+            roughness=0.36,
+            metallic=0.83,
             bevel_r=0.026,
-            edge_wear=0.50,
-            edge_srgb=(0.70, 0.73, 0.76),
+            edge_wear=0.54,
+            edge_srgb=(0.72, 0.75, 0.78),
             grain_scale=72.0,
-            grain_bump=0.050,
-            voronoi_grain=0.62,
+            grain_bump=0.046,
+            voronoi_grain=0.60,
             voronoi_scale=98.0,
-            rough_var=0.038,
+            rough_var=0.036,
         ),
-        # Darker blued spring-steel 8-round en-bloc clip ("PING!")
+        # Lustrous dark blued spring-steel 8-round en-bloc clip ("PING!")
         "R_EnBlocBlued": _build_pbr_mat(
             "R_EnBlocBlued",
-            base_srgb=(0.172, 0.194, 0.226),
-            roughness=0.22,
-            metallic=0.89,
+            base_srgb=(0.168, 0.194, 0.234),
+            roughness=0.20,
+            metallic=0.91,
             bevel_r=0.016,
-            edge_wear=0.62,
-            edge_srgb=(0.78, 0.81, 0.85),
+            edge_wear=0.66,
+            edge_srgb=(0.80, 0.83, 0.88),
             grain_scale=38.0,
-            grain_bump=0.020,
-            aniso_stretch=(0.45, 3.2, 3.2),
-            rough_var=0.030,
+            grain_bump=0.018,
+            aniso_stretch=(0.45, 3.4, 3.4),
+            rough_var=0.028,
         ),
         "R_BurnishedRail": _build_pbr_mat(
             "R_BurnishedRail",
-            base_srgb=(0.56, 0.59, 0.62),
-            roughness=0.22,
-            metallic=0.93,
+            base_srgb=(0.58, 0.61, 0.64),
+            roughness=0.20,
+            metallic=0.94,
             bevel_r=0.020,
-            edge_wear=0.34,
-            edge_srgb=(0.86, 0.88, 0.91),
+            edge_wear=0.36,
+            edge_srgb=(0.88, 0.90, 0.93),
             grain_scale=32.0,
-            grain_bump=0.022,
+            grain_bump=0.020,
             aniso_stretch=(0.35, 3.8, 3.8),
-            rough_var=0.028,
+            rough_var=0.026,
         ),
         "R_BrightSteel": _build_pbr_mat(
             "R_BrightSteel",
-            base_srgb=(0.78, 0.81, 0.84),
-            roughness=0.18,
+            base_srgb=(0.80, 0.83, 0.86),
+            roughness=0.16,
             metallic=0.96,
             bevel_r=0.016,
             edge_wear=0.20,
-            edge_srgb=(0.92, 0.94, 0.96),
+            edge_srgb=(0.93, 0.95, 0.97),
             grain_scale=28.0,
-            grain_bump=0.018,
+            grain_bump=0.016,
             aniso_stretch=(0.40, 3.2, 3.2),
-            rough_var=0.022,
+            rough_var=0.020,
         ),
         "R_SpringSteel": _build_pbr_mat(
             "R_SpringSteel",
-            base_srgb=(0.54, 0.57, 0.62),
-            roughness=0.24,
-            metallic=0.93,
+            base_srgb=(0.56, 0.59, 0.64),
+            roughness=0.22,
+            metallic=0.94,
             bevel_r=0.012,
             grain_scale=28.0,
             grain_bump=0.016,
@@ -1244,47 +1244,47 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # --- Metal / Ordnance / Barrel / Gas / Op-Rod / Bolt / Internals Atlas (garand_v3_metal) ---
         "M_ParkerizedBarrel": _build_pbr_mat(
             "M_ParkerizedBarrel",
-            base_srgb=(0.214, 0.228, 0.224),
-            roughness=0.33,
-            metallic=0.83,
+            base_srgb=(0.212, 0.228, 0.222),
+            roughness=0.31,
+            metallic=0.85,
             bevel_r=0.024,
-            edge_wear=0.46,
-            edge_srgb=(0.72, 0.75, 0.78),
+            edge_wear=0.50,
+            edge_srgb=(0.74, 0.77, 0.80),
             grain_scale=44.0,
-            grain_bump=0.036,
+            grain_bump=0.034,
             aniso_stretch=(4.2, 0.45, 0.45),
-            voronoi_grain=0.42,
+            voronoi_grain=0.40,
             voronoi_scale=88.0,
-            rough_var=0.036,
+            rough_var=0.034,
         ),
         "M_ParkerizedSteel": _build_pbr_mat(
             "M_ParkerizedSteel",
-            base_srgb=(0.224, 0.239, 0.234),
-            roughness=0.36,
-            metallic=0.81,
+            base_srgb=(0.224, 0.240, 0.234),
+            roughness=0.33,
+            metallic=0.84,
             bevel_r=0.026,
-            edge_wear=0.58,
-            edge_srgb=(0.76, 0.78, 0.82),
+            edge_wear=0.62,
+            edge_srgb=(0.78, 0.80, 0.84),
             grain_scale=64.0,
-            grain_bump=0.044,
-            voronoi_grain=0.56,
+            grain_bump=0.042,
+            voronoi_grain=0.54,
             voronoi_scale=92.0,
-            rough_var=0.038,
+            rough_var=0.036,
         ),
         # Blackened 410 stainless WWII muzzle gas cylinder (cooler slate contrast!)
         "M_GasStainless": _build_pbr_mat(
             "M_GasStainless",
-            base_srgb=(0.258, 0.272, 0.282),
-            roughness=0.33,
-            metallic=0.85,
+            base_srgb=(0.256, 0.272, 0.284),
+            roughness=0.30,
+            metallic=0.87,
             bevel_r=0.024,
-            edge_wear=0.54,
-            edge_srgb=(0.78, 0.81, 0.84),
+            edge_wear=0.58,
+            edge_srgb=(0.80, 0.83, 0.86),
             grain_scale=52.0,
-            grain_bump=0.038,
-            voronoi_grain=0.48,
-            voronoi_scale=84.0,
-            rough_var=0.038,
+            grain_bump=0.036,
+            voronoi_grain=0.46,
+            voronoi_scale=86.0,
+            rough_var=0.034,
         ),
         # Centerless-ground bright white 410 stainless op-rod piston, rifling, firing pin & gas screw
         "M_WhiteStainless": _build_pbr_mat(
@@ -1899,31 +1899,90 @@ def finish_part(
     return obj
 
 
+def _catmull_rom_vec(pts: list[Vector], samples_per_seg: int = 4) -> list[Vector]:
+    """Centripetal-style smooth Catmull-Rom spline resampling for liquid-smooth trigger guard bows & tubes."""
+    n = len(pts)
+    if n < 2:
+        return list(pts)
+    out = [pts[0].copy()]
+    for i in range(n - 1):
+        p0 = pts[max(0, i - 1)]
+        p1 = pts[i]
+        p2 = pts[i + 1]
+        p3 = pts[min(n - 1, i + 2)]
+        for s in range(1, samples_per_seg + 1):
+            t = s / samples_per_seg
+            t2 = t * t
+            t3 = t2 * t
+            v = 0.5 * (
+                (2.0 * p1)
+                + (-p0 + p2) * t
+                + (2.0 * p0 - 5.0 * p1 + 4.0 * p2 - p3) * t2
+                + (-p0 + 3.0 * p1 - 3.0 * p2 + p3) * t3
+            )
+            out.append(v)
+    return out
+
+
+def _sample_pchip(pts: list[tuple[float, float]], xv: float) -> float:
+    """Monotone cubic Hermite (Fritsch-Carlson PCHIP) interpolation: C1-smooth, ZERO overshoot, ZERO kinks!"""
+    if xv <= pts[0][0]:
+        return pts[0][1]
+    if xv >= pts[-1][0]:
+        return pts[-1][1]
+    n = len(pts)
+    h = [pts[i + 1][0] - pts[i][0] for i in range(n - 1)]
+    d = [(pts[i + 1][1] - pts[i][1]) / max(h[i], 1e-6) for i in range(n - 1)]
+    m = [0.0] * n
+    m[0] = d[0]
+    m[-1] = d[-1]
+    for i in range(1, n - 1):
+        if d[i - 1] * d[i] > 0.0:
+            w1 = 2.0 * h[i] + h[i - 1]
+            w2 = h[i] + 2.0 * h[i - 1]
+            m[i] = (w1 + w2) / (w1 / d[i - 1] + w2 / d[i])
+        else:
+            m[i] = 0.0
+    for i in range(n - 1):
+        x0, y0 = pts[i]
+        x1, y1 = pts[i + 1]
+        if x0 <= xv <= x1:
+            dx = max(x1 - x0, 1e-6)
+            t = (xv - x0) / dx
+            t2 = t * t
+            t3 = t2 * t
+            h00 = 2.0 * t3 - 3.0 * t2 + 1.0
+            h10 = t3 - 2.0 * t2 + t
+            h01 = -2.0 * t3 + 3.0 * t2
+            h11 = t3 - t2
+            return h00 * y0 + h10 * dx * m[i] + h01 * y1 + h11 * dx * m[i + 1]
+    return pts[-1][1]
+
+
 # =============================================================================
 # SHARED ORGANIC WALNUT STOCK CROSS-SECTION EVALUATOR (Stock + Buttplate 1:1 Match!)
 # =============================================================================
 def _eval_buttstock_profile_y(x: float) -> tuple[float, float, float, float]:
-    """Returns `(y_top, y_bot, half_w_mid, top_taper)` along the full M1 Garand stock X in [-46.60, +30.15].
-    Crafted for the unmistakable classic WWII Springfield M1 Garand silhouette:
-      - Straight high comb (-46.5..-22.0), graceful comb nose drop (-22..-16.2),
-      - Ergonomic slim semi-pistol-grip wrist (-16.2..-9.2) swelling down to rounded grip cap (-13.3, -7.12),
-      - Full magazine-well belly (-9.0..+6.4) sweeping gracefully into tapered forend (+6.8..+30.1)."""
+    """Returns `(y_top, y_bot, half_w_mid, top_taper)` along the FULL continuous M1 Garand stock
+    X in [-46.60, +30.15] using C1-smooth monotone cubic Hermite (PCHIP) splines!
+    Eliminates every piecewise kink & completely removes the abrupt vertical step at X=7.0!"""
     # --- Top profile (y_top) ---
     top_pts = [
         (-46.60, -0.46),
         (-40.00, -0.45),
         (-26.00, -0.42),
         (-22.20, -0.44),
-        (-19.80, -0.60),
-        (-17.80, -1.00),
-        (-16.00, -1.32),  # Comb nose valley
-        (-13.80, -1.04),
-        (-11.20, -0.48),
-        ( -8.62,  0.65),  # Seamless tang wood rising right up to meet receiver heel at X=-8.60!
-        ( -8.20,  0.88),  # Receiver cheek top rail
+        (-19.80, -0.64),
+        (-17.80, -1.04),
+        (-15.90, -1.32),  # Smooth comb nose valley
+        (-13.80, -1.02),
+        (-11.20, -0.46),
+        ( -8.62,  0.65),  # Seamless tang wood rising up to meet receiver heel at X=-8.60!
+        ( -8.10,  0.88),  # Receiver cheek top rail
         (  7.05,  0.88),
-        ( 12.00,  0.88),
-        ( 30.15,  0.86),
+        ( 14.00,  0.87),
+        ( 24.00,  0.85),
+        ( 30.15,  0.84),
     ]
     # --- Bottom profile (y_bot) ---
     bot_pts = [
@@ -1931,89 +1990,97 @@ def _eval_buttstock_profile_y(x: float) -> tuple[float, float, float, float]:
         (-39.00, -10.22),
         (-30.00,  -8.46),
         (-22.00,  -6.92),
-        (-19.20,  -6.44),  # Belly cove behind pistol grip
-        (-16.80,  -6.12),
-        (-15.20,  -6.66),  # Smoothly rounded broad semi-pistol grip pommel cap!
+        (-19.20,  -6.42),  # Smooth belly cove behind pistol grip
+        (-16.90,  -6.10),
+        (-15.30,  -6.66),  # Anatomically rounded semi-pistol grip pommel cap!
         (-14.20,  -7.02),
-        (-13.10,  -7.06),
-        (-12.10,  -6.64),  # Front face of pistol grip ([P] proof area!)
-        (-10.80,  -5.30),
-        ( -9.20,  -4.46),  # Behind trigger guard
+        (-13.10,  -7.08),
+        (-12.00,  -6.64),  # Swept front face of pistol grip ([P] proof area!)
+        (-10.75,  -5.30),
+        ( -9.15,  -4.46),  # Behind trigger guard
         ( -4.50,  -4.36),  # Under trigger housing
         (  2.50,  -4.22),
-        (  5.80,  -4.05),  # Front of magazine belly
-        (  7.20,  -2.25),  # Graceful curve up into forend!
-        (  9.20,  -2.04),
-        ( 18.00,  -1.94),
-        ( 26.00,  -1.82),
+        (  5.20,  -4.08),  # Front of magazine belly
+        (  6.55,  -3.20),  # Silky S-curve sweeping continuously up into tapered forend!
+        (  7.85,  -2.20),
+        (  9.80,  -2.02),
+        ( 18.00,  -1.92),
+        ( 26.00,  -1.80),
         ( 30.15,  -1.72),
     ]
     # --- Max lateral half-width (half_w_mid) ---
     # Authentic M1 Garand walnut stock thickness profile:
-    # Full 3.80cm butt, slims organically to ergonomic 2.98cm wrist, widens cleanly to 4.02cm receiver cheeks,
-    # tapers gracefully along forend from 3.74cm -> 3.12cm!
+    # Full 3.82cm butt -> slims organically to ergonomic 2.94cm wrist -> widens seamlessly to 3.98cm
+    # receiver cheeks -> tapers smoothly through cheek-cove shoulder (+5.4..+9.6) to 3.08cm front ferrule!
     w_pts = [
         (-46.60, 1.91),
         (-38.00, 1.88),
         (-28.00, 1.84),
-        (-21.00, 1.76),
-        (-16.50, 1.56),  # Slim ergonomic wrist!
-        (-13.50, 1.50),  # Grip hand-swell narrowest waist
+        (-21.00, 1.74),
+        (-16.50, 1.52),  # Slim ergonomic comb-to-wrist pinch
+        (-13.50, 1.47),  # Narrowest hand-wrap waist
         (-11.00, 1.66),
-        ( -8.80, 1.98),  # Receiver bedding cheeks
-        (  5.80, 1.98),
-        (  7.60, 1.84),  # Forend transition
-        ( 16.00, 1.74),
-        ( 25.00, 1.64),
-        ( 30.15, 1.56),
+        ( -8.70, 1.98),  # Full receiver bedding cheeks
+        (  5.20, 1.98),
+        (  7.40, 1.82),  # Smooth continuous shoulder transition (ZERO harsh step!)
+        ( 10.20, 1.74),
+        ( 16.50, 1.68),
+        ( 24.50, 1.60),
+        ( 30.15, 1.54),
     ]
 
-    def _sample(pts: list[tuple[float, float]], xv: float) -> float:
-        if xv <= pts[0][0]:
-            return pts[0][1]
-        if xv >= pts[-1][0]:
-            return pts[-1][1]
-        for i in range(len(pts) - 1):
-            x0, y0 = pts[i]
-            x1, y1 = pts[i + 1]
-            if x0 <= xv <= x1:
-                u = (xv - x0) / max(x1 - x0, 1e-6)
-                # Gentle smooth blending near transitions
-                return y0 + (y1 - y0) * u
-        return pts[-1][1]
-
-    yt = _sample(top_pts, x)
-    yb = _sample(bot_pts, x)
-    hw = _sample(w_pts, x)
-    # Top comb narrows gracefully on buttstock (0.64) vs fuller rectangular cheek rails over receiver (0.94)
+    yt = _sample_pchip(top_pts, x)
+    yb = _sample_pchip(bot_pts, x)
+    hw = _sample_pchip(w_pts, x)
+    # Top comb narrows gracefully on buttstock (0.62) -> fuller cheek rails over receiver (0.94) -> crisp forend lip (0.98)
     if x < -17.0:
-        top_taper = 0.64
-    elif x < -8.8:
-        top_taper = 0.64 + 0.30 * _smoothstep_f(-17.0, -8.8, x)
+        top_taper = 0.62
+    elif x < -8.6:
+        top_taper = 0.62 + 0.32 * _smoothstep_f(-17.0, -8.6, x)
+    elif x < 8.0:
+        top_taper = 0.94 + 0.04 * _smoothstep_f(5.5, 8.0, x)
     else:
-        top_taper = 0.94
+        top_taper = 0.98
     return (yt, yb, hw, top_taper)
 
 
-def _eval_buttstock_ring(x: float, n_ring: int = 32) -> list[tuple[float, float]]:
-    """Builds a smooth organic pear/oval `(z, y)` cross-section ring at station `x` for the walnut buttstock."""
+def _eval_buttstock_ring(x: float, n_ring: int = 40) -> list[tuple[float, float]]:
+    """Builds a smooth organic pear/oval `(z, y)` cross-section ring at station `x` for the walnut stock
+    (seamless from buttplate X=-46.58 through receiver cheeks to forend tip X=+30.12, w/ WWII finger flutes!)."""
     yt, yb, hw, top_taper = _eval_buttstock_profile_y(x)
     ym = 0.5 * (yt + yb)
     hy = max(0.35, 0.5 * (yt - yb))
     ring: list[tuple[float, float]] = []
-    # Smooth superellipse exponent: rounder oval on wrist/butt (2.15), crisper flat-sided cheek near receiver (2.6)
-    exp_n = 2.18 + 0.50 * _smoothstep_f(-12.5, -8.8, x)
+    # Smooth superellipse exponent: rounder oval on wrist/butt (2.15), crisp flat-sided receiver cheeks (2.68),
+    # rounded tactical U-belly along forend (2.28)
+    exp_rec = 2.16 + 0.52 * _smoothstep_f(-12.5, -8.5, x)
+    exp_n = exp_rec - 0.36 * _smoothstep_f(5.8, 9.8, x)
+
+    # Authentic shallow WWII forend finger-grip flutes along upper-mid flanks (X in [10.0, 28.0])
+    flute_env = math.sin(max(0.0, min(1.0, (x - 10.0) / 18.0)) * math.pi)
+    flute_depth = 0.092 * (flute_env ** 1.35) if (10.0 < x < 28.0) else 0.0
+
+    # Gentle anatomical cheek/palm-swell rounding along the semi-pistol grip wrist (X in [-16.5, -10.5])
+    palm_env = math.exp(-((x - (-13.4)) / 2.6) ** 2)
+
     for k in range(n_ring):
         # th=0 -> +Z right mid, th=pi/2 -> +Y top comb, th=pi -> -Z left mid, th=3pi/2 -> -Y bottom toe
         th = 2.0 * math.pi * k / n_ring
         ct, st = math.cos(th), math.sin(th)
         sz = math.copysign(abs(ct) ** (2.0 / exp_n), ct)
         sy = math.copysign(abs(st) ** (2.0 / exp_n), st)
-        # Organic comb taper: narrower near top comb crest (st > 0) & gentle taper near bottom toe (st < -0.5)
         if sy > 0.0:
-            w_scale = 1.0 - (1.0 - top_taper) * (sy ** 1.45)
+            w_scale = 1.0 - (1.0 - top_taper) * (sy ** 1.42)
         else:
-            w_scale = 1.0 - 0.16 * (abs(sy) ** 1.8)
+            w_scale = 1.0 - 0.16 * (abs(sy) ** 1.75)
+            # Subtle ergonomic palm-swell at lower half of wrist
+            w_scale += 0.065 * palm_env * math.exp(-((sy + 0.38) / 0.36) ** 2)
+
+        # Smooth upper-mid forend finger groove indent on both +-Z flanks!
+        if flute_depth > 1e-4:
+            flute_y_band = math.exp(-((sy - 0.24) / 0.28) ** 2) * (abs(ct) ** 2.2)
+            w_scale -= (flute_depth / max(hw, 0.5)) * flute_y_band
+
         z = hw * w_scale * sz
         y = ym + hy * sy
         ring.append((z, y))
@@ -2027,26 +2094,48 @@ def _eval_buttstock_ring(x: float, n_ring: int = 32) -> list[tuple[float, float]
 # --- GROUP A: AMERICAN BLACK WALNUT STOCK & HANDGUARDS (3 PARTS) ---
 
 def build_garand_walnut_stock(mats: dict) -> bpy.types.Object:
-    """F-03: Organically lofted American Black Walnut full-length stock (77.0 cm),
-    sculpted ergonomic wrist/comb, finger-fluted forend, hollowed receiver/FCG bedding mortise,
+    """F-03: ONE Seamless Continuous Organically Lofted American Black Walnut Stock (77.0 cm),
+    C1-smooth comb nose, anatomical semi-pistol grip wrist, seamless receiver-to-forend cheek-cove
+    transition (ZERO step seam!), finger-fluted forend, precision-milled receiver/FCG/barrel bedding,
     stamped steel front stock ferrule & recessed rear butt sling swivel!"""
     m_w = mats["W_AmericanWalnut"]
     m_b = mats["W_WalnutBedding"]
     m_hw = mats["W_ParkerizedHW"]
     m_sw = mats["W_BurnishedSwivel"]
 
-    # 1. Seamless organically lofted rear buttstock + comb + ergonomic semi-pistol grip + receiver hull
-    #    Spans X in [-46.58, +7.10] as ONE unified sculpted hardwood blank, then precision-milled inside!
-    butt_xs = [
-        -46.58, -45.2, -42.5, -39.0, -35.0, -30.5, -26.0, -22.2,
-        -20.2, -18.5, -17.0, -15.8, -14.6, -13.4, -12.3, -11.2,
-        -10.1,  -9.1,  -8.4,  -6.5,  -3.5,   0.0,   3.5,   5.8,   6.8,   7.10,
+    # 1. ONE continuous 58-station x 40-ring organically sculpted American Black Walnut blank (-46.58 -> +30.10)!
+    stock_xs = [
+        -46.58, -45.4, -43.2, -40.2, -36.8, -33.0, -29.2, -25.5, -22.5,
+        -21.0, -19.6, -18.3, -17.1, -16.0, -15.0, -14.1, -13.2, -12.3, -11.4, -10.5, -9.6, -8.8, -8.2,
+        -6.8,  -4.8,  -2.5,   0.0,   2.4,   4.4,   5.4,   6.1,   6.8,   7.5,   8.3,   9.3,  10.6,
+        12.4,  14.8,  17.4,  20.0,  22.6,  25.2,  27.4,  29.0,  29.8,  30.10,
     ]
-    butt_stations = [(x, _eval_buttstock_ring(x, 32)) for x in butt_xs]
-    rear_blank = mk_loft_x("stk_rear_raw", butt_stations, mat=m_w)
+    stock_stations = [(x, _eval_buttstock_ring(x, 40)) for x in stock_xs]
+    stock_blank = mk_loft_x("stk_full_raw", stock_stations, mat=m_w)
 
-    # Precision-mill internal receiver & trigger-housing bedding mortise out of X in [-8.58, +7.25]
-    # (Leaves solid closed walnut floor beneath magazine well & seamless flush fit behind receiver heel!)
+    # 2. Tapered forward barrel + op-rod U-channel trough cutter (X in [+6.90, +30.28])
+    #    Generous inner clearance for barrel (Y=1.15, R<=0.95) & op-rod/spring (Y=-0.35, R<=0.56)!
+    trough_stations = []
+    for x in (6.80, 9.0, 14.0, 20.0, 26.0, 30.30):
+        u = max(0.0, min(1.0, (x - 6.85) / (30.10 - 6.85)))
+        in_w = 1.24 - u * 0.12
+        in_bot = -1.24 + u * 0.14
+        y_hi = 1.55
+        ring = [
+            (-in_w,        y_hi),
+            (-in_w,        0.72),
+            (-in_w * 0.96, in_bot + 0.55),
+            (-in_w * 0.68, in_bot + 0.14),
+            ( 0.0,         in_bot),
+            ( in_w * 0.68, in_bot + 0.14),
+            ( in_w * 0.96, in_bot + 0.55),
+            ( in_w,        0.72),
+            ( in_w,        y_hi),
+        ]
+        trough_stations.append((x, ring))
+    forend_trough_cut = mk_loft_x("c_forend_trough", trough_stations, mat=m_b)
+
+    # 3. Precision-mill internal receiver, clip-well, FCG & barrel/op-rod bedding cavities out of the ONE walnut blank!
     mortise_cutters = [
         # Main central open-top receiver & clip-well mortise (Y in [-2.38, +2.22] -> solid 1.7 cm wood belly underneath!)
         mk_box("c_rec_well", 15.80, 4.60, 2.74, [("t", -0.65, -0.08, 0.0)], m_b),
@@ -2060,63 +2149,18 @@ def build_garand_walnut_stock(mats: dict) -> bpy.types.Object:
         mk_box("c_fcg_bay", 7.76, 4.80, 1.92, [("t", -4.50, -3.50, 0.0)], m_b),
         # Rear receiver heel bedding seat (ends flush AT receiver rear face X=-8.58 — ZERO rear notch!)
         mk_box("c_tang_pkt", 1.45, 2.30, 2.48, [("t", -7.86, 0.12, 0.0)], m_b),
+        # Continuous forward U-channel trough for barrel, op-rod & op-rod spring!
+        forend_trough_cut,
     ]
-    rear_stock = bool_subtract(rear_blank, mortise_cutters, solver="EXACT")
+    walnut_body = bool_subtract(stock_blank, mortise_cutters, solver="EXACT")
 
-    # 2. Tapered & Finger-Fluted U-Channel Walnut Forend (X in [+6.85, +30.12])
-    #    Lofted smoothly with organic rounded belly, crisp upper lip meeting rear handguard flush, and subtle WWII finger flutes!
-    forend_xs = [6.85, 8.2, 10.5, 14.0, 18.0, 22.0, 26.0, 28.8, 30.10]
-    forend_stations = []
-    for x in forend_xs:
-        u = (x - 6.85) / (30.10 - 6.85)
-        hw = 1.76 - u * 0.22        # tapers gracefully from 1.76 -> 1.54
-        y_top = 0.88 - u * 0.04     # 0.88 -> 0.84 (meets garand_rear_handguard skirt seamlessly!)
-        y_bot = -2.02 + u * 0.30    # -2.02 -> -1.72
-        # Subtle ergonomic shallow WWII finger-grip flute along upper-mid forend flank (X in [10.5, 27.5])
-        flute_w = math.sin(max(0.0, min(1.0, (x - 10.0) / 17.8)) * math.pi)
-        flute_d = 0.085 * (flute_w ** 1.3)
-        # Inner U-trough clearance for barrel (Y=1.15, R<=0.95) & op-rod/spring (Y=-0.35, R<=0.56)
-        in_w = 1.24 - u * 0.12
-        in_bot = -1.24 + u * 0.14
-
-        # Build closed 24-pt U-channel cross-section `(z, y)` (CCW in Z-Y plane)
-        ring = [
-            (-hw, y_top),
-            (-hw + flute_d * 0.4, y_top - 0.34),
-            (-hw + flute_d,       y_top - 0.72),
-            (-hw + flute_d * 0.3, y_top - 1.14),
-            (-hw * 0.96,          y_bot + 0.62),
-            (-hw * 0.82,          y_bot + 0.28),
-            (-hw * 0.56,          y_bot + 0.08),
-            (-hw * 0.28,          y_bot + 0.01),
-            ( 0.0,                y_bot),
-            ( hw * 0.28,          y_bot + 0.01),
-            ( hw * 0.56,          y_bot + 0.08),
-            ( hw * 0.82,          y_bot + 0.28),
-            ( hw * 0.96,          y_bot + 0.62),
-            ( hw - flute_d * 0.3, y_top - 1.14),
-            ( hw - flute_d,       y_top - 0.72),
-            ( hw - flute_d * 0.4, y_top - 0.34),
-            ( hw,                 y_top),
-            # Inner U-channel trough (generous clearance for barrel + op-rod + op-rod spring!)
-            ( in_w,               y_top),
-            ( in_w * 0.96,        in_bot + 0.55),
-            ( in_w * 0.68,        in_bot + 0.14),
-            ( 0.0,                in_bot),
-            (-in_w * 0.68,        in_bot + 0.14),
-            (-in_w * 0.96,        in_bot + 0.55),
-            (-in_w,               y_top),
-        ]
-        forend_stations.append((x, ring))
-    walnut_forend = mk_loft_x("stk_forend", forend_stations, mat=m_w)
-
-    # 3. Stamped Parkerized Steel Front Stock Ferrule (X in [30.02, 30.46]) matching forend contour!
+    # 4. Stamped Parkerized Steel Front Stock Ferrule (X in [30.02, 30.46]) matching forend contour seamlessly!
     ferr_stations = []
-    for x in (30.02, 30.12, 30.38, 30.46):
-        bump = 0.04 if (30.08 <= x <= 30.40) else 0.0
-        hw = 1.57 + bump
-        y_top = 0.77 + bump * 0.4
-        y_bot = -1.74 - bump * 0.6
+    for x in (30.02, 30.10, 30.38, 30.46):
+        bump = 0.042 if (30.08 <= x <= 30.40) else 0.0
+        hw = 1.55 + bump
+        y_top = 0.78 + bump * 0.35
+        y_bot = -1.74 - bump * 0.55
         in_w = 1.10
         in_bot = -1.08
         ring = [
@@ -2142,27 +2186,32 @@ def build_garand_walnut_stock(mats: dict) -> bpy.types.Object:
         ferr_stations.append((x, ring))
     stock_ferrule = mk_loft_x("stk_ferrule", ferr_stations, mat=m_hw)
 
-    # 4. Recessed Rear Buttstock Sling Swivel Assembly (X ~ -38.6, Y ~ -10.15) w/ twin slotted wood screws!
-    swivel_plate = mk_box("stk_sw_plt", 2.24, 0.34, 0.94, [("rz", 0.19), ("t", -38.60, -10.14, 0.0)], m_hw, bevel=0.04)
-    swivel_ear = mk_box("stk_sw_ear", 0.88, 0.52, 0.68, [("rz", 0.19), ("t", -38.60, -10.34, 0.0)], m_hw, bevel=0.03)
-    swivel_pin = mk_cyl("stk_sw_pin", 0.11, 0.11, 0.98, "z", 14, [("t", -38.62, -10.42, 0.0)], m_sw, bevel=0.012)
-    # Twin recessed wood screws on swivel plate
-    sw_scr_f = mk_cyl("stk_sw_sf", 0.16, 0.16, 0.24, "y", 16, [("rz", 0.19), ("t", -37.82, -10.04, 0.0)], m_sw, bevel=0.015)
-    sw_scr_r = mk_cyl("stk_sw_sr", 0.16, 0.16, 0.24, "y", 16, [("rz", 0.19), ("t", -39.38, -10.34, 0.0)], m_sw, bevel=0.015)
-    # Smooth 24-point forged rounded oval rear sling swivel loop
+    # 5. Recessed Rear Buttstock Sling Swivel Assembly (X ~ -38.6, Y ~ -10.15) w/ twin slotted wood screws!
+    swivel_plate = mk_box("stk_sw_plt", 2.24, 0.34, 0.94, [("rz", 0.19), ("t", -38.60, -10.14, 0.0)], m_hw, bevel=0.045, bevel_segs=2)
+    swivel_ear = mk_box("stk_sw_ear", 0.88, 0.52, 0.68, [("rz", 0.19), ("t", -38.60, -10.34, 0.0)], m_hw, bevel=0.035, bevel_segs=2)
+    swivel_pin = mk_cyl("stk_sw_pin", 0.11, 0.11, 0.98, "z", 18, [("t", -38.62, -10.42, 0.0)], m_sw, bevel=0.014)
+    # Twin recessed slotted wood screws on swivel plate
+    sw_scr_f = bool_subtract(
+        mk_cyl("stk_sw_sf", 0.165, 0.165, 0.24, "y", 20, [("rz", 0.19), ("t", -37.82, -10.04, 0.0)], m_sw, bevel=0.018),
+        [mk_box("c_sw_sf", 0.36, 0.10, 0.045, [("rz", 0.19), ("t", -37.82, -10.16, 0.0)], m_hw)],
+    )
+    sw_scr_r = bool_subtract(
+        mk_cyl("stk_sw_sr", 0.165, 0.165, 0.24, "y", 20, [("rz", 0.19), ("t", -39.38, -10.34, 0.0)], m_sw, bevel=0.018),
+        [mk_box("c_sw_sr", 0.36, 0.10, 0.045, [("rz", 0.19), ("t", -39.38, -10.46, 0.0)], m_hw)],
+    )
+    # Smooth 36-point forged rounded oval rear sling swivel loop
     swivel_loop_pts = []
-    for k in range(25):
-        a = -math.pi * 0.5 + math.pi * (k / 24.0)  # -pi/2 -> +pi/2 around loop U
-        # smooth rounded stadium loop hanging down from (-38.62, -10.42, +-0.48)
+    for k in range(37):
+        a = -math.pi * 0.5 + math.pi * (k / 36.0)
         ca, sa = math.cos(a), math.sin(a)
         px = -38.62 - 0.68 * (ca ** 0.85)
         py = -10.42 - 1.05 * (ca ** 0.85)
         pz = 0.48 * sa + 0.16 * sa * ca
         swivel_loop_pts.append(Vector((px, py, pz)))
-    swivel_loop = mk_tube_along_pts("stk_sw_loop", swivel_loop_pts, 0.092, ring_segs=14, mat=m_sw)
+    swivel_loop = mk_tube_along_pts("stk_sw_loop", swivel_loop_pts, 0.092, ring_segs=16, mat=m_sw)
 
     obj = join_objects(
-        [rear_stock, walnut_forend, stock_ferrule, swivel_plate, swivel_ear, swivel_pin, sw_scr_f, sw_scr_r, swivel_loop],
+        [walnut_body, stock_ferrule, swivel_plate, swivel_ear, swivel_pin, sw_scr_f, sw_scr_r, swivel_loop],
         "garand_walnut_stock",
     )
     return finish_part(obj, bevel_w=0.0, sharp_deg=44.0)
@@ -2174,17 +2223,17 @@ def build_garand_rear_handguard(mats: dict) -> bpy.types.Object:
     m_w = mats["W_AmericanWalnut"]
     m_hw = mats["W_ParkerizedHW"]
 
-    # Smooth tapered walnut arch w/ flush lower skirt meeting walnut forend at world Y ~ 0.90 (zero daylight slot!)
-    n_arc = 18
-    xs = [-11.72, -10.60, -8.0, -4.0, 0.0, 4.0, 8.0, 10.8, 11.72]
+    # Smooth 28-segment tapered walnut arch w/ chamfered ends & flush lower skirt meeting forend seamlessly!
+    n_arc = 28
+    xs = [-11.72, -11.54, -10.60, -8.0, -4.0, 0.0, 4.0, 8.0, 10.8, 11.54, 11.72]
     stations = []
     for x in xs:
         u = (x + 11.72) / 23.44
         r_out = 1.51 - u * 0.14
         r_in = 1.11 - u * 0.11
         yc = -0.25 - u * 0.04
-        y_skirt = -0.54 - u * 0.03  # local Y=-0.54 -> world Y=0.91 meeting forend Y=0.88 seamlessly!
-        lip_pull = 0.04 if (x <= -11.50 or x >= 11.50) else 0.0
+        y_skirt = -0.56 - u * 0.03
+        lip_pull = 0.045 if (x <= -11.65 or x >= 11.65) else 0.0
         ring = [(r_out - lip_pull, y_skirt)]
         for k in range(n_arc + 1):
             a = math.pi * (k / n_arc)
@@ -2200,7 +2249,7 @@ def build_garand_rear_handguard(mats: dict) -> bpy.types.Object:
     # Stamped parkerized spring-steel rear handguard retaining band clip (local X in [-11.78, -10.58])
     clip_stations = []
     for x in (-11.78, -11.72, -10.64, -10.58):
-        r_out = 1.53 if (-11.73 <= x <= -10.63) else 1.49
+        r_out = 1.535 if (-11.73 <= x <= -10.63) else 1.495
         r_in = 1.42
         yc = -0.25
         ring = []
@@ -2214,8 +2263,8 @@ def build_garand_rear_handguard(mats: dict) -> bpy.types.Object:
     rear_clip = mk_loft_x("rhg_clip", clip_stations, mat=m_hw)
 
     # Front nose lip steel liner engaging garand_lower_band
-    front_lip = mk_box("rhg_flp_l", 0.65, 0.22, 0.14, [("t", 11.40, -0.24, -1.26)], m_hw, bevel=0.015)
-    front_lip_r = mk_box("rhg_flp_r", 0.65, 0.22, 0.14, [("t", 11.40, -0.24,  1.26)], m_hw, bevel=0.015)
+    front_lip = mk_box("rhg_flp_l", 0.65, 0.22, 0.14, [("t", 11.40, -0.24, -1.26)], m_hw, bevel=0.018)
+    front_lip_r = mk_box("rhg_flp_r", 0.65, 0.22, 0.14, [("t", 11.40, -0.24,  1.26)], m_hw, bevel=0.018)
 
     obj = join_objects([wood_arch, rear_clip, front_lip, front_lip_r], "garand_rear_handguard")
     return finish_part(obj, bevel_w=0.0, sharp_deg=40.0)
@@ -2227,8 +2276,8 @@ def build_garand_front_handguard(mats: dict) -> bpy.types.Object:
     m_w = mats["W_AmericanWalnut"]
     m_hw = mats["W_ParkerizedHW"]
 
-    n_arc = 16
-    xs = [-11.42, -9.5, -5.0, 0.0, 5.0, 9.2, 10.92]
+    n_arc = 26
+    xs = [-11.42, -11.24, -9.5, -5.0, 0.0, 5.0, 9.2, 10.74, 10.92]
     stations = []
     for x in xs:
         u = (x + 11.42) / 22.34
@@ -2236,18 +2285,20 @@ def build_garand_front_handguard(mats: dict) -> bpy.types.Object:
         r_in = 1.03 - u * 0.08
         y_bot = -0.94 + u * 0.12
         yc = 0.35 - u * 0.05
+        lip_pull = 0.035 if (x <= -11.36 or x >= 10.86) else 0.0
+        ro = r_out - lip_pull
         ring = [
-            (-r_out * 0.96, y_bot),
-            (-r_out * 0.99, y_bot + 0.55),
+            (-ro * 0.96, y_bot),
+            (-ro * 0.99, y_bot + 0.55),
         ]
         for k in range(n_arc + 1):
             a = math.pi - math.pi * (k / n_arc)
-            ring.append((r_out * math.cos(a), yc + r_out * math.sin(a)))
+            ring.append((ro * math.cos(a), yc + ro * math.sin(a)))
         ring.extend([
-            ( r_out * 0.99, y_bot + 0.55),
-            ( r_out * 0.96, y_bot),
-            ( r_in,         y_bot),
-            ( r_in,         yc),
+            ( ro * 0.99, y_bot + 0.55),
+            ( ro * 0.96, y_bot),
+            ( r_in,      y_bot),
+            ( r_in,      yc),
         ])
         for k in range(n_arc + 1):
             a = math.pi * (k / n_arc)
@@ -2259,7 +2310,7 @@ def build_garand_front_handguard(mats: dict) -> bpy.types.Object:
     # Stamped parkerized steel front ferrule cap (local X in [10.82, 11.66]) engaging gas cylinder rear ring!
     ferr_stations = []
     for x in (10.82, 10.90, 11.58, 11.66):
-        bump = 0.035 if (10.88 <= x <= 11.60) else 0.0
+        bump = 0.038 if (10.88 <= x <= 11.60) else 0.0
         r_out = 1.31 + bump
         r_in = 0.95
         y_bot = -0.82 - bump * 0.4
@@ -2303,9 +2354,9 @@ def build_garand_front_handguard(mats: dict) -> bpy.types.Object:
         rear_stations.append((x, ring))
     rear_spacer = mk_loft_x("fhg_spacer", rear_stations, mat=m_hw)
 
-    # Twin small brass/steel ferrule rivet heads on ±Z flanks
-    riv_l = mk_cyl("fhg_rl", 0.08, 0.08, 0.14, "z", 12, [("t", 11.24, 0.05, -1.32)], m_hw, bevel=0.015)
-    riv_r = mk_cyl("fhg_rr", 0.08, 0.08, 0.14, "z", 12, [("t", 11.24, 0.05,  1.32)], m_hw, bevel=0.015)
+    # Twin domed steel ferrule rivet heads on +-Z flanks
+    riv_l = mk_cyl("fhg_rl", 0.085, 0.085, 0.14, "z", 16, [("t", 11.24, 0.05, -1.32)], m_hw, bevel=0.018)
+    riv_r = mk_cyl("fhg_rr", 0.085, 0.085, 0.14, "z", 16, [("t", 11.24, 0.05,  1.32)], m_hw, bevel=0.018)
 
     obj = join_objects([wood_body, ferrule_cap, rear_spacer, riv_l, riv_r], "garand_front_handguard")
     return finish_part(obj, bevel_w=0.0, sharp_deg=40.0)
@@ -2329,18 +2380,18 @@ def build_garand_receiver(mats: dict) -> bpy.types.Object:
         [
             (1.07, 3.35),
             (1.42, 3.35),
-            (1.42, 6.26),
-            (1.36, 6.38),
+            (1.42, 6.24),
+            (1.37, 6.36),
             (1.30, 6.40),
             (1.07, 6.40),
             (1.07, 3.35),
         ],
-        segs=40,
+        segs=48,
         xform=[("t", 0.0, 1.15, 0.0)],
         mat=m_pk,
     )
 
-    # 2. Forged Left Receiver Wall (Z in [-1.42, -0.88]) w/ curved top loading bevel, sight ear & sloped heel!
+    # 2. Forged Left Receiver Wall (Z in [-1.40, -0.88]) w/ curved Bezier sight ear, loading bevel & sloped heel!
     left_xy = [
         (-8.60, -0.82),
         (-7.60, -1.62),
@@ -2349,13 +2400,12 @@ def build_garand_receiver(mats: dict) -> bpy.types.Object:
         ( 5.85, -0.45),
         ( 5.85,  1.96),
         (-4.42,  1.96),   # Open-top clip-loading rim
-        (-5.25,  2.26),   # Rounded front slope of left rear-sight ear
-        (-5.78,  2.46),
-        (-7.18,  2.46),   # Sight ear crest
-        (-7.58,  2.14),
-        (-8.60,  1.44),   # Iconic sloped Springfield receiver heel!
     ]
-    left_wall_raw = mk_extrude_z("rec_lw_raw", left_xy, -1.40, -0.88, bevel=0.045, bevel_segs=2, mat=m_pk)
+    left_xy += _quad_bez((-4.42, 1.96), (-5.10, 2.04), (-5.58, 2.38), 7)
+    left_xy += _quad_bez((-5.58, 2.38), (-5.82, 2.50), (-6.48, 2.49), 5)
+    left_xy += _quad_bez((-6.48, 2.49), (-7.18, 2.48), (-7.56, 2.16), 6)
+    left_xy.append((-8.60, 1.44))   # Iconic sloped Springfield receiver heel!
+    left_wall_raw = mk_extrude_z("rec_lw_raw", left_xy, -1.40, -0.88, bevel=0.052, bevel_segs=3, mat=m_pk)
     # Machine left clip-latch through-window (X in [-2.85, +0.55], Y in [0.12, 0.82]) + sight ear outer bevel!
     left_wall = bool_subtract(
         left_wall_raw,
@@ -2366,7 +2416,7 @@ def build_garand_receiver(mats: dict) -> bpy.types.Object:
         solver="EXACT",
     )
 
-    # 3. Forged Right Receiver Wall (Z in [+0.88, +1.40]) w/ lowered ejection port & bolt/op-rod cutout!
+    # 3. Forged Right Receiver Wall (Z in [+0.88, +1.40]) w/ lowered ejection port & curved sight ear!
     right_xy = [
         (-8.60, -0.82),
         (-7.60, -1.62),
@@ -2375,13 +2425,12 @@ def build_garand_receiver(mats: dict) -> bpy.types.Object:
         ( 5.85, -0.45),
         ( 5.85,  0.74),   # Lowered right op-rod & .30-06 brass-ejection port
         (-4.32,  0.74),
-        (-5.05,  1.96),   # Swept rear bridge riser
-        (-5.72,  2.46),   # Right rear sight ear
-        (-7.18,  2.46),
-        (-7.58,  2.14),
-        (-8.60,  1.44),
     ]
-    right_wall = mk_extrude_z("rec_rw", right_xy, 0.88, 1.40, bevel=0.045, bevel_segs=2, mat=m_pk)
+    right_xy += _quad_bez((-4.32, 0.74), (-4.72, 1.45), (-5.12, 2.02), 7)
+    right_xy += _quad_bez((-5.12, 2.02), (-5.58, 2.48), (-6.48, 2.49), 6)
+    right_xy += _quad_bez((-6.48, 2.49), (-7.18, 2.48), (-7.56, 2.16), 6)
+    right_xy.append((-8.60, 1.44))
+    right_wall = mk_extrude_z("rec_rw", right_xy, 0.88, 1.40, bevel=0.052, bevel_segs=3, mat=m_pk)
 
     # 4. Right Outer Op-Rod Guideway Rail (Z = +1.42) w/ bright bare-steel slide-track wear!
     oprod_rail = mk_box("rec_or_rail", 9.85, 0.44, 0.26, [("t", 0.65, 0.56, 1.42)], m_br, bevel=0.03)
@@ -2455,15 +2504,18 @@ def build_garand_rear_sight(mats: dict) -> bpy.types.Object:
     sight_base = mk_box("rs_base", 1.32, 0.56, 1.72, [("t", 0.18, -0.18, 0.0)], m_pk, bevel=0.035, bevel_segs=2)
     wind_bar = mk_box("rs_wbar", 0.36, 0.24, 1.80, [("t", -0.36, 0.02, 0.0)], m_dk, bevel=0.02)
 
-    # Hooded Circular `.070"` Aperture Peep Stem (extruded along X + true circular peep bore!)
+    # Hooded Circular `.070"` Aperture Peep Stem (24-seg arch + true circular peep bore + beveled entrance!)
     peep_zy = [(-0.44, -0.10), (0.44, -0.10), (0.42, 0.54)]
-    for k in range(1, 16):
-        a = math.pi * (k / 16.0)
+    for k in range(1, 24):
+        a = math.pi * (k / 24.0)
         peep_zy.append((0.42 * math.cos(a), 0.54 + 0.42 * math.sin(a)))
-    peep_raw = mk_extrude_x("rs_peep_raw", peep_zy, -0.28, 0.28, bevel=0.025, bevel_segs=2, mat=m_dk)
+    peep_raw = mk_extrude_x("rs_peep_raw", peep_zy, -0.28, 0.28, bevel=0.032, bevel_segs=3, mat=m_dk)
     peep_stem = bool_subtract(
         peep_raw,
-        [mk_cyl("c_peep_h", 0.145, 0.145, 0.85, "x", 24, [("t", 0.0, 0.54, 0.0)], m_dk)],
+        [
+            mk_cyl("c_peep_h", 0.145, 0.145, 0.85, "x", 28, [("t", 0.0, 0.54, 0.0)], m_dk),
+            mk_cyl("c_peep_c", 0.205, 0.145, 0.12, "x", 28, [("t", -0.26, 0.54, 0.0)], m_pk),
+        ],
         solver="EXACT",
     )
 
@@ -2474,23 +2526,29 @@ def build_garand_rear_sight(mats: dict) -> bpy.types.Object:
     ]
 
     # Bright cross pinion axle shaft
-    cross_pinion = mk_cyl("rs_pinion", 0.21, 0.21, 3.06, "z", 24, [("t", 0.0, -0.12, 0.0)], m_bs, bevel=0.02)
+    cross_pinion = mk_cyl("rs_pinion", 0.21, 0.21, 3.06, "z", 28, [("t", 0.0, -0.12, 0.0)], m_bs, bevel=0.022)
 
-    # 3D KNURLED Left Elevation Drum (-Z = -1.28) w/ Hero Flat Range Dial Cap (`2 4 6 8 10 12`)!
+    # 3D KNURLED 36-Flute Left Elevation Drum (-Z = -1.26) w/ Recessed Bezel Collar & Hero Flat Dial Cap (`2..12`)!
     elev_drum = mk_knurled_cyl(
-        "rs_elev_knurl", radius=0.56, length=0.40, axis="z", flutes=28, depth=0.024,
+        "rs_elev_knurl", radius=0.56, length=0.40, axis="z", flutes=36, depth=0.026,
         xform=[("t", 0.0, -0.12, -1.26)], mat=m_pk,
     )
-    elev_cap = mk_cyl("rs_elev_cap", 0.48, 0.50, 0.08, "z", 32, [("t", 0.0, -0.12, -1.48)], m_dk, bevel=0.015)
-    elev_screw = mk_cyl("rs_elev_scr", 0.14, 0.14, 0.06, "z", 16, [("t", 0.0, -0.12, -1.53)], m_bs, bevel=0.01)
+    elev_cap = mk_cyl("rs_elev_cap", 0.48, 0.50, 0.08, "z", 40, [("t", 0.0, -0.12, -1.48)], m_dk, bevel=0.018)
+    elev_screw = bool_subtract(
+        mk_cyl("rs_elev_scr", 0.145, 0.145, 0.07, "z", 20, [("t", 0.0, -0.12, -1.53)], m_bs, bevel=0.012),
+        [mk_box("c_rs_es", 0.32, 0.036, 0.05, [("t", 0.0, -0.12, -1.56)], m_dk)],
+    )
 
-    # 3D KNURLED Right Windage Drum (+Z = +1.28) w/ Hero Flat Windage Dial Cap (`L / R`)!
+    # 3D KNURLED 36-Flute Right Windage Drum (+Z = +1.26) w/ Hero Flat Windage Dial Cap (`L / R`)!
     wind_drum = mk_knurled_cyl(
-        "rs_wind_knurl", radius=0.54, length=0.38, axis="z", flutes=28, depth=0.024,
+        "rs_wind_knurl", radius=0.54, length=0.38, axis="z", flutes=36, depth=0.026,
         xform=[("t", 0.0, -0.12, 1.26)], mat=m_pk,
     )
-    wind_cap = mk_cyl("rs_wind_cap", 0.46, 0.48, 0.08, "z", 32, [("t", 0.0, -0.12, 1.47)], m_dk, bevel=0.015)
-    wind_screw = mk_cyl("rs_wind_scr", 0.14, 0.14, 0.06, "z", 16, [("t", 0.0, -0.12, 1.52)], m_bs, bevel=0.01)
+    wind_cap = mk_cyl("rs_wind_cap", 0.46, 0.48, 0.08, "z", 40, [("t", 0.0, -0.12, 1.47)], m_dk, bevel=0.018)
+    wind_screw = bool_subtract(
+        mk_cyl("rs_wind_scr", 0.145, 0.145, 0.07, "z", 20, [("t", 0.0, -0.12, 1.52)], m_bs, bevel=0.012),
+        [mk_box("c_rs_ws", 0.32, 0.036, 0.05, [("t", 0.0, -0.12, 1.55)], m_dk)],
+    )
 
     obj = join_objects(
         [sight_base, wind_bar, peep_stem, *rack_teeth, cross_pinion,
@@ -2623,7 +2681,7 @@ def build_garand_trigger_guard(mats: dict) -> bpy.types.Object:
     )
 
     # Iconic Swept Curved Flattened-Strap Winter Trigger Guard Bow + Rear Takedown Finger Hook!
-    # Swept with flattened strap cross-section (`ellip_scale=(0.56, 1.38)`) for authentic stamped/forged M1 bow!
+    # Smoothly resampled via Catmull-Rom spline (57 silky-smooth stations x 24 ring segs -> ZERO polygonal facets!)
     bow_ctrl = [
         Vector((-3.34,  0.32, 0.0)),   # Rear takedown finger-hook tip!
         Vector((-3.38,  0.04, 0.0)),
@@ -2641,15 +2699,16 @@ def build_garand_trigger_guard(mats: dict) -> bpy.types.Object:
         Vector(( 2.12, -0.18, 0.0)),
         Vector(( 2.24,  0.22, 0.0)),
     ]
+    bow_smooth = _catmull_rom_vec(bow_ctrl, samples_per_seg=4)
     bow_strap = mk_tube_along_pts(
-        "tg_bow", bow_ctrl, radius=0.22, ring_segs=18, ellip_scale=(0.56, 1.38), mat=m_pk
+        "tg_bow", bow_smooth, radius=0.22, ring_segs=24, ellip_scale=(0.56, 1.38), mat=m_pk
     )
 
     # Twin upper camming locking lugs w/ machined cam ramps & locking pins
     lug_xy = [(-0.34, -0.58), (0.34, -0.58), (0.34, 0.36), (0.12, 0.60), (-0.28, 0.54), (-0.34, 0.18)]
-    lug_l = mk_extrude_z("tg_lug_l", lug_xy, -0.60, -0.34, bevel=0.025, bevel_segs=2,
+    lug_l = mk_extrude_z("tg_lug_l", lug_xy, -0.60, -0.34, bevel=0.028, bevel_segs=3,
                          xform=[("t", 2.40, 0.80, 0.0)], mat=m_br)
-    lug_r = mk_extrude_z("tg_lug_r", lug_xy,  0.34,  0.60, bevel=0.025, bevel_segs=2,
+    lug_r = mk_extrude_z("tg_lug_r", lug_xy,  0.34,  0.60, bevel=0.028, bevel_segs=3,
                          xform=[("t", 2.40, 0.80, 0.0)], mat=m_br)
 
     obj = join_objects([upper_bar, bow_strap, lug_l, lug_r], "garand_trigger_guard")
@@ -2657,36 +2716,36 @@ def build_garand_trigger_guard(mats: dict) -> bpy.types.Object:
 
 
 def build_garand_enbloc_clip(mats: dict) -> bpy.types.Object:
-    """M-01: Iconic WWII Darker Blued Spring-Steel 8-Round En-Bloc Clip ("PING!")
+    """M-01: Iconic WWII Lustrous Blued Spring-Steel 8-Round En-Bloc Clip ("PING!")
     (assembledPos: [-0.95, -0.15, 0]).
-    Symmetrical top/bottom curled retaining lips, open bottom follower slot, stamped back spine,
-    raised external lateral clip-latch engagement bosses & vertical stiffening ribs!"""
+    Smoothly rolled symmetrical top/bottom spring retaining lips (preserving exact hollow interior
+    Z in [-0.58, +0.58] for MagazineAmmoStack's 8 live .30-06 rounds!), stamped back spine,
+    contoured loading thumb cutouts, raised lateral clip-latch bosses & stiffening ribs!"""
     m_ec = mats["R_EnBlocBlued"]
     m_br = mats["R_BurnishedRail"]
 
-    # Symmetrical stamped spring-steel left & right U-walls with gracefully curled top/bottom retaining lips!
+    # Symmetrical stamped spring-steel left & right U-walls with smoothly curled 24-pt retaining lips!
     left_zy = [
-        (-0.34, -1.48), (-0.48, -1.48), (-0.68, -1.32),
-        (-0.70, -0.90), (-0.70,  0.90), (-0.68,  1.32),
-        (-0.48,  1.48), (-0.34,  1.46), (-0.34,  1.36),
-        (-0.46,  1.36), (-0.58,  1.22), (-0.58, -1.22),
-        (-0.46, -1.36), (-0.34, -1.36),
+        (-0.34, -1.46), (-0.44, -1.48), (-0.56, -1.44), (-0.66, -1.34), (-0.70, -1.16),
+        (-0.70,  1.16), (-0.66,  1.34), (-0.56,  1.44), (-0.44,  1.48), (-0.34,  1.46),
+        (-0.34,  1.36), (-0.44,  1.37), (-0.53,  1.32), (-0.58,  1.20), (-0.58, -1.20),
+        (-0.53, -1.32), (-0.44, -1.37), (-0.34, -1.36),
     ]
     right_zy = [(-z, y) for (z, y) in reversed(left_zy)]
 
-    wall_l = mk_extrude_x("ec_wl", left_zy, -3.15, 2.25, bevel=0.015, bevel_segs=2, mat=m_ec)
-    wall_r = mk_extrude_x("ec_wr", right_zy, -3.15, 2.25, bevel=0.015, bevel_segs=2, mat=m_ec)
+    wall_l = mk_extrude_x("ec_wl", left_zy, -3.15, 2.25, bevel=0.018, bevel_segs=3, mat=m_ec)
+    wall_r = mk_extrude_x("ec_wr", right_zy, -3.15, 2.25, bevel=0.018, bevel_segs=3, mat=m_ec)
 
     # Stamped rear spine uniting left & right spring-steel walls (carries Hero `SA` stamp!)
-    back_wall = mk_box("ec_back", 0.16, 2.88, 1.38, [("t", -3.12, 0.0, 0.0)], m_ec, bevel=0.02)
+    back_wall = mk_box("ec_back", 0.16, 2.88, 1.38, [("t", -3.12, 0.0, 0.0)], m_ec, bevel=0.022, bevel_segs=2)
 
-    # Raised stamped lateral clip-latch bosses & vertical stiffening ribs on ±Z flanks!
-    boss_l = mk_box("ec_bl", 0.68, 0.76, 0.09, [("t", -0.22, 0.42, -0.73)], m_br, bevel=0.018)
-    boss_r = mk_box("ec_br", 0.68, 0.76, 0.09, [("t", -0.22, 0.42,  0.73)], m_br, bevel=0.018)
-    rib_l  = mk_box("ec_rl", 0.28, 2.58, 0.08, [("t", -2.62, 0.00, -0.73)], m_ec, bevel=0.015)
-    rib_r  = mk_box("ec_rr", 0.28, 2.58, 0.08, [("t", -2.62, 0.00,  0.73)], m_ec, bevel=0.015)
-    rib_fl = mk_box("ec_rfl", 0.24, 2.48, 0.07, [("t",  1.52, 0.00, -0.73)], m_ec, bevel=0.014)
-    rib_fr = mk_box("ec_rfr", 0.24, 2.48, 0.07, [("t",  1.52, 0.00,  0.73)], m_ec, bevel=0.014)
+    # Raised stamped lateral clip-latch bosses & vertical stiffening ribs on +-Z flanks!
+    boss_l = mk_box("ec_bl", 0.68, 0.76, 0.095, [("t", -0.22, 0.42, -0.73)], m_br, bevel=0.022, bevel_segs=2)
+    boss_r = mk_box("ec_br", 0.68, 0.76, 0.095, [("t", -0.22, 0.42,  0.73)], m_br, bevel=0.022, bevel_segs=2)
+    rib_l  = mk_box("ec_rl", 0.28, 2.58, 0.085, [("t", -2.62, 0.00, -0.73)], m_ec, bevel=0.020, bevel_segs=2)
+    rib_r  = mk_box("ec_rr", 0.28, 2.58, 0.085, [("t", -2.62, 0.00,  0.73)], m_ec, bevel=0.020, bevel_segs=2)
+    rib_fl = mk_box("ec_rfl", 0.24, 2.48, 0.075, [("t",  1.52, 0.00, -0.73)], m_ec, bevel=0.018, bevel_segs=2)
+    rib_fr = mk_box("ec_rfr", 0.24, 2.48, 0.075, [("t",  1.52, 0.00,  0.73)], m_ec, bevel=0.018, bevel_segs=2)
 
     obj = join_objects([wall_l, wall_r, back_wall, boss_l, boss_r, rib_l, rib_r, rib_fl, rib_fr], "garand_enbloc_clip")
     return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
@@ -2798,7 +2857,7 @@ def build_garand_gas_cylinder(mats: dict) -> bpy.types.Object:
             (0.72, -3.15), (0.94, -3.15), (0.95, -3.05),
             (0.95,  2.95), (0.92,  3.02), (0.72,  3.02), (0.72, -3.15),
         ],
-        segs=36, xform=[("t", 0.0, 0.90, 0.0)], mat=m_gs,
+        segs=48, xform=[("t", 0.0, 0.90, 0.0)], mat=m_gs,
     )
     rear_ring = mk_lathe_x(
         "gc_rring",
@@ -2806,7 +2865,7 @@ def build_garand_gas_cylinder(mats: dict) -> bpy.types.Object:
             (0.73, -3.80), (0.93, -3.80), (0.94, -3.72),
             (0.94, -3.40), (0.92, -3.34), (0.73, -3.34), (0.73, -3.80),
         ],
-        segs=34, xform=[("t", 0.0, 0.90, 0.0)], mat=m_gs,
+        segs=44, xform=[("t", 0.0, 0.90, 0.0)], mat=m_gs,
     )
 
     # Lower gas expansion tube (local Y = -0.60 -> world Y = -0.35; bore R=0.67 clears piston R=0.65!)
@@ -2817,7 +2876,7 @@ def build_garand_gas_cylinder(mats: dict) -> bpy.types.Object:
             (0.94, -2.20), (0.95,  2.96), (0.91,  3.05),
             (0.67,  3.05), (0.67, -3.80),
         ],
-        segs=36, xform=[("t", 0.0, -0.60, 0.0)], mat=m_gs,
+        segs=48, xform=[("t", 0.0, -0.60, 0.0)], mat=m_gs,
     )
 
     # Sculpted pinched-waist vertical gas-transfer bridge web (curved hourglass cross-section!)
@@ -2825,29 +2884,37 @@ def build_garand_gas_cylinder(mats: dict) -> bpy.types.Object:
         (-0.74, -0.50), (-0.48,  0.15), (-0.74,  0.80),
         ( 0.74,  0.80), ( 0.48,  0.15), ( 0.74, -0.50),
     ]
-    mid_web = mk_extrude_x("gc_web", web_zy, -3.05, 2.85, bevel=0.04, bevel_segs=2, mat=m_gs)
+    mid_web = mk_extrude_x("gc_web", web_zy, -3.05, 2.85, bevel=0.045, bevel_segs=3, mat=m_gs)
 
     # Top milled front-sight dovetail boss
     dovetail_zy = [(-0.56, 1.72), (0.56, 1.72), (0.46, 2.12), (-0.46, 2.12)]
-    sight_boss = mk_extrude_x("gc_sboss", dovetail_zy, 0.22, 2.08, bevel=0.025, bevel_segs=2, mat=m_pk)
+    sight_boss = mk_extrude_x("gc_sboss", dovetail_zy, 0.22, 2.08, bevel=0.028, bevel_segs=3, mat=m_pk)
 
-    # Authentic M1 / M1905 Bayonet T-Lug w/ beveled side locking rails (local X in [-2.85, -1.42])
-    bayo_stem = mk_box("gc_bstem", 1.40, 0.38, 0.40, [("t", -2.14, -1.56, 0.0)], m_bs, bevel=0.025)
+    # Authentic M1 / M1905 Bayonet T-Lug w/ beveled side locking rails & cross locking notch (local X in [-2.85, -1.42])
+    bayo_stem = mk_box("gc_bstem", 1.40, 0.38, 0.40, [("t", -2.14, -1.56, 0.0)], m_bs, bevel=0.028)
     bayo_zy = [(-0.34, -1.85), (0.34, -1.85), (0.36, -1.68), (0.20, -1.62), (-0.20, -1.62), (-0.36, -1.68)]
-    bayo_t = mk_extrude_x("gc_btlug", bayo_zy, -2.86, -1.42, bevel=0.02, bevel_segs=2, mat=m_ws)
+    bayo_t_raw = mk_extrude_x("gc_btlug_raw", bayo_zy, -2.86, -1.42, bevel=0.024, bevel_segs=2, mat=m_ws)
+    bayo_t = bool_subtract(
+        bayo_t_raw,
+        [mk_box("c_bayo_nt", 0.22, 0.16, 0.84, [("t", -2.38, -1.86, 0.0)], m_pk)],
+        solver="EXACT",
+    )
 
-    # Forward 3-rifle stacking swivel ears, slotted screw & smooth 24-pt curved U-loop!
-    sw_ears = mk_box("gc_swear", 1.06, 0.60, 0.76, [("t", 0.76, -1.65, 0.0)], m_gs, bevel=0.04, bevel_segs=2)
-    sw_screw = mk_cyl("gc_swscr", 0.14, 0.14, 0.90, "z", 16, [("t", 0.76, -1.78, 0.0)], m_ws, bevel=0.018)
+    # Forward 3-rifle stacking swivel ears, slotted screw & smooth 36-pt curved U-loop!
+    sw_ears = mk_box("gc_swear", 1.06, 0.60, 0.76, [("t", 0.76, -1.65, 0.0)], m_gs, bevel=0.045, bevel_segs=2)
+    sw_screw = bool_subtract(
+        mk_cyl("gc_swscr", 0.145, 0.145, 0.90, "z", 20, [("t", 0.76, -1.78, 0.0)], m_ws, bevel=0.020),
+        [mk_box("c_gc_sws", 0.32, 0.042, 0.10, [("t", 0.76, -1.78, 0.44)], m_pk)],
+    )
     sw_pts = []
-    for k in range(25):
-        a = -math.pi * 0.5 + math.pi * (k / 24.0)
+    for k in range(37):
+        a = -math.pi * 0.5 + math.pi * (k / 36.0)
         ca, sa = math.cos(a), math.sin(a)
         px = 0.76 - 0.41 * (ca ** 0.85)
         py = -1.78 - 1.06 * (ca ** 0.85)
         pz = 0.44 * sa + 0.12 * sa * ca
         sw_pts.append(Vector((px, py, pz)))
-    sw_loop = mk_tube_along_pts("gc_swloop", sw_pts, 0.088, ring_segs=14, mat=m_bs)
+    sw_loop = mk_tube_along_pts("gc_swloop", sw_pts, 0.088, ring_segs=16, mat=m_bs)
 
     obj = join_objects(
         [upper_ring, rear_ring, lower_tube, mid_web, sight_boss, bayo_stem, bayo_t, sw_ears, sw_screw, sw_loop],
@@ -2867,19 +2934,19 @@ def build_garand_gas_lock_screw(mats: dict) -> bpy.types.Object:
     upper_col = mk_lathe_x(
         "gl_ucol",
         [(0.63, -0.42), (0.88, -0.42), (0.89, -0.36), (0.89, 0.18), (0.86, 0.24), (0.63, 0.24), (0.63, -0.42)],
-        segs=32, xform=[("t", 0.0, 0.77, 0.0)], mat=m_pk,
+        segs=44, xform=[("t", 0.0, 0.77, 0.0)], mat=m_pk,
     )
     lower_col = mk_lathe_x(
         "gl_lcol",
         [(0.52, -0.42), (0.85, -0.42), (0.86, -0.36), (0.86, 0.18), (0.83, 0.24), (0.52, 0.24), (0.52, -0.42)],
-        segs=32, xform=[("t", 0.0, -0.73, 0.0)], mat=m_pk,
+        segs=44, xform=[("t", 0.0, -0.73, 0.0)], mat=m_pk,
     )
     # Curved pinched figure-8 waist joining the two rings smoothly
     waist_zy = [
         (-0.72, -0.68), (-0.54,  0.02), (-0.74,  0.72),
         ( 0.74,  0.72), ( 0.54,  0.02), ( 0.72, -0.68),
     ]
-    fig8_waist = mk_extrude_x("gl_waist", waist_zy, -0.41, 0.23, bevel=0.03, bevel_segs=2, mat=m_pk)
+    fig8_waist = mk_extrude_x("gl_waist", waist_zy, -0.41, 0.23, bevel=0.035, bevel_segs=3, mat=m_pk)
 
     # Bright stainless gas cylinder lock plug screw w/ true recessed WWII cross-slot & center poppet grenade valve!
     plug_raw = mk_lathe_x(
@@ -2888,7 +2955,7 @@ def build_garand_gas_lock_screw(mats: dict) -> bpy.types.Object:
             (0.00, -0.55), (0.51, -0.52), (0.51, 0.24),
             (0.68,  0.28), (0.68,  0.56), (0.62, 0.62), (0.00, 0.62),
         ],
-        segs=32, xform=[("t", 0.0, -0.73, 0.0)], mat=m_ws,
+        segs=44, xform=[("t", 0.0, -0.73, 0.0)], mat=m_ws,
     )
     # Cut genuine crisp WWII crossed screwdriver slot (+Y/+Z) + recessed central grenade poppet bore!
     plug = bool_subtract(
@@ -2900,7 +2967,7 @@ def build_garand_gas_lock_screw(mats: dict) -> bpy.types.Object:
         solver="EXACT",
     )
     # Central spring-loaded M7 grenade launcher poppet valve button inside cross intersection!
-    poppet = mk_cyl("gl_poppet", 0.14, 0.16, 0.16, "x", 20, [("t", 0.48, -0.73, 0.0)], m_bs, bevel=0.02)
+    poppet = mk_cyl("gl_poppet", 0.145, 0.165, 0.17, "x", 24, [("t", 0.48, -0.73, 0.0)], m_bs, bevel=0.024)
 
     obj = join_objects([upper_col, lower_col, fig8_waist, plug, poppet], "garand_gas_lock_screw")
     return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
@@ -2974,7 +3041,7 @@ def build_garand_op_rod(mats: dict) -> bpy.types.Object:
 
     # 3. Signature Garand 3D S-Bend Rod sweeping organically from under barrel out to right receiver rail!
     s_pts = []
-    n_bend = 28
+    n_bend = 36
     for i in range(n_bend + 1):
         u = i / n_bend
         s = u * u * (3.0 - 2.0 * u)
@@ -2982,16 +3049,16 @@ def build_garand_op_rod(mats: dict) -> bpy.types.Object:
         y = -0.50 + s * 1.28
         z = s * 1.16
         s_pts.append(Vector((x, y, z)))
-    s_bend = mk_tube_along_pts("or_sbend", s_pts, radius=lambda u: 0.49 - u * 0.09, ring_segs=22, mat=m_pk)
+    s_bend = mk_tube_along_pts("or_sbend", s_pts, radius=lambda u: 0.49 - u * 0.09, ring_segs=26, mat=m_pk)
 
     # Underside op-rod catch engagement lug
-    catch_lug = mk_box("or_clug", 1.16, 0.42, 0.44, [("t", -22.15, 0.36, 0.96)], m_bs, bevel=0.03)
+    catch_lug = mk_box("or_clug", 1.16, 0.42, 0.44, [("t", -22.15, 0.36, 0.96)], m_bs, bevel=0.035, bevel_segs=2)
 
     # 4. Iconic Arched Cam Hump riding over bolt operating lug (local X in [-27.65, -22.15])
     hump_xy = [(-27.65, 0.48), (-22.15, 0.48), (-22.15, 1.18)]
-    hump_xy += _quad_bez((-22.15, 1.18), (-24.15, 1.80), (-25.85, 1.72), 10)
-    hump_xy.append((-27.65, 1.15))
-    hump_raw = mk_extrude_z("or_hump_raw", hump_xy, 1.22, 1.74, bevel=0.04, bevel_segs=2, mat=m_pk)
+    hump_xy += _quad_bez((-22.15, 1.18), (-24.15, 1.82), (-25.85, 1.72), 16)
+    hump_xy += _quad_bez((-25.85, 1.72), (-26.90, 1.54), (-27.65, 1.15), 8)
+    hump_raw = mk_extrude_z("or_hump_raw", hump_xy, 1.22, 1.74, bevel=0.048, bevel_segs=3, mat=m_pk)
 
     # Cut genuine 4 mm dwell + 32-deg angled helical cam track slot into inner/side hump!
     slot_xy = [
@@ -3004,26 +3071,30 @@ def build_garand_op_rod(mats: dict) -> bpy.types.Object:
         solver="EXACT",
     )
 
-    # 5. Swept Contoured Iconic Garand Charging Handle (curved neck + upturned ergonomic finger-hook paddle!)
+    # 5. Swept Contoured Iconic Garand Charging Handle (smooth Bezier forged thumb hook — ZERO neck poke-through!)
+    #    Neck terminates cleanly inside inner face of paddle (Z=1.96) so the outer face stays 100% smooth!
     neck_pts = [
-        Vector((-26.20, 0.96, 1.58)),
-        Vector((-26.38, 0.98, 1.78)),
-        Vector((-26.58, 1.04, 1.98)),
-        Vector((-26.75, 1.10, 2.12)),
+        Vector((-26.20, 0.96, 1.56)),
+        Vector((-26.36, 0.99, 1.70)),
+        Vector((-26.52, 1.04, 1.84)),
+        Vector((-26.64, 1.09, 1.96)),
     ]
-    handle_neck = mk_tube_along_pts("or_hneck", neck_pts, radius=0.20, ring_segs=16, ellip_scale=(0.82, 1.25), mat=m_pk)
+    handle_neck = mk_tube_along_pts("or_hneck", neck_pts, radius=0.195, ring_segs=20, ellip_scale=(0.82, 1.22), mat=m_pk)
 
-    # Swept ergonomic charging paddle wing centered at origin BEFORE rx tilt so it sits proudly at Z=+2.10!
-    paddle_xy = [
-        (-0.92, -0.34), ( 0.62, -0.38), ( 0.92, -0.16),
-        ( 0.88,  0.22), ( 0.42,  0.38), (-0.52,  0.34), (-0.94,  0.04),
-    ]
+    # Smooth 28-point Bezier ergonomic upturned Garand charging handle paddle!
+    paddle_xy: list[tuple[float, float]] = [(-0.88, -0.26)]
+    paddle_xy += _quad_bez((-0.88, -0.26), (-0.12, -0.44), ( 0.68, -0.34), 8)
+    paddle_xy += _quad_bez(( 0.68, -0.34), ( 1.00, -0.18), ( 0.92,  0.14), 6)
+    paddle_xy += _quad_bez(( 0.92,  0.14), ( 0.78,  0.40), ( 0.28,  0.38), 6)
+    paddle_xy += _quad_bez(( 0.28,  0.38), (-0.42,  0.36), (-0.86,  0.18), 6)
+    paddle_xy += _quad_bez((-0.86,  0.18), (-1.04, -0.04), (-0.88, -0.26), 5)
     handle_paddle = mk_extrude_z(
-        "or_hpaddle", paddle_xy, -0.18, 0.18, bevel=0.055, bevel_segs=2,
-        xform=[("rx", -0.22), ("t", -26.68, 1.12, 2.08)], mat=m_bs,
+        "or_hpaddle", paddle_xy, -0.17, 0.17, bevel=0.062, bevel_segs=3,
+        xform=[("rx", -0.20), ("t", -26.68, 1.12, 2.09)], mat=m_bs,
     )
+    handle_unit = bool_union([handle_neck, handle_paddle], "or_handle_unit", solver="EXACT")
 
-    obj = join_objects([piston, fwd_tube, s_bend, catch_lug, cam_hump, handle_neck, handle_paddle], "garand_op_rod")
+    obj = join_objects([piston, fwd_tube, s_bend, catch_lug, cam_hump, handle_unit], "garand_op_rod")
     return finish_part(obj, bevel_w=0.0, sharp_deg=38.0)
 
 
@@ -3099,7 +3170,7 @@ def build_garand_lower_band(mats: dict) -> bpy.types.Object:
     m_ws = mats["M_WhiteStainless"]
 
     # Sculpted continuous curved-flank figure-8 lower barrel band (no boxy straps!)
-    n_arc = 14
+    n_arc = 24
     outer_zy = []
     # Top semicircular arch centered at Y=+0.70, R=1.34
     for k in range(n_arc + 1):
@@ -3107,30 +3178,30 @@ def build_garand_lower_band(mats: dict) -> bpy.types.Object:
         outer_zy.append((1.34 * math.cos(a), 0.70 + 1.24 * math.sin(a)))
     # Smooth curved left flank down to lower swivel boss
     outer_zy.extend([(-1.42, -0.15), (-1.28, -1.15), (-0.76, -1.68), (0.76, -1.68), (1.28, -1.15), (1.42, -0.15)])
-    band_raw = mk_extrude_x("lb_raw", outer_zy, -0.68, 0.68, bevel=0.045, bevel_segs=2, mat=m_pk)
+    band_raw = mk_extrude_x("lb_raw", outer_zy, -0.68, 0.68, bevel=0.050, bevel_segs=3, mat=m_pk)
 
     # Bore clean coaxial upper barrel passage (Y=+0.70, R=0.84) & lower op-rod passage (Y=-0.80, R=0.59)!
     band_body = bool_subtract(
         band_raw,
         [
-            mk_cyl("c_lb_brl", 0.84, 0.84, 1.80, "x", 32, [("t", 0.0,  0.70, 0.0)], m_pk),
-            mk_cyl("c_lb_opr", 0.59, 0.59, 1.80, "x", 28, [("t", 0.0, -0.80, 0.0)], m_pk),
+            mk_cyl("c_lb_brl", 0.84, 0.84, 1.80, "x", 40, [("t", 0.0,  0.70, 0.0)], m_pk),
+            mk_cyl("c_lb_opr", 0.59, 0.59, 1.80, "x", 32, [("t", 0.0, -0.80, 0.0)], m_pk),
         ],
         solver="EXACT",
     )
 
-    sw_ears  = mk_box("lb_ears", 1.18, 0.48, 1.28, [("t", 0.0, -1.62, 0.0)], m_pk, bevel=0.035)
-    roll_pin = mk_cyl("lb_pin", 0.11, 0.11, 3.04, "z", 16, [("t", 0.0, -0.05, 0.0)], m_ws, bevel=0.015)
-    sw_pin   = mk_cyl("lb_swp", 0.10, 0.10, 1.46, "z", 14, [("t", 0.0, -1.66, 0.0)], m_ws, bevel=0.012)
+    sw_ears  = mk_box("lb_ears", 1.18, 0.48, 1.28, [("t", 0.0, -1.62, 0.0)], m_pk, bevel=0.04, bevel_segs=2)
+    roll_pin = mk_cyl("lb_pin", 0.11, 0.11, 3.04, "z", 20, [("t", 0.0, -0.05, 0.0)], m_ws, bevel=0.016)
+    sw_pin   = mk_cyl("lb_swp", 0.10, 0.10, 1.46, "z", 18, [("t", 0.0, -1.66, 0.0)], m_ws, bevel=0.014)
     sw_pts = []
-    for k in range(25):
-        a = -math.pi * 0.5 + math.pi * (k / 24.0)
+    for k in range(37):
+        a = -math.pi * 0.5 + math.pi * (k / 36.0)
         ca, sa = math.cos(a), math.sin(a)
         px = -0.35 * (ca ** 0.85)
         py = -1.66 - 1.02 * (ca ** 0.85)
         pz = 0.62 * sa + 0.14 * sa * ca
         sw_pts.append(Vector((px, py, pz)))
-    sw_loop = mk_tube_along_pts("lb_swloop", sw_pts, 0.090, ring_segs=14, mat=m_bs)
+    sw_loop = mk_tube_along_pts("lb_swloop", sw_pts, 0.090, ring_segs=16, mat=m_bs)
 
     obj = join_objects([band_body, sw_ears, roll_pin, sw_pin, sw_loop], "garand_lower_band")
     return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
@@ -3143,8 +3214,8 @@ def build_garand_buttplate(mats: dict) -> bpy.types.Object:
     m_bs = mats["M_BurnishedSteel"]
     m_ws = mats["M_WhiteStainless"]
 
-    # Base oval ring matching sculpted walnut buttstock at X=-46.58 (shifted to local Y by +6.10)!
-    ref_ring = [(z, y + 6.10) for (z, y) in _eval_buttstock_ring(-46.58, 32)]
+    # Base 40-pt oval ring matching sculpted walnut buttstock at X=-46.58 (shifted to local Y by +6.10)!
+    ref_ring = [(z, y + 6.10) for (z, y) in _eval_buttstock_ring(-46.58, 40)]
 
     # Loft curved contoured steel buttplate shell along local X in [-0.46, +0.34]
     # with subtle concave shoulder curve (`dx_curve`) matching real M1 Garand buttplate!
@@ -3169,17 +3240,18 @@ def build_garand_buttplate(mats: dict) -> bpy.types.Object:
     bm.free()
 
     # Rounded top heel wrap tang hugging top comb of walnut stock (local X in [-0.28, +0.62], Y ~ +5.46)
-    heel_tang = mk_box("bp_htang", 0.88, 0.34, 2.28, [("t", 0.16, 5.48, 0.0)], m_pk, bevel=0.06, bevel_segs=2)
+    heel_tang = mk_box("bp_htang", 0.88, 0.34, 2.24, [("t", 0.16, 5.48, 0.0)], m_pk, bevel=0.068, bevel_segs=3)
 
     # Hinged circular M10 cleaning-kit / oiler trapdoor on upper-mid buttplate (local Y = +1.35)
-    trap_recess_rim = mk_cyl("bp_trim", 1.12, 1.14, 0.12, "x", 32, [("t", -0.34, 1.35, 0.0)], m_bs, bevel=0.025)
-    trap_disc       = mk_cyl("bp_tdisc", 1.04, 1.04, 0.14, "x", 32, [("t", -0.38, 1.35, 0.0)], m_pk, bevel=0.025)
-    trap_hinge      = mk_box("bp_thinge", 0.22, 0.34, 1.12, [("t", -0.42, 2.44, 0.0)], m_bs, bevel=0.03)
-    thumb_lip       = mk_box("bp_tlip", 0.22, 0.26, 0.64, [("t", -0.45, 0.24, 0.0)], m_ws, bevel=0.025)
+    trap_recess_rim = mk_cyl("bp_trim", 1.14, 1.16, 0.12, "x", 44, [("t", -0.34, 1.35, 0.0)], m_bs, bevel=0.028)
+    trap_disc       = mk_cyl("bp_tdisc", 1.04, 1.04, 0.15, "x", 44, [("t", -0.38, 1.35, 0.0)], m_pk, bevel=0.028)
+    trap_hinge      = mk_box("bp_thinge", 0.24, 0.34, 1.14, [("t", -0.42, 2.44, 0.0)], m_bs, bevel=0.035, bevel_segs=2)
+    trap_hpin       = mk_cyl("bp_thpin", 0.065, 0.065, 1.24, "z", 16, [("t", -0.45, 2.44, 0.0)], m_ws, bevel=0.012)
+    thumb_lip       = mk_box("bp_tlip", 0.24, 0.28, 0.68, [("t", -0.46, 0.24, 0.0)], m_ws, bevel=0.032, bevel_segs=2)
 
     # Upper & lower countersunk gunsmith-slotted mounting screws (proud flush on curved rear face w/ crisp 3D slot!)
     def _mk_slotted_screw(name: str, sx: float, sy: float) -> bpy.types.Object:
-        head = mk_cyl(f"{name}_h", 0.34, 0.37, 0.24, "x", 24, [("t", sx, sy, 0.0)], m_bs, bevel=0.035)
+        head = mk_cyl(f"{name}_h", 0.34, 0.37, 0.24, "x", 28, [("t", sx, sy, 0.0)], m_bs, bevel=0.038)
         return bool_subtract(
             head,
             [mk_box(f"c_{name}", 0.26, 0.085, 0.78, [("t", sx - 0.12, sy, 0.0)], m_pk)],
@@ -3190,7 +3262,7 @@ def build_garand_buttplate(mats: dict) -> bpy.types.Object:
     bot_screw = _mk_slotted_screw("bp_bscr", -0.49, -4.82)
 
     obj = join_objects(
-        [plate_shell, heel_tang, trap_recess_rim, trap_disc, trap_hinge, thumb_lip, top_screw, bot_screw],
+        [plate_shell, heel_tang, trap_recess_rim, trap_disc, trap_hinge, trap_hpin, thumb_lip, top_screw, bot_screw],
         "garand_buttplate",
     )
     return finish_part(obj, bevel_w=0.0, sharp_deg=38.0)
@@ -3951,8 +4023,8 @@ def verify_meshes(all_objs: list[bpy.types.Object]) -> dict:
     return report
 
 
-def export_draco_glb(all_objs: list[bpy.types.Object]) -> None:
-    _set_identity_layout(all_objs)
+def triangulate_keep_normals(all_objs: list[bpy.types.Object]) -> None:
+    """Locks WeightedNormal loop normals into beauty triangles BEFORE Cycles NORMAL baking & glTF export!"""
     for o in all_objs:
         select_only([o], o)
         mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
@@ -3961,6 +4033,9 @@ def export_draco_glb(all_objs: list[bpy.types.Object]) -> None:
         mod.keep_custom_normals = True
         bpy.ops.object.modifier_apply(modifier=mod.name)
 
+
+def export_draco_glb(all_objs: list[bpy.types.Object]) -> None:
+    _set_identity_layout(all_objs)
     select_only(all_objs, all_objs[0])
     bpy.ops.export_scene.gltf(
         filepath=str(MODELS_OUT),
@@ -4183,6 +4258,9 @@ def main() -> None:
     unwrap_walnut_atlas(walnut_objs)
     unwrap_receiver_atlas(recv_objs)
     unwrap_metal_atlas(metal_objs)
+
+    # Lock custom WeightedNormals into beauty triangles BEFORE Cycles NORMAL baking & export!
+    triangulate_keep_normals(all_objs)
 
     # Strict UV area & bounds audit across all 3 atlases!
     uv_audit = {}
