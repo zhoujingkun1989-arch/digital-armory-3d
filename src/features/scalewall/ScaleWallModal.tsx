@@ -42,6 +42,15 @@ export interface ScaleWallModalProps {
   onClose: () => void;
 }
 
+/**
+ * Pure helper: flips the 1:1 dimension callout badge inside/left of the bar tip
+ * whenever an exhibit spans > 82% of the drafting grid width (e.g. ZTZ-99A at
+ * 10.90 m or Leopard 2A7 at 10.97 m), preventing right-wall text clipping.
+ */
+export function shouldFlipScaleWallLabelInside(barPct: number): boolean {
+  return Number.isFinite(barPct) && barPct > 82;
+}
+
 const HumanReferenceSvg: React.FC = () => (
   <svg
     viewBox="0 0 175 34"
@@ -431,6 +440,9 @@ export const ScaleWallModal: React.FC<ScaleWallModalProps> = ({
                 Number((row.ratioToWidest * 100).toFixed(1))
               );
               const canRemove = selectedIds.length > SCALE_WALL_MIN_EXHIBITS;
+              const flipLabelInside = shouldFlipScaleWallLabelInside(
+                row.widthPct
+              );
 
               return (
                 <div
@@ -491,7 +503,16 @@ export const ScaleWallModal: React.FC<ScaleWallModalProps> = ({
                       />
                     ))}
 
-                    <div className="sw-silhouette-row">
+                    <div
+                      className={`sw-silhouette-row${
+                        flipLabelInside ? ' is-label-inside' : ''
+                      }`}
+                      style={
+                        {
+                          '--sw-bar-pct': `${row.widthPct}%`,
+                        } as React.CSSProperties
+                      }
+                    >
                       <div
                         className="sw-true-scale-box"
                         style={{
@@ -512,7 +533,14 @@ export const ScaleWallModal: React.FC<ScaleWallModalProps> = ({
                         />
                       </div>
 
-                      <div className="sw-dim-callout tabular">
+                      <div
+                        className={`sw-dim-callout tabular${
+                          flipLabelInside ? ' is-label-inside' : ''
+                        }`}
+                        data-label-anchor={
+                          flipLabelInside ? 'inside-left' : 'outside-right'
+                        }
+                      >
                         <strong style={{ color: exhibit.accentColor }}>
                           {formatScaleLength(exhibit.oalMm, unit)}
                         </strong>

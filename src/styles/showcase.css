@@ -2238,8 +2238,34 @@
   }
 
   .stage-carousel-arrow {
-    width: 26px;
-    height: 26px;
+    width: 34px;
+    height: 34px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* WCAG 2.1 AA Mobile Touch-Target Parity (>= 32px min dimension on 390x844) */
+  .showcase-brand,
+  .showcase-nav .lang-seg-btn,
+  .showcase-launch-pill,
+  .stage-mode-btn,
+  .stage-carousel-arrow,
+  .stage-weapon-pill,
+  .doc-weapon-pill,
+  .gallery-launch-link,
+  .qs-copy-btn {
+    min-height: 34px;
+    min-width: 34px;
+  }
+
+  .showcase-nav .lang-seg-btn {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .gallery-launch-link {
+    display: inline-flex;
+    align-items: center;
   }
 }
 

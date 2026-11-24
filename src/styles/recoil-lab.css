@@ -707,4 +707,12 @@
   .rl-kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  /* WCAG 2.1 AA Mobile Touch-Target Parity (>= 32px min dimension on 390x844) */
+  .rl-split-cta,
+  .rl-inspect-mini,
+  .rl-pill-btn {
+    min-height: 34px;
+    min-width: 34px;
+  }
 }
