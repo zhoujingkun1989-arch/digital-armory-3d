@@ -1,0 +1,919 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "mg42",
+  "generatedAt": "2026-11-24T04:00:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "MG 42 General-Purpose Machine Gun",
+    "subtitle": "7.92×57mm Mauser Short-Recoil Roller-Locked Universal Machine Gun",
+    "originCountry": "Germany",
+    "weaponType": "General-Purpose Machine Gun",
+    "categoryLabel": "Machine Gun",
+    "actionMechanism": "Open-Bolt Short Recoil · Muzzle Booster · Symmetric Twin-Roller Lock · S-Cam Shuttle Belt Feed",
+    "statusLabel": "In Vault · Field Strippable",
+    "description": "Conceived by sheet-metal stamping specialist Werner Gruner at Metall- und Lackierwarenfabrik Johannes Grossfuss in 1942, the Maschinengewehr 42 transformed automatic ordnance engineering forever. Replacing laborious milled receivers with folded cold-rolled steel stampings, pairing a conical muzzle recoil booster with symmetric twin-roller locking, and introducing a dual-stage S-cam shuttle belt feed, the MG 42 unleashed a blistering 1,200 rounds per minute of full-power 7.92×57mm Mauser firepower while permitting 5-second quick barrel changes through a right-flank hinged door.",
+    "highlights": [
+      "Symmetric Twin-Roller Short-Recoil Locking & Firing Pin Wedge",
+      "Stamped Perforated Cooling Shroud w/ 5-Second Hinged Barrel Latch",
+      "Conical Muzzle Recoil Booster Driving 1,200 RPM Cyclic Rate",
+      "Dual-Stage S-Cam Belt Shuttle & 50-Round Gurttrommel 34 Drum"
+    ],
+    "workbenchTitle": "MG 42 3D Kinematics & Twin-Roller Lock Workbench",
+    "workbenchSubtitle": "4 Modular Groups · 25 Parts · Short-Recoil Booster, Symmetric Locking Rollers, S-Cam Belt Feed & Bottom Ejection",
+    "cutawayLabel": "Twin-Roller Lock & S-Cam Cutaway",
+    "cutawayTitle": "Switch to cutaway focus on symmetric twin locking rollers, firing-pin wedge, barrel extension, and S-cam belt shuttle",
+    "searchPlaceholder": "Search BOM parts (e.g., Locking Rollers, Barrel Latch, Booster, Feed Pawl, B-05)...",
+    "firingMilestoneLabel": "Roller Cam Unlock",
+    "rateOfFire": "1,200–1,500 rpm (Full-Auto Open-Bolt)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Open-Bolt Ready",
+        "subLabel": "0% Open-Bolt Ready",
+        "desc": "Fully assembled MG 42 (1,220 mm overall): 550g bolt carrier and symmetric twin-roller bolt head held rearward on the open-bolt sear with the 530 mm barrel chamber vented and 50-round Gurttrommel 34 belt staged."
+      },
+      "field_strip": {
+        "label": "Field Strip & Barrel Swap",
+        "subLabel": "30% Field Strip",
+        "desc": "Tool-free H.Dv. 181/2 field teardown: swing open top cover, remove belt and drum, pivot the right-flank barrel latch to withdraw the 530 mm barrel, twist buttstock 90 degrees, and draw out buffer, braided spring, and roller bolt."
+      },
+      "sub_assembly": {
+        "label": "Roller & Feed Detail",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Separate both hardened locking rollers and firing-pin wedge from the bolt head, strip the dual-stage S-cam shuttle pawls from the top cover, unscrew the conical recoil booster, and inspect the open-bolt trigger pack."
+      },
+      "full_exploded": {
+        "label": "Full 25-Part Exploded View",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete mechanical breakdown of all 25 1:1 components, revealing Werner Gruner's sheet-metal industrial revolution and the mechanical DNA inherited by modern Western machine guns."
+      }
+    },
+    "firingPhases": {
+      "mg42_sear_release": {
+        "shortLabel": "Sear Drop & Rush",
+        "title": "Phase 1 · Full-Auto Trigger Lowers Open-Bolt Sear, Braided Spring Launches Carrier",
+        "description": "With the cross-bolt safety pushed to F, squeezing the curved trigger lowers the hardened open-bolt sear. The multi-strand braided driving spring launches the 550g carrier and roller bolt head violently forward."
+      },
+      "mg42_roller_lock_ignite": {
+        "shortLabel": "Wedge Lock & Ignite",
+        "title": "Phase 2 · Bolt Strips 7.92mm Round, Firing-Pin Wedge Cams Twin Rollers Outward",
+        "description": "The non-rotating bolt head strips a 7.92×57mm cartridge straight from the Gurt 34 steel belt into the chamber. As the bolt seats, the beveled wedge surges forward 7.5 mm, camming both rollers outward into barrel extension pockets and igniting the primer."
+      },
+      "mg42_short_recoil_booster": {
+        "shortLabel": "Booster Short Recoil",
+        "title": "Phase 3 · 390 MPa Peak Pressure & Conical Muzzle Booster Drive 8.5 mm Short Recoil",
+        "description": "The 198-grain spitzer exits the 530 mm barrel at 755 m/s into the conical recoil booster. Trapped muzzle gases kick the barrel and locked bolt head rearward together across an 8.5 mm short-recoil stroke."
+      },
+      "mg42_roller_cam_unlock": {
+        "shortLabel": "Roller Inward Unlock",
+        "title": "Phase 4 · Receiver Cam Rails Squeeze Rollers Inward, Accelerating Carrier Rearward",
+        "description": "Stationary steel cam ramps inside the receiver force both locking rollers radially inward out of the barrel extension. As the rollers press against the beveled wedge, kinetic energy transfers explosively to the heavy carrier while the barrel halts."
+      },
+      "mg42_recoil_bottom_eject": {
+        "shortLabel": "Bottom Eject & Feed",
+        "title": "Phase 5 · High-Velocity Recoil Ejects Brass Downward & S-Cam Indexes Belt",
+        "description": "The unlocked bolt streaks rearward, driving the plunger ejector to hurl the spent 7.92mm brass case straight downward out the receiver belly while the carrier's top stud drives the top-cover S-cam shuttle pawls."
+      },
+      "mg42_buffer_rebound": {
+        "shortLabel": "Buffer High Rebound",
+        "title": "Phase 6 · Friction-Ring Buffer & Heavy Rebound Spring Launch Carrier Back Forward",
+        "description": "Overtraveling 26 mm past the sear, the carrier impacts the rear friction-ring buffer and high-rate coil spring, instantaneously reversing momentum to sustain a 50-millisecond 1,200 RPM firing cycle."
+      },
+      "mg42_open_bolt_catch": {
+        "shortLabel": "Open-Bolt Arrest",
+        "title": "Phase 7 · Trigger Release Raises Sear to Arrest Carrier, Venting Hot Chamber",
+        "description": "Releasing the trigger allows the sear return spring to snap the catch upward into the carrier notch, halting the cycle cleanly with an empty, air-cooled chamber ready for the next burst."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "钣金风暴与双滚柱交响：MG 42 通用机枪的工业革命传奇",
+      "deck": "当传统铣削军工在战火中陷入产能绝境，一位非科班出身的金属冲压工程师以冷轧钢板与对称双滚柱闭锁，锻造出射速高达每分钟一千两百发的现代通用机枪鼻祖。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1938–1941",
+          "title": "精密铣削的黄昏与产能困局",
+          "paragraphs": [
+            "二十世纪三十年代中期列装的 MG 34 确立了人类史上首个“通用机枪”概念——既可配两脚架伴随步兵冲锋，又能装三脚架担负阵地重机枪与高射任务。然而，这款宛如瑞士钟表般精雕细琢的杰作却隐藏着致命的工业软肋：它需要从四十九公斤特种合金钢坯上切削出精密机匣，单枪耗费高达一百五十个熟练技工小时。",
+            "当战线横跨严寒雪原与滚烫沙海，MG 34 严苛的公差在泥沙冰冻中频频卡壳，昂贵缓慢的铣削产线更无法填补前线步兵班的巨额消耗。德军军械局急需一款制造成本腰斩、防污可靠性倍增、同时保持压倒性压制火力的新一代通用机枪。",
+            "破局者并非传统枪械巨头，而是位于萨克森州德伯恩的一家金属冲压灯具与漆器厂——格罗斯福斯公司（Grossfuss）。总工程师维尔纳·格鲁纳（Werner Gruner）此前从未设计过步枪，却凭借炉火纯青的冷冲压钣金思维，彻底改写了轻武器制造史。"
+          ],
+          "audioScript": "二十世纪三十年代末，精雕细琢的 MG 34 虽开创了通用机枪先河，却因耗时一百五十工时的昂贵铣削工艺与泥沙敏感性陷入绝境。金属冲压专家维尔纳·格鲁纳临危受命，以冷轧钢板冲压思维掀起了一场震撼世界军工的制造革命。",
+          "audioUrl": "audio/mg42/story_act1_zh.mp3",
+          "focusPartId": "mg42_receiver_shroud",
+          "focusPartLabel": "一体冷冲压钢机匣与多孔矩形散热枪管护筒"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1941–1942",
+          "title": "对称双滚柱闭锁的力学奇迹",
+          "paragraphs": [
+            "要让轻薄的冷冲压折弯钢板承受全威力七点九二毫米毛瑟步枪弹高达三百九十兆帕的猛烈爆压，机匣本身绝不能直接承担纵向闭锁剪切力。格鲁纳与工程团队创造性地将锻造枪管节套与两枚对称圆柱淬火钢滚柱融为一体，构筑起自平衡刚性短后坐闭锁体系。",
+            "当枪机前推实弹入膛到位后，由机框驱动的斜楔铁向前楔入两枚滚柱之间，把左右滚柱向外对称顶入枪管节套凹槽，将全部火药燃气反推力封闭在枪管节套与机头内部，冲压机匣仅充当轻量化导轨外壳！发射瞬间，枪口锥形反冲助退器截留高压燃气猛推枪管与机头同步后坐八点五毫米，随即机匣固定斜面将双滚柱挤回机头内极速开锁。",
+            "这套摒弃旋转摩擦的纯直线滚柱闭锁结构，将机械阻力压至极限，赋予新机枪高达每分钟一千二百至一千五百发的骇人射速——单发循环仅需五十毫秒，连发声浪密如撕裂亚麻帆布，令盟军士兵闻之色变，称之为“撕布机”与“希特勒的电锯”。"
+          ],
+          "audioScript": "为了让冷冲压薄钢板扛住三百九十兆帕的步枪弹高压，格鲁纳发明了自平衡对称双滚柱短后坐闭锁。击针斜楔将两枚淬火钢柱向外死锁在枪管节套内，冲压机匣只做滑轨。配合枪口锥形助退器，它迸发出每分钟一千两百发的恐怖撕布声浪。",
+          "audioUrl": "audio/mg42/story_act2_zh.mp3",
+          "focusPartId": "mg42_locking_rollers",
+          "focusPartLabel": "右侧(+Z)对称硬化闭锁滚柱"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1942–1944",
+          "title": "五秒换管与双向S槽高速供弹",
+          "paragraphs": [
+            "每秒倾泻二十发全威力步枪弹意味着惊人的热负荷与输弹挑战——连续发射两百五十发即可令枪管烧至暗红发烫。格鲁纳在冲压冷却护筒右侧设计了一扇精巧的铰接换管侧门：副射手只需前推锁柄扳开侧门，门内拨叉立刻把滚烫枪管尾端弹出，五秒内即可滑入备用冷管合门再战，比旋转机匣的 MG 34 快出一倍以上。",
+            "为支撑二十赫兹的高频供弹而不拉断沉重钢链，顶盖内壁首创了闻名后世的 S 型曲线凸轮轨道与双级接力拨弹滑板。机框后坐拉动弹链前进半个弹距，复进前冲再接力推完后半个弹距，将峰值输弹阻力削减一半；左侧更可快挂五十发蜗壳式突击弹鼓，赋予步兵班行进间瞬间压制火力。",
+            "与此同时，底部垂直向下抛壳窗避开了两侧射手视线与装弹手位置，取消复杂单发机构改为极简纯连发开膛阻铁与横推保险，配合三股绞合防共振复进簧与摩擦环缓冲器，整枪在极寒东线与酷热北非均展现出令人敬畏的野战生命力。"
+          ],
+          "audioScript": "每秒二十发的狂暴射速必须匹配神速换管与零顿挫输弹。冷却护筒右侧的铰接锁门让副射手五秒内即可抽换红热枪管；顶盖内置的 S 型凸轮轨道与双级拨弹爪，则在枪机后坐与复进双行程接力拉链，铸就永不卡顿的金属风暴。",
+          "audioUrl": "audio/mg42/story_act3_zh.mp3",
+          "focusPartId": "mg42_barrel_latch",
+          "focusPartLabel": "右侧铰接式快拆换管侧门与弹簧锁柄"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1945–至今",
+          "title": "跨越八十载的现代机枪基因母本",
+          "paragraphs": [
+            "截至一九四五年停产，格罗斯福斯、毛瑟、柏林马格特（厂标 cra）等多家工厂共制造了超过四十万挺 MG 42，单枪工时减半至七十五小时，钢材消耗暴降四成，成为二战工业大生产教科书级典范。",
+            "战火平息后，MG 42 的机械灵魂并未尘封于历史博物馆，而是直接塑造了整个战后西方轻武器图谱：西德将其口径改为北约七点六二毫米并增重机框调速，演化为服役至今的 MG 3；美军 M60、比利时 FN MAG 与 M249 班用机枪均直接传承了其顶盖 S 槽双级拨弹机架构。",
+            "更具深远意义的是，MG 42 标志性的对称双滚柱闭锁经过福尔格里姆勒与黑克勒-科赫工程师的精妙演进，褪去枪管短后坐化作半自由滚柱延迟闭锁，催生了战后统治半个世纪的 G3 步枪与 MP5 冲锋枪家族，令格鲁纳的工程星火燃烧至今。"
+          ],
+          "audioScript": "战后八十余年，MG 42 的基因从未离开过全球战场。它不仅直接化身为北约现役 MG 3，其 S 型顶盖输弹机被 M60 与 M249 悉数继承，双滚柱闭锁更孕育出 G3 与 MP5 传奇，成为名副其实的现代机枪工程母本。",
+          "audioUrl": "audio/mg42/story_act4_zh.mp3",
+          "focusPartId": "mg42_feed_pawl",
+          "focusPartLabel": "顶盖S型凸轮拨弹臂与双级弹簧梭动拨弹爪总成"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "冷冲压钣金机匣与自平衡双滚柱闭锁",
+          "tag": "对称双滚柱闭锁",
+          "summary": "以锻钢枪管节套配合左右对称双圆柱闭锁滚柱与击针斜楔完全封闭 390 MPa 膛压，解放机匣承压束缚，使整枪得以用 2.5 mm 冷轧钢板大规模冲压点焊成型，工时与成本双双腰斩。",
+          "focusPartId": "mg42_locking_rollers",
+          "focusPartLabel": "右侧(+Z)对称硬化闭锁滚柱"
+        },
+        {
+          "id": "bt2",
+          "title": "枪口锥形助退器与环簧缓冲超高速循环",
+          "tag": "1,200 RPM 助退循环",
+          "summary": "枪口反冲助退杯截留膛口高压尾流驱动枪管 8.5 mm 刚性短后坐，尾座摩擦环簧缓冲器瞬时反弹 550 克重机框，实现仅 50 毫秒的极速自动循环与抗泥沙可靠性。",
+          "focusPartId": "mg42_muzzle_booster",
+          "focusPartLabel": "锥形枪口反冲助退器与喇叭消焰罩"
+        },
+        {
+          "id": "bt3",
+          "title": "五秒侧门快换枪管与顶盖S槽双向拨弹",
+          "tag": "侧门快拆与S槽输弹",
+          "summary": "右侧铰接侧门实现单人五秒无工具热管抽换，顶盖 S 形曲线导轨驱动双级棘爪在后坐与复进两行程均匀接力拨动 7.92mm 钢链，奠定现代西方机枪通用供弹范式。",
+          "focusPartId": "mg42_barrel_latch",
+          "focusPartLabel": "右侧铰接式快拆换管侧门与弹簧锁柄"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1939",
+          "title": "Grossfuss 冲压原型机 MG 39/41 诞生",
+          "detail": "金属冲压专家维尔纳·格鲁纳提交冷轧钢板冲压机匣与双滚柱闭锁方案，突破传统铣削产能瓶颈。"
+        },
+        {
+          "year": "1942",
+          "title": "正式定型列装 Maschinengewehr 42",
+          "detail": "北非与东线部队首批换装，1,200 发/分“撕布声”弹幕与 5 秒换管震撼战场。"
+        },
+        {
+          "year": "1943",
+          "title": "柏林 cra 等五大工厂全面量产",
+          "detail": "采用酚醛胶木枪托与全冲压工艺，单枪工时压缩至 75 小时，总产量最终突破 40 万挺。"
+        },
+        {
+          "year": "1945",
+          "title": "滚柱血脉衍生 MG 45 与 G3/MP5 架构",
+          "detail": "滚柱闭锁演化为半自由滚柱延迟闭锁原理，深刻塑造战后 CETME、HK G3 与 MP5 武器家族。"
+        },
+        {
+          "year": "1957",
+          "title": "顶盖S槽供弹基因融入 M60 与 FN MAG",
+          "detail": "北约战后主力通用机枪全面借鉴 MG 42 的顶盖 S 型凸轮双级拨弹机与快拆枪管理念。"
+        },
+        {
+          "year": "1968–至今",
+          "title": "北约 7.62mm 制式 MG 3 跨越八十年服役",
+          "detail": "联邦德国改进定型 MG 3 并出口三十余国，成为二十一世纪仍在服役的二战机械活化石。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Stamped Steel Fury: The MG 42 Twin-Roller Industrial Revolution",
+      "deck": "When wartime milled-steel production collapsed under front-line demand, sheet-metal specialist Werner Gruner merged stamped steel with symmetric twin-roller locking to forge the 1,200 RPM archetype of every modern general-purpose machine gun.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1938–1941",
+          "title": "The Twilight of Milled-Billet Ordnance",
+          "paragraphs": [
+            "Introduced in the mid-1930s, the MG 34 pioneered the universal general-purpose machine gun doctrine—equally capable on an infantry bipod, sustained-fire tripod, or anti-aircraft mount. Yet this watchmaker's triumph suffered a crippling industrial flaw: carving its intricate receiver from 49 kilograms of alloy steel billet consumed roughly 150 skilled machinist hours per gun.",
+            "Across Russian mud and North African sand, the MG 34's tight machined clearances fouled easily while factories struggled to keep pace with attrition. Military ordnance planners desperately needed a successor that slashed fabrication hours in half, shrugged off battlefield grit, and sustained devastating suppressive fire.",
+            "The breakthrough arrived from an unlikely source: Metall- und Lackierwarenfabrik Johannes Grossfuss, a Saxon sheet-metal lantern and stamping enterprise. Chief engineer Werner Gruner had never designed a firearm, yet his mastery of cold-rolled steel presswork permanently transformed small-arms production."
+          ],
+          "audioScript": "By 1941, the finely machined MG 34 faced an impossible industrial bottleneck, demanding 150 hours of skilled milling and choking in Russian mud. Sheet-metal engineer Werner Gruner broke ordnance orthodoxy, replacing forged steel billets with cold-stamped sheet metal to launch a manufacturing revolution.",
+          "audioUrl": "audio/mg42/story_act1_en.mp3",
+          "focusPartId": "mg42_receiver_shroud",
+          "focusPartLabel": "Monolithic Stamped-Steel Receiver & Perforated Barrel Cooling Shroud"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1941–1942",
+          "title": "The Mechanics of Symmetric Twin-Roller Locking",
+          "paragraphs": [
+            "To enable folded 2.5-millimeter sheet steel to harness the violent 390-megapascal chamber pressure of full-power 7.92×57mm Mauser ammunition, Gruner's team engineered a self-contained short-recoil locking architecture. All firing thrust remained sealed between a forged barrel extension and a non-rotating bolt head braced by two symmetric hardened steel rollers.",
+            "As the bolt closed into battery, a beveled locking wedge linked to the heavy bolt carrier surged forward 7.5 millimeters, camming both cylindrical rollers radially outward into barrel-extension recesses while simultaneously protruding the firing pin. Upon discharge, a conical muzzle recoil booster trapped exiting gases to drive the locked barrel and bolt rearward 8.5 millimeters before stationary receiver ramps forced the rollers inward to unlock.",
+            "Freed from rotational bolt friction, the linear twin-roller mechanism achieved a ferocious cyclic rate of 1,200 to 1,500 rounds per minute—just 50 milliseconds per shot. Its continuous fabric-ripping acoustic signature quickly earned Allied battlefield infamy as Hitler's Buzzsaw."
+          ],
+          "audioScript": "To let thin stamped steel handle 390-megapascal Mauser pressures, Gruner sealed firing forces inside a forged barrel extension locked by twin symmetric rollers. A beveled wedge cammed both rollers outward at battery, while a conical muzzle booster drove 1,200 rounds per minute of tearing firepower.",
+          "audioUrl": "audio/mg42/story_act2_en.mp3",
+          "focusPartId": "mg42_locking_rollers",
+          "focusPartLabel": "Right-Side (+Z) Hardened Steel Symmetric Locking Roller"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1942–1944",
+          "title": "Five-Second Barrel Changes and Dual-Stage S-Cam Feeding",
+          "paragraphs": [
+            "Pouring twenty rifle bullets downrange every second generated extreme barrel heat, demanding rapid replacement after every 250-round burst. Gruner installed a brilliant side-hinged latch door on the right flank of the perforated cooling shroud: flipping the lever forward automatically popped the incandescent barrel breech sideways, letting an assistant gunner swap in a fresh cold barrel in five seconds.",
+            "Feeding heavy steel ammunition belts smoothly at 20 cycles per second required equal ingenuity. Inside the hinged top cover, an S-shaped cam track engaged a vertical stud atop the bolt carrier, driving dual-stage spring pawls that pulled the Gurt 34 belt half a pitch on recoil and half a pitch on counter-recoil—cutting peak belt tension in half. For mobile assaults, a 50-round Gurttrommel 34 drum clipped directly onto the left feed mouth.",
+            "Downward belly ejection kept scalding brass clear of the crew, a stripped-down full-auto-only open-bolt sear eliminated complex trigger failures, and a three-strand braided driving spring paired with a friction-ring buffer shrugged off continuous harmonic resonance."
+          ],
+          "audioScript": "Sustaining twenty rounds per second demanded instant barrel swaps and smooth belt feeding. A right-flank hinged door kicked overheated barrels out in five seconds, while the top cover's S-cam shuttle pawls split belt-pulling loads across both strokes for unstoppable reliability.",
+          "audioUrl": "audio/mg42/story_act3_en.mp3",
+          "focusPartId": "mg42_barrel_latch",
+          "focusPartLabel": "Right-Flank Hinged Quick-Change Barrel Latch Door"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1945–Present",
+          "title": "The Mechanical DNA of Modern Machine Guns",
+          "paragraphs": [
+            "By war's end in 1945, factories including Grossfuss, Mauser, and Berlin's Maget plant (wartime code cra) had produced more than 400,000 MG 42s—slashing build time to 75 hours and cutting steel waste by forty percent. It stood as the twentieth century's benchmark for wartime manufacturability.",
+            "Peace did not retire Gruner's blueprint; instead, the MG 42 became the genetic ancestor of post-war Western automatic weapons. Rechambered to 7.62×51mm NATO with a heavier bolt carrier as the MG 3, it remains in active service across over thirty nations eight decades later, while the American M60, Belgian FN MAG, and M249 SAW all adopted its top-cover S-cam dual-pawl belt feed.",
+            "Equally enduring was its twin-roller geometry: adapted by post-war engineers into roller-delayed blowback without a recoiling barrel, the MG 42's rollers directly begat the CETME, Heckler & Koch G3 battle rifle, and iconic MP5 submachine gun."
+          ],
+          "audioScript": "Eight decades later, the MG 42's engineering DNA still dominates global armories. Evolved directly into NATO's active-duty MG 3, its S-cam belt feed powers the M60 and M249, while its twin rollers birthed the legendary HK G3 and MP5 family.",
+          "audioUrl": "audio/mg42/story_act4_en.mp3",
+          "focusPartId": "mg42_feed_pawl",
+          "focusPartLabel": "Top-Cover Pivoting Feed Arm & Dual-Stage Shuttle Belt Feed Pawls"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Stamped Sheet-Metal Shroud & Self-Balanced Twin Rollers",
+          "tag": "Twin-Roller Lock",
+          "summary": "Isolates 390 MPa firing pressure inside a forged barrel extension locked by twin symmetric rollers and a firing-pin wedge, permitting rapid cold-stamped sheet-steel receiver fabrication at half the labor cost.",
+          "focusPartId": "mg42_locking_rollers",
+          "focusPartLabel": "Right-Side (+Z) Hardened Steel Symmetric Locking Roller"
+        },
+        {
+          "id": "bt2",
+          "title": "Conical Muzzle Recoil Booster & Friction-Ring Buffer",
+          "tag": "1,200 RPM Boosted Cycle",
+          "summary": "Traps muzzle exit gases to drive an 8.5 mm short-recoil barrel stroke while a rear friction-ring spring buffer rebounds the 550g bolt carrier into an explosive 50-millisecond firing cycle.",
+          "focusPartId": "mg42_muzzle_booster",
+          "focusPartLabel": "Conical Muzzle Recoil Booster & Flash Suppressor Cone"
+        },
+        {
+          "id": "bt3",
+          "title": "5-Second Side-Hinged Barrel Door & S-Cam Dual-Pawl Feed",
+          "tag": "Quick-Swap & S-Cam Feed",
+          "summary": "A right-flank hinged door pops overheated barrels out in seconds, while an internal top-cover S-cam drives dual-stage pawls across both bolt strokes, setting the universal blueprint for NATO belt-fed guns.",
+          "focusPartId": "mg42_barrel_latch",
+          "focusPartLabel": "Right-Flank Hinged Quick-Change Barrel Latch Door"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1939",
+          "title": "Grossfuss MG 39/41 Stamped Prototype",
+          "detail": "Werner Gruner pioneers stamped cold-rolled sheet-metal receivers paired with twin-roller short-recoil locking."
+        },
+        {
+          "year": "1942",
+          "title": "Service Adoption as Maschinengewehr 42",
+          "detail": "Fielded across North Africa and the Eastern Front, stunning troops with 1,200 RPM bursts and 5-second barrel changes."
+        },
+        {
+          "year": "1943",
+          "title": "Peak Mass Production Across cra & Partner Plants",
+          "detail": "Bakelite furniture and presswork cut machining labor to 75 hours per gun, exceeding 400,000 units built."
+        },
+        {
+          "year": "1945",
+          "title": "Roller Lineage Evolves into MG 45 & Roller-Delayed Systems",
+          "detail": "Symmetric locking rollers inspire fixed-barrel roller-delayed blowback behind the CETME, HK G3, and MP5."
+        },
+        {
+          "year": "1957",
+          "title": "S-Cam Feed Adopted by M60 & FN MAG",
+          "detail": "Post-war Western general-purpose machine guns directly integrate the MG 42 top-cover shuttle feed system."
+        },
+        {
+          "year": "1968–Present",
+          "title": "MG 3 Sustains Eight Decades of NATO Service",
+          "detail": "Rechambered to 7.62×51mm NATO, the modernized MG 3 remains active across more than thirty armed forces worldwide."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "mg42_barrel": {
+      "partId": "mg42_barrel",
+      "bomCode": "B-01",
+      "calloutLabelEn": "530mm Quick-Change Barrel",
+      "zh": {
+        "roleTag": "530毫米四膛线快拆短后坐枪管与锻钢闭锁节套",
+        "overview": "这是全长五百三十毫米的七点九二毫米毛瑟快拆线膛枪管，尾端刚性旋固方形锻钢闭锁节套。节套内部左右精确铣有双滚柱闭锁凹槽，完整封闭高压火药燃气推力。",
+        "craftAndMaterial": "采用高强度铬钼合金钢深孔冷锻成形，外轮廓逐级收锥减重，表面经锰系磷化发黑防腐。后端闭锁节套经渗碳淬火，抵御每分钟一千两百次滚柱锁紧冲击。",
+        "kinematicRole": "击发阶段三受枪口助退器燃气反推与闭锁中的枪机同步向后短后坐八点五毫米，阶段四滚柱内缩开锁后止动复位；野战拆解进度百分之六至二十八向右侧抽出。",
+        "designHighlight": "无需手套工具即可经右侧换管门五秒抽换炽热枪管，且闭锁间隙固定于节套内部，换管后免调校即可立即恢复全速扫射。",
+        "audioScript": "这根五百三十毫米快拆枪管是 MG 42 持续火力的核心。它的尾端旋接着坚固的方形锻钢闭锁节套，发射时在枪口助退器推动下与枪机同步后坐八点五毫米。连射过热后，副射手打开右侧换管门五秒就能抽换冷管。",
+        "audioUrl": "audio/mg42/parts/mg42_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "530mm Short-Recoil Quick-Change Barrel & Extension",
+        "overview": "A 530-millimeter rifled 7.92×57mm Mauser barrel rigidly threaded into a rectangular forged steel barrel extension housing twin internal roller-locking recesses.",
+        "craftAndMaterial": "Cold-hammer-forged chrome-molybdenum alloy steel with stepped heat-dissipating taper and dark manganese phosphate finish; case-hardened breech extension resists 1,200 RPM locking shock.",
+        "kinematicRole": "Recoils rearward 8.5 millimeters locked to the bolt head during phase three under muzzle-booster impulse, then returns forward once rollers unlock in phase four; slides sideways out during early field strip.",
+        "designHighlight": "Headspace is permanently fixed inside the forged barrel extension, allowing crews to swap glowing-hot barrels through the right latch door in five seconds without gauges.",
+        "audioScript": "This 530-millimeter quick-change barrel carries a forged rectangular extension housing both roller-locking pockets. Driven rearward eight-and-a-half millimeters by the muzzle booster on every shot, it swaps out sideways in five seconds flat when glowing hot.",
+        "audioUrl": "audio/mg42/parts/mg42_barrel_en.mp3"
+      }
+    },
+    "mg42_muzzle_booster": {
+      "partId": "mg42_muzzle_booster",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Muzzle Recoil Booster",
+      "zh": {
+        "roleTag": "截留枪口高压燃气加速枪管后坐的锥形反冲助退器",
+        "overview": "旋装于多孔冷却护筒最前端的锥形膨胀气室与喇叭消焰罩组合件。它在弹头飞离膛口瞬间短暂兜住高压火药尾流，对枪口端面施加额外向后的猛烈推力。",
+        "craftAndMaterial": "采用耐高温烧蚀的高铬合金钢车削加工，内置可拆卸节流导气杯与外侧防滑拆卸棘齿，表面施以高温耐蚀黑化氧化层。",
+        "kinematicRole": "在整个击发循环中固定锁紧于散热护筒鼻端，于阶段三弹头越口瞬间形成高压反冲气幕加速枪管短后坐；拆解进度百分之八至六十四旋转卸下。",
+        "designHighlight": "正是这枚结构精巧的锥形枪口助退器，赋予 MG 42 在冰冻积碳工况下仍能爆发每分钟一千两百发恐怖射速的充沛能量裕度。",
+        "audioScript": "安装在散热护筒最前端的这只锥形喇叭筒，是 MG 42 著名的枪口反冲助退器。弹头冲出瞬间，内部节流杯兜住高压燃气猛推枪管后退，既充当消焰器，又为每分钟一千两百发的惊人射速注入源源动力。",
+        "audioUrl": "audio/mg42/parts/mg42_muzzle_booster_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Conical Gas-Trap Muzzle Recoil Booster",
+        "overview": "Threaded onto the nose of the stamped cooling shroud, this conical expansion chamber and flared flash hider traps escaping propellant gas to blast the barrel rearward.",
+        "craftAndMaterial": "Turned from erosion-resistant high-chromium steel with an internal baffled gas cone, knurled indexing notches, and dark high-temperature oxide treatment.",
+        "kinematicRole": "Remains rigidly fixed to the shroud nose throughout firing, building a localized gas pulse in phase three to boost short-recoil energy; unscrews forward during disassembly.",
+        "designHighlight": "Provides the energetic recoil reserve that keeps the heavy twin-roller action cycling relentlessly at 1,200 rounds per minute even when fouled by ice or grit.",
+        "audioScript": "Threaded onto the cooling shroud nose sits the conical muzzle recoil booster. As each Mauser bullet exits, this baffled chamber traps escaping gases to slam the barrel backward, guaranteeing an unstoppable 1,200-round-per-minute rhythm in harsh conditions.",
+        "audioUrl": "audio/mg42/parts/mg42_muzzle_booster_en.mp3"
+      }
+    },
+    "mg42_barrel_latch": {
+      "partId": "mg42_barrel_latch",
+      "bomCode": "B-03",
+      "calloutLabelEn": "Quick-Change Barrel Latch",
+      "zh": {
+        "roleTag": "前推锁柄侧翻开门同步顶出烫管的右侧快拆铰接门",
+        "overview": "位于散热护筒后右侧的冲压钢铰接式快换枪管侧门与弹簧锁扣。合拢时锁紧枪管节套轴向定位，向外扳开时门内斜钩同步将烫管尾端向右顶出护筒窗口。",
+        "craftAndMaterial": "厚冷轧合金钢板冲压翻边成形并配有坚固垂直铰链销与宽面防滑按压锁舌，便于戴厚手套的机枪副手在硝烟中盲操开合。",
+        "kinematicRole": "射击期间牢牢锁死枪管侧向通道；在野战拆解起始阶段百分之四至二十二率先向外旋转开启，为五秒侧向抽管让出通路。",
+        "designHighlight": "彻底取代了 MG 34 需要把整段机匣向左拧转的笨拙换管方式，即使架设在窄小掩体射孔内也能瞬间完成单侧换管。",
+        "audioScript": "冷却护筒右侧这扇带手柄的冲压钢小门，藏着 MG 42 最受士兵爱戴的五秒换管绝技。向前按下卡笋向外扳开侧门，门内拨叉会自动把滚烫枪管尾端顶出槽口，拉出旧管推入冷管合门即刻恢复火力。",
+        "audioUrl": "audio/mg42/parts/mg42_barrel_latch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right-Flank Hinged Quick-Change Barrel Door",
+        "overview": "A spring-latched hinged steel door on the right rear flank of the cooling jacket that secures the barrel breech during firing and swings open to kick out hot barrels.",
+        "craftAndMaterial": "Heavy cold-stamped alloy steel plate fitted with a reinforced vertical hinge pin, internal barrel-ejecting cam lug, and glove-friendly release handle.",
+        "kinematicRole": "Stays latched closed across the entire firing cycle; pivots outward during the initial four to twenty-two percent field-strip stage to expose the barrel breech.",
+        "designHighlight": "Eliminated the MG 34's awkward receiver-twisting barrel change, allowing gunners in cramped bunker embrasures to swap glowing barrels sideways in five seconds.",
+        "audioScript": "This hinged steel door on the right flank of the shroud holds the secret to the MG 42's five-second barrel swap. Pressing the thumb latch and swinging the door open automatically cams the hot barrel breech sideways for instant extraction.",
+        "audioUrl": "audio/mg42/parts/mg42_barrel_latch_en.mp3"
+      }
+    },
+    "mg42_bolt_head": {
+      "partId": "mg42_bolt_head",
+      "bomCode": "B-04",
+      "calloutLabelEn": "Roller-Lock Bolt Head",
+      "zh": {
+        "roleTag": "直线高速往复无旋转摩擦的双滚柱闭锁机头总成",
+        "overview": "容纳左右两枚对称闭锁滚柱的精密铣削圆柱形机头，前端带凹陷弹底窝、强力弹性抽壳钩与中央下推抛壳顶杆。它只沿枪管轴线平直运动而从不旋转。",
+        "craftAndMaterial": "高镍铬渗碳合金钢精铣与无心磨削成形，两侧对称精磨滚柱导向滑窗，表面留存精密磨削亮钢色泽与低摩擦油膜。",
+        "kinematicRole": "阶段二前冲七十毫米推弹入膛并由滚柱锁入节套，阶段三随枪管短后坐八点五毫米，阶段四滚柱内缩后携空弹壳极速后退并在阶段五向下抛出空壳。",
+        "designHighlight": "省却传统回转枪机必需的旋转凸轮与螺旋摩擦损耗，让全威力步枪弹自动机得以稳定突破一千两百发每分钟的物理天花板。",
+        "audioScript": "这枚精磨亮钢圆柱机头全程直线往复从不旋转。它的左右两侧开有对称窗口安装两枚闭锁滚柱，前端宽爪抽壳钩死咬弹底缘，配合中央抛壳顶杆将炙热铜壳垂直向下干净踢出机匣。",
+        "audioUrl": "audio/mg42/parts/mg42_bolt_head_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Linear Non-Rotating Twin-Roller Bolt Head",
+        "overview": "A precision-milled cylindrical bolt head housing symmetric lateral roller windows, recessed breech face, spring claw extractor, and longitudinal plunger ejector rod.",
+        "craftAndMaterial": "Case-hardened nickel-chrome alloy steel ground to tight concentricity with bright satin-polished guide flanks to minimize friction at 20 cycles per second.",
+        "kinematicRole": "Advances 70 millimeters to chamber a round in phase two, short-recoils 8.5 millimeters locked to the barrel in phase three, and cycles rearward to bottom-eject brass in phase five.",
+        "designHighlight": "By eliminating rotational bolt friction entirely, the linear roller-locked bolt head unlocked unprecedented cyclic speeds for full-power rifle ammunition.",
+        "audioScript": "This machined cylindrical bolt head travels purely in a straight line without ever rotating. Twin side windows retain the locking rollers, while a stout extractor and plunger rod snap spent Mauser brass straight down through the receiver belly.",
+        "audioUrl": "audio/mg42/parts/mg42_bolt_head_en.mp3"
+      }
+    },
+    "mg42_locking_rollers": {
+      "partId": "mg42_locking_rollers",
+      "bomCode": "B-05",
+      "calloutLabelEn": "Right Locking Roller",
+      "zh": {
+        "roleTag": "受斜楔外撑锁入枪管节套承压390兆帕的右侧硬化闭锁滚柱",
+        "overview": "安装于机头右侧滑窗内的高硬度圆柱形闭锁滚柱。它在击针斜楔推挤下沿右侧径向弹出二点八毫米，死死卡入锻钢枪管节套凹槽构成刚性闭锁。",
+        "craftAndMaterial": "采用高铬滚动轴承钢经深冷淬火与镜面无心磨削制成，表面硬度超过洛氏六十度，具备极强的抗压溃与抗滚压疲劳能力。",
+        "kinematicRole": "阶段二被击针斜楔向外顶出二点八毫米完成刚性闭锁，阶段三随枪管短后坐承压，阶段四受机匣开锁斜面挤压向中轴内缩解锁并反推斜楔加速机框后坐。",
+        "designHighlight": "圆柱线接触受力分布极其均匀且自带微量滚动自洁效应，泥沙杂物在高压滚压下会被自动挤开而不致卡死闭锁。",
+        "audioScript": "眼前这枚亮如镜面的右侧高铬轴承钢滚柱，是维尔纳·格鲁纳闭锁架构的灵魂。当机头抵拢枪膛，中央斜楔立刻将它向右顶出二点八毫米锁死在枪管节套内，牢牢抗住三百九十兆帕的猛烈燃气反推。",
+        "audioUrl": "audio/mg42/parts/mg42_locking_rollers_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right-Side (+Z) Hardened Steel Locking Roller",
+        "overview": "A precision-ground cylindrical bearing-steel roller seated in the right window of the bolt head, cammed 2.8 millimeters outward into the barrel extension to lock the breech.",
+        "craftAndMaterial": "Through-hardened high-chromium bearing steel mirror-ground above 60 HRC for extreme compressive fatigue resistance under repeated 390 MPa shock loads.",
+        "kinematicRole": "Cams radially outward in phase two under wedge thrust, stays rigidly locked through short recoil in phase three, and squeezes inward during phase four to transfer momentum to the carrier.",
+        "designHighlight": "Rolling line-contact geometry slashes sliding friction and self-clears fine battlefield dust, inspiring generations of post-war HK roller firearms.",
+        "audioScript": "This mirror-ground right bearing-steel roller sits at the heart of Werner Gruner's locking genius. Wedged 2.8 millimeters outward into the barrel extension on lockup, it holds back 390 megapascals of pressure before camming smoothly inward to unlock.",
+        "audioUrl": "audio/mg42/parts/mg42_locking_rollers_en.mp3"
+      }
+    },
+    "mg42_locking_roller_left": {
+      "partId": "mg42_locking_roller_left",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Left Locking Roller",
+      "zh": {
+        "roleTag": "与右滚柱180度绝对对称均衡分摊膛压的左侧闭锁滚柱",
+        "overview": "位于机头左侧滑窗的镜像对称淬火闭锁滚柱，与右侧滚柱同步反向伸缩，将七点九二毫米毛瑟弹底巨大推力均匀对称导入枪管节套双壁。",
+        "craftAndMaterial": "与右滚柱同批次配对磨削的高铬淬火轴承钢柱体，尺寸公差严格控制在微米级以确保双侧同步接触均衡承压。",
+        "kinematicRole": "在阶段二向左侧弹出二点八毫米锁入节套左槽，阶段四与右滚柱绝对同步向中心回缩解除闭锁；在全分解阶段向左横移展示对称布局。",
+        "designHighlight": "百分百对称的双向径向闭锁彻底消除了非对称闭锁机构常见的侧向偏心弯矩，赋予 MG 42 极佳的远距离连发射弹密集度。",
+        "audioScript": "这枚左侧闭锁滚柱与右侧滚柱呈一百八十度完美镜像配对。闭锁时二者同步向两侧弹出撑死枪管节套，把数吨重的膛压推力彻底平衡在中轴线上，不留一丝偏心抖动。",
+        "audioUrl": "audio/mg42/parts/mg42_locking_roller_left_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Left-Side (-Z) Symmetric Locking Roller",
+        "overview": "The exact mirror counterpart to the right roller, seated in the left bolt-head window to distribute breech thrust symmetrically across both walls of the barrel extension.",
+        "craftAndMaterial": "Matched high-chromium hardened bearing steel cylinder ground to micron tolerances so both rollers seat simultaneously under full load.",
+        "kinematicRole": "Extends 2.8 millimeters leftward into the extension recess at phase two and retracts symmetrically inward with its partner during phase four unlocking.",
+        "designHighlight": "Perfect bilateral force balance eliminates asymmetric receiver flexing, keeping sustained bursts tightly grouped out to distant targets.",
+        "audioScript": "Matched to micron tolerances with its right-hand twin, this left locking roller extends outward symmetrically on lockup. By splitting colossal chamber thrust evenly across both sides of the barrel extension, it eliminates lateral torque during rapid fire.",
+        "audioUrl": "audio/mg42/parts/mg42_locking_roller_left_en.mp3"
+      }
+    },
+    "mg42_locking_wedge": {
+      "partId": "mg42_locking_wedge",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Firing Pin Locking Wedge",
+      "zh": {
+        "roleTag": "双斜面撑开双滚柱并同步探出击针的机械本质防早发斜楔",
+        "overview": "连接于重型机框前端的斜楔闭锁件（Steuerstück）与高强度击针一体组件。它同时承担撑开双滚柱闭锁、传递击发冲量与反推加速机框三重使命。",
+        "craftAndMaterial": "渗碳高韧性工具钢精密铣削与感应淬火，前段呈精确对称楔形斜面，前端固装抛光圆头工具钢击针。",
+        "kinematicRole": "阶段二在机头止动后继续前冲七点五毫米撑开两枚滚柱并同步露出击针刺破底火；阶段四被内缩滚柱反向楔推，将后坐动能高效加速导入重机框。",
+        "designHighlight": "击针长度与斜楔行程刚性联动，只要双滚柱未完全锁入节套，击针尖就绝不可能越出机头镜面，从物理几何上彻底杜绝未闭锁炸膛。",
+        "audioScript": "贯穿机头中央的这件双斜面钢楔与击针组合，身兼闭锁推手与安全守门员两职。复进最后七点五毫米它同时把两枚滚柱撑进节套，唯有彻底锁死瞬间击针尖才探出镜面点燃底火，绝对杜绝未闭锁早发。",
+        "audioUrl": "audio/mg42/parts/mg42_locking_wedge_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Firing Pin & Beveled Roller-Camming Wedge",
+        "overview": "An integrated beveled steel locking piece and firing pin mounted ahead of the bolt carrier that spreads both locking rollers outward and strikes the cartridge primer.",
+        "craftAndMaterial": "Induction-hardened shock-resistant tool steel with precision-ground symmetric cam slopes and a polished hemispherical firing-pin tip.",
+        "kinematicRole": "Surges 7.5 millimeters past the seated bolt head in phase two to lock the rollers and fire the primer; during phase four, retracting rollers cam the wedge sharply rearward to accelerate the carrier.",
+        "designHighlight": "Geometrically guarantees out-of-battery safety: the firing pin physically cannot clear the bolt face until the twin rollers have fully expanded into the barrel extension.",
+        "audioScript": "Mounted ahead of the carrier, this beveled locking wedge carries the firing pin itself. During the final seven-and-a-half millimeters of forward stroke, its angled flanks spread both rollers into lock—and only at full lockup does the firing pin tip clear the bolt face to ignite the primer.",
+        "audioUrl": "audio/mg42/parts/mg42_locking_wedge_en.mp3"
+      }
+    },
+    "mg42_bolt_carrier": {
+      "partId": "mg42_bolt_carrier",
+      "bomCode": "B-08",
+      "calloutLabelEn": "550g Bolt Carrier",
+      "zh": {
+        "roleTag": "550克重型往复惯性机框、顶部S槽驱动柱与防反弹配重",
+        "overview": "MG 42 自动循环的惯性中枢，重约五百五十克。底部铣有开膛阻铁挂槽，尾部容纳三股复进簧前端，顶端竖立一枚硬化圆柱钢滚轮直接驱动顶盖输弹机构。",
+        "craftAndMaterial": "优质中碳合金钢整体模锻精铣与发黑磷化处理，顶部竖立驱动滚轮经高频渗碳镜面淬火以抵御二十赫兹高频滑动摩擦。",
+        "kinematicRole": "阶段一脱钩前冲推动机头与斜楔完成推弹闭锁，阶段四受斜楔反推高速后坐越程二十六毫米撞击尾座缓冲器，全程以顶柱驱动顶盖双级拨弹爪。",
+        "designHighlight": "内部暗藏松动式钨钢防反弹惯性块，在高速闭锁撞击瞬间继续前扑补压，消除机框弹性回跳导致的底火轻敲故障；增重机框即可轻松调节射速。",
+        "audioScript": "这块重达五百五十克的厚重钢机框是 MG 42 的节拍器。它顶端直立的那枚亮钢圆柱滚轮，直接插入顶盖 S 型轨道驱动弹链前进；机框体内还藏着惯性防反弹块，防止高速闭锁回弹引起哑火。",
+        "audioUrl": "audio/mg42/parts/mg42_bolt_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "550g Bolt Carrier w/ Top S-Cam Feed Stud",
+        "overview": "The 550-gram inertial core of the action, featuring a hardened bottom sear notch, rear driving-spring socket, internal anti-bounce mass, and vertical top feed stud.",
+        "craftAndMaterial": "Drop-forged and milled medium-carbon alloy steel finished in dark phosphate, topped with a mirror-hardened steel cam stud engineered for 20 Hz sliding contact.",
+        "kinematicRole": "Drives the bolt head and locking wedge forward in phase one, streaks 26 millimeters past the sear into the rear buffer in phase five, and oscillates the top-cover belt feed arm throughout.",
+        "designHighlight": "Houses a loose internal anti-bounce weight that follows up bolt closure to cancel elastic rebound—and swapping carrier mass directly tunes the gun's cyclic rate.",
+        "audioScript": "Weighing 550 grams, this heavy steel carrier sets the MG 42's blazing tempo. Notice the vertical steel stud perched on top—it rides directly inside the top cover's S-track to yank the belt forward, while an internal anti-bounce weight prevents bolt rebound at battery.",
+        "audioUrl": "audio/mg42/parts/mg42_bolt_carrier_en.mp3"
+      }
+    },
+    "mg42_charging_handle": {
+      "partId": "mg42_charging_handle",
+      "bomCode": "B-09",
+      "calloutLabelEn": "T-Handle Charging Slide",
+      "zh": {
+        "roleTag": "机匣右侧滑轨上拉栓后前推锁止的非随动T型折叠拉机柄",
+        "overview": "安装于机匣右侧长条冲压滑轨上的 T 字形握把拉机柄。向后猛拉可带动内部机框挂上开膛阻铁，随后前推复位至前端卡位锁紧。",
+        "craftAndMaterial": "冷冲压折弯钢导板铆接圆润粗壮的 T 形手拉圆柄，表面经锰磷化耐磨处理，即便冬季戴防寒手套亦可借全身腕力干脆上膛。",
+        "kinematicRole": "实弹全自动射击期间完全保持静止锁定于前端不随动，避免每秒二十次往复的机框击伤射手右臂或磕碰掩体；拆解进度百分之十二至二十六向右抽出。",
+        "designHighlight": "精妙的前折叠 T 形省力手柄配合滑槽杠杆省力机构，让射手能轻松克服沉重三股绞合复进簧的巨大预紧张力。",
+        "audioScript": "机匣右侧滑轨上这把粗壮的 T 字形折叠拉机柄，专为戴手套快速拉动沉重三股复进簧而生。将机框向后挂上阻铁后前推锁回原位，在每秒二十发的狂飙扫射中，拉机柄会始终纹丝不动。",
+        "audioUrl": "audio/mg42/parts/mg42_charging_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right-Flank Non-Reciprocating T-Handle Charging Slide",
+        "overview": "A rugged stamped-steel sliding carrier and folding T-grip riding along the right receiver rail to cock the heavy open-bolt group before latching forward.",
+        "craftAndMaterial": "Formed heavy-gauge cold-rolled steel guide bar riveted to a broad cylindrical T-grip with dark phosphate wear finish for confident gloved operation.",
+        "kinematicRole": "Remains locked strictly stationary at the forward detent throughout live firing so nothing reciprocates externally at 1,200 RPM; slides laterally clear during field strip.",
+        "designHighlight": "Provides ample palm leverage to retract the heavy braided driving spring while eliminating external moving hazards along the right flank.",
+        "audioScript": "Riding the right receiver track, this hefty T-handle gives gloved gunners crisp leverage against the braided driving spring. Once pushed back forward into its latch, it stays completely stationary while the bolt hammers inside twenty times a second.",
+        "audioUrl": "audio/mg42/parts/mg42_charging_handle_en.mp3"
+      }
+    },
+    "mg42_recoil_spring": {
+      "partId": "mg42_recoil_spring",
+      "bomCode": "B-10",
+      "calloutLabelEn": "Braided Driving Spring",
+      "zh": {
+        "roleTag": "三股琴钢丝互绞抗高频共振断裂的超长复进驱动主簧",
+        "overview": "纵贯机匣后半段内腔的标志性三股绞合螺旋复进驱动主簧，后端顶于尾座缓冲套，前端插入重型枪机框尾孔提供开膛前冲动力。",
+        "craftAndMaterial": "由三根高韧性弹簧琴钢丝紧密互绞成缆后再卷绕定型并低温去应力回火，钢丝间的微观库仑干摩擦自带卓越高频减振阻尼。",
+        "kinematicRole": "实时沿轴向动态伸缩：阶段一释放预压伸展推动机框前冲七十七点五毫米完成推弹闭锁击发，阶段五至六在后坐越程中被强力压紧蓄能。",
+        "designHighlight": "单股弹簧在每分钟一千两百发高频激振下极易因驻波共振折断，德军独创的三股绞合钢丝缆设计彻底攻克了高速机枪断簧顽疾。",
+        "audioScript": "这根著名的三股绞合螺旋复进主簧，是攻克高射速断簧难题的冶金奇招。三根琴钢丝互相拧紧绕制，彼此间的微小摩擦天然吸收了每秒二十次往复引发的驻波共振，赋予机枪惊人的耐用寿命。",
+        "audioUrl": "audio/mg42/parts/mg42_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Multi-Strand Braided High-Endurance Driving Spring",
+        "overview": "A full-length braided helical driving spring spanning the rear receiver cavity from the buffer sleeve into the bolt carrier to power the 1,200 RPM open-bolt cycle.",
+        "craftAndMaterial": "Three tempered piano-wire strands tightly twisted into a single cable before coiling and stress-relief baking, generating built-in inter-strand friction damping.",
+        "kinematicRole": "Deforms dynamically along the bore axis throughout the cycle—extending smoothly as the carrier slams forward 77.5 millimeters and compressing tightly during rear buffer overtravel.",
+        "designHighlight": "Defeats catastrophic harmonic spring-surge fracture caused by 20 Hz cyclic vibration, dramatically outlasting conventional single-wire recoil springs.",
+        "audioScript": "Ordinary single-wire springs shatter from harmonic resonance at 1,200 rounds per minute. German metallurgists solved this by braiding three piano wires into a single stranded cable, whose microscopic inter-wire friction damps vibration over tens of thousands of rounds.",
+        "audioUrl": "audio/mg42/parts/mg42_recoil_spring_en.mp3"
+      }
+    },
+    "mg42_recoil_buffer": {
+      "partId": "mg42_recoil_buffer",
+      "bomCode": "B-11",
+      "calloutLabelEn": "Rear Friction Buffer",
+      "zh": {
+        "roleTag": "位于旋锁尾座内的高弹性锥环摩擦高速回弹缓冲器",
+        "overview": "安装于机匣最尾端与胶木枪托接口处的重型后坐缓冲器总成（Puffer），包含高强度撞击柱塞头与内置多组锥面胀紧摩擦钢环。",
+        "craftAndMaterial": "合金工具钢车削并经表面高频淬火，外部柱塞端面经精细抛光承受重机框每秒二十次的猛烈撞击。",
+        "kinematicRole": "阶段五末至阶段六承受后坐越程二十六毫米的重机框猛撞，沿轴线后缩九点二毫米并随即与高刚度缓冲簧协同将机框高速反弹向前。",
+        "designHighlight": "不仅保护轻量化冲压钢机匣尾板免于震裂，其极高的弹性恢复系数更直接把后坐冲击转化为凌厉的前冲初速，大幅拉高理论射速。",
+        "audioScript": "藏在机匣最尾端的这只钢制撞击柱塞，就是 MG 42 的摩擦环簧高速缓冲器。当五百五十克机框高速撞来，它瞬间吸收峰值冲击又像弹射器般把机框猛弹回去，将每发循环压缩到短短五十毫秒。",
+        "audioUrl": "audio/mg42/parts/mg42_recoil_buffer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rear Friction-Ring Recoil Buffer Plunger",
+        "overview": "Housed inside the twist-lock rear receiver cap, this heavy buffer plunger and ring-friction assembly arrests the 550g bolt carrier at rear dead center and snaps it back forward.",
+        "craftAndMaterial": "Precision-turned hardened tool-steel plunger head backed by mating tapered expansion friction rings engineered for relentless high-impact endurance.",
+        "kinematicRole": "Compresses rearward 9.2 millimeters as the carrier overtravels into rear dead center during phases five and six, then rebounds sharply to accelerate the next feed stroke.",
+        "designHighlight": "Shields the stamped sheet-steel receiver rear from cracking while turning carrier impact energy directly into rapid counter-recoil velocity.",
+        "audioScript": "Tucked inside the twist-lock rear housing, this heavy friction-ring buffer catches the 550-gram bolt carrier at the end of every high-velocity stroke. Rather than merely absorbing shock, it acts like a mechanical trampoline, snapping the carrier forward to keep the cycle at fifty milliseconds.",
+        "audioUrl": "audio/mg42/parts/mg42_recoil_buffer_en.mp3"
+      }
+    },
+    "mg42_buffer_spring": {
+      "partId": "mg42_buffer_spring",
+      "bomCode": "B-12",
+      "calloutLabelEn": "Heavy Buffer Spring",
+      "zh": {
+        "roleTag": "承受重机框越程猛撞并剧烈压缩42%的高刚度回弹压簧",
+        "overview": "套装于尾座缓冲器后腔的粗线径高刚度螺旋回弹压簧，专门吸收重型机框越过开膛阻铁后残余的巨大后坐动能。",
+        "craftAndMaterial": "特粗直径硅锰弹簧钢丝绕制并经喷丸强化与油淬回火，具备极高的抗冲击刚度与抗永久塌陷性能。",
+        "kinematicRole": "在阶段五末至阶段六随缓冲柱塞剧烈轴向压缩至原长百分之五十八，随后迅猛回弹助推机框回归待击区；随尾座在拆解前段拉出。",
+        "designHighlight": "与三股主复进簧分工协作：主簧负责长行程平顺加速，尾座粗簧专攻末端硬缓冲与疾速换向，令超高速连发节奏紧凑利落。",
+        "audioScript": "紧贴缓冲柱塞背后的这根超粗线径高刚度压簧，专门硬扛重机框后坐末端的爆发冲量。在最后二十六毫米越程中它瞬间压缩四成以上，随即把积蓄的弹性能猛然释放推动自动机高速返航。",
+        "audioUrl": "audio/mg42/parts/mg42_buffer_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Rate Rear Buffer Rebound Coil Spring",
+        "overview": "A heavy-wire high-rate coil spring nested inside the rear buffer housing to absorb residual carrier kinetic energy during overtravel past the sear.",
+        "craftAndMaterial": "Shot-peened silicon-manganese heavy spring steel tempered for extreme impact stiffness and zero permanent set over sustained combat bursts.",
+        "kinematicRole": "Compresses dynamically to 58 percent of free length during phase six buffer impact before springing briskly back to launch the carrier forward.",
+        "designHighlight": "Splits work cleanly with the braided driving spring: long-stroke feeding stays smooth while terminal turnaround becomes lightning fast.",
+        "audioScript": "Directly behind the buffer plunger sits this heavy-wire rebound coil spring. During the final twenty-six millimeters of bolt overtravel, it compresses over forty percent to soak up peak shock and instantly sling the carrier back into battery.",
+        "audioUrl": "audio/mg42/parts/mg42_buffer_spring_en.mp3"
+      }
+    },
+    "mg42_receiver_shroud": {
+      "partId": "mg42_receiver_shroud",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Stamped Shroud & Receiver",
+      "zh": {
+        "roleTag": "整体冷轧钢板冲压折弯点焊机匣与长窗多孔冷却护筒",
+        "overview": "全枪最富辨识度的冷冲压一体式机匣与矩形多孔枪管冷却护筒，全长九十厘米，集成了滑轨、右侧换管窗、下抛壳口与前端折叠准星座。",
+        "craftAndMaterial": "采用两毫米半冷轧低碳合金钢板经大型液压冲床一次冲孔折弯并电阻点焊镶嵌淬火内导轨，表面锰系磷化发黑，左侧打刻 cra 1943 柏林工厂钢印。",
+        "kinematicRole": "作为全枪静止基准骨架承托全部二十四件动静机构，透视或纵剖模式下可清晰洞悉滚柱闭锁、短后坐枪管与向下抛壳全貌。",
+        "designHighlight": "将传统机枪复杂的机加工件化繁为简为钣金冲压一体结构，制造工时较 MG 34 骤减一半，开创了现代轻武器冲压工业纪元。",
+        "audioScript": "这道修长硬朗、布满长椭圆散热窗的一体式冲压钢护筒与机匣，正是 MG 42 最震撼人心的工业美学符号。格鲁纳用两毫米半冷轧钢板一次冲压折弯焊成主体，让制造工时暴跌一半，左侧刻有柏林 cra 一九四三年原厂钢印。",
+        "audioUrl": "audio/mg42/parts/mg42_receiver_shroud_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Monolithic Stamped Receiver & Perforated Cooling Shroud",
+        "overview": "The iconic 90-centimeter cold-stamped sheet-steel receiver and perforated rectangular barrel cooling jacket incorporating internal guide rails, belly ejection port, right barrel window, and folding front sight.",
+        "craftAndMaterial": "Pressed and spot-welded from 2.5-millimeter cold-rolled steel sheet with hardened rail inserts, satin dark phosphate finish, and sharp left-flank cra 1943 factory rollmarks.",
+        "kinematicRole": "Forms the stationary structural backbone housing all reciprocating assemblies; becomes translucent in X-Ray and slices cleanly in cutaway mode to expose the twin-roller breech.",
+        "designHighlight": "Cut machining time from 150 hours on the MG 34 down to 75 hours, ushering in the modern era of mass-produced stamped steel infantry weapons.",
+        "audioScript": "This long, perforated rectangular shroud and monolithic receiver embody the MG 42's unmistakable silhouette. Pressed from 2.5-millimeter sheet steel and stamped with 1943 Berlin cra markings, it cut manufacturing time in half and revolutionized small-arms fabrication.",
+        "audioUrl": "audio/mg42/parts/mg42_receiver_shroud_en.mp3"
+      }
+    },
+    "mg42_top_cover": {
+      "partId": "mg42_top_cover",
+      "bomCode": "F-02",
+      "calloutLabelEn": "S-Cam Top Feed Cover",
+      "zh": {
+        "roleTag": "内置S型双向凸轮输弹轨道的铰接冲压受弹器顶盖",
+        "overview": "前端铰接于机匣中上部的重型冲压钢受弹器顶盖，尾端设弹簧释放卡笋。内顶板精密固定 S 形曲线凸轮轨道，是全枪双向输弹机的驱动源头。",
+        "craftAndMaterial": "冷轧高强钢板深拉冲压成形并配有双侧加强翻边筋与淬火内滑道，表面与机匣统一覆暗灰缎面磷化保护层。",
+        "kinematicRole": "射击全程紧密锁闭并在内腔引导机框顶柱驱使拨弹臂左右摆动；在野战拆解最先阶段向上掀翻展开，暴露整个受弹器与供弹组件。",
+        "designHighlight": "这套将往复运动经 S 槽转为横向拨链的顶盖设计，战后被美国 M60、比利时 FN MAG 与 M249 几乎原封不动沿用至今。",
+        "audioScript": "机匣上方这具前铰接冲压顶盖，内藏改变世界机枪史的秘密——一道精密的 S 型曲线凸轮轨道。机框顶部的竖直滚轮在槽内飞速穿梭，将其化作平稳的左右输弹动作，战后 M60 与 M249 至今仍在沿用这套天才设计。",
+        "audioUrl": "audio/mg42/parts/mg42_top_cover_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hinged Stamped Top Cover w/ Internal S-Cam Track",
+        "overview": "A front-hinged heavy stamped-steel top feed cover latched at the rear, enclosing the curved internal S-cam channel that powers lateral belt feeding.",
+        "craftAndMaterial": "Deep-drawn cold-rolled steel housing with stiffening ribs, hardened internal S-cam channel inserts, and satin manganese phosphate corrosion protection.",
+        "kinematicRole": "Remains latched closed during live fire to guide the carrier's top feed stud; swings upward first during field strip to clear the belt and inspect the action.",
+        "designHighlight": "Its internal S-cam feed cover layout proved so effective that NATO's M60, FN MAG, and M249 SAW inherited the concept nearly verbatim.",
+        "audioScript": "Hinged at the front of the receiver, this stamped top cover conceals an internal S-shaped cam track. As the bolt carrier's top stud races through that curve, it translates linear recoil into effortless belt feeding—a masterstroke copied by the M60 and M249.",
+        "audioUrl": "audio/mg42/parts/mg42_top_cover_en.mp3"
+      }
+    },
+    "mg42_aa_sight": {
+      "partId": "mg42_aa_sight",
+      "bomCode": "F-03",
+      "calloutLabelEn": "AA Spider & Tangent Sight",
+      "zh": {
+        "roleTag": "200至2000米地面弧形表尺与双同心环防空蛛网照门",
+        "overview": "安装在顶盖前端散热护筒脊部的双模式机械瞄准总成：后部为带滑动游标的弧形表尺照门，前方竖立经典可翻折同心双环十字丝防空蛛网瞄具（Fliegervisier）。",
+        "craftAndMaterial": "精密铣削高碳钢表尺座配精刻射程数字标尺与焊制高强钢丝同心蛛网环，经哑光发黑防眩光处理，确保逆光瞄准清晰锐利。",
+        "kinematicRole": "射击时稳固坐落于冷却护筒顶部提供精确地面与对空瞄准基准；在分解中段向上整体脱离护筒燕尾座。",
+        "designHighlight": "内外两道同心提前量标定环让野战机枪班在面对低空俯冲攻击机时，无需复杂计算器即可迅速框定航向提前量织成对空弹幕。",
+        "audioScript": "耸立在顶盖前方的这组机械瞄具兼顾了地面与天空。底座是精确刻度至两千米的滑动表尺，前方竖立的同心双环十字蛛网照门，能让射手在面对低空俯冲战机时一眼估出提前量，瞬间倾泻对空弹幕。",
+        "audioUrl": "audio/mg42/parts/mg42_aa_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "2,000m Tangent Rear Sight & Concentric AA Spider Sight",
+        "overview": "A dual-role iron sight station combining a graduated 200-to-2,000-meter tangent leaf sight with the iconic fold-up concentric spider ring anti-aircraft sight.",
+        "craftAndMaterial": "Milled carbon-steel tangent leaf base paired with brazed spring-steel concentric lead rings and crosshairs finished in glare-free matte black oxide.",
+        "kinematicRole": "Remains anchored atop the forward shroud datum during firing for both ground suppression and aerial lead estimation; lifts clear during upper disassembly.",
+        "designHighlight": "Concentric circular rings gave infantry crews immediate visual angular-lead references against fast low-flying attack aircraft at 1,200 RPM.",
+        "audioScript": "Mounted ahead of the feed cover sits this dual-purpose sight unit. Behind lies a 2,000-meter graduated tangent ladder for ground suppression, while the iconic concentric spider ring flips upright to help gunners lead fast low-flying aircraft.",
+        "audioUrl": "audio/mg42/parts/mg42_aa_sight_en.mp3"
+      }
+    },
+    "mg42_bipod": {
+      "partId": "mg42_bipod",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Zweibein 42 Bipod",
+      "zh": {
+        "roleTag": "可前中双位快装的Zweibein 42折叠冲压槽钢两脚架",
+        "overview": "扣装于散热护筒前端底部环槽的德军制式 Zweibein 42 重型折叠两脚架，配有冲压 U 形双腿、滚花高度调节螺杆与宽大防陷铲形驻脚。",
+        "craftAndMaterial": "冷冲压折弯高强度槽钢双腿配锻钢旋转锁箍，行军时向后折贴于护筒腹下卡扣锁紧，兼具轻量化与极强抗扭刚度。",
+        "kinematicRole": "在展台处于经典的向后折叠携行收拢姿态紧贴护筒下方，射界稳定无悬空；分解进度百分之二十二至五十六向下脱离护筒卡箍。",
+        "designHighlight": "独创的前端与中段双挂点快拆结构：挂在前端可获得最佳远射精度，移至护筒中段则大幅拓宽左右扫射扇面，完美契合通用机枪多面手定位。",
+        "audioScript": "扣挂在冷却护筒腹下的这副 Zweibein 42 冲压槽钢两脚架，行军时优雅地向后折贴枪身。它既能锁在前端追求远距稳固精度，也能一秒移至护筒中段大幅拓展左右扫射扇面，宽大铲脚在泥雪中纹丝不动。",
+        "audioUrl": "audio/mg42/parts/mg42_bipod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Zweibein 42 Folding Stamped-Steel Bipod",
+        "overview": "The standard quick-detach stamped U-channel steel bipod clamped beneath the cooling shroud, featuring broad anti-sink spade feet and an elevation limit screw.",
+        "craftAndMaterial": "Cold-formed high-strength channel steel legs pivoting from a forged steel barrel-jacket yoke with dark field-hardened phosphate finish.",
+        "kinematicRole": "Folds cleanly rearward beneath the perforated shroud in transport configuration and drops away cleanly during mid-stage disassembly.",
+        "designHighlight": "Clamps either at the shroud nose for maximum long-range stability or at the mid-shroud track for wide sweeping arcs of fire.",
+        "audioScript": "Clamped beneath the perforated jacket, the Zweibein 42 stamped steel bipod folds sleekly rearward for transport. Gunners could mount it near the muzzle for rock-steady precision or slide it back to mid-shroud for wide sweeping bursts, anchored by broad spade feet.",
+        "audioUrl": "audio/mg42/parts/mg42_bipod_en.mp3"
+      }
+    },
+    "mg42_buttstock": {
+      "partId": "mg42_buttstock",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Bakelite Buttstock",
+      "zh": {
+        "roleTag": "旋转90度免工具秒拆的深红褐大理石纹酚醛胶木枪托",
+        "overview": "MG 42 极具辨识度的空颈旋锁枪托，前连带卡笋钢锁环，后包冲压弧面钢托底板，左侧削出宽大弱手反握下压弧槽以便卧姿控枪。",
+        "craftAndMaterial": "采用战时德国领先的高分子化工材料——深红褐大理石纹酚醛树脂纤维增强胶木（Bakelite）模压成型，兼顾耐潮防裂与低成本，配磷化钢锁环底板。",
+        "kinematicRole": "射击时稳固锁合机匣尾端抵肩分摊后坐冲量；野战快拆阶段按压卡笋顺时针旋转九十度即可整体后拔脱出，即刻暴露后缓冲器与复进簧。",
+        "designHighlight": "独特的左侧下凹镂空鱼腹颈部专为机枪手左手反手死扣抵肩设计，将每分钟一千两百发的狂暴枪口上跳牢牢按在目标之上。",
+        "audioScript": "这支深红褐大理石纹的酚醛胶木枪托，堪称二战化工材料与人机工程的巧妙结晶。它左侧刻意挖出的弧形凹槽，专为卧姿射手左手反扣压枪控跳而生；按下卡笋旋转九十度，一秒就能卸下枪托检修缓冲器。",
+        "audioUrl": "audio/mg42/parts/mg42_buttstock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twist-Lock Marbled Bakelite Buttstock",
+        "overview": "An iconic hollow-neck buttstock featuring a steel twist-lock collar, stamped steel buttplate, and deep left-side grip recess allowing the support hand to clamp the stock down.",
+        "craftAndMaterial": "Compression-molded reddish-brown marbled phenolic Bakelite resin reinforced with wood flour, paired with dark phosphated steel mounting hardware.",
+        "kinematicRole": "Locks solidly to the rear receiver during firing; rotates ninety degrees upon depressing the spring catch during field strip to expose the buffer and recoil spring.",
+        "designHighlight": "The carved left-side wrist hollow lets prone gunners lock their off-hand tightly across the stock, taming ferocious 1,200 RPM muzzle climb.",
+        "audioScript": "Molded from marbled reddish-brown phenolic Bakelite, this twist-lock buttstock showcases wartime polymer innovation and smart ergonomics. Its deep left-side recess lets the support hand clamp the stock firmly into the shoulder, while a ninety-degree twist pops it free for instant teardown.",
+        "audioUrl": "audio/mg42/parts/mg42_buttstock_en.mp3"
+      }
+    },
+    "mg42_grip_frame": {
+      "partId": "mg42_grip_frame",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Bakelite Grip Frame",
+      "zh": {
+        "roleTag": "全闭环防寒大护圈、横肋胶木护片与S/F横推保险握把座",
+        "overview": "铆固于机匣腹下的冷冲压手枪握把火控盒总成，集成前后严密焊接闭环大护圈、左右横肋防滑深褐胶木护片与直观 S/F 横推物理保险栓。",
+        "craftAndMaterial": "冲压折弯碳钢主体与模压防滑横纹酚醛胶木握把贴片相结合，横推保险柱头经精细滚花抛光，明确区分安全与全自动击发态。",
+        "kinematicRole": "承托并精准定位纯连发扳机、重型开膛阻铁与阻铁弹簧，横推保险推向 S 位直接从物理上顶死阻铁防止跌落走火；拆解阶段向下整体脱离机匣。",
+        "designHighlight": "果断舍弃了 MG 34 精密却极易进泥失效的双月牙单连发扳机，以化繁为简的纯粹全自动加横栓物理保险大幅跃升了战场可靠性。",
+        "audioScript": "机匣腹下这套冷冲压手枪握把座，镶嵌着横肋防滑胶木护片与宽大防寒闭环护圈。设计师果断砍掉了 MG 34 复杂的双月牙单连发结构，只保留干脆利落的 S 与 F 横推保险栓，让泥泞战场上的火控万无一失。",
+        "audioUrl": "audio/mg42/parts/mg42_grip_frame_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stamped Bakelite Grip Frame & Cross-Bolt Safety",
+        "overview": "A stamped-steel pistol grip housing mounted beneath the receiver, fitted with horizontally ribbed Bakelite grip panels, a welded winter trigger guard, and an S/F cross-bolt safety.",
+        "craftAndMaterial": "Folded cold-rolled steel chassis clad in dark reddish-brown phenolic Bakelite scales with a polished knurled steel safety cross-bolt.",
+        "kinematicRole": "Houses and aligns the trigger, heavy open-bolt sear, and sear spring while the cross-bolt physically blocks the sear on Safe; drops downward during disassembly.",
+        "designHighlight": "Discarded the MG 34's dirt-prone dual-crescent trigger in favor of a rugged full-auto-only fire-control pack built for extreme reliability.",
+        "audioScript": "Mounted under the receiver, this stamped grip frame wears ribbed Bakelite panels and a roomy welded winter trigger guard. Abandoning the MG 34's delicate double-crescent trigger, it relies on a dead-simple cross-bolt safety for total mudproof dependability.",
+        "audioUrl": "audio/mg42/parts/mg42_grip_frame_en.mp3"
+      }
+    },
+    "mg42_trigger": {
+      "partId": "mg42_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Full-Auto Trigger",
+      "zh": {
+        "roleTag": "极简干脆纯全自动弧形钢制连发扳机",
+        "overview": "位于宽大闭环护圈内的弧形钢制纯连发扳机，不设单发断连器，通过顶部简洁杠杆直接下拽重型开膛阻铁实现零延迟全自动击发。",
+        "craftAndMaterial": "热处理高碳合金钢冲压与精磨成型，扳机指面呈舒适宽弧度以减轻持续短点射时的食指疲劳。",
+        "kinematicRole": "阶段一绕枢轴向后旋转负零点二四弧度下压开膛阻铁释放机框，在阶段六随食指松开顺滑回弹复位。",
+        "designHighlight": "在高达每秒二十发的狂飙射速下，德军机枪手经严格训练仅靠食指瞬触扳机，便能在四分之一秒内精准切出三至五发高密度致死点射。",
+        "audioScript": "大护圈内这枚线条极其洗练的弧形钢扳机没有单发档位，专为全自动压制而生。老练的机枪手全凭食指刹那点放，短短零点二秒就能吐出四到五发密集弹幕，发出标志性的撕布咆哮。",
+        "audioUrl": "audio/mg42/parts/mg42_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Full-Auto Only Curved Steel Trigger",
+        "overview": "A clean, disconnector-free curved steel trigger nested inside the winter guard, mechanically linked directly to depress the heavy open-bolt sear.",
+        "craftAndMaterial": "Heat-treated carbon alloy steel with a wide smooth face shaped for rapid fingertip burst control even while wearing combat mittens.",
+        "kinematicRole": "Pivots rearward 0.24 radians in phase one to trip the open-bolt sear and returns cleanly upon finger release ahead of phase seven catch.",
+        "designHighlight": "At twenty shots per second, trained gunners used crisp quarter-second trigger taps to deliver surgical three-to-five-round bursts.",
+        "audioScript": "Inside the winter guard sits a remarkably clean, full-auto-only curved steel trigger. Free of fragile semi-auto disconnectors, it responds instantaneously—allowing skilled gunners to feather crisp four-round bursts in less than a quarter of a second.",
+        "audioUrl": "audio/mg42/parts/mg42_trigger_en.mp3"
+      }
+    },
+    "mg42_sear": {
+      "partId": "mg42_sear",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Open-Bolt Sear Catch",
+      "zh": {
+        "roleTag": "承受高速重机框截停冲击的渗碳淬火开膛待击主阻铁",
+        "overview": "横卧于握把盒顶部的重型开膛待击主阻铁，前端高硬挂机鼻向上探入机匣导轨，精准钩住重达五百五十克的枪机框底槽。",
+        "craftAndMaterial": "采用高抗剪合金钢整体铣削并经深层渗碳表面硬化，挂机工作面细致研磨确保松手即稳、毫不滑脱。",
+        "kinematicRole": "阶段一受扳机拉动向下沉降三点六毫米放出重机框，在阶段七迅速弹回高位截停复进中的机框使弹膛敞开散热。",
+        "designHighlight": "高强度大截面的宽挂机鼻扛得住每秒二十次高速冲击与跌落震动，是开膛高速通用机枪绝不走火失控的生命防线。",
+        "audioScript": "紧挨机框下方的这块渗碳淬火重型阻铁，肩负着刹停五百五十克狂奔钢块的艰巨重任。扣下扳机它下沉三点六毫米放飞自动机，松开手指立刻向上弹起咬死机框，让炙热弹膛安全敞开降温。",
+        "audioUrl": "audio/mg42/parts/mg42_sear_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Case-Hardened Heavy Open-Bolt Sear",
+        "overview": "A stout case-hardened steel catch projecting upward from the trigger housing into the receiver floor to arrest the 550-gram bolt carrier in its open-bolt ready position.",
+        "craftAndMaterial": "Milled high-shear alloy steel deeply case-hardened with a precisely ground engagement nose engineered against premature slip or wear.",
+        "kinematicRole": "Depresses 3.6 millimeters in phase one to release the bolt group, then snaps decisively upward in phase seven to lock the returning carrier open.",
+        "designHighlight": "Built with massive shear cross-section to stop runaway fire cleanly and prevent drop-induced accidental discharges.",
+        "audioScript": "Seated directly beneath the bolt raceway, this deeply case-hardened sear bears the brutal job of stopping a 550-gram steel carrier in mid-flight. Dropping 3.6 millimeters to start the burst, it snaps upright on trigger release to leave the hot chamber open to cooling air.",
+        "audioUrl": "audio/mg42/parts/mg42_sear_en.mp3"
+      }
+    },
+    "mg42_sear_spring": {
+      "partId": "mg42_sear_spring",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Sear Return Spring",
+      "zh": {
+        "roleTag": "毫秒级向上顶升重型开膛阻铁的高张力螺旋复位簧",
+        "overview": "垂直安装于火控盒内部支撑在开膛阻铁下腹的紧凑高刚度螺旋压簧，持续提供果断向上的复位推力。",
+        "craftAndMaterial": "高弹性琴钢丝紧密绕制并经蓝化防锈回火处理，耐高湿泥水腐蚀与高频往复压缩疲劳。",
+        "kinematicRole": "在阶段一扣下扳机时实时动态压缩百分之二十六，松开扳机后在数毫秒内将阻铁顶回高位截停连发。",
+        "designHighlight": "虽为全枪体积最小的核心件之一，却直接决定了一千两百发每分钟极速弹幕能否在食指松开的刹那干净利落地收枪停火。",
+        "audioScript": "这枚垂直顶在阻铁下方的精致琴钢丝螺旋压簧虽然小巧，却掌管着收枪停火的精准节奏。每当食指松开扳机，它只需几毫秒就能把阻铁高高顶起，干脆利落地切断每秒二十发的弹幕狂潮。",
+        "audioUrl": "audio/mg42/parts/mg42_sear_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Tension Helical Sear Return Spring",
+        "overview": "A compact vertical helical compression spring trapped inside the grip frame beneath the open-bolt sear, supplying instant upward return force.",
+        "craftAndMaterial": "High-tensile tempered piano wire with corrosion-resistant blued finish built to endure millions of rapid compression cycles.",
+        "kinematicRole": "Compresses dynamically by 26 percent when the trigger drops the sear in phase one, then snaps the sear upright in milliseconds upon trigger release.",
+        "designHighlight": "Ensures crisp burst termination without runaway rounds even at the MG 42's blazing 1,200 RPM cyclic tempo.",
+        "audioScript": "Though tiny, this vertical piano-wire spring dictates how cleanly the MG 42 stops firing. Compressed twenty-six percent during trigger pull, it snaps the heavy sear upright within milliseconds the instant the gunner lifts a finger.",
+        "audioUrl": "audio/mg42/parts/mg42_sear_spring_en.mp3"
+      }
+    },
+    "mg42_feed_tray": {
+      "partId": "mg42_feed_tray",
+      "bomCode": "M-01",
+      "calloutLabelEn": "7.92mm Belt Feed Tray",
+      "zh": {
+        "roleTag": "铰接式冲压加强筋七点九二毫米弹链受弹器托盘",
+        "overview": "横跨机匣中段上方、与顶盖共轴铰接的冲压钢受弹盘。它左接突击弹鼓或长弹链，右设竖直挡弹壁，将每发七点九二毫米毛瑟实弹精准定位于枪机前冲轴线上。",
+        "craftAndMaterial": "高强冲压钢板模压成型，边缘滚圆降阻并装配底面防退爪，确保重链爬升时绝不向左侧滑坠。",
+        "kinematicRole": "射击全程稳固托举 Gurt 34 弹链并导正推弹姿态，枪机穿过中央豁口直接剥弹入膛；拆解前期向左上方翻折拆离。",
+        "designHighlight": "向上掀开受弹盘即可一览无余地检查弹膛与机头状态，免工具直排战场故障。",
+        "audioScript": "横跨机匣上口的这片冲压钢受弹托盘，是弹链踏入枪膛前的最后一座精密舞台。左缘平滑过渡减少拉链摩擦，右侧垂直挡肩把每发七点九二毫米毛瑟实弹稳稳卡在枪机正前方，等待推弹入膛。",
+        "audioUrl": "audio/mg42/parts/mg42_feed_tray_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hinged Stamped-Steel 7.92mm Feed Tray",
+        "overview": "A stamped-steel belt tray pivoting on the same front hinge pin as the top cover, guiding incoming 7.92×57mm belts from left to right against a precision cartridge stop.",
+        "craftAndMaterial": "Formed high-strength sheet steel with smooth radiused left entry lip, rigid right cartridge-stop wall, and dark protective phosphate plating.",
+        "kinematicRole": "Holds the active belted cartridge squarely centered ahead of the reciprocating bolt head throughout firing; flips up during field strip for full chamber inspection.",
+        "designHighlight": "Allows immediate top-down visual inspection of the breech and tool-free stoppage clearing under fire.",
+        "audioScript": "Spanning the top of the receiver, this hinged stamped-steel tray guides heavy 7.92-millimeter belts cleanly into firing alignment. Its smooth left lip eases belt lift while the right stop shoulder positions every cartridge squarely in front of the advancing bolt.",
+        "audioUrl": "audio/mg42/parts/mg42_feed_tray_en.mp3"
+      }
+    },
+    "mg42_feed_pawl": {
+      "partId": "mg42_feed_pawl",
+      "bomCode": "M-02",
+      "calloutLabelEn": "S-Cam Shuttle Feed Pawls",
+      "zh": {
+        "roleTag": "后坐半步加复进半步接力拉链的双级弹簧梭动拨弹爪总成",
+        "overview": "装配于顶盖内侧的枢轴拨弹曲柄与内外双级弹簧棘爪滑板组件。它由机框顶部钢柱通过 S 型导槽驱使，将纵向直线运动精准化为横向平稳拨链动作。",
+        "craftAndMaterial": "高耐磨合金钢精密冲铣并经渗碳淬火，双级棘爪配独立压缩弹簧，在高速拉链中滑面呈现亮银磨光质感。",
+        "kinematicRole": "在阶段一至二的前冲与阶段五的后坐两段行程中双向左右往复梭动，每半个冲程把 Gurt 34 弹链向右推进半个弹距，合成一个完整十四点五毫米进给步距。",
+        "designHighlight": "这项把单次粗暴猛拽化作双程温柔接力的天才发明，让 MG 42 在二十赫兹超高射速下依然从容拉动长达两百五十发的沉重弹链而永不断链。",
+        "audioScript": "藏在顶盖之下的这套双级梭动拨弹爪，堪称现代机枪供弹学的教科书。它把拉动沉重弹链的任务一分为二：后坐拉半步、复进再推半步，把峰值拉力硬生生减半，造就二十赫兹永不断链的传奇稳定性。",
+        "audioUrl": "audio/mg42/parts/mg42_feed_pawl_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Stage S-Cam Shuttle Belt Feed Pawls",
+        "overview": "A pivoting top-cover feed arm linked to dual inner and outer spring-loaded shuttle pawls driven directly by the bolt carrier's top stud inside the S-cam slot.",
+        "craftAndMaterial": "Case-hardened precision-milled alloy steel slide and spring-tensioned pawls burnished bright along high-speed bearing contact flanks.",
+        "kinematicRole": "Oscillates laterally across both bolt strokes—pulling the Gurt 34 belt half a pitch rightward on recoil and completing the second half on counter-recoil.",
+        "designHighlight": "Splitting belt acceleration across both half-cycles cuts peak link tension in half, preventing belt separation at 1,200 rounds per minute.",
+        "audioScript": "Tucked beneath the top cover, this dual-stage shuttle pawl assembly solved high-speed belt feeding forever. Driven by the carrier's top stud, twin opposing pawls pull the steel belt half a cartridge pitch on recoil and half on return, cutting peak strain in half.",
+        "audioUrl": "audio/mg42/parts/mg42_feed_pawl_en.mp3"
+      }
+    },
+    "mg42_ammo_belt": {
+      "partId": "mg42_ammo_belt",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Gurt 34 Steel Belt",
+      "zh": {
+        "roleTag": "装载7.92×57mm毛瑟198格令重尖弹的Gurt 34不可散钢链段",
+        "overview": "德军制式 Gurt 34 弹簧钢不可散金属弹链段，满载金黄黄铜壳七点九二乘五十七毫米毛瑟（8mm Mauser）重尖船尾全威力步枪弹，悬弧自左侧弹鼓送入受弹器。",
+        "craftAndMaterial": "烤蓝高弹弹簧钢冲压开口链环借小钢丝铰链每五十发串联成节，实弹为拉制 C26000 黄铜无底缘瓶颈壳配覆铜重尖船尾弹头。",
+        "kinematicRole": "射击阶段五至六受双级拨弹爪向右步进十四点五毫米，枪机前冲直接将首弹向前推离钢链开口入膛，空钢链则自右侧连续垂落以便回收复装。",
+        "designHighlight": "相比早期一战吸湿膨胀卡枪的帆布弹带，全金属 Gurt 34 钢链无惧雨雪泥泞且可通过一发实弹首尾串联成无限长阵地弹链。",
+        "audioScript": "这条自左侧优雅悬垂的 Gurt 34 烤蓝钢链，满载着威力惊人的七点九二乘五十七毫米毛瑟黄铜步枪弹。全金属弹簧链环彻底告别了遇水卡枪的旧式帆布带，单发实弹就能把五十发链节无限串联成火力长龙。",
+        "audioUrl": "audio/mg42/parts/mg42_ammo_belt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Gurt 34 Steel Belt w/ 7.92×57mm Mauser Rounds",
+        "overview": "A draped segment of linked blued spring-steel Gurt 34 non-disintegrating belt loaded with C26000 brass-cased 7.92×57mm Mauser 198-grain s.S. boat-tail spitzer cartridges.",
+        "craftAndMaterial": "Blued open-pocket spring-steel links joined by wire hinges in 50-round sections, holding rimless bottleneck brass cases and gilding-metal spitzer bullets.",
+        "kinematicRole": "Steps 14.5 millimeters rightward per cycle as the bolt pushes live rounds straight forward out of the open link pockets, expelling empty steel links to the right.",
+        "designHighlight": "Replaced moisture-swelling WWI cloth belts with mudproof metal links that could be joined end-to-end with a single cartridge for sustained defense.",
+        "audioScript": "Draping cleanly from the left drum, this blued spring-steel Gurt 34 belt holds full-power 7.92-by-57-millimeter Mauser cartridges. Unlike rain-swollen canvas belts of World War One, these open-pocket steel links shrugged off mud and linked effortlessly into endless 250-round chains.",
+        "audioUrl": "audio/mg42/parts/mg42_ammo_belt_en.mp3"
+      }
+    },
+    "mg42_ammo_drum": {
+      "partId": "mg42_ammo_drum",
+      "bomCode": "M-04",
+      "calloutLabelEn": "50-Rd Gurttrommel 34",
+      "zh": {
+        "roleTag": "机匣左侧快挂式50发野战灰冲压钢突击弹鼓(Gurttrommel 34)",
+        "overview": "沿用自 MG 34 并无缝兼容 MG 42 的经典蜗壳形五十发侧挂突击弹鼓。它直接卡扣于机匣左侧供弹口下方，内装一整节盘绕式五十发 Gurt 34 弹链。",
+        "craftAndMaterial": "冷冲压薄钢板卷焊成圆柱鼓体并冲出环形加强筋，外覆二战德军标准野战灰绿烤漆并喷印白色“GURTTROMMEL 34 · 50 PATR. 7,92”标识。",
+        "kinematicRole": "挂装于机匣左侧构成轻机枪突击冲锋形态，屏蔽外部杂草砂石防止散链缠挂；野战分解最先阶段向左下方摘脱释放弹链。",
+        "designHighlight": "让重达十一点六公斤的通用机枪在没有副射手托链的情况下，也能由主射手独自抵腰突击，两秒半内倾泻整整五十发压制弹幕。",
+        "audioScript": "扣挂在机匣左侧的这只野战灰蜗壳钢筒，是著名的 Gurttrommel 34 五十发突击弹鼓。它把一整段五十发钢链安全盘卷在密封铁壳中防止树枝泥沙缠绕，让主射手即便孤身突击也能瞬间泼洒两秒半的压制火雨。",
+        "audioUrl": "audio/mg42/parts/mg42_ammo_drum_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Gurttrommel 34 Side-Hung 50-Round Assault Drum",
+        "overview": "A classic cylindrical snail-neck sheet-steel assault drum clipped onto the left receiver feed mouth, housing a coiled 50-round Gurt 34 belt for mobile infantry maneuvers.",
+        "craftAndMaterial": "Spot-welded stamped sheet steel with concentric reinforcing ribs, painted wartime Feldgrau field-gray enamel and stenciled with 50-round 7.92mm ordnance markings.",
+        "kinematicRole": "Hangs securely off the left feed mouth during firing to shield the belt from mud and brush; unclips downward and leftward at the start of field disassembly.",
+        "designHighlight": "Transformed the 11.6-kilogram belt-fed machine gun into an agile solo assault weapon capable of dumping fifty rifle rounds on the move without an assistant gunner.",
+        "audioScript": "Clipped to the left feed mouth hangs the field-gray Gurttrommel 34 assault drum. Enclosing a coiled fifty-round steel belt safely away from brush and mud, it let a lone gunner fire on the advance without a trailing ammunition chain.",
+        "audioUrl": "audio/mg42/parts/mg42_ammo_drum_en.mp3"
+      }
+    }
+  }
+}
