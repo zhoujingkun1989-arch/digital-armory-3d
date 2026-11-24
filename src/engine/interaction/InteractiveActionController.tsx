@@ -1305,7 +1305,502 @@ const EXPLICIT_WEAPON_ACTION_PARTS: Record<WeaponId, readonly string[]> = {
 const GENERIC_ACTION_PART_INCLUDE_RE =
   /(?:^|_)(?:slide|bolt_carrier|piston_carrier|charging_handles?|bolt_body|bolt_head|bolt|breechblock|rear_toggle|front_toggle|slider|operating_rod)(?:$|_)/i;
 const GENERIC_ACTION_PART_EXCLUDE_RE =
-  /(?:slide_lock|slide_stop|slide_catch|slide_cover|bolt_catch|crossbolts?|barrel_lock)/i;
+  /(?:slide_lock|slide_stop|slide_catch|slide_cover|bolt_catch|crossbolts?|barrel_lock|stock_bolt|cylinder_bolt|open_bolt_sear|carbon_bolt)/i;
+
+export type ActionHandleKind =
+  | 'slide'
+  | 'charging_handle'
+  | 'bolt_handle'
+  | 'lever'
+  | 'pump_forend'
+  | 'cylinder'
+  | 'toggle'
+  | 'breech_block'
+  | 'rotary_cluster'
+  | 'bowstring';
+
+export interface WeaponActionDragSpec {
+  readonly weaponId: WeaponId;
+  readonly handleKind: ActionHandleKind;
+  /** Unit 3D world-space drag vector corresponding to positive manual stroke (+rackProgress) */
+  readonly worldDragAxis: readonly [number, number, number];
+  /** Optional per-part drag axis override for exhibits with multi-axis mechanisms (e.g. tank wedges, revolver cylinder, lever vs bolt) */
+  readonly partAxisOverrides?: Readonly<
+    Record<string, readonly [number, number, number]>
+  >;
+  /** Screen-space drag span multiplier (lower = crisper short stroke, higher = heavier long throw) */
+  readonly strokeSpanScale: number;
+  /** Damped spring-return rate (1/s) governing snap-back into battery */
+  readonly springReturnRate: number;
+  /** Mechanical detent thresholds along [0..1] triggering tactile audio feedback */
+  readonly detentThresholds: readonly number[];
+  readonly labelZh: string;
+  readonly labelEn: string;
+}
+
+const AXIS_REARWARD: readonly [number, number, number] = [-1, 0, 0];
+const AXIS_BOLT_LIFT_PULL: readonly [number, number, number] = [
+  -0.9486833, 0.3162278, 0,
+];
+const AXIS_TOGGLE_BUCKLE: readonly [number, number, number] = [
+  -0.7808688, 0.624695, 0,
+];
+const AXIS_LEVER_THROW: readonly [number, number, number] = [
+  0.5547002, -0.8320503, 0,
+];
+const AXIS_HAMMER_COCK: readonly [number, number, number] = [
+  -0.8944272, -0.4472136, 0,
+];
+const AXIS_CYLINDER_INDEX: readonly [number, number, number] = [0, 1, 0];
+const AXIS_ROTARY_CRANK: readonly [number, number, number] = [-0.6, -0.8, 0];
+const AXIS_VERTICAL_WEDGE: readonly [number, number, number] = [0, -1, 0];
+const AXIS_HORIZONTAL_WEDGE: readonly [number, number, number] = [0, 0, -1];
+const AXIS_CLOCKWORK_WIND: readonly [number, number, number] = [
+  -0.85, -0.5267827, 0,
+];
+
+const STANDARD_DETENTS: readonly number[] = [0.28, 0.85];
+const BOLT_LIFT_DETENTS: readonly number[] = [0.22, 0.55, 0.85];
+const ARCHERY_DETENTS: readonly number[] = [0.65, 0.92];
+const ROTARY_DETENTS: readonly number[] = [0.33, 0.66, 0.9];
+
+export const WEAPON_ACTION_DRAG_SPECS: Readonly<
+  Record<WeaponId, WeaponActionDragSpec>
+> = {
+  ak15: {
+    weaponId: 'ak15',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.0,
+    springReturnRate: 11.4,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '拉动枪机框拉柄',
+    labelEn: 'Drag Bolt Carrier Handle',
+  },
+  m4a1: {
+    weaponId: 'm4a1',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.0,
+    springReturnRate: 11.8,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '拉动 T 型拉机柄',
+    labelEn: 'Drag T-Charging Handle',
+  },
+  mp5: {
+    weaponId: 'mp5',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 0.95,
+    springReturnRate: 12.2,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉前置拉机柄',
+    labelEn: 'Drag Forward Cocking Handle',
+  },
+  g17: {
+    weaponId: 'g17',
+    handleKind: 'slide',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 0.84,
+    springReturnRate: 13.4,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉套筒验枪/上膛',
+    labelEn: 'Rack Pistol Slide',
+  },
+  m82a1: {
+    weaponId: 'm82a1',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.22,
+    springReturnRate: 9.6,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '重拉 .50 BMG 机框',
+    labelEn: 'Rack .50 BMG Bolt Carrier',
+  },
+  awm: {
+    weaponId: 'awm',
+    handleKind: 'bolt_handle',
+    worldDragAxis: AXIS_BOLT_LIFT_PULL,
+    strokeSpanScale: 1.08,
+    springReturnRate: 10.2,
+    detentThresholds: BOLT_LIFT_DETENTS,
+    labelZh: '60° 抬栓后拉枪机',
+    labelEn: 'Lift 60° & Pull Bolt Handle',
+  },
+  scar: {
+    weaponId: 'scar',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.0,
+    springReturnRate: 11.6,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉往复式拉机柄',
+    labelEn: 'Rack Reciprocating Handle',
+  },
+  deagle: {
+    weaponId: 'deagle',
+    handleKind: 'slide',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 0.92,
+    springReturnRate: 12.4,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉重型马格南套筒',
+    labelEn: 'Rack .50 AE Magnum Slide',
+  },
+  aug: {
+    weaponId: 'aug',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 0.98,
+    springReturnRate: 11.8,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉左侧折叠拉机柄',
+    labelEn: 'Drag Left Folding Handle',
+  },
+  p320: {
+    weaponId: 'p320',
+    handleKind: 'slide',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 0.84,
+    springReturnRate: 13.2,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉 M17 套筒',
+    labelEn: 'Rack P320 Slide',
+  },
+  p90: {
+    weaponId: 'p90',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 0.92,
+    springReturnRate: 12.5,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉双侧拉机柄',
+    labelEn: 'Drag Ambidextrous Handle',
+  },
+  lift33: {
+    weaponId: 'lift33',
+    handleKind: 'bowstring',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.18,
+    springReturnRate: 10.6,
+    detentThresholds: ARCHERY_DETENTS,
+    labelZh: '后拉弓弦与 D 环',
+    labelEn: 'Draw Bowstring & D-Loop',
+  },
+  r500: {
+    weaponId: 'r500',
+    handleKind: 'bowstring',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.24,
+    springReturnRate: 10.0,
+    detentThresholds: ARCHERY_DETENTS,
+    labelZh: '摇柄后拉反向弓弦滑车',
+    labelEn: 'Draw Reverse-Cam Sled',
+  },
+  python: {
+    weaponId: 'python',
+    handleKind: 'cylinder',
+    worldDragAxis: AXIS_HAMMER_COCK,
+    partAxisOverrides: {
+      python_cylinder: AXIS_CYLINDER_INDEX,
+    },
+    strokeSpanScale: 0.82,
+    springReturnRate: 12.8,
+    detentThresholds: [0.35, 0.82],
+    labelZh: '压待击锤 / 拨转六发弹巢',
+    labelEn: 'Cock Hammer / Index Cylinder',
+  },
+  benellim4: {
+    weaponId: 'benellim4',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.06,
+    springReturnRate: 11.2,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉 ARGO 滚花拉柄',
+    labelEn: 'Rack ARGO Bolt Handle',
+  },
+  garand: {
+    weaponId: 'garand',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.1,
+    springReturnRate: 11.0,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉导气操作杆',
+    labelEn: 'Rack Operating Rod',
+  },
+  m249: {
+    weaponId: 'm249',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.1,
+    springReturnRate: 10.8,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉右侧开膛拉机柄',
+    labelEn: 'Rack Open-Bolt Handle',
+  },
+  p08: {
+    weaponId: 'p08',
+    handleKind: 'toggle',
+    worldDragAxis: AXIS_TOGGLE_BUCKLE,
+    strokeSpanScale: 0.88,
+    springReturnRate: 13.0,
+    detentThresholds: [0.28, 0.78],
+    labelZh: '向后上提屈膝肘节球柄',
+    labelEn: 'Lift & Pull Toggle Knobs',
+  },
+  vector: {
+    weaponId: 'vector',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 0.94,
+    springReturnRate: 12.0,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉折叠拉机柄驱动 Super V',
+    labelEn: 'Rack Super V Charging Handle',
+  },
+  g11: {
+    weaponId: 'g11',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    partAxisOverrides: {
+      g11_winding_knob: AXIS_CLOCKWORK_WIND,
+    },
+    strokeSpanScale: 0.98,
+    springReturnRate: 11.6,
+    detentThresholds: [0.3, 0.72, 0.9],
+    labelZh: '旋拧时钟上弦旋钮',
+    labelEn: 'Crank Clockwork Winding Knob',
+  },
+  vss: {
+    weaponId: 'vss',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.0,
+    springReturnRate: 11.8,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉六突笋枪机框',
+    labelEn: 'Rack 6-Lug Bolt Carrier',
+  },
+  m134: {
+    weaponId: 'm134',
+    handleKind: 'rotary_cluster',
+    worldDragAxis: AXIS_ROTARY_CRANK,
+    strokeSpanScale: 1.14,
+    springReturnRate: 9.8,
+    detentThresholds: ROTARY_DETENTS,
+    labelZh: '拨转六联加特林转管簇',
+    labelEn: 'Crank 6-Barrel Rotor Cluster',
+  },
+  an94: {
+    weaponId: 'an94',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.06,
+    springReturnRate: 11.4,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉滑轮联动枪机框',
+    labelEn: 'Rack Pulley Bolt Carrier',
+  },
+  ztz99a: {
+    weaponId: 'ztz99a',
+    handleKind: 'breech_block',
+    worldDragAxis: AXIS_REARWARD,
+    partAxisOverrides: {
+      ztz99a_breech_block: AXIS_VERTICAL_WEDGE,
+    },
+    strokeSpanScale: 1.28,
+    springReturnRate: 8.8,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '下拉立楔炮闩 / 推演主炮后坐',
+    labelEn: 'Cycle Vertical Wedge Breech',
+  },
+  m1a2: {
+    weaponId: 'm1a2',
+    handleKind: 'breech_block',
+    worldDragAxis: AXIS_REARWARD,
+    partAxisOverrides: {
+      m1a2_breech_block: AXIS_VERTICAL_WEDGE,
+    },
+    strokeSpanScale: 1.28,
+    springReturnRate: 8.8,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '下拉立楔炮闩 / 推演 120mm 后坐',
+    labelEn: 'Cycle M256 Vertical Breech',
+  },
+  leopard2a7: {
+    weaponId: 'leopard2a7',
+    handleKind: 'breech_block',
+    worldDragAxis: AXIS_REARWARD,
+    partAxisOverrides: {
+      leo_breech_block: AXIS_VERTICAL_WEDGE,
+    },
+    strokeSpanScale: 1.28,
+    springReturnRate: 8.8,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '下拉 L/55A1 立楔炮闩',
+    labelEn: 'Cycle Rh-120 Vertical Breech',
+  },
+  tiger1: {
+    weaponId: 'tiger1',
+    handleKind: 'breech_block',
+    worldDragAxis: AXIS_REARWARD,
+    partAxisOverrides: {
+      tiger_breech_block: AXIS_HORIZONTAL_WEDGE,
+    },
+    strokeSpanScale: 1.28,
+    springReturnRate: 8.6,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '横滑克虏伯 88mm 水平楔闩',
+    labelEn: 'Slide Krupp Horizontal Wedge',
+  },
+  winchester1894: {
+    weaponId: 'winchester1894',
+    handleKind: 'lever',
+    worldDragAxis: AXIS_LEVER_THROW,
+    partAxisOverrides: {
+      win94_breech_bolt: AXIS_REARWARD,
+      win94_locking_bolt: AXIS_VERTICAL_WEDGE,
+    },
+    strokeSpanScale: 0.96,
+    springReturnRate: 11.4,
+    detentThresholds: [0.28, 0.82],
+    labelZh: '下推 D 型杠杆循环上膛',
+    labelEn: 'Throw D-Loop Finger Lever',
+  },
+  rem870: {
+    weaponId: 'rem870',
+    handleKind: 'pump_forend',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.0,
+    springReturnRate: 12.0,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉玉米棒泵动护木',
+    labelEn: 'Pump Corn-Cob Forend',
+  },
+  m1911: {
+    weaponId: 'm1911',
+    handleKind: 'slide',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 0.86,
+    springReturnRate: 13.0,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉锻钢套筒验枪/上膛',
+    labelEn: 'Rack Forged M1911 Slide',
+  },
+  mg42: {
+    weaponId: 'mg42',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.12,
+    springReturnRate: 10.6,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉右侧滚柱机枪拉柄',
+    labelEn: 'Rack MG 42 Cocking Handle',
+  },
+  k98k: {
+    weaponId: 'k98k',
+    handleKind: 'bolt_handle',
+    worldDragAxis: AXIS_BOLT_LIFT_PULL,
+    strokeSpanScale: 1.08,
+    springReturnRate: 10.4,
+    detentThresholds: BOLT_LIFT_DETENTS,
+    labelZh: '90° 抬栓后拉毛瑟枪机',
+    labelEn: 'Lift 90° & Pull Mauser Bolt',
+  },
+  thompson: {
+    weaponId: 'thompson',
+    handleKind: 'charging_handle',
+    worldDragAxis: AXIS_REARWARD,
+    strokeSpanScale: 1.02,
+    springReturnRate: 11.2,
+    detentThresholds: STANDARD_DETENTS,
+    labelZh: '后拉顶置球形拉机柄',
+    labelEn: 'Rack Top Actuator Knob',
+  },
+  gau8: {
+    weaponId: 'gau8',
+    handleKind: 'rotary_cluster',
+    worldDragAxis: AXIS_ROTARY_CRANK,
+    strokeSpanScale: 1.24,
+    springReturnRate: 9.2,
+    detentThresholds: ROTARY_DETENTS,
+    labelZh: '拨转七管 30mm 转管簇',
+    labelEn: 'Crank 7-Barrel 30mm Rotor',
+  },
+};
+
+export function getWeaponActionDragSpec(
+  weaponId: WeaponId
+): WeaponActionDragSpec {
+  return WEAPON_ACTION_DRAG_SPECS[weaponId];
+}
+
+export function resolveActionWorldDragAxis(
+  weaponId: WeaponId,
+  partId?: string | null
+): readonly [number, number, number] {
+  const spec = WEAPON_ACTION_DRAG_SPECS[weaponId];
+  if (partId && spec.partAxisOverrides && spec.partAxisOverrides[partId]) {
+    return spec.partAxisOverrides[partId];
+  }
+  return spec.worldDragAxis;
+}
+
+export interface ActionHandleAvailabilityInput {
+  readonly screen: string;
+  readonly mode: string;
+  readonly activeWeaponId: WeaponId;
+  readonly fieldStripActive: boolean;
+  readonly malfunctionActive: boolean;
+  readonly caliperActive: boolean;
+  readonly isFiringPlaying: boolean;
+  readonly textureModalOpen: boolean;
+}
+
+/**
+ * Returns true when hovering/dragging `partId` can immediately manipulate the
+ * weapon's 3D action handle (paused firing mode OR assembled `explodeProgress < 0.05`).
+ */
+export function canDragActionHandleNow(
+  appState: ActionHandleAvailabilityInput,
+  partId: string | null | undefined,
+  explodeProgress = 0
+): boolean {
+  if (
+    appState.screen !== 'workbench' ||
+    appState.fieldStripActive ||
+    appState.malfunctionActive ||
+    appState.caliperActive ||
+    appState.isFiringPlaying ||
+    appState.textureModalOpen
+  ) {
+    return false;
+  }
+  if (!isWeaponActionPart(appState.activeWeaponId, partId)) {
+    return false;
+  }
+  return (
+    appState.mode === 'firing' ||
+    (appState.mode === 'explode' && explodeProgress < 0.05)
+  );
+}
+
+export function getCursorForPartHover(
+  appState: ActionHandleAvailabilityInput,
+  partId: string | null | undefined,
+  explodeProgress = 0,
+  isDraggingAction = false
+): 'crosshair' | 'grabbing' | 'grab' | 'pointer' {
+  if (appState.screen !== 'workbench') return 'pointer';
+  if (appState.caliperActive) return 'crosshair';
+  if (isDraggingAction) return 'grabbing';
+  if (canDragActionHandleNow(appState, partId, explodeProgress)) {
+    return 'grab';
+  }
+  return 'pointer';
+}
 
 export function getWeaponActionPartIds(weaponId: WeaponId): readonly string[] {
   return EXPLICIT_WEAPON_ACTION_PARTS[weaponId] ?? [];
@@ -1558,6 +2053,51 @@ let rackPhase: RackMotionPhase = 'idle';
 let chamberSweepF = 0.68;
 let autoBurstBroke = false;
 let resetTailFinishActive = false;
+let lastDetentBand = 0;
+let snapBatteryStartRack = 0;
+
+function computeDetentBand(
+  progress01: number,
+  thresholds: readonly number[]
+): number {
+  let band = 0;
+  for (let i = 0; i < thresholds.length; i++) {
+    if (progress01 >= thresholds[i]) {
+      band = i + 1;
+    }
+  }
+  return band;
+}
+
+function triggerDetentFeedbackIfCrossed(
+  weaponId: WeaponId,
+  prevProgress: number,
+  nextProgress: number
+): void {
+  const thresholds = WEAPON_ACTION_DRAG_SPECS[weaponId].detentThresholds;
+  if (thresholds.length === 0) return;
+
+  // Hysteresis band prevents audio chatter when pointer hovers right on a detent notch
+  if (nextProgress > prevProgress) {
+    for (let i = lastDetentBand; i < thresholds.length; i++) {
+      if (nextProgress >= thresholds[i] + 0.01) {
+        lastDetentBand = i + 1;
+        if (lastDetentBand >= thresholds.length) {
+          playTriggerResetSound();
+        } else {
+          playSelectorDetentSound('semi');
+        }
+      }
+    }
+  } else if (nextProgress < prevProgress) {
+    for (let i = lastDetentBand - 1; i >= 0; i--) {
+      if (nextProgress <= thresholds[i] - 0.025) {
+        lastDetentBand = i;
+        playSelectorDetentSound('safe');
+      }
+    }
+  }
+}
 
 const snapshotListeners = new Set<() => void>();
 
@@ -1644,6 +2184,8 @@ function finalizeRackRelease(): void {
 
   // Released below 50% (or short-stroked < 85%): recoil spring snaps slide/bolt forward into battery (-> 0.0)
   rackPhase = 'snap_battery';
+  snapBatteryStartRack = r;
+  lastDetentBand = 0;
   if (r > 0.04) {
     playPressCheckSpringSound('release');
   }
@@ -1691,6 +2233,8 @@ export const interactiveActionStore = {
       rackPhase = 'idle';
       autoBurstBroke = false;
       resetTailFinishActive = false;
+      lastDetentBand = 0;
+      snapBatteryStartRack = 0;
       transientState.manualRackProgress = 0;
       transientState.triggerPullProgress = 0;
       transientState.recoilSpringForceN = 0;
@@ -1777,6 +2321,10 @@ export const interactiveActionStore = {
       : transientState.manualRackProgress;
     rackPhase = 'pointer_drag';
     resetTailFinishActive = false;
+    lastDetentBand = computeDetentBand(
+      initialRack,
+      WEAPON_ACTION_DRAG_SPECS[weaponId].detentThresholds
+    );
     transientState.manualRackProgress = initialRack;
     transientState.recoilSpringForceN = computeRecoilSpringForceN(
       weaponId,
@@ -1817,6 +2365,7 @@ export const interactiveActionStore = {
       weaponId,
       next
     );
+    triggerDetentFeedbackIfCrossed(weaponId, cur, next);
     playbackClock.setFireProgress(
       mapManualRackToFireProgress(next, weaponId),
       true
@@ -1836,6 +2385,10 @@ export const interactiveActionStore = {
     ensureWorkbenchFiringPaused();
     resetTailFinishActive = false;
     rackPhase = 'keyboard_rack';
+    lastDetentBand = computeDetentBand(
+      transientState.manualRackProgress,
+      WEAPON_ACTION_DRAG_SPECS[weaponId].detentThresholds
+    );
     playPressCheckSpringSound('pull');
     commitDiscretePatch({
       isDraggingAction: true,
@@ -2015,6 +2568,7 @@ export const interactiveActionStore = {
         weaponId,
         next
       );
+      triggerDetentFeedbackIfCrossed(weaponId, cur, next);
       playbackClock.setFireProgress(
         mapManualRackToFireProgress(next, weaponId),
         true
@@ -2034,7 +2588,10 @@ export const interactiveActionStore = {
       );
     } else if (rackPhase === 'snap_battery') {
       const cur = transientState.manualRackProgress;
-      const returnSpeed = 5.2 + 6.4 * cur;
+      const dragSpec = WEAPON_ACTION_DRAG_SPECS[weaponId];
+      // Damped spring-return dynamics: recoil-spring preload drives crisp return
+      // with weapon-mass-calibrated rate (`springReturnRate`) and metallic lockup detent.
+      const returnSpeed = dragSpec.springReturnRate * (0.48 + 0.58 * cur);
       const next = Math.max(0, cur - returnSpeed * dt);
       transientState.rackVelocity = (next - cur) / dt;
       transientState.manualRackProgress = next;
@@ -2044,11 +2601,17 @@ export const interactiveActionStore = {
       );
 
       if (next <= 0.004) {
+        const hadMeaningfulTravel = snapBatteryStartRack > 0.16;
+        snapBatteryStartRack = 0;
+        lastDetentBand = 0;
         transientState.manualRackProgress = 0;
         transientState.recoilSpringForceN = 0;
         transientState.rackVelocity = 0;
         rackPhase = 'idle';
         playbackClock.setFireProgress(0, true);
+        if (hadMeaningfulTravel) {
+          playTriggerResetSound();
+        }
       } else {
         playbackClock.setFireProgress(
           mapManualRackToFireProgress(next, weaponId),
@@ -2163,6 +2726,8 @@ export const interactiveActionStore = {
     chamberSweepF = 0.68;
     autoBurstBroke = false;
     resetTailFinishActive = false;
+    lastDetentBand = 0;
+    snapBatteryStartRack = 0;
     transientState.manualRackProgress = 0;
     transientState.triggerPullProgress = 0;
     transientState.recoilSpringForceN = 0;
@@ -2241,35 +2806,56 @@ function isEditableDomTarget(target: EventTarget | null): boolean {
   );
 }
 
-// Module-pooled scratch vectors for camera-projected barrel (-X) axis computation (Zero GC)
-const _muzzleWorld = new THREE.Vector3();
-const _breechWorld = new THREE.Vector3();
-const _screenMuzzle = new THREE.Vector3();
-const _screenBreech = new THREE.Vector3();
+// Module-pooled scratch vectors for camera-projected 3D action-axis computation (Zero GC)
+const _axisOriginWorld = new THREE.Vector3();
+const _axisTipWorld = new THREE.Vector3();
+const _screenOrigin = new THREE.Vector3();
+const _screenTip = new THREE.Vector3();
 
-function computeScreenRearwardUnitAxis(
+/**
+ * Projects a normalized 3D world-space mechanical stroke vector onto screen-space
+ * pixel unit coordinates `(dx, dy)` for intuitive 1:1 pointer grab-and-drag projection.
+ * Uses pre-allocated scratch vectors (Zero GC).
+ */
+export function projectWorldDragAxisToScreen(
+  worldAxis: readonly [number, number, number],
   camera: THREE.Camera,
   viewportWidth: number,
   viewportHeight: number,
   outXY: [number, number]
-): void {
-  _muzzleWorld.set(10, 0, 0);
-  _breechWorld.set(-10, 0, 0);
-  _screenMuzzle.copy(_muzzleWorld).project(camera);
-  _screenBreech.copy(_breechWorld).project(camera);
+): [number, number] {
+  const ax = Number.isFinite(worldAxis[0]) ? worldAxis[0] : -1;
+  const ay = Number.isFinite(worldAxis[1]) ? worldAxis[1] : 0;
+  const az = Number.isFinite(worldAxis[2]) ? worldAxis[2] : 0;
+  const axisLen = Math.hypot(ax, ay, az);
+  const ux = axisLen > 1e-6 ? ax / axisLen : -1;
+  const uy = axisLen > 1e-6 ? ay / axisLen : 0;
+  const uz = axisLen > 1e-6 ? az / axisLen : 0;
 
-  const dxPx = (_screenBreech.x - _screenMuzzle.x) * 0.5 * viewportWidth;
-  const dyPx = -(_screenBreech.y - _screenMuzzle.y) * 0.5 * viewportHeight;
+  _axisOriginWorld.set(0, 0, 0);
+  _axisTipWorld.set(ux * 10, uy * 10, uz * 10);
+  _screenOrigin.copy(_axisOriginWorld).project(camera);
+  _screenTip.copy(_axisTipWorld).project(camera);
+
+  const dxPx = (_screenTip.x - _screenOrigin.x) * 0.5 * Math.max(1, viewportWidth);
+  const dyPx =
+    -(_screenTip.y - _screenOrigin.y) * 0.5 * Math.max(1, viewportHeight);
   const len = Math.hypot(dxPx, dyPx);
 
-  if (len > 1e-3) {
+  if (len > 1e-3 && Number.isFinite(len)) {
     outXY[0] = dxPx / len;
     outXY[1] = dyPx / len;
   } else {
-    // Fallback when looking straight down the bore axis: dragging left (-X) retracts
-    outXY[0] = -1;
-    outXY[1] = 0;
+    // Deterministic fallback when camera looks straight along the mechanical axis
+    if (Math.abs(uy) > Math.abs(ux) && Math.abs(uy) >= Math.abs(uz)) {
+      outXY[0] = 0;
+      outXY[1] = uy > 0 ? -1 : 1;
+    } else {
+      outXY[0] = ux > 0.25 ? 1 : -1;
+      outXY[1] = 0;
+    }
   }
+  return outXY;
 }
 
 interface OrbitControlsLike {
@@ -2278,8 +2864,8 @@ interface OrbitControlsLike {
 
 /**
  * R3F Hands-On 3D Mechanical Action & Fire-Control Controller:
- * - Pointer drag on slide/bolt/charging-handle (or Shift+drag) in paused Workbench `firing` mode
- *   projects pointer motion onto the firearm's 3D `-X` breech axis to manually rack against recoil-spring force
+ * - Pointer drag on slide/bolt/charging-handle/lever/forend/breech (or Shift+drag in firing mode)
+ *   projects pointer motion onto each exhibit's true 3D mechanical stroke axis against spring resistance
  * - `R` hold: manual slide/bolt rack (`< 50%` snaps into battery; `>= 85%` chambers a fresh round)
  * - `P` toggle: `28%` tactical Press-Check chamber peek
  * - `F` hold: interactive 2-stage trigger pull (`SAFE` dry block, `SEMI` sear break + disconnector reset, `AUTO` cyclic fire)
@@ -2299,6 +2885,7 @@ export const InteractiveActionController: React.FC = () => {
     movedPx: number;
     startedRack: boolean;
     restoreOrbitEnabled: boolean;
+    strokeSpanScale: number;
   }>({
     active: false,
     pointerId: -1,
@@ -2307,6 +2894,7 @@ export const InteractiveActionController: React.FC = () => {
     movedPx: 0,
     startedRack: false,
     restoreOrbitEnabled: false,
+    strokeSpanScale: 1,
   });
 
   useEffect(() => {
@@ -2315,27 +2903,34 @@ export const InteractiveActionController: React.FC = () => {
     const onPointerDown = (e: PointerEvent) => {
       if (e.button !== 0) return;
       const st = useAppStore.getState();
-      if (
-        st.screen !== 'workbench' ||
-        st.mode !== 'firing' ||
-        st.malfunctionActive ||
-        st.caliperActive ||
-        st.isFiringPlaying ||
-        st.textureModalOpen
-      ) {
+      const explodeProgress = playbackClock.getState().animatedProgress;
+      const canGrabHovered = canDragActionHandleNow(
+        st,
+        st.hoveredPartId,
+        explodeProgress
+      );
+      const canShiftRack =
+        e.shiftKey &&
+        st.screen === 'workbench' &&
+        st.mode === 'firing' &&
+        !st.malfunctionActive &&
+        !st.caliperActive &&
+        !st.isFiringPlaying &&
+        !st.textureModalOpen;
+
+      if (!canGrabHovered && !canShiftRack) {
         return;
       }
 
-      const hoveredIsAction = isWeaponActionPart(
+      const dragSpec = getWeaponActionDragSpec(st.activeWeaponId);
+      const worldAxis = resolveActionWorldDragAxis(
         st.activeWeaponId,
-        st.hoveredPartId
+        canGrabHovered ? st.hoveredPartId : null
       );
-      if (!e.shiftKey && !hoveredIsAction) {
-        return;
-      }
 
       const r3f = getThreeState();
-      computeScreenRearwardUnitAxis(
+      projectWorldDragAxisToScreen(
+        worldAxis,
         camera,
         Math.max(1, r3f.size.width),
         Math.max(1, r3f.size.height),
@@ -2355,6 +2950,7 @@ export const InteractiveActionController: React.FC = () => {
       pointerDragRef.current.movedPx = 0;
       pointerDragRef.current.startedRack = e.shiftKey;
       pointerDragRef.current.restoreOrbitEnabled = wasOrbitEnabled;
+      pointerDragRef.current.strokeSpanScale = dragSpec.strokeSpanScale;
 
       if (e.shiftKey) {
         interactiveActionStore.beginActionDrag();
@@ -2380,14 +2976,15 @@ export const InteractiveActionController: React.FC = () => {
       }
 
       const axis = dragAxisRef.current;
-      const rearwardPx = dx * axis[0] + dy * axis[1];
-      // ~175px screen drag spans full bolt/slide stroke
+      const strokeDeltaPx = dx * axis[0] + dy * axis[1];
+      // Calibrated per-exhibit screen drag span scaled to viewport width
       const viewportWidth = getThreeState().size.width;
-      const strokeSpanPx = Math.max(
-        120,
+      const baseSpanPx = Math.max(
+        115,
         Math.min(240, viewportWidth * 0.16)
       );
-      interactiveActionStore.updateActionDrag(rearwardPx / strokeSpanPx);
+      const strokeSpanPx = baseSpanPx * drag.strokeSpanScale;
+      interactiveActionStore.updateActionDrag(strokeDeltaPx / strokeSpanPx);
     };
 
     const finishPointerGesture = (e: PointerEvent) => {
@@ -2408,8 +3005,12 @@ export const InteractiveActionController: React.FC = () => {
 
       if (drag.startedRack) {
         drag.startedRack = false;
-        document.body.style.cursor = 'auto';
         interactiveActionStore.endActionDrag();
+        const st = useAppStore.getState();
+        const explodeProgress = playbackClock.getState().animatedProgress;
+        document.body.style.cursor = st.hoveredPartId
+          ? getCursorForPartHover(st, st.hoveredPartId, explodeProgress, false)
+          : 'auto';
       }
     };
 
