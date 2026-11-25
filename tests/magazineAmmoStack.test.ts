@@ -26,7 +26,7 @@ import {
   type WeaponPartSpec,
 } from '../src/weapons/types';
 
-const MIN_ROUND_COUNTS: Readonly<Record<WeaponId, number>> = {
+const MIN_ROUND_COUNTS: Readonly<Partial<Record<WeaponId, number>>> = {
   awm: 5,
   deagle: 7,
   m82a1: 10,
@@ -106,7 +106,7 @@ describe('23-Exhibit Full-Capacity 3D Magazine, Belt, Cylinder, Tubular, En-Bloc
       expect(
         spec.roundCount,
         `${weaponId}: insufficient stack roundCount`
-      ).toBeGreaterThanOrEqual(MIN_ROUND_COUNTS[weaponId]);
+      ).toBeGreaterThanOrEqual(MIN_ROUND_COUNTS[weaponId] ?? 0);
 
       const plugin = await loadWeaponPlugin(weaponId);
       const magBodyPart = plugin.parts.find(

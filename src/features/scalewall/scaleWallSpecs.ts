@@ -1,5 +1,6 @@
 import { getCaliberBallisticsSpec } from '../../engine/physics/armoryPhysics';
 import type { LanguageCode } from '../../narration/types';
+import { buildCentennialScaleWallMetrology } from '../../weapons/expansion/centennialProjectors';
 import { getWeaponManifest, WEAPON_MANIFESTS } from '../../weapons/manifests';
 import type { ArmoryWeaponItem, WeaponId } from '../../weapons/types';
 
@@ -313,6 +314,7 @@ const EXACT_EXHIBIT_METROLOGY: Readonly<Record<WeaponId, ExactExhibitMetrology>>
       caliberEn: '30x173mm PGU-14/B API',
       caliberZh: '30×173mm PGU-14/B 贫铀穿甲燃烧弹',
     },
+    ...buildCentennialScaleWallMetrology(),
   };
 
 export interface ScaleWallExhibitSpec {

@@ -4,6 +4,7 @@ import type {
   PartNarrationEntry,
   WeaponNarrationBundle,
 } from '../narration/types';
+import { buildCentennialEnFallbacks } from '../weapons/expansion/centennialProjectors';
 import { getShortWeaponLabel, getWeaponManifest } from '../weapons/manifests';
 import type {
   FiringPhaseInfo,
@@ -1132,6 +1133,7 @@ export const WEAPON_EN_FALLBACKS: Record<
       'Search part name / BOM code (e.g. barrel, cam, bolt, hydraulic, drum, F-02)...',
     firingMilestoneLabel: '30mm Cam Wave',
   },
+  ...buildCentennialEnFallbacks(),
 };
 
 export function getLocalizedShortWeaponLabel(

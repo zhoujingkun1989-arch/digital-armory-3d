@@ -6,6 +6,7 @@ import {
   type CartridgeLabSpec,
 } from '../../engine/cartridges/cartridgeSpecs';
 import { isTankWeapon } from '../../engine/physics/armoryPhysics';
+import { buildCentennialDkEditorialData } from '../../weapons/expansion/centennialProjectors';
 import {
   getExhibitClassification,
   type DriveFamilyId,
@@ -1414,6 +1415,8 @@ interface TimelineSeedNode {
   eraRelation: DkEraRelation;
 }
 
+const CENTENNIAL_DK_EDITORIAL = buildCentennialDkEditorialData();
+
 const EVOLUTION_TIMELINE_SEEDS: Readonly<
   Record<WeaponId, readonly [TimelineSeedNode, TimelineSeedNode, TimelineSeedNode, TimelineSeedNode, TimelineSeedNode]>
 > = {
@@ -2520,6 +2523,7 @@ const EVOLUTION_TIMELINE_SEEDS: Readonly<
       eraRelation: 'successor',
     },
   ],
+  ...CENTENNIAL_DK_EDITORIAL.evolutionTimelineSeeds,
 };
 
 export function buildDkEvolutionTimeline(
@@ -2924,6 +2928,7 @@ const FCG_LOUPE_OVERRIDES: Partial<
       en: 'Redundant 3,000 PSI hydraulic motors spin seven barrels at 3,900 RPM while the clearing gate prevents cook-offs.',
     },
   },
+  ...CENTENNIAL_DK_EDITORIAL.fcgLoupeOverrides,
 };
 
 const BREECH_LOUPE_OVERRIDES: Partial<
@@ -3027,6 +3032,7 @@ const BREECH_LOUPE_OVERRIDES: Partial<
       en: 'Stationary hardened sinusoidal sleeve drives seven 3-lug titanium bolts through a 300 mm firing wave.',
     },
   },
+  ...CENTENNIAL_DK_EDITORIAL.breechLoupeOverrides,
 };
 
 const SLIDE_LOUPE_OVERRIDES: Partial<
@@ -3060,6 +3066,7 @@ const SLIDE_LOUPE_OVERRIDES: Partial<
       en: '4.93 m L/56 rifled cannon with twin-baffle brake cuts recoil 45% across a 290 mm stroke.',
     },
   },
+  ...CENTENNIAL_DK_EDITORIAL.slideLoupeOverrides,
 };
 
 const MAG_LOUPE_OVERRIDES: Partial<
@@ -3156,6 +3163,7 @@ const MAG_LOUPE_OVERRIDES: Partial<
       en: 'Ø876mm helical drum feeds 1,150 linkless 30mm rounds and returns every spent aluminum case to preserve A-10 CG.',
     },
   },
+  ...CENTENNIAL_DK_EDITORIAL.magLoupeOverrides,
 };
 
 export function buildDkLoupeSpecs(

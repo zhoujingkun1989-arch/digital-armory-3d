@@ -4,6 +4,7 @@ import {
   type StoryDirectorStageSpec,
   useAppStore,
 } from '../store/useAppStore';
+import { buildCentennialDirectorProfiles } from '../weapons/expansion/centennialProjectors';
 import { isWeaponId, type WeaponId } from '../weapons/types';
 import {
   getNarrationAudioSnapshot,
@@ -277,6 +278,7 @@ export const EXHIBIT_DIRECTOR_PROFILES: Readonly<
     ['gau8_barrel_cluster', 'gau8_cam_track', 'gau8_ammo_drum', 'gau8_hydraulic_motors'],
     ['gau8_cam_track', 'gau8_ammo_drum']
   ),
+  ...buildCentennialDirectorProfiles(),
 };
 
 export function getExhibitDirectorProfile(
@@ -382,7 +384,7 @@ const DIRECTOR_CATEGORY_BADGES: Readonly<
 };
 
 const EN_ABBREV_REGEX =
-  /\b(?:U\.S|Obr|Gen|Mk|Dr|Mr|St|No|vs|approx|cal|in|mm|cm|kg|ft)\.$/i;
+  /\b(?:U\.S|Obr|Gen|Mk|Dr|Mr|St|No|Mfg|Co|vs|approx|cal|in|mm|cm|kg|ft)\.$/i;
 
 function splitEnglishSentences(raw: string): string[] {
   const trimmed = raw.trim();

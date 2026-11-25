@@ -4,6 +4,7 @@ import {
   subscribeAudioPlayer,
 } from '../../narration/audioPlayer';
 import { useAppStore } from '../../store/useAppStore';
+import { getCentennialBlueprint } from '../../weapons/expansion/centennialCatalog';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { getLoadedWeaponPlugin } from '../../weapons/registry';
 import type {
@@ -463,6 +464,7 @@ export const TANK_STUB_CLANG_PARTIALS_HZ = [480, 860, 1520] as const;
  */
 export const ROTARY_DRIVE_MOTOR_PROFILES = {
   gau8: { baseHz: 410, peakHz: 860, harmonicRatio: 2.0, maxGain: 0.14 },
+  m61vulcan: { baseHz: 480, peakHz: 980, harmonicRatio: 2.0, maxGain: 0.14 },
   m134: { baseHz: 290, peakHz: 620, harmonicRatio: 2.5, maxGain: 0.12 },
 } as const;
 
@@ -668,6 +670,54 @@ export function resolveWeaponMechanismAcousticStyle(
   if (weaponId === 'p08') return 'toggle_lock_pistol';
   if (weaponId === 'm249') return 'open_bolt_lmg';
   if (weaponId === 'rem870') return 'pump_action_shotgun';
+  const centennialBp = getCentennialBlueprint(weaponId);
+  if (centennialBp) {
+    switch (centennialBp.kinematicLaw) {
+      case 'rotary_gatling':
+        return 'hydraulic_rotary_cannon';
+      case 'tank_carousel':
+        return 'tank_autoloader_cannon';
+      case 'tank_manual':
+        return centennialBp.archetype === 'mbt_wwii'
+          ? 'tank_ww2_cannon'
+          : 'tank_bustle_cannon';
+      case 'aa_sliding_wedge':
+      case 'artillery_howitzer':
+        return 'tank_ww2_cannon';
+      case 'compound_bow':
+      case 'self_longbow':
+        return 'compound_bow';
+      case 'recurve_crossbow':
+        return 'compound_crossbow';
+      case 'bolt_action':
+        return 'mauser_crf_bolt';
+      case 'pump_action':
+        return 'pump_action_shotgun';
+      case 'lever_action':
+        return 'lever_action_rifle';
+      case 'revolver_cylinder':
+        return 'revolver_magnum';
+      case 'roller_delayed':
+      case 'lever_delayed':
+        return 'hk_roller_delayed';
+      case 'open_bolt_blowback':
+        return 'open_bolt_lmg';
+      case 'browning_tilt_barrel':
+        return centennialBp.archetype === 'heavy_mg'
+          ? 'open_bolt_lmg'
+          : 'browning_single_link';
+      case 'long_stroke_piston':
+        return centennialBp.category === 'lmg'
+          ? 'open_bolt_lmg'
+          : 'long_stroke_piston';
+      case 'direct_impingement':
+      case 'short_stroke_piston':
+      case 'tilting_bolt':
+        return 'gas_carbine';
+      default:
+        break;
+    }
+  }
   const manifest = getWeaponManifest(weaponId);
   return CALIBER_ACOUSTIC_PROFILES[manifest.caliberProfile].mechanismStyle;
 }
@@ -1412,7 +1462,7 @@ class ProceduralGunsmithSoundEngine {
     speedMultiplier: 0.25 | 0.5 | 1.0 = 1.0,
     burstDurationSec = 0.42
   ): void {
-    if (weaponId !== 'gau8' && weaponId !== 'm134') return;
+    if (weaponId !== 'gau8' && weaponId !== 'm61vulcan' && weaponId !== 'm134') return;
     if (useAppStore.getState().sfxMuted) return;
     const ctx = this.unlock();
     if (!ctx || ctx.state !== 'running') return;
@@ -1820,7 +1870,7 @@ class ProceduralGunsmithSoundEngine {
     }
 
     if (
-      (weaponId === 'gau8' || weaponId === 'm134') &&
+      (weaponId === 'gau8' || weaponId === 'm61vulcan' || weaponId === 'm134') &&
       (kind === 'sear_release' ||
         kind === 'primer_ignition' ||
         kind === 'gas_or_recoil')
@@ -4815,7 +4865,7 @@ class ProceduralGunsmithSoundEngine {
       return;
     }
 
-    if (activeWeaponId === 'gau8') {
+    if (activeWeaponId === 'gau8' || activeWeaponId === 'm61vulcan') {
       this.emitModalPing({
         startTime: now,
         duration: isPull ? 0.14 : 0.12,
@@ -5047,7 +5097,7 @@ export function playHeavyOrdnanceSignatureAudition(
   weaponId: WeaponId,
   speedMultiplier: 0.25 | 0.5 | 1.0 = 1.0
 ): void {
-  if (weaponId === 'gau8' || weaponId === 'm134') {
+  if (weaponId === 'gau8' || weaponId === 'm61vulcan' || weaponId === 'm134') {
     soundEngine.pulseRotaryDriveMotor(weaponId, speedMultiplier, 0.45);
   }
   soundEngine.playFiringEvent('primer_ignition', weaponId, speedMultiplier);

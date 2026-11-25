@@ -1,3 +1,4 @@
+import { buildCentennialFieldStripPlans } from '../../weapons/expansion/centennialProjectors';
 import type { WeaponId } from '../../weapons/types';
 
 /**
@@ -5128,6 +5129,7 @@ export const FIELD_STRIP_PLANS: Readonly<
       },
     ],
   },
+  ...buildCentennialFieldStripPlans(),
 };
 
 export function getFieldStripPlan(weaponId: WeaponId): FieldStripWeaponPlan {

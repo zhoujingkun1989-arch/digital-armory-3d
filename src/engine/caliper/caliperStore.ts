@@ -1,4 +1,5 @@
 import type * as THREE from 'three';
+import { buildCentennialCaliperBenchmarks } from '../../weapons/expansion/centennialProjectors';
 import type {
   MutablePartPose,
   WeaponId,
@@ -751,6 +752,7 @@ export const CALIPER_V2_BENCHMARK_NOTES: Readonly<
       nominalMm: 1118,
     },
   ],
+  ...buildCentennialCaliperBenchmarks(),
 };
 
 export interface CaliperSurfacePoint {

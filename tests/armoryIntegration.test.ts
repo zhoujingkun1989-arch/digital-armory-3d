@@ -499,9 +499,9 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
       expect(enHeading).not.toMatch(cjkRe);
       expect(zhHeading).toBe(manifest.atlasHeadingCn);
 
-      expect(Object.keys(ATLAS_EN_STRINGS[weaponId].suites).sort()).toEqual(
-        plugin.pbrSuites.map((s) => s.id).sort()
-      );
+      expect(
+        Object.keys(ATLAS_EN_STRINGS[weaponId]?.suites ?? {}).sort()
+      ).toEqual(plugin.pbrSuites.map((s) => s.id).sort());
 
       plugin.pbrSuites.forEach((suite, idx) => {
         totalSuites += 1;

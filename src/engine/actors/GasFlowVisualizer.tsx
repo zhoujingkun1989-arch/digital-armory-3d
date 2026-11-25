@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useAppStore } from '../../store/useAppStore';
+import { buildCentennialGasFlowConfigs } from '../../weapons/expansion/centennialProjectors';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { getLoadedWeaponPlugin } from '../../weapons/registry';
 import type { WeaponId } from '../../weapons/types';
@@ -22,6 +23,7 @@ import {
   evaluateInternalBallisticsInto,
   getArmoryPhysicsState,
   getWeaponFiringTiming,
+  isArcheryWeapon,
 } from '../physics/armoryPhysics';
 import { RIFLING_EXPLODE_VISIBILITY_MAX } from './RiflingBoreActor';
 
@@ -126,6 +128,8 @@ interface RotaryBlurProfile {
   peakOpacity: number;
 }
 
+const CENTENNIAL_GAS_FLOW_CONFIGS = buildCentennialGasFlowConfigs();
+
 const ROTARY_BLUR_PROFILES: Partial<Record<WeaponId, RotaryBlurProfile>> = {
   // GE GAU-8/A Avenger: 3,900 RPM across 7 barrels (557.14 cluster RPM = 58.34 rad/s),
   // exposed 2.3m barrel bundle X ∈ [90, 306] cm, pitch R=7.4 cm + tube R=2.75 cm -> halo R=10.8 cm
@@ -147,6 +151,7 @@ const ROTARY_BLUR_PROFILES: Partial<Record<WeaponId, RotaryBlurProfile>> = {
     centerX: 24.4,
     peakOpacity: 0.42,
   },
+  ...CENTENNIAL_GAS_FLOW_CONFIGS.rotaryBlurs,
 };
 
 interface TankBoreEvacuatorProfile {
@@ -212,6 +217,7 @@ const TANK_BORE_EVACUATOR_PROFILES: Partial<
     rearBaffleX: 507.5,
     frontBaffleX: 519.5,
   },
+  ...CENTENNIAL_GAS_FLOW_CONFIGS.tankBoreEvacuators,
 };
 
 // Cycle 15A: Matt Rittman In-Bore Propellant Deflagration & Boxer Primer Flash constants
@@ -412,6 +418,7 @@ const MUZZLE_SHOCKWAVE_PROFILES: Partial<
     centerOffsetXCm: 4.5,
     isHeavyHangar: false,
   },
+  ...CENTENNIAL_GAS_FLOW_CONFIGS.muzzleShockwaves,
 };
 
 function smoothstep01(edge0: number, edge1: number, x: number): number {
@@ -444,7 +451,7 @@ export function writeMuzzleShockwaveSampleInto(
   out.progress01 = 0;
   out.centerOffsetXCm = 0;
 
-  if ((weaponId as string) === 'lift33' || (weaponId as string) === 'r500') {
+  if (isArcheryWeapon(weaponId)) {
     return out;
   }
   const prof = MUZZLE_SHOCKWAVE_PROFILES[weaponId];
@@ -525,8 +532,7 @@ export function writeThermalMirageSampleInto(
   out.swayAmplitudeCm = 0;
 
   if (
-    (weaponId as string) === 'lift33' ||
-    (weaponId as string) === 'r500' ||
+    isArcheryWeapon(weaponId) ||
     !Number.isFinite(barrelHeat01) ||
     barrelHeat01 <= THERMAL_MIRAGE_HEAT_THRESHOLD
   ) {
@@ -1702,8 +1708,7 @@ export const GasFlowVisualizer: React.FC = () => {
     const dt = Math.min(0.05, Math.max(0, delta));
 
     const weaponId = appState.activeWeaponId;
-    const isArchery =
-      (weaponId as string) === 'lift33' || (weaponId as string) === 'r500';
+    const isArchery = isArcheryWeapon(weaponId);
     const manifest = getWeaponManifest(weaponId);
     const caliber = manifest.caliberProfile;
     const timing = getWeaponFiringTiming(weaponId);
@@ -2109,7 +2114,10 @@ export const GasFlowVisualizer: React.FC = () => {
     }
 
     if (isArchery) {
-      const isBow = (weaponId as string) === 'lift33';
+      const isBow =
+        weaponId === 'lift33' ||
+        weaponId === 'hoytrx8' ||
+        weaponId === 'englishlongbow';
       const exitF = isBow ? 0.5 : 0.48;
       if (f < 0.015 || f > 0.66) {
         if (gasGroup) gasGroup.visible = false;

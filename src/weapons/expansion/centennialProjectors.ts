@@ -5,7 +5,10 @@ import type {
   PlatformAttachmentClass,
   WeaponAttachmentMountProfile,
 } from '../../engine/attachments/attachmentSpecs';
-import type { WeaponMagazineStackSpec } from '../../engine/ballistics/magazineStackSpecs';
+import type {
+  SculpturalAmmoExhibitMeta,
+  WeaponMagazineStackSpec,
+} from '../../engine/ballistics/magazineStackSpecs';
 import type {
   RiflingKind,
   RiflingTwistDirection,
@@ -702,15 +705,21 @@ export function buildCentennialFiringTimings(): Record<
     const isOrdnance = bp.category === 'ordnance';
     const isArchery = bp.category === 'archery';
 
+    const isDownwardEject = bp.id === 'dp28' || bp.id === 'bofors40';
+    const rawEjectX = -0.22;
+    const rawEjectY = isDownwardEject ? -0.85 : 0.45;
+    const rawEjectZ = isDownwardEject ? 0.2 : 0.86;
+    const ejectMag = Math.hypot(rawEjectX, rawEjectY, rawEjectZ);
+
     out[bp.id] = {
       ignitionF: isArmor ? 0.08 : isArchery ? 0.12 : 0.1,
       muzzleExitF: isArmor ? 0.24 : isOrdnance ? 0.22 : isArchery ? 0.36 : 0.26,
       ejectF: isArmor ? 0.62 : isArchery ? 0.5 : 0.56,
       batteryF: isArmor ? 0.94 : 0.9,
       gasPortTravel: isGas ? 0.62 : null,
-      ejectDirX: -0.22,
-      ejectDirY: bp.id === 'dp28' || bp.id === 'bofors40' ? -0.85 : 0.45,
-      ejectDirZ: bp.id === 'dp28' || bp.id === 'bofors40' ? 0.2 : 0.86,
+      ejectDirX: rawEjectX / ejectMag,
+      ejectDirY: rawEjectY / ejectMag,
+      ejectDirZ: rawEjectZ / ejectMag,
     };
   }
   return out;
@@ -1039,7 +1048,12 @@ export function buildCentennialAttachmentSpecs(): Record<
     const isRevolver =
       bp.archetype === 'revolver_sa' || bp.archetype === 'revolver_da';
     const receiverPos = layout.assembledPos.receiver;
-    const railY = round2(receiverPos[1] + layout.dims.receiverH * 0.55);
+    const railY = round2(
+      Math.max(
+        receiverPos[1] + layout.dims.receiverH * 0.55,
+        layout.muzzlePos[1] + (isPistol ? 1.45 : 1.35)
+      )
+    );
 
     out[bp.id] = {
       weaponId: asWeaponId(bp.id),
@@ -1102,6 +1116,45 @@ export function buildCentennialMagazineStackSpecs(): Record<
   return out;
 }
 
+const MAG_STYLE_LABELS: Record<
+  CentennialWeaponBlueprint['cad']['magStyle'],
+  { en: string; zh: string }
+> = {
+  curved: { en: 'Curved Detachable Box Magazine', zh: '弯弧可拆卸弹匣' },
+  straight: { en: 'Straight Box Magazine', zh: '直型弹匣' },
+  drum: { en: 'Rotary Drum Magazine', zh: '螺旋弹鼓' },
+  pan: { en: 'Top-Mounted Pan Magazine', zh: '顶置圆盘弹鼓' },
+  belt: { en: 'Linked Ammunition Belt & Box', zh: '金属弹链与弹箱' },
+  tube: { en: 'Underbarrel Tubular Magazine', zh: '管状弹仓' },
+  box_internal: { en: 'Fixed Internal Box Magazine', zh: '固定内置弹仓' },
+  cylinder: { en: 'Swing-Out / Fluted Revolving Cylinder', zh: '转轮弹巢' },
+  quiver: { en: 'Archery Quiver & Arrow Rest', zh: '箭壶与矢箭架' },
+  carousel: { en: 'Floor Carousel Autoloader', zh: '底置转盘自动装弹机' },
+  bustle: { en: 'Turret Bustle Ready Rack', zh: '炮塔尾舱待发弹药架' },
+  top_clip: { en: 'Top-Fed En-Bloc Clip Hopper', zh: '顶置桥夹供弹斗' },
+  breech_single: { en: 'Single-Shot Breech Loader', zh: '单发炮闩装填室' },
+  pistol_grip: { en: 'Grip-Housed Box Magazine', zh: '握把内置弹匣' },
+};
+
+export function buildCentennialSculpturalAmmoMeta(): Record<
+  CentennialWeaponId,
+  SculpturalAmmoExhibitMeta
+> {
+  const out = {} as Record<CentennialWeaponId, SculpturalAmmoExhibitMeta>;
+  for (const bp of CENTENNIAL_BLUEPRINTS) {
+    const label = MAG_STYLE_LABELS[bp.cad.magStyle];
+    const unitEn = bp.category === 'archery' ? 'Arrow' : 'Rd';
+    const unitZh = bp.category === 'archery' ? '箭' : '发';
+    out[bp.id] = {
+      weaponId: asWeaponId(bp.id),
+      capacityRounds: bp.magCapacity,
+      systemEn: `${bp.magCapacity}-${unitEn} ${label.en} (${bp.caliberLabel})`,
+      systemZh: `${bp.magCapacity} ${unitZh}${label.zh}（${bp.caliberLabel}）`,
+    };
+  }
+  return out;
+}
+
 // ----------------------------------------------------------------------------
 // 13C. Causality Sandbox Nominal Cadence (`src/engine/physics/causalitySandbox.ts`)
 // ----------------------------------------------------------------------------
@@ -1142,8 +1195,10 @@ export function buildCentennialTurntableMetrics(): Record<
     >) {
       const a = layout.assembledPos[slot];
       const o = layout.explodeOffset[slot];
-      const x = a[0] + o[0] * 0.58;
-      const y = a[1] + o[1] * 0.58;
+      // Stage 1-2 `explodeSteps` in `centennialPluginFactory.ts` complete within [0.06, 0.55],
+      // so exploded parts already reach full `o` displacement by `t = 0.58`.
+      const x = a[0] + o[0];
+      const y = a[1] + o[1];
       if (x < eMinX) eMinX = x;
       if (x > eMaxX) eMaxX = x;
       if (y < eMinY) eMinY = y;
@@ -1689,8 +1744,14 @@ export function buildCentennialDkEditorialData(): {
         year: String(bp.year),
         name: { zh: bp.shortLabel, en: bp.shortLabel },
         subtitle: {
-          zh: bp.weaponTypeZh,
-          en: bp.weaponTypeEn,
+          zh:
+            bp.weaponTypeZh.trim().length >= 6
+              ? bp.weaponTypeZh
+              : `${bp.weaponTypeZh} · ${bp.caliberLabel}`,
+          en:
+            bp.weaponTypeEn.trim().length >= 6
+              ? bp.weaponTypeEn
+              : `${bp.weaponTypeEn} · ${bp.caliberLabel}`,
         },
         eraRelation: 'current',
       },
