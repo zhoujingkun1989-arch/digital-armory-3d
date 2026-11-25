@@ -1,41 +1,7 @@
 import type * as THREE from 'three';
+import { CENTENNIAL_66_IDS, FLAGSHIP_34_IDS } from './expansion/centennialTypes';
 
-export const WEAPON_IDS = [
-  'ak15',
-  'm4a1',
-  'mp5',
-  'g17',
-  'm82a1',
-  'awm',
-  'scar',
-  'deagle',
-  'aug',
-  'p320',
-  'p90',
-  'lift33',
-  'r500',
-  'python',
-  'benellim4',
-  'garand',
-  'm249',
-  'p08',
-  'vector',
-  'g11',
-  'vss',
-  'm134',
-  'an94',
-  'ztz99a',
-  'm1a2',
-  'leopard2a7',
-  'tiger1',
-  'winchester1894',
-  'rem870',
-  'm1911',
-  'mg42',
-  'k98k',
-  'thompson',
-  'gau8',
-] as const;
+export const WEAPON_IDS = [...FLAGSHIP_34_IDS, ...CENTENNIAL_66_IDS] as const;
 
 export type WeaponId = (typeof WEAPON_IDS)[number];
 

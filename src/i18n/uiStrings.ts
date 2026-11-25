@@ -114,6 +114,11 @@ export interface UiDictionary {
     rackAria: string;
     rackTitle: string;
     rackTip: string;
+    quickSearchAria: string;
+    quickSearchPlaceholder: (count: number) => string;
+    quickSearchClearAria: string;
+    quickSearchEmptyTitle: (query: string) => string;
+    quickSearchResetBtn: string;
     scrollLeft: string;
     scrollRight: string;
     previewingBadge: string;
@@ -985,6 +990,11 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       rackAria: `兵器库${VAULT_EXHIBIT_ZH}槽展架`,
       rackTitle: `兵器库陈列展架 · ${VAULT_EXHIBIT_COUNT}-BAY WEAPON VAULT RACK`,
       rackTip: '单击卡片切换展台预览 · 再次点击或点蓝字进入 3D 拆解台',
+      quickSearchAria: '搜索兵器库展品（名称、口径、年代、槽位）',
+      quickSearchPlaceholder: (count) => `搜 ${count} 款展品（名/口径/年代）...`,
+      quickSearchClearAria: '清空搜索关键词',
+      quickSearchEmptyTitle: (query) => `当前展厅暂无匹配“${query}”的展品`,
+      quickSearchResetBtn: '重置搜索并显示全部展厅',
       scrollLeft: '向左滚动查看槽位',
       scrollRight: '向右滚动查看槽位',
       previewingBadge: '预览中',
@@ -2003,6 +2013,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       rackTitle: `${VAULT_EXHIBIT_COUNT}-BAY WEAPON VAULT RACK · INTERACTIVE COLLECTION`,
       rackTip:
         'Click card to preview on turntable · Click again to enter 3D Workbench',
+      quickSearchAria: 'Search Armory exhibits by name, caliber, year, or bay',
+      quickSearchPlaceholder: (count) =>
+        `Search ${count} exhibits (name, caliber, year)...`,
+      quickSearchClearAria: 'Clear search query',
+      quickSearchEmptyTitle: (query) => `No exhibits match "${query}" in this hall`,
+      quickSearchResetBtn: 'Reset Search & Show All Halls',
       scrollLeft: 'Scroll rack left',
       scrollRight: 'Scroll rack right',
       previewingBadge: 'On Stage',

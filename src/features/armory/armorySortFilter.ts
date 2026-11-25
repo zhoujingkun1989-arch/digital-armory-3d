@@ -1,7 +1,16 @@
 import { getCaliberBallisticsSpec } from '../../engine/physics/armoryPhysics';
+import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
 import type { LanguageCode } from '../../narration/types';
-import { getWeaponManifest } from '../../weapons/manifests';
-import type { ArmoryWeaponItem, WeaponId } from '../../weapons/types';
+import { buildCentennialArmorySortMeta } from '../../weapons/expansion/centennialProjectors';
+import {
+  getWeaponManifest,
+  matchesArmoryCategory,
+} from '../../weapons/manifests';
+import type {
+  ArmoryCategory,
+  ArmoryWeaponItem,
+  WeaponId,
+} from '../../weapons/types';
 
 export type ArmorySortKey =
   | 'curatorial'
@@ -118,6 +127,8 @@ export const ARMORY_SORT_FILTER_STRINGS: Record<
  * Historical design / adoption year per exhibit — synchronized 1:1 with the
  * 1894–2024 Curated Evolution Timeline without creating a lazy-chunk cycle.
  */
+const CENTENNIAL_SORT_META = buildCentennialArmorySortMeta();
+
 export const EXHIBIT_DESIGN_YEAR: Readonly<Record<WeaponId, number>> = {
   winchester1894: 1894,
   p08: 1900,
@@ -153,6 +164,7 @@ export const EXHIBIT_DESIGN_YEAR: Readonly<Record<WeaponId, number>> = {
   r500: 2022,
   ak15: 2023,
   lift33: 2024,
+  ...CENTENNIAL_SORT_META.years,
 };
 
 /**
@@ -198,6 +210,12 @@ export const EXHIBIT_MECHANISM_TAGS: Readonly<
   k98k: ['manual_action'],
   thompson: ['roller_delay'],
   gau8: ['rotary_cannon'],
+  ...(Object.fromEntries(
+    Object.entries(CENTENNIAL_SORT_META.filters).map(([id, f]) => [id, [f]])
+  ) as unknown as Record<
+    keyof typeof CENTENNIAL_SORT_META.filters,
+    readonly NonAllMechanismFilter[]
+  >),
 };
 
 /**
@@ -354,4 +372,109 @@ export function formatArmorySortChipMetric(
         ? copy.archeryBadge
         : copy.manualSemiBadge;
   }
+}
+
+export type ArmoryFilterKey = ArmoryCategory | 'lmg';
+
+/**
+ * Partitions Armory exhibits across all 10 halls (`all`, `assault`, `lmg`,
+ * `smg`, `sniper`, `shotgun`, `pistol`, `archery`, `armor`, `ordnance`) with
+ * zero cross-hall leakage — explicitly guarding `category === 'ordnance'` so
+ * aviation/artillery pieces never leak into `lmg` or `assault`.
+ */
+export function matchesCategoryWithLmg(
+  item: ArmoryWeaponItem,
+  filter: ArmoryFilterKey
+): boolean {
+  if (filter === 'all') return true;
+  if (item.category === 'ordnance') {
+    if (filter === 'lmg' || filter === 'assault') return false;
+    return matchesArmoryCategory(item, filter as ArmoryCategory);
+  }
+  const typeTag = `${item.weaponTypeCn ?? ''} ${item.categoryCn}`;
+  const isLmg =
+    (item.id as string) === 'm249' ||
+    (item.category as string) === 'lmg' ||
+    typeTag.includes('机枪');
+  if (filter === 'lmg') return isLmg;
+  if (filter === 'assault' && isLmg) return false;
+  return matchesArmoryCategory(item, filter as ArmoryCategory);
+}
+
+function normalizeQuickSearchText(raw: string): string {
+  return raw.toLowerCase().replace(/×/g, 'x');
+}
+
+function safeResolveEnglishDisplayMeta(weaponId: WeaponId): {
+  shortLabel?: string;
+  name?: string;
+  originTag?: string;
+  actionMechanism?: string;
+  caliber?: string;
+} | null {
+  try {
+    return resolveWeaponDisplayMeta(weaponId, 'en', null);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Pure bilingual quick-search filter for the Armory Vault rack.
+ * Performs case-insensitive multi-token AND matching across ID, bay code,
+ * model code, Chinese/English display names, caliber (normalizing `×` -> `x`),
+ * origin country, design year, action mechanism, weapon type, and category.
+ */
+export function filterArmoryWeaponsByQuery(
+  weapons: readonly ArmoryWeaponItem[],
+  query: string
+): ArmoryWeaponItem[] {
+  const trimmed = query.trim();
+  if (!trimmed) {
+    return [...weapons];
+  }
+
+  const tokens = normalizeQuickSearchText(trimmed).split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) {
+    return [...weapons];
+  }
+
+  return weapons.filter((w) => {
+    const enMeta = safeResolveEnglishDisplayMeta(w.id);
+    const designYear =
+      EXHIBIT_DESIGN_YEAR[w.id] ??
+      (w as ArmoryWeaponItem & { year?: number }).year;
+    const countryAlias =
+      w.originCountryCn ??
+      (w as ArmoryWeaponItem & { countryCn?: string }).countryCn ??
+      '';
+    const actionAlias =
+      w.actionMechanism ??
+      (w as ArmoryWeaponItem & { actionTypeCn?: string }).actionTypeCn ??
+      '';
+
+    const haystack = normalizeQuickSearchText(
+      [
+        w.id,
+        w.bayCode,
+        w.modelCode,
+        w.nameCn,
+        w.subtitleEn,
+        w.caliber,
+        countryAlias,
+        designYear !== undefined ? String(designYear) : '',
+        actionAlias,
+        w.weaponTypeCn ?? '',
+        w.category,
+        w.categoryCn,
+        enMeta?.name ?? '',
+        enMeta?.shortLabel ?? '',
+        enMeta?.originTag ?? '',
+        enMeta?.actionMechanism ?? '',
+        enMeta?.caliber ?? '',
+      ].join(' ')
+    );
+
+    return tokens.every((tok) => haystack.includes(tok));
+  });
 }

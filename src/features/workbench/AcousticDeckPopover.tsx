@@ -27,6 +27,10 @@ import {
   resolveWeaponMechanismAcousticStyle,
   unlockMechanicalAudio,
 } from '../../engine/audio/mechanicalSoundEngine';
+import {
+  isArcheryWeapon,
+  isTankWeapon,
+} from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import type { LanguageCode } from '../../narration/types';
 import { useAppStore } from '../../store/useAppStore';
@@ -36,9 +40,15 @@ import type { WeaponId } from '../../weapons/types';
 export const NON_BRASS_DROP_WEAPONS: ReadonlySet<WeaponId> = new Set<WeaponId>([
   'g11',
   'gau8',
+  'm61vulcan',
   'lift33',
   'r500',
+  'hoytrx8',
+  'excalibur',
+  'englishlongbow',
   'python',
+  'saa1873',
+  'sw500',
 ]);
 
 export function isBrassDropFoleySupported(weaponId: WeaponId): boolean {
@@ -52,15 +62,15 @@ export function getBrassDropUnsupportedReason(
   if (weaponId === 'g11') {
     return lang === 'en' ? 'Caseless (No Brass)' : '无壳弹（无抛壳）';
   }
-  if (weaponId === 'gau8') {
+  if (weaponId === 'gau8' || weaponId === 'm61vulcan') {
     return lang === 'en'
       ? 'Closed-Loop Linkless Drum'
       : '闭环无链回壳弹鼓';
   }
-  if (weaponId === 'python') {
+  if (weaponId === 'python' || weaponId === 'saa1873' || weaponId === 'sw500') {
     return lang === 'en' ? 'Cylinder Retains Cases' : '转轮弹巢留壳';
   }
-  if (weaponId === 'lift33' || weaponId === 'r500') {
+  if (isArcheryWeapon(weaponId)) {
     return lang === 'en' ? 'Archery (No Brass)' : '弓弩机械（无弹壳）';
   }
   return lang === 'en' ? 'Unavailable' : '当前不可用';
@@ -83,11 +93,7 @@ export function getLiveShotAuditionMeta(
   weaponId: WeaponId,
   lang: LanguageCode
 ): LiveShotAuditionMeta {
-  if (
-    weaponId === 'ztz99a' ||
-    weaponId === 'm1a2' ||
-    weaponId === 'leopard2a7'
-  ) {
+  if (isTankWeapon(weaponId) && weaponId !== 'tiger1' && weaponId !== 't34_85') {
     return lang === 'en'
       ? {
           label: 'APFSDS + Stub',
@@ -101,32 +107,32 @@ export function getLiveShotAuditionMeta(
           title: '试听滑膛主炮冲击波、APFSDS 脱壳气爆与金属底托撞击音',
         };
   }
-  if (weaponId === 'tiger1') {
+  if (weaponId === 'tiger1' || weaponId === 't34_85') {
     return lang === 'en'
       ? {
-          label: '88mm + Brass',
-          cueTag: '88mm KwK 36 + Brass Ring',
+          label: 'WWII Gun + Brass',
+          cueTag: 'Rifled Tank Gun + Brass Ring',
           title:
-            'Audition 88mm KwK 36 twin-baffle blast & full drawn-brass casing ring',
+            'Audition WWII rifled tank gun blast & full drawn-brass casing ring',
         }
       : {
-          label: '88炮+黄铜壳鸣',
-          cueTag: '88mm KwK 36 主炮 + 黄铜弹壳长鸣',
-          title: '试听 88mm KwK 36 双室制退炮口爆鸣与全金属黄铜弹壳余鸣',
+          label: '二战主炮+黄铜壳鸣',
+          cueTag: '线膛坦克主炮 + 黄铜弹壳长鸣',
+          title: '试听二战线膛坦克炮口爆鸣与全金属黄铜弹壳余鸣',
         };
   }
-  if (weaponId === 'gau8') {
+  if (weaponId === 'gau8' || weaponId === 'm61vulcan') {
     return lang === 'en'
       ? {
           label: 'Hydraulic BRRRT',
-          cueTag: 'Hydraulic Spin-Up + 65 Hz BRRRT!',
+          cueTag: 'Hydraulic Spin-Up + Rotary BRRRT!',
           title:
-            'Audition GAU-8/A dual hydraulic drive whine & 3,900 RPM rotary burst',
+            'Audition hydraulic drive whine & high-RPM rotary autocannon burst',
         }
       : {
           label: '液压转管咆哮',
-          cueTag: '双液压起转 + 65 Hz 航炮咆哮',
-          title: '试听 GAU-8/A 双液压马达起转啸叫与 3,900 RPM 旋转机炮咆哮',
+          cueTag: '液压起转 + 旋转机炮咆哮',
+          title: '试听航空旋转机炮液压马达起转啸叫与超高射速弹幕咆哮',
         };
   }
   if (weaponId === 'm134') {
@@ -143,7 +149,7 @@ export function getLiveShotAuditionMeta(
           title: '试听 M134D 28V 直流电机起转啸叫与 3,000 RPM 六管连射',
         };
   }
-  if (weaponId === 'lift33' || weaponId === 'r500') {
+  if (isArcheryWeapon(weaponId)) {
     return lang === 'en'
       ? {
           label: 'Release Twang',

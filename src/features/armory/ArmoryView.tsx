@@ -84,18 +84,14 @@ import {
   useWeaponNarration,
 } from '../../narration/narrationService';
 import { useAppStore } from '../../store/useAppStore';
-import { ARMORY_WEAPONS, matchesArmoryCategory } from '../../weapons/manifests';
+import { ARMORY_WEAPONS } from '../../weapons/manifests';
 import {
   MUSEUM_EXHIBIT_COUNT,
   MUSEUM_TIMELINE_SPAN_ASCII,
   resolveArmorLabPresetForWeapon,
 } from '../../weapons/museumMetrics';
 import { preloadWeaponPlugin } from '../../weapons/registry';
-import type {
-  ArmoryCategory,
-  ArmoryWeaponItem,
-  WeaponId,
-} from '../../weapons/types';
+import type { ArmoryWeaponItem, WeaponId } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { isMacLikePlatform } from '../workbench/CommandPaletteModal';
 import { EngineeringTintLegend } from '../workbench/EngineeringTintLegend';
@@ -104,8 +100,11 @@ import {
   ARMORY_MECHANISM_FILTERS,
   ARMORY_SORT_FILTER_STRINGS,
   ARMORY_SORT_KEYS,
+  filterArmoryWeaponsByQuery,
   formatArmorySortChipMetric,
+  matchesCategoryWithLmg,
   sortAndFilterArmoryWeapons,
+  type ArmoryFilterKey,
   type ArmoryMechanismFilter,
   type ArmorySortKey,
 } from './armorySortFilter';
@@ -132,8 +131,6 @@ export function resolveArmoryHeaderDesktopTitle(
   return lang === 'en' ? '3D Vault' : fallbackTitle;
 }
 
-type ArmoryFilterKey = ArmoryCategory | 'lmg';
-
 const CATEGORY_KEYS: readonly ArmoryFilterKey[] = [
   'all',
   'assault',
@@ -146,21 +143,6 @@ const CATEGORY_KEYS: readonly ArmoryFilterKey[] = [
   'armor',
   'ordnance',
 ];
-
-function matchesCategoryWithLmg(
-  item: ArmoryWeaponItem,
-  filter: ArmoryFilterKey
-): boolean {
-  if (filter === 'all') return true;
-  const typeTag = `${item.weaponTypeCn ?? ''} ${item.categoryCn}`;
-  const isLmg =
-    (item.id as string) === 'm249' ||
-    (item.category as string) === 'lmg' ||
-    typeTag.includes('机枪');
-  if (filter === 'lmg') return isLmg;
-  if (filter === 'assault' && isLmg) return false;
-  return matchesArmoryCategory(item, filter as ArmoryCategory);
-}
 
 const ARMORY_ENV_ICONS: Record<ArmoryEnvironmentPreset, React.ReactNode> = {
   tactical_vault: <Moon size={12} aria-hidden="true" />,
@@ -445,6 +427,8 @@ export interface ArmoryViewProps {
   initialSortKey?: ArmorySortKey;
   /** Optional initial operating-mechanism filter for SSR/unit verification */
   initialMechanismFilter?: ArmoryMechanismFilter;
+  /** Optional initial inline quick-search query for SSR/unit verification */
+  initialSearchQuery?: string;
 }
 
 export const ArmoryView: React.FC<ArmoryViewProps> = ({
@@ -453,6 +437,7 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
   initialCategory,
   initialSortKey,
   initialMechanismFilter,
+  initialSearchQuery,
 }) => {
   const [category, setCategory] = useState<ArmoryFilterKey>(
     initialCategory ?? 'all'
@@ -462,6 +447,9 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
   );
   const [mechFilter, setMechFilter] = useState<ArmoryMechanismFilter>(
     initialMechanismFilter ?? 'all'
+  );
+  const [searchQuery, setSearchQuery] = useState<string>(
+    initialSearchQuery ?? ''
   );
   const [plannedToast, setPlannedToast] = useState<string | null>(null);
   const [showdownRequest, setShowdownRequest] = useState<{
@@ -477,6 +465,7 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
   const [keyboardAnnouncement, setKeyboardAnnouncement] = useState<string>('');
 
   const rackScrollRef = useRef<HTMLDivElement>(null);
+  const quickSearchInputRef = useRef<HTMLInputElement>(null);
   const hallsScrollRef = useRef<HTMLDivElement>(null);
   const labsPopoverRef = useRef<HTMLDivElement>(null);
   const displayPopoverRef = useRef<HTMLDivElement>(null);
@@ -693,8 +682,9 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
     const byCategory = ARMORY_WEAPONS.filter((w) =>
       matchesCategoryWithLmg(w, category)
     );
-    return sortAndFilterArmoryWeapons(byCategory, sortKey, mechFilter);
-  }, [category, sortKey, mechFilter]);
+    const sorted = sortAndFilterArmoryWeapons(byCategory, sortKey, mechFilter);
+    return filterArmoryWeaponsByQuery(sorted, searchQuery);
+  }, [category, sortKey, mechFilter, searchQuery]);
 
   // Smooth `← / →` keyboard bay gliding across the active filtered & sorted rack
   useEffect(() => {
@@ -807,13 +797,17 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
     showdownRequest,
   ]);
 
+  const trimmedSearchQuery = searchQuery.trim();
   const hasActiveSortOrMech =
-    sortKey !== 'curatorial' || mechFilter !== 'all';
+    sortKey !== 'curatorial' ||
+    mechFilter !== 'all' ||
+    trimmedSearchQuery.length > 0;
 
   const handleResetSortAndMech = useCallback(() => {
     playWorkbenchFoley('toggle_switch');
     setSortKey('curatorial');
     setMechFilter('all');
+    setSearchQuery('');
     if (rackScrollRef.current) {
       rackScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
     }
@@ -824,6 +818,7 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
     setCategory('all');
     setSortKey('curatorial');
     setMechFilter('all');
+    setSearchQuery('');
     if (rackScrollRef.current) {
       rackScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
     }
@@ -1924,6 +1919,60 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
               className="rack-sort-filter-bar"
               data-testid="armory-rack-sort-filter"
             >
+              <div
+                className={`rack-quick-search ${
+                  trimmedSearchQuery.length > 0 ? 'has-query' : ''
+                }`}
+              >
+                <Search
+                  size={12}
+                  className="rack-quick-search-icon"
+                  aria-hidden="true"
+                />
+                <input
+                  ref={quickSearchInputRef}
+                  type="search"
+                  className="rack-quick-search-input"
+                  data-testid="armory-bay-search-input"
+                  aria-label={ui.quickSearchAria}
+                  placeholder={ui.quickSearchPlaceholder(MUSEUM_EXHIBIT_COUNT)}
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    if (rackScrollRef.current) {
+                      rackScrollRef.current.scrollTo({
+                        left: 0,
+                        behavior: 'auto',
+                      });
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Escape') {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setSearchQuery('');
+                      e.currentTarget.blur();
+                    }
+                  }}
+                />
+                {searchQuery.length > 0 && (
+                  <button
+                    type="button"
+                    className="rack-quick-search-clear"
+                    data-testid="armory-bay-search-clear"
+                    aria-label={ui.quickSearchClearAria}
+                    title={ui.quickSearchClearAria}
+                    onClick={() => {
+                      playWorkbenchFoley('toggle_switch');
+                      setSearchQuery('');
+                      quickSearchInputRef.current?.focus();
+                    }}
+                  >
+                    <X size={11} aria-hidden="true" />
+                  </button>
+                )}
+              </div>
+
               <select
                 className={`rack-control-select ${
                   sortKey !== 'curatorial' ? 'is-active' : ''
@@ -2046,16 +2095,26 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
               role="status"
             >
               <span className="armory-rack-empty-text">
-                {sortUi.emptyTitle}
+                {trimmedSearchQuery.length > 0
+                  ? ui.quickSearchEmptyTitle(trimmedSearchQuery)
+                  : sortUi.emptyTitle}
               </span>
               <button
                 type="button"
                 className="rack-empty-reset-btn"
-                data-testid="armory-empty-reset-btn"
+                data-testid={
+                  trimmedSearchQuery.length > 0
+                    ? 'armory-search-reset-btn'
+                    : 'armory-empty-reset-btn'
+                }
                 onClick={handleResetAllRackFilters}
               >
                 <RotateCcw size={12} aria-hidden="true" />
-                <span>{sortUi.emptyAction}</span>
+                <span>
+                  {trimmedSearchQuery.length > 0
+                    ? ui.quickSearchResetBtn
+                    : sortUi.emptyAction}
+                </span>
               </button>
             </div>
           ) : (

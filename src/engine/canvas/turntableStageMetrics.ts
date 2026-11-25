@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { buildCentennialTurntableMetrics } from '../../weapons/expansion/centennialProjectors';
 import type { WeaponId, WeaponScaleProfile } from '../../weapons/types';
 
 export interface TurntableBoundsSpec {
@@ -260,6 +261,7 @@ export const WEAPON_TURNTABLE_BOUNDS: Readonly<
     spanX: 605.8,
     explode58: { cx: 28.34, minY: -74.0, maxY: 88.46, spanX: 740.06 },
   },
+  ...buildCentennialTurntableMetrics(),
 };
 
 export function getTurntableRadius(weaponId: WeaponId): number {

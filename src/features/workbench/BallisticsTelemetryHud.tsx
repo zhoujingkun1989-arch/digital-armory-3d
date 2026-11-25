@@ -17,6 +17,7 @@ import {
   getArmoryPhysicsState,
   getCaliberBallisticsSpec,
   getWeaponFiringTiming,
+  isArcheryWeapon,
   type BallisticPhaseId,
   type InternalBallisticsSample,
   type WeaponFiringTiming,
@@ -302,7 +303,7 @@ interface TraceCache {
 }
 
 function isArcheryWeaponId(id: WeaponId | string): boolean {
-  return id === 'lift33' || id === 'r500';
+  return isArcheryWeapon(id);
 }
 
 function resolveArcheryMetaForWeapon(
@@ -312,8 +313,16 @@ function resolveArcheryMetaForWeapon(
   if (caliber === 'arrow_400gr' || caliber === 'bolt_400gr') {
     return getArcheryProjectileMeta(caliber);
   }
-  if (weaponId === 'lift33') return getArcheryProjectileMeta('arrow_400gr');
-  if (weaponId === 'r500') return getArcheryProjectileMeta('bolt_400gr');
+  if (
+    weaponId === 'lift33' ||
+    weaponId === 'hoytrx8' ||
+    weaponId === 'englishlongbow'
+  ) {
+    return getArcheryProjectileMeta('arrow_400gr');
+  }
+  if (weaponId === 'r500' || weaponId === 'excalibur') {
+    return getArcheryProjectileMeta('bolt_400gr');
+  }
   return null;
 }
 

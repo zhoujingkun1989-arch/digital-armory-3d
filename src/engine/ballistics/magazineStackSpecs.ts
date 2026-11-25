@@ -1,3 +1,7 @@
+import {
+  buildCentennialMagazineStackSpecs,
+  buildCentennialSculpturalAmmoMeta,
+} from '../../weapons/expansion/centennialProjectors';
 import type { WeaponId } from '../../weapons/types';
 import { clamp01, seg, smoothstep01 } from '../kinematics/math';
 
@@ -1210,6 +1214,7 @@ export const MAGAZINE_STACK_SPECS: Readonly<
     },
     slots: [],
   },
+  ...buildCentennialMagazineStackSpecs(),
 };
 
 /**
@@ -1269,6 +1274,7 @@ export const SCULPTURAL_AMMO_EXHIBITS: Readonly<
     systemEn: '1,150-Rd Closed-Loop Linkless Helical Drum & Chute (30×173mm)',
     systemZh: '1,150 发闭环无链螺旋弹鼓与输弹导槽（30×173mm）',
   },
+  ...buildCentennialSculpturalAmmoMeta(),
 };
 
 /** Maximum instanced capacity needed across all 34 exhibits (`roundCount + 1` replacement) */

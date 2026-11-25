@@ -18,6 +18,7 @@ import {
   evaluateInternalBallisticsInto,
   getCaliberBallisticsSpec,
   getWeaponFiringTiming,
+  isArcheryWeapon,
   isTankCaliber,
   isTankWeapon,
 } from '../../engine/physics/armoryPhysics';
@@ -398,15 +399,15 @@ export const BallisticsVectorChart: React.FC<{
   const runtimeWeaponId = weaponId as WeaponId;
 
   const isArchery =
-    isArcheryCaliberProfile(caliber as string) ||
-    (weaponId as string) === 'lift33' ||
-    (weaponId as string) === 'r500';
+    isArcheryCaliberProfile(caliber as string) || isArcheryWeapon(weaponId);
   const isTank = isTankCaliber(caliber) || isTankWeapon(weaponId);
   const archeryMeta = isArchery
     ? getArcheryProjectileMeta(
         isArcheryCaliberProfile(caliber as string)
           ? (caliber as string)
-          : (weaponId as string) === 'lift33'
+          : weaponId === 'lift33' ||
+              weaponId === 'hoytrx8' ||
+              weaponId === 'englishlongbow'
             ? 'arrow_400gr'
             : 'bolt_400gr'
       )

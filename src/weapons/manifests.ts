@@ -1,3 +1,4 @@
+import { buildCentennialManifests } from './expansion/centennialProjectors';
 import type {
   ArmoryCategory,
   ArmoryWeaponItem,
@@ -2327,6 +2328,7 @@ export const WEAPON_MANIFESTS: readonly WeaponManifest[] = [
       firingMilestoneLabel: '30mm凸轮波',
     },
   },
+  ...buildCentennialManifests(),
 ];
 
 const MANIFEST_MAP: Record<WeaponId, WeaponManifest> = Object.fromEntries(
@@ -2355,30 +2357,34 @@ export function matchesArmoryCategory(
   filter: ArmoryCategory
 ): boolean {
   if (filter === 'all') return true;
+  if (
+    item.category === 'ordnance' ||
+    item.category === 'armor' ||
+    item.category === 'archery' ||
+    item.category === 'pistol' ||
+    item.category === 'smg' ||
+    item.category === 'lmg' ||
+    item.category === 'sniper' ||
+    item.category === 'shotgun'
+  ) {
+    return filter === item.category;
+  }
   const typeTag = `${item.weaponTypeCn ?? ''} ${item.categoryCn}`;
-  const isPistol = item.category === 'pistol' || typeTag.includes('手枪');
-  const isLmg =
-    item.id === 'm249' || item.category === 'lmg' || typeTag.includes('机枪');
-  const isSmg =
-    item.id === 'mp5' || item.category === 'smg' || typeTag.includes('冲锋');
+  const isPistol = typeTag.includes('手枪');
+  const isLmg = item.id === 'm249' || typeTag.includes('机枪');
+  const isSmg = item.id === 'mp5' || typeTag.includes('冲锋');
   const isSniper =
     item.id === 'm82a1' ||
     item.id === 'awm' ||
-    item.category === 'sniper' ||
     typeTag.includes('狙击') ||
     typeTag.includes('反器材');
   const isArchery =
     item.id === 'lift33' ||
     item.id === 'r500' ||
-    item.category === 'archery' ||
     typeTag.includes('弓') ||
     typeTag.includes('弩');
-  const isShotgun =
-    item.id === 'benellim4' ||
-    item.category === 'shotgun' ||
-    typeTag.includes('霰弹');
+  const isShotgun = item.id === 'benellim4' || typeTag.includes('霰弹');
   const isArmor =
-    item.category === 'armor' ||
     item.id === 'ztz99a' ||
     item.id === 'm1a2' ||
     item.id === 'leopard2a7' ||
@@ -2386,7 +2392,6 @@ export function matchesArmoryCategory(
     typeTag.includes('坦克') ||
     typeTag.includes('重装');
   const isOrdnance =
-    item.category === 'ordnance' ||
     item.id === 'gau8' ||
     typeTag.includes('航炮') ||
     typeTag.includes('航空重武') ||

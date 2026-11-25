@@ -7,7 +7,12 @@ import {
 import { GLB_WEAPON_CONFIGS } from '../geometry/glbAssetService';
 import { WEAPON_MANIFESTS } from '../../weapons/manifests';
 import type { WeaponId } from '../../weapons/types';
-import { isArcheryWeapon, isTankWeapon } from '../physics/armoryPhysics';
+import {
+  isArcheryWeapon,
+  isHeavyScaleWeapon,
+  isOrdnanceWeapon,
+  isTankWeapon,
+} from '../physics/armoryPhysics';
 
 export const OFFLINE_MUSEUM_CACHE_NAME = 'digital-armory-offline-v6-0';
 export const OFFLINE_RUNTIME_CACHE_NAME = 'digital-armory-runtime-v6-0';
@@ -33,12 +38,16 @@ export const FEATURED_LEGENDS_OFFLINE_IDS: readonly WeaponId[] = [
   'ztz99a',
 ] as const;
 
-/** Complete 4-tank Heavy Armor Hall offline pack. */
+/** Complete 8-tank Heavy Armor Hall offline pack. */
 export const ARMOR_HALL_OFFLINE_IDS: readonly WeaponId[] = [
   'ztz99a',
   'm1a2',
   'leopard2a7',
   'tiger1',
+  't90m',
+  'challenger2',
+  'merkava4',
+  't34_85',
 ] as const;
 
 export interface OfflinePackSummary {
@@ -75,7 +84,7 @@ export interface CacheExhibitResult {
 }
 
 function isHeavyOrdnanceExhibit(weaponId: WeaponId): boolean {
-  return isTankWeapon(weaponId) || weaponId === 'gau8';
+  return isHeavyScaleWeapon(weaponId);
 }
 
 function collectUniqueGlbTextureFiles(weaponId: WeaponId): string[] {
@@ -92,10 +101,14 @@ function collectUniqueGlbTextureFiles(weaponId: WeaponId): string[] {
 
 function estimateExhibitOfflineMb(
   weaponId: WeaponId,
-  uniqueTextureCount: number
+  uniqueTextureCount: number,
+  hasGlb: boolean
 ): number {
+  if (!hasGlb) {
+    return isHeavyScaleWeapon(weaponId) ? 1.5 : 1.0;
+  }
   if (isTankWeapon(weaponId)) return 11.2;
-  if (weaponId === 'gau8') return 4.2;
+  if (isOrdnanceWeapon(weaponId)) return 4.2;
   if (isArcheryWeapon(weaponId)) return 3.6;
   return uniqueTextureCount <= 6 ? 3.2 : 3.5;
 }
@@ -103,11 +116,10 @@ function estimateExhibitOfflineMb(
 /**
  * Computes the complete subpath-safe URL list for offline museum viewing of a single
  * exhibit using real assets derived directly from `GLB_WEAPON_CONFIGS[weaponId]`:
- * - Draco `.glb` model
- * - Bilingual narration `.json`
+ * - Draco `.glb` model + shared Draco WASM runtime decoder files (for Flagship GLB exhibits)
+ * - Bilingual narration `.json` (all 100 exhibits)
  * - Every unique Cycles-baked `albedoFile` / `normalFile` / `roughnessFile` WebP map
- * - Heavy armor micro-detail maps + hangar HDRI (for 1:1 MBTs & GAU-8/A) or vault HDRI
- * - Shared Draco WASM runtime decoder files
+ * - Heavy armor micro-detail maps + hangar HDRI (for 1:1 MBTs & heavy ordnance) or vault HDRI
  */
 export function buildExhibitOfflineAssetUrls(
   weaponId: WeaponId,
@@ -115,6 +127,7 @@ export function buildExhibitOfflineAssetUrls(
 ): ExhibitOfflineManifest {
   const urlSet = new Set<string>();
   const glbConfig = GLB_WEAPON_CONFIGS[weaponId];
+  const hasGlb = Boolean(glbConfig?.modelFile);
 
   if (glbConfig?.modelFile) {
     urlSet.add(resolveModelUrl(glbConfig.modelFile, baseOverride));
@@ -136,14 +149,20 @@ export function buildExhibitOfflineAssetUrls(
     urlSet.add(resolveHdriUrl(SMALL_ARMS_HDRI_FILE, baseOverride));
   }
 
-  for (const dracoRelPath of DRACO_RUNTIME_ASSET_PATHS) {
-    urlSet.add(resolveAssetUrl(dracoRelPath, baseOverride));
+  if (hasGlb) {
+    for (const dracoRelPath of DRACO_RUNTIME_ASSET_PATHS) {
+      urlSet.add(resolveAssetUrl(dracoRelPath, baseOverride));
+    }
   }
 
   return {
     weaponId,
     urls: Array.from(urlSet),
-    estimatedMb: estimateExhibitOfflineMb(weaponId, uniqueTextures.length),
+    estimatedMb: estimateExhibitOfflineMb(
+      weaponId,
+      uniqueTextures.length,
+      hasGlb
+    ),
   };
 }
 
