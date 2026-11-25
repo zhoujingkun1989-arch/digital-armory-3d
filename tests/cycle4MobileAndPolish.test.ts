@@ -224,7 +224,7 @@ describe('Cycle 4B — Mobile Header Parity, Keynote Typography & Camera Polish'
       expect(h.eyebrow).toContain('1980');
       const combined = `${h.subLead}${h.subPartsStrong}${h.subMapsStrong}${h.subAudioStrong}${h.subTail}`;
       expect(combined).toContain('2174');
-      expect(combined).toContain('414');
+      expect(combined).toContain('453');
       expect(combined).toContain('1980');
       if (lang === 'zh') {
         expect(combined.length).toBeLessThan(115);

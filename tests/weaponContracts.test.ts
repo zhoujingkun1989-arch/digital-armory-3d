@@ -1231,9 +1231,17 @@ describe('100-Exhibit Digital Armory Centennial 1:1 plugin, geometry, kinematics
           ).toBeLessThanOrEqual(0.98);
 
           // Custom-atlas UV [0, 1] & non-collapsed island span invariant
-          // (catches post-unwrap finalizeGeometry/CSG overwrite or vertex-color classifier collapse)
+          // (catches post-unwrap finalizeGeometry/CSG overwrite or vertex-color classifier collapse;
+          // seamless tileable `centennial_mat_*` metric Box-UVs intentionally wrap beyond [0, 1])
           const customBinding = plugin.pbrBindings[part.id];
-          if (customBinding && (customBinding.repeat ?? 1) <= 1) {
+          const isTileableCentennialShared =
+            Boolean(customBinding) &&
+            customBinding.albedoFile.startsWith('centennial_mat_');
+          if (
+            customBinding &&
+            (customBinding.repeat ?? 1) <= 1 &&
+            !isTileableCentennialShared
+          ) {
             const uvArr = uv.array;
             let outOfBoundsVertex = -1;
             let badU = 0;
@@ -1349,7 +1357,7 @@ describe('100-Exhibit Digital Armory Centennial 1:1 plugin, geometry, kinematics
     expect(builtPartsCount).toBe(2174);
   }, 120000);
 
-  it('verifies all 414 WebP PBR textures exist on disk (0 PNGs) and all 139 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
+  it('verifies all 453 WebP PBR textures exist on disk (0 PNGs) and all 152 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
     expect(fs.existsSync(TEXTURES_DIR)).toBe(true);
     const diskFiles = fs.readdirSync(TEXTURES_DIR);
     const webpFiles = diskFiles.filter((f) => f.endsWith('.webp')).sort();
@@ -1360,11 +1368,11 @@ describe('100-Exhibit Digital Armory Centennial 1:1 plugin, geometry, kinematics
     );
     const normalFiles = webpFiles.filter((f) => f.endsWith('_normal.webp'));
 
-    expect(webpFiles).toHaveLength(414);
+    expect(webpFiles).toHaveLength(453);
     expect(pngFiles).toHaveLength(0);
-    expect(albedoFiles).toHaveLength(136);
-    expect(roughnessFiles).toHaveLength(139);
-    expect(normalFiles).toHaveLength(139);
+    expect(albedoFiles).toHaveLength(149);
+    expect(roughnessFiles).toHaveLength(152);
+    expect(normalFiles).toHaveLength(152);
 
     // Binary RIFF/WEBP header validation across all 369 textures
     for (const fileName of webpFiles) {
