@@ -5,6 +5,7 @@ import {
   Hand,
   Ruler,
   Scale,
+  Search,
   User,
   X,
   Zap,
@@ -14,8 +15,9 @@ import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { getLocalizedShortWeaponLabel } from '../../i18n/weaponFallbacks';
 import { preloadWeaponNarration } from '../../narration/narrationService';
 import { useAppStore } from '../../store/useAppStore';
+import { getWeaponManifest } from '../../weapons/manifests';
 import { preloadWeaponPlugin } from '../../weapons/registry';
-import type { WeaponId } from '../../weapons/types';
+import type { ArmoryCategory, WeaponId } from '../../weapons/types';
 import { WeaponSilhouetteSvg } from '../armory/WeaponSilhouetteSvg';
 import {
   computeBarFillPct,
@@ -32,9 +34,112 @@ import {
   type ScaleBarMode,
   type ScaleReferenceSilhouette,
   type ScaleUnitSystem,
+  type ScaleWallExhibitSpec,
   type ScaleWallPresetId,
 } from './scaleWallSpecs';
 import '../../styles/scale-wall.css';
+
+export const SCALE_WALL_HALL_FILTERS: readonly ArmoryCategory[] = [
+  'all',
+  'assault',
+  'lmg',
+  'smg',
+  'sniper',
+  'shotgun',
+  'pistol',
+  'archery',
+  'armor',
+  'ordnance',
+];
+
+export const SCALE_WALL_HALL_LABELS: Readonly<
+  Record<ArmoryCategory, { zh: string; en: string }>
+> = {
+  all: { zh: '全部', en: 'All' },
+  assault: { zh: '步枪', en: 'Assault' },
+  lmg: { zh: '机枪', en: 'LMG' },
+  smg: { zh: '冲锋枪', en: 'SMG' },
+  sniper: { zh: '狙击', en: 'Sniper' },
+  shotgun: { zh: '霰弹', en: 'Shotgun' },
+  pistol: { zh: '手枪', en: 'Pistol' },
+  archery: { zh: '弓弩', en: 'Archery' },
+  armor: { zh: '装甲', en: 'Armor' },
+  ordnance: { zh: '重武', en: 'Ordnance' },
+};
+
+export const SCALE_WALL_PICKER_UI = {
+  zh: {
+    hallGroupAria: '按展厅筛选对比墙展品',
+    searchPlaceholder: '搜索展品名称、编号、口径或年代（如 AK / 9mm / 1944 / #24）...',
+    searchAria: '检索真实尺度对比墙展品',
+    clearSearchAria: '清空展品检索关键词',
+    matchCount: (shown: number, total: number) => `显示 ${shown} / ${total}`,
+    emptyText: '当前展厅与关键词下无匹配展品',
+    resetBtn: '重置筛选',
+  },
+  en: {
+    hallGroupAria: 'Filter scale wall exhibits by museum hall',
+    searchPlaceholder: 'Search exhibit name, bay, caliber, or year (e.g. AK, 9mm, 1944)...',
+    searchAria: 'Search scale comparison wall exhibits',
+    clearSearchAria: 'Clear exhibit search query',
+    matchCount: (shown: number, total: number) => `Showing ${shown} / ${total}`,
+    emptyText: 'No exhibits match the current hall filter and search query.',
+    resetBtn: 'Reset Filter',
+  },
+} as const;
+
+export function matchesScaleWallHall(
+  exhibit: ScaleWallExhibitSpec,
+  hall: ArmoryCategory
+): boolean {
+  if (hall === 'all') return true;
+  if (hall === 'assault') return exhibit.category === 'rifle';
+  return exhibit.category === hall;
+}
+
+/**
+ * Pure bilingual hall + multi-token search filter for the Scale Wall exhibit picker
+ * (scales effortlessly from 34 to 100+ exhibits).
+ */
+export function filterScaleWallExhibits(
+  exhibits: readonly ScaleWallExhibitSpec[],
+  hall: ArmoryCategory = 'all',
+  query = ''
+): ScaleWallExhibitSpec[] {
+  const tokens = query
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((t) => t.length > 0);
+
+  return exhibits.filter((exhibit) => {
+    if (!matchesScaleWallHall(exhibit, hall)) return false;
+    if (tokens.length === 0) return true;
+
+    const manifest = getWeaponManifest(exhibit.weaponId);
+    const shortEn = getLocalizedShortWeaponLabel(exhibit.weaponId, 'en');
+    const shortZh = getLocalizedShortWeaponLabel(exhibit.weaponId, 'zh');
+    const blob = [
+      exhibit.weaponId,
+      exhibit.bayCode,
+      exhibit.bayCode.replace('BAY-', '#'),
+      exhibit.category,
+      String(exhibit.eraYear),
+      exhibit.caliberLabel,
+      exhibit.caliberLabelZh,
+      shortEn,
+      shortZh,
+      manifest.shortLabel,
+      manifest.catalog.modelCode,
+      manifest.catalog.nameCn,
+      manifest.catalog.subtitleEn,
+    ]
+      .join(' ')
+      .toLowerCase();
+
+    return tokens.every((tok) => blob.includes(tok));
+  });
+}
 
 export interface ScaleWallModalProps {
   initialPresetId?: ScaleWallPresetId;
@@ -142,6 +247,36 @@ export const ScaleWallModal: React.FC<ScaleWallModalProps> = ({
     initialPreset.defaultReference
   );
   const [barMode, setBarMode] = useState<ScaleBarMode>('log');
+  const [pickerHall, setPickerHall] = useState<ArmoryCategory>('all');
+  const [pickerQuery, setPickerQuery] = useState<string>('');
+  const pickerUi = SCALE_WALL_PICKER_UI[lang];
+
+  const hallCounts = useMemo(() => {
+    const counts: Record<ArmoryCategory, number> = {
+      all: SCALE_WALL_EXHIBITS.length,
+      assault: 0,
+      lmg: 0,
+      smg: 0,
+      sniper: 0,
+      shotgun: 0,
+      pistol: 0,
+      archery: 0,
+      armor: 0,
+      ordnance: 0,
+    };
+    for (const ex of SCALE_WALL_EXHIBITS) {
+      const key: ArmoryCategory = ex.category === 'rifle' ? 'assault' : ex.category;
+      counts[key] += 1;
+    }
+    return counts;
+  }, []);
+
+  const filteredPickerExhibits = useMemo(
+    () => filterScaleWallExhibits(SCALE_WALL_EXHIBITS, pickerHall, pickerQuery),
+    [pickerHall, pickerQuery]
+  );
+  const isPickerFiltered =
+    pickerHall !== 'all' || pickerQuery.trim().length > 0;
 
   useDialogAccessibility({
     isOpen: true,
@@ -697,7 +832,7 @@ export const ScaleWallModal: React.FC<ScaleWallModalProps> = ({
             </div>
           </section>
 
-          {/* Interactive 34-Exhibit Picker */}
+          {/* Interactive Exhibit Picker with Hall Filter & Quick Search */}
           <section
             className="sw-picker-section"
             data-testid="scalewall-exhibit-picker"
@@ -716,39 +851,122 @@ export const ScaleWallModal: React.FC<ScaleWallModalProps> = ({
                     : ui.pickerHint}
                 </p>
               </div>
+              <div className="sw-picker-search-bar">
+                <div className="sw-picker-search-wrap">
+                  <Search
+                    size={13}
+                    className="sw-picker-search-icon"
+                    aria-hidden="true"
+                  />
+                  <input
+                    type="search"
+                    value={pickerQuery}
+                    onChange={(e) => setPickerQuery(e.target.value)}
+                    placeholder={pickerUi.searchPlaceholder}
+                    aria-label={pickerUi.searchAria}
+                    data-testid="scalewall-exhibit-search"
+                    className="sw-picker-search-input"
+                  />
+                  {pickerQuery.length > 0 && (
+                    <button
+                      type="button"
+                      className="sw-picker-search-clear"
+                      aria-label={pickerUi.clearSearchAria}
+                      onClick={() => setPickerQuery('')}
+                    >
+                      <X size={12} aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+                <span
+                  className="sw-picker-match-count tabular"
+                  data-testid="scalewall-picker-count"
+                >
+                  {pickerUi.matchCount(
+                    filteredPickerExhibits.length,
+                    SCALE_WALL_EXHIBITS.length
+                  )}
+                </span>
+              </div>
             </div>
 
-            <div className="sw-picker-grid">
-              {SCALE_WALL_EXHIBITS.map((exhibit) => {
-                const isSelected = selectedIds.includes(exhibit.weaponId);
-                const disabled =
-                  (!isSelected &&
-                    selectedIds.length >= SCALE_WALL_MAX_EXHIBITS) ||
-                  (isSelected && selectedIds.length <= SCALE_WALL_MIN_EXHIBITS);
+            <div
+              className="sw-hall-pills"
+              role="group"
+              aria-label={pickerUi.hallGroupAria}
+              data-testid="scalewall-hall-filters"
+            >
+              {SCALE_WALL_HALL_FILTERS.map((hall) => (
+                <button
+                  key={hall}
+                  type="button"
+                  data-testid={`scalewall-hall-${hall}`}
+                  className={`sw-hall-pill ${pickerHall === hall ? 'active' : ''}`}
+                  aria-pressed={pickerHall === hall}
+                  onClick={() => {
+                    playWorkbenchFoley('toggle_switch');
+                    setPickerHall(hall);
+                  }}
+                >
+                  <span>{SCALE_WALL_HALL_LABELS[hall][lang]}</span>
+                  <span className="sw-hall-pill-count tabular">
+                    {hallCounts[hall]}
+                  </span>
+                </button>
+              ))}
+            </div>
 
-                return (
+            {filteredPickerExhibits.length === 0 ? (
+              <div className="sw-picker-empty" role="status">
+                <span>{pickerUi.emptyText}</span>
+                {isPickerFiltered && (
                   <button
-                    key={exhibit.weaponId}
                     type="button"
-                    data-testid={`scalewall-pick-${exhibit.weaponId}`}
-                    className={`sw-pick-chip ${isSelected ? 'is-selected' : ''}`}
-                    aria-pressed={isSelected}
-                    disabled={disabled}
-                    onClick={() => handleToggleExhibit(exhibit.weaponId)}
+                    className="sw-picker-reset-btn"
+                    data-testid="scalewall-picker-reset-btn"
+                    onClick={() => {
+                      setPickerHall('all');
+                      setPickerQuery('');
+                    }}
                   >
-                    <span className="sw-pick-bay tabular">
-                      {exhibit.bayCode.replace('BAY-', '#')}
-                    </span>
-                    <strong>
-                      {getLocalizedShortWeaponLabel(exhibit.weaponId, lang)}
-                    </strong>
-                    <span className="sw-pick-len tabular">
-                      {formatScaleTickLabel(exhibit.oalMm, unit)}
-                    </span>
+                    {pickerUi.resetBtn}
                   </button>
-                );
-              })}
-            </div>
+                )}
+              </div>
+            ) : (
+              <div className="sw-picker-grid">
+                {filteredPickerExhibits.map((exhibit) => {
+                  const isSelected = selectedIds.includes(exhibit.weaponId);
+                  const disabled =
+                    (!isSelected &&
+                      selectedIds.length >= SCALE_WALL_MAX_EXHIBITS) ||
+                    (isSelected &&
+                      selectedIds.length <= SCALE_WALL_MIN_EXHIBITS);
+
+                  return (
+                    <button
+                      key={exhibit.weaponId}
+                      type="button"
+                      data-testid={`scalewall-pick-${exhibit.weaponId}`}
+                      className={`sw-pick-chip ${isSelected ? 'is-selected' : ''}`}
+                      aria-pressed={isSelected}
+                      disabled={disabled}
+                      onClick={() => handleToggleExhibit(exhibit.weaponId)}
+                    >
+                      <span className="sw-pick-bay tabular">
+                        {exhibit.bayCode.replace('BAY-', '#')}
+                      </span>
+                      <strong>
+                        {getLocalizedShortWeaponLabel(exhibit.weaponId, lang)}
+                      </strong>
+                      <span className="sw-pick-len tabular">
+                        {formatScaleTickLabel(exhibit.oalMm, unit)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </section>
         </div>
       </div>
