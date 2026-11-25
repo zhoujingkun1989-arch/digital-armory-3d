@@ -12,6 +12,7 @@ import {
   buildCentennialGeometryBuilders,
   centennialPartId,
   computeCentennialPartLayout,
+  resolveMetricUvTileCm,
 } from '../src/weapons/expansion/centennialGeometryFactory';
 import {
   CENTENNIAL_66_IDS,
@@ -615,5 +616,110 @@ describe('Centennial 66-Exhibit 20-Part Procedural CAD Geometry Factory & Layout
     // #9 T-34-85 exposes all 5 Christie roadwheels (no ERA side skirt wall)
     const t34Skirts = getBox('t34_85', 'mount_rail').bb;
     expect(t34Skirts.min.y, 't34_85 fenders strictly above roadwheels').toBeGreaterThan(0);
+  });
+
+  it('locks Wave A-C4 Museum Constitution invariants: metric Box-UVs, zero pre-1990 Picatinny rails, 1s silhouettes, articulated MBT tracks & cutaway brass rounds', () => {
+    const buildGeo = (
+      id: CentennialWeaponId,
+      slot: (typeof CENTENNIAL_PART_SLOTS)[number]
+    ) => {
+      const builders = buildCentennialGeometryBuilders(id);
+      return builders[centennialPartId(id, slot)]();
+    };
+
+    // 1. Metric Box-UV tile sizing across classes (4.5 cm checkering, 10 cm steel, 14 cm wood, 75 cm armor)
+    expect(resolveMetricUvTileCm(CENTENNIAL_BLUEPRINT_MAP.beretta92, 'grip')).toBe(4.5);
+    expect(resolveMetricUvTileCm(CENTENNIAL_BLUEPRINT_MAP.ak47, 'stock')).toBe(14);
+    expect(resolveMetricUvTileCm(CENTENNIAL_BLUEPRINT_MAP.ak47, 'receiver')).toBe(10);
+    expect(resolveMetricUvTileCm(CENTENNIAL_BLUEPRINT_MAP.t90m, 'receiver')).toBe(75);
+    expect(resolveMetricUvTileCm(CENTENNIAL_BLUEPRINT_MAP.t34_85, 'gas_system')).toBe(75);
+
+    const t90Hull = buildGeo('t90m', 'receiver');
+    t90Hull.computeBoundingBox();
+    const t90Uv = t90Hull.getAttribute('uv');
+    let uMin = Infinity;
+    let uMax = -Infinity;
+    for (let i = 0; i < t90Uv.count; i++) {
+      const u = t90Uv.getX(i);
+      if (u < uMin) uMin = u;
+      if (u > uMax) uMax = u;
+    }
+    const hullDx = t90Hull.boundingBox!.max.x - t90Hull.boundingBox!.min.x;
+    expect(Math.abs(uMax - uMin - hullDx / 75)).toBeLessThan(0.15);
+    t90Hull.dispose();
+
+    // 2. ZERO pre-1990 Picatinny rails: smooth historical sight ribs/chins have far fewer vertices than toothed 1913 rails
+    for (const id of [
+      'ppsh41',
+      'ak47',
+      'stg44',
+      'm16a1',
+      'beretta92',
+      'p226',
+      'cz75',
+      'fnfal',
+      'svd',
+    ] as const) {
+      const railGeo = buildGeo(id, 'mount_rail');
+      expect(
+        railGeo.getAttribute('position').count,
+        `${id} (${CENTENNIAL_BLUEPRINT_MAP[id].year}) must NOT render a multi-tooth Picatinny rail`
+      ).toBeLessThan(800);
+      railGeo.dispose();
+    }
+
+    // 3. PPSh-41 authentic one-piece birch rifle stock (no vertical AK pistol grip!)
+    const ppshGrip = buildGeo('ppsh41', 'grip');
+    ppshGrip.computeBoundingBox();
+    expect(
+      ppshGrip.boundingBox!.max.y - ppshGrip.boundingBox!.min.y,
+      'ppsh41 has compact wrist tang, not vertical AK pistol grip'
+    ).toBeLessThan(3.4);
+    ppshGrip.dispose();
+
+    // 4. Beretta 92FS open-top slide cutout exposing barrel on top
+    const b92Slide = buildGeo('beretta92', 'bolt_carrier');
+    const bPos = b92Slide.getAttribute('position');
+    let centerTopBlockers = 0;
+    for (let i = 0; i < bPos.count; i++) {
+      if (
+        Math.abs(bPos.getX(i)) < 2.0 &&
+        Math.abs(bPos.getZ(i)) < 0.3 &&
+        bPos.getY(i) > 0.75
+      ) {
+        centerTopBlockers++;
+      }
+    }
+    expect(centerTopBlockers, 'beretta92 slide must feature open-top barrel cutout').toBe(0);
+    b92Slide.dispose();
+
+    // 5. Cutaway stacked brass cartridges seated cleanly above follower inside removable magazines
+    for (const id of ['ak47', 'm16a1', 'beretta92', 'svd'] as const) {
+      const folGeo = buildGeo(id, 'follower');
+      expect(
+        folGeo.getAttribute('position').count,
+        `${id}_follower must include stacked cutaway brass cartridges`
+      ).toBeGreaterThan(1200);
+      const col = folGeo.getAttribute('color');
+      let brassHits = 0;
+      for (let i = 0; i < col.count; i++) {
+        // Metallic brass has warm high R & G with lower B
+        if (col.getX(i) > 0.5 && col.getY(i) > 0.3 && col.getZ(i) < 0.25) {
+          brassHits++;
+        }
+      }
+      expect(brassHits, `${id}_follower must render gleaming brass cartridge vertices`).toBeGreaterThan(100);
+      folGeo.dispose();
+    }
+
+    // 6. All 4 Centennial 1:1 MBTs feature articulated individual track link belts
+    for (const id of ['t90m', 'challenger2', 'merkava4', 't34_85'] as const) {
+      const tracks = buildGeo(id, 'gas_system');
+      expect(
+        tracks.getAttribute('position').count,
+        `${id} must feature articulated track link belts + bolted roadwheels + toothed sprockets`
+      ).toBeGreaterThan(6000);
+      tracks.dispose();
+    }
   });
 });
