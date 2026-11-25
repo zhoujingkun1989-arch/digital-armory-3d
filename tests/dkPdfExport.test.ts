@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { FLAGSHIP_34_IDS } from '../src/weapons/expansion/centennialTypes';
 import { WEAPON_MANIFESTS } from '../src/weapons/manifests';
 
 interface PrepressDimensions {
@@ -242,11 +243,16 @@ function buildSyntheticPdf(
 
 describe('DK Pre-Press PDF Batch Pipeline utilities', () => {
   describe('weapon registry parity', () => {
-    it('covers all 34 exhibits from WEAPON_MANIFESTS in exact parity', () => {
-      const manifestIds = WEAPON_MANIFESTS.map((m) => m.id).sort();
+    it('covers all 34 flagship Cycles exhibits in exact parity and resides cleanly within the 100-exhibit WEAPON_MANIFESTS catalog', () => {
+      const manifestIdSet = new Set<string>(WEAPON_MANIFESTS.map((m) => m.id));
+      const flagshipIds = [...FLAGSHIP_34_IDS].sort();
       const cliIds = [...utils.ALL_WEAPON_IDS].sort();
+      expect(WEAPON_MANIFESTS).toHaveLength(100);
       expect(utils.ALL_WEAPON_IDS).toHaveLength(34);
-      expect(cliIds).toEqual(manifestIds);
+      expect(cliIds).toEqual(flagshipIds);
+      for (const id of cliIds) {
+        expect(manifestIdSet.has(id)).toBe(true);
+      }
     });
   });
 
