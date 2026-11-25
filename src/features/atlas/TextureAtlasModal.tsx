@@ -25,8 +25,58 @@ import type { LanguageCode } from '../../narration/types';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest, WEAPON_MANIFESTS } from '../../weapons/manifests';
 import { preloadWeaponPlugin, useWeaponPlugin } from '../../weapons/registry';
-import type { WeaponId } from '../../weapons/types';
+import type { WeaponId, WeaponManifest } from '../../weapons/types';
 import '../../styles/atlas-modal.css';
+
+/**
+ * Pure helper returning only manifests that carry Cycles-baked 2K/4K 5-channel
+ * Packed ORM texture atlases (`ALL_ATLAS_EN_STRINGS[m.id]`), preventing empty tabs
+ * when the museum expands from 34 Flagships to 100 exhibits.
+ */
+export function getBakedAtlasManifests(
+  manifests: readonly WeaponManifest[] = WEAPON_MANIFESTS
+): WeaponManifest[] {
+  return manifests.filter((m) => Boolean(ALL_ATLAS_EN_STRINGS[m.id]));
+}
+
+/**
+ * Resolves a safe baked-atlas tab ID, gracefully falling back to `'ak15'`
+ * when opened while viewing a Centennial procedural-CAD exhibit.
+ */
+export function resolveAtlasWeaponTab(
+  candidate: WeaponId,
+  bakedManifests: readonly WeaponManifest[] = getBakedAtlasManifests()
+): WeaponId {
+  if (
+    ALL_ATLAS_EN_STRINGS[candidate] &&
+    bakedManifests.some((m) => m.id === candidate)
+  ) {
+    return candidate;
+  }
+  return bakedManifests.some((m) => m.id === 'ak15')
+    ? 'ak15'
+    : (bakedManifests[0]?.id ?? 'ak15');
+}
+
+/**
+ * Concise bilingual coverage badge clarifying the 34 Flagship baked Cycles ORM
+ * atlases vs real-time vertex-curvature PBR shaders on Centennial CAD exhibits.
+ */
+export function buildAtlasBakedCoverageNote(
+  bakedCount: number,
+  totalCount: number,
+  lang: LanguageCode
+): string {
+  const proceduralCount = Math.max(0, totalCount - bakedCount);
+  if (lang === 'zh') {
+    return proceduralCount > 0
+      ? `${bakedCount} 款旗舰 Cycles 2K/4K 烘焙 ORM 图集 · ${proceduralCount} 款百年展品采用实时曲率 PBR 着色`
+      : `${bakedCount} 款旗舰全量 Cycles 2K/4K 5 通道烘焙 ORM 图集`;
+  }
+  return proceduralCount > 0
+    ? `${bakedCount} Flagship Cycles 2K/4K Baked ORM Atlases · ${proceduralCount} Centennial Exhibits Use Live Vertex-Curvature PBR`
+    : `${bakedCount} Flagship Cycles 2K/4K 5-Ch Baked ORM Atlases`;
+}
 
 /** Exact 8 MBT exterior suites baked at 4096x4096 (24 4K WebP maps on disk). */
 export const TANK_4K_ATLAS_SUITE_IDS: ReadonlySet<string> = new Set([
@@ -327,10 +377,19 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
   const pbrEnabled = useAppStore((s) => s.pbrTexturesEnabled);
   const togglePbr = useAppStore((s) => s.togglePbrTextures);
 
-  const [weaponTab, setWeaponTab] = useState<WeaponId>(activeWeaponId);
+  const bakedManifests = useMemo(
+    () => getBakedAtlasManifests(WEAPON_MANIFESTS),
+    []
+  );
+
+  const [weaponTab, setWeaponTab] = useState<WeaponId>(() =>
+    resolveAtlasWeaponTab(activeWeaponId, bakedManifests)
+  );
   const [activeSuiteId, setActiveSuiteId] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [tierFilter, setTierFilter] = useState<AtlasTierFilter>('all');
+
+  const resolvedWeaponTab = resolveAtlasWeaponTab(weaponTab, bakedManifests);
 
   useEffect(() => {
     if (!open || typeof window === 'undefined') return;
@@ -368,13 +427,13 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
   const visibleManifests = useMemo(
     () =>
       isFiltering
-        ? WEAPON_MANIFESTS.filter((m) => matchedWeaponIdSet.has(m.id))
-        : WEAPON_MANIFESTS,
-    [isFiltering, matchedWeaponIdSet]
+        ? bakedManifests.filter((m) => matchedWeaponIdSet.has(m.id))
+        : bakedManifests,
+    [bakedManifests, isFiltering, matchedWeaponIdSet]
   );
 
-  const tabManifest = getWeaponManifest(weaponTab);
-  const tabPlugin = useWeaponPlugin(weaponTab);
+  const tabManifest = getWeaponManifest(resolvedWeaponTab);
+  const tabPlugin = useWeaponPlugin(resolvedWeaponTab);
   const suites = tabPlugin?.pbrSuites ?? [];
 
   if (!open) return null;
@@ -383,6 +442,11 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
   const pipeUi = ATLAS_PIPELINE_STRINGS[lang];
   const ktx2Status = getKtx2SupportStatus();
   const pipelineTelemetry = buildAtlasPipelineTelemetry(ktx2Status, lang);
+  const bakedCoverageNote = buildAtlasBakedCoverageNote(
+    bakedManifests.length,
+    WEAPON_MANIFESTS.length,
+    lang
+  );
   const ktx2BadgeText =
     ktx2Status.initialized && ktx2Status.gpuSupported
       ? pipeUi.ktx2GpuReady(ktx2Status.publishedCount)
@@ -392,12 +456,12 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
   const currentIdx = activeIndex >= 0 ? activeIndex : 0;
   const rawCurrent = suites[currentIdx];
   const current = rawCurrent
-    ? getLocalizedAtlasSuite(weaponTab, rawCurrent, lang, currentIdx)
+    ? getLocalizedAtlasSuite(resolvedWeaponTab, rawCurrent, lang, currentIdx)
     : null;
   const currentResMeta = current
     ? classifyAtlasSuiteResolution(current.id, current.resolution)
     : null;
-  const tabShortLabel = getLocalizedShortWeaponLabel(weaponTab, lang);
+  const tabShortLabel = getLocalizedShortWeaponLabel(resolvedWeaponTab, lang);
 
   return (
     <div
@@ -470,7 +534,7 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
                         const nextList = searchAtlasSuites(searchQuery, tierKey);
                         if (
                           nextList.length > 0 &&
-                          !nextList.some((x) => x.weaponId === weaponTab)
+                          !nextList.some((x) => x.weaponId === resolvedWeaponTab)
                         ) {
                           preloadWeaponPlugin(nextList[0].weaponId);
                           setWeaponTab(nextList[0].weaponId);
@@ -513,7 +577,7 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
                   ) : (
                     matchedSuites.slice(0, 18).map((item) => {
                       const isCurrent =
-                        item.weaponId === weaponTab &&
+                        item.weaponId === resolvedWeaponTab &&
                         item.suiteId === (current?.id ?? activeSuiteId);
                       return (
                         <button
@@ -553,9 +617,9 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
                     key={m.id}
                     type="button"
                     role="tab"
-                    aria-selected={weaponTab === m.id}
+                    aria-selected={resolvedWeaponTab === m.id}
                     className={`tex-weapon-pill ${
-                      weaponTab === m.id ? 'active' : ''
+                      resolvedWeaponTab === m.id ? 'active' : ''
                     }`}
                     onMouseEnter={() => preloadWeaponPlugin(m.id)}
                     onClick={() => {
@@ -572,7 +636,7 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
             <div>
               <h2 id={titleId} className="tex-modal-title">
                 {getLocalizedAtlasHeading(
-                  weaponTab,
+                  resolvedWeaponTab,
                   lang,
                   tabManifest.atlasHeadingCn
                 )}
@@ -639,6 +703,13 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
               <Cpu size={11} aria-hidden="true" />
               <span>{pipelineTelemetry.ktx2StatusLabel}</span>
             </span>
+            <span
+              className="tex-telemetry-pill"
+              data-testid="atlas-baked-coverage-note"
+            >
+              <Sparkles size={11} aria-hidden="true" />
+              <span>{bakedCoverageNote}</span>
+            </span>
           </div>
         </section>
 
@@ -684,7 +755,12 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
               }}
             >
               {suites.map((s, idx) => {
-                const locTab = getLocalizedAtlasSuite(weaponTab, s, lang, idx);
+                const locTab = getLocalizedAtlasSuite(
+                  resolvedWeaponTab,
+                  s,
+                  lang,
+                  idx
+                );
                 const tabRes = classifyAtlasSuiteResolution(s.id, s.resolution);
                 return (
                   <button
