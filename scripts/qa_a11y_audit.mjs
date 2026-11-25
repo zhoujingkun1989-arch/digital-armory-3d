@@ -202,6 +202,8 @@ export const A11Y_MODAL_SPECS = Object.freeze([
     kind: 'modal',
     label: 'Command Palette (Cmd/Ctrl+K)',
     query: 'screen=armory',
+    readySelector:
+      '[data-testid="armory-bay-search-input"], .armory-cards-grid .rack-card, .armory-cards-grid',
     expectedDialogSelector: '[role="dialog"], dialog[open]',
     triggerKey: Object.freeze({
       key: 'k',
@@ -216,6 +218,7 @@ export const A11Y_MODAL_SPECS = Object.freeze([
     kind: 'modal',
     label: 'Keyboard Shortcuts Modal (?)',
     query: 'screen=workbench&weapon=ak15',
+    readySelector: '.top-bar, .workbench-header, header',
     expectedDialogSelector: '[role="dialog"], dialog[open]',
     triggerKey: Object.freeze({
       key: '?',
@@ -230,6 +233,8 @@ export const A11Y_MODAL_SPECS = Object.freeze([
     kind: 'modal',
     label: 'Mechanism Showdown Matrix (S)',
     query: 'screen=armory',
+    readySelector:
+      '[data-testid="armory-bay-search-input"], .armory-cards-grid .rack-card, .armory-cards-grid',
     expectedDialogSelector: 'dialog.showdown-dialog[open], [role="dialog"]',
     triggerKey: Object.freeze({
       key: 's',
@@ -1466,12 +1471,90 @@ async function evalValue(cdp, expression) {
 async function waitForSelector(cdp, selector, timeoutMs = 12_000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
-    const found = await evalValue(
-      cdp,
-      `Boolean(document.querySelector(${JSON.stringify(selector)}))`
-    );
-    if (found) return true;
+    try {
+      const found = await evalValue(
+        cdp,
+        `Boolean(document.querySelector(${JSON.stringify(selector)}))`
+      );
+      if (found) return true;
+    } catch {
+      // Execution context may still be swapping during navigation
+    }
     await sleep(120);
+  }
+  return false;
+}
+
+async function waitForAboutBlankSettled(cdp, timeoutMs = 2_500) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      const settled = await evalValue(
+        cdp,
+        `window.location.href === 'about:blank' && !document.querySelector('#root')`
+      );
+      if (settled) return true;
+    } catch {
+      // Previous heavy WebGL document is still tearing down
+    }
+    await sleep(50);
+  }
+  return false;
+}
+
+async function waitForTargetNavigationSettled(cdp, timeoutMs = 15_000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      const ready = await evalValue(
+        cdp,
+        `window.location.href !== 'about:blank' && document.readyState !== 'loading' && Boolean(document.querySelector('#root > *'))`
+      );
+      if (ready) return true;
+    } catch {
+      // Document execution context is still transitioning
+    }
+    await sleep(80);
+  }
+  return false;
+}
+
+async function waitUntilNoOpenDialog(cdp, timeoutMs = 2_000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      if (!(await hasOpenDialog(cdp))) return true;
+    } catch {
+      // Context still settling
+    }
+    await sleep(60);
+  }
+  return false;
+}
+
+async function waitForVisibleDialog(cdp, selector, timeoutMs = 2_500) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      const visible = await evalValue(
+        cdp,
+        `(() => {
+          const nodes = [...document.querySelectorAll(${JSON.stringify(selector)})];
+          return nodes.some((el) => {
+            if (!el || el.hidden) return false;
+            if (el.tagName === 'DIALOG' && !el.open) return false;
+            const st = getComputedStyle(el);
+            if (st.display === 'none' || st.visibility === 'hidden' || parseFloat(st.opacity) === 0) return false;
+            const r = el.getBoundingClientRect();
+            return r.width > 1 && r.height > 1;
+          });
+        })()`
+      );
+      if (visible) return true;
+    } catch {
+      // Context still settling
+    }
+    await sleep(100);
   }
   return false;
 }
@@ -1527,14 +1610,14 @@ async function auditSingleTarget(cdp, target, timeoutMs) {
       enabled: target.profile.mobile,
     });
 
-    // Navigate cleanly to about:blank first on every target so stale modal state
-    // or leftover focus from a prior route never leaks across targets.
+    // Navigate cleanly to about:blank first and wait for full teardown so stale
+    // prior modals/DOM from heavy WebGL routes never race the next target.
     await cdp.send('Page.navigate', { url: 'about:blank' });
-    await sleep(80);
+    await waitForAboutBlankSettled(cdp, 2_500);
     await cdp.send('Page.navigate', { url: target.url });
 
-    // Wait for React root mount
-    await waitForSelector(cdp, '#root > *', Math.min(timeoutMs, 15_000));
+    // Wait for target navigation & React root mount
+    await waitForTargetNavigationSettled(cdp, Math.min(timeoutMs, 15_000));
 
     if (target.kind === 'screen') {
       if (target.readySelector) {
@@ -1585,35 +1668,31 @@ async function auditSingleTarget(cdp, target, timeoutMs) {
     } else {
       // Modal target
       let usedFallbackTrigger = false;
+      const dialogSel =
+        target.expectedDialogSelector || '[role="dialog"], dialog[open]';
       if (target.triggerKey) {
-        // Wait for underlying screen chrome to mount before pressing shortcut
-        await waitForSelector(cdp, 'header, .top-bar, .armory-header', 10_000);
-        await sleep(550);
-        const dialogSel =
-          target.expectedDialogSelector || '[role="dialog"], dialog[open]';
-        // Retry key trigger once if React lazy/effect listeners finish mounting slightly late
-        for (let attempt = 0; attempt < 2; attempt += 1) {
+        // Wait for underlying screen chrome/search/cards to settle with no stale dialog
+        // open before dispatching keyboard shortcut (e.g. Cmd/Ctrl+K on screen=armory).
+        const settleSelector =
+          target.readySelector || 'header, .top-bar, .armory-header';
+        await waitForSelector(cdp, settleSelector, 10_000);
+        await waitUntilNoOpenDialog(cdp, 2_000);
+        await sleep(450);
+        // Retry key trigger if React lazy/effect listeners finish mounting slightly late
+        for (let attempt = 0; attempt < 3; attempt += 1) {
           await evalValue(cdp, 'document.activeElement?.blur?.()');
           await dispatchCdpKey(cdp, target.triggerKey);
-          const opened = await waitForSelector(cdp, dialogSel, 2_500);
+          const opened = await waitForVisibleDialog(cdp, dialogSel, 2_500);
           if (opened) break;
           await sleep(400);
         }
       } else {
-        const openedByUrl = await waitForSelector(
-          cdp,
-          target.expectedDialogSelector || '[role="dialog"], dialog[open]',
-          5_000
-        );
+        const openedByUrl = await waitForVisibleDialog(cdp, dialogSel, 5_000);
         if (!openedByUrl && target.fallbackTriggerKey) {
           usedFallbackTrigger = true;
           await evalValue(cdp, 'document.activeElement?.blur?.()');
           await dispatchCdpKey(cdp, target.fallbackTriggerKey);
-          await waitForSelector(
-            cdp,
-            target.expectedDialogSelector || '[role="dialog"], dialog[open]',
-            5_000
-          );
+          await waitForVisibleDialog(cdp, dialogSel, 5_000);
         }
       }
       // Allow useDialogAccessibility focus-on-open rAF / microtask to settle

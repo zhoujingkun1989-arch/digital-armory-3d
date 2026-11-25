@@ -22,6 +22,7 @@ import {
   type BoltCarrierStyle,
   type CentennialFinishColorSet,
   type HandguardStyle,
+  type HeavyArmorVariant,
   type MagazineStyle,
   type OpticSightStyle,
   type StockGripStyle,
@@ -169,9 +170,8 @@ function resolveHandguardStyle(bp: CentennialWeaponBlueprint): HandguardStyle {
   if (bp.id === 'm16a1') {
     return 'triangular_retro';
   }
-  if (bp.cad.hasWoodFurniture) {
-    return 'walnut_forend';
-  }
+  // Ventilated perforated steel barrel shrouds / cooling jackets MUST take priority
+  // over `hasWoodFurniture` so PPSh-41, DP-28, and M2HB keep steel shrouds w/ wood stocks!
   if (
     bp.archetype === 'smg_tube' ||
     bp.archetype === 'smg_drum' ||
@@ -182,10 +182,16 @@ function resolveHandguardStyle(bp: CentennialWeaponBlueprint): HandguardStyle {
   ) {
     return 'ventilated_tube';
   }
+  if (bp.cad.hasWoodFurniture) {
+    return 'walnut_forend';
+  }
   return 'quad_rail';
 }
 
 function resolveStockStyle(bp: CentennialWeaponBlueprint): StockGripStyle {
+  if (bp.id === 'svd') return 'dragunov_thumbhole';
+  if (bp.id === 'spas12') return 'spas12_top_fold';
+  if (bp.archetype === 'shotgun_lever') return 'straight_walnut';
   if (bp.archetype === 'heavy_mg') return 'spade_grips';
   if (bp.archetype === 'bullpup_rifle' || bp.archetype === 'sniper_bullpup') {
     return 'bullpup_stock';
@@ -237,6 +243,10 @@ function resolveBoltStyle(bp: CentennialWeaponBlueprint): BoltCarrierStyle {
 }
 
 function resolveOpticStyle(bp: CentennialWeaponBlueprint): OpticSightStyle {
+  if (bp.archetype === 'heavy_mg') {
+    // M2HB uses a low folding AA leaf iron sight, never a rifle carry handle!
+    return 'folding_tangent';
+  }
   if (bp.cad.hasCarryHandle && !bp.cad.hasOptic) {
     return 'carry_handle';
   }
@@ -385,8 +395,19 @@ function buildStandaloneMuzzleGeo(
 
   // 'bare': precision-crowned muzzle thread protector & front blade sight collar
   parts.push(cylX(r * 1.18, r * 1.12, L, 0.04, 24, pal.barrel));
-  const blade = createChamferedBox(L * 0.65, r * 1.1, r * 0.34, 0.03, pal.accent);
-  blade.translate(0, r * 1.35, 0);
+  if (bp.archetype === 'revolver_sa' || bp.archetype === 'revolver_da') {
+    // Classic Colt SAA 1873 / revolver low swept half-moon crescent blued-steel front blade sight
+    const bladeBase = createChamferedBox(L * 1.35, r * 0.55, r * 0.24, 0.03, pal.barrel);
+    bladeBase.translate(-L * 0.25, r * 1.12, 0);
+    parts.push(bladeBase);
+    const crescent = createChamferedBox(L * 0.82, r * 0.72, r * 0.2, 0.03, pal.secondary);
+    crescent.rotateZ(0.32);
+    crescent.translate(-L * 0.08, r * 1.48, 0);
+    parts.push(crescent);
+    return finalizeParts(parts);
+  }
+  const blade = createChamferedBox(L * 0.65, r * 0.95, r * 0.3, 0.03, pal.secondary);
+  blade.translate(0, r * 1.25, 0);
   parts.push(blade);
   return finalizeParts(parts);
 }
@@ -458,19 +479,53 @@ function buildBipodOrRailGeo(
   pal: CentennialFinishColorSet
 ): THREE.BufferGeometry {
   if (bp.cad.hasBipod) {
-    const legL = Math.max(7.2, dims.receiverH * 2.05);
-    const legR = Math.max(0.34, dims.receiverW * 0.11);
+    const isWa2000 = bp.id === 'wa2000';
+    const legL = Math.max(7.2, dims.receiverH * (isWa2000 ? 2.55 : 2.05));
+    const legR = Math.max(0.32, dims.receiverW * 0.1);
+    const splayAngle = isWa2000 ? 0.24 : 0.28;
+    const tiltAngle = isWa2000 ? 0.14 : 0.18;
+    const hingeZ = dims.handguardW * (isWa2000 ? 0.56 : 0.34);
+    const hingeY = isWa2000 ? dims.handguardH * 1.18 : -0.32;
     const parts: THREE.BufferGeometry[] = [];
-    const saddle = createChamferedBox(2.8, 1.15, dims.handguardW * 0.82, 0.08, pal.secondary);
-    parts.push(saddle);
+
+    if (isWa2000) {
+      // Iconic Walther WA 2000 top-mounted hanging bipod clamped to the upper aluminum frame rail!
+      const topClamp = createChamferedBox(3.1, 1.05, dims.handguardW * 1.24, 0.08, pal.secondary);
+      topClamp.translate(0, hingeY + 0.35, 0);
+      parts.push(topClamp);
+      for (const side of [-1, 1] as const) {
+        const yoke = createChamferedBox(1.5, 1.35, 0.42, 0.05, pal.accent);
+        yoke.translate(0, hingeY - 0.18, side * hingeZ);
+        parts.push(yoke);
+      }
+    } else {
+      const saddle = createChamferedBox(2.8, 1.15, dims.handguardW * 0.82, 0.08, pal.secondary);
+      parts.push(saddle);
+    }
+
+    const xAxis = new THREE.Vector3(1, 0, 0);
+    const zAxis = new THREE.Vector3(0, 0, 1);
     for (const side of [-1, 1] as const) {
-      const leg = createBeveledCylinder(legR, legR * 0.85, legL, 0.05, 16, pal.accent);
-      leg.rotateX(side * 0.34);
-      leg.rotateZ(-0.22);
-      leg.translate(legL * 0.12, -legL * 0.46, side * (dims.handguardW * 0.34 + legL * 0.16));
+      // Build leg extending straight down from origin (0, 0, 0) to (0, -legL, 0),
+      // rotate around the upper hinge, and seat the horizontal rubber foot DEAD-FLUSH at exact tip!
+      const leg = createBeveledCylinder(legR * 0.85, legR, legL, 0.05, 16, pal.accent);
+      leg.translate(0, -legL * 0.5, 0);
+      leg.rotateX(side * splayAngle);
+      leg.rotateZ(tiltAngle);
+      leg.translate(0, hingeY, side * hingeZ);
       parts.push(leg);
-      const foot = createChamferedBox(1.1, 0.48, 1.1, 0.06, pal.secondary);
-      foot.translate(legL * 0.24, -legL * 0.92, side * (dims.handguardW * 0.34 + legL * 0.32));
+
+      // Compute exact world bottom tip of rotated leg
+      const tip = new THREE.Vector3(0, -legL, 0)
+        .applyAxisAngle(xAxis, side * splayAngle)
+        .applyAxisAngle(zAxis, tiltAngle);
+
+      const ankle = createBeveledCylinder(legR * 1.15, legR * 1.05, 0.42, 0.04, 14, pal.secondary);
+      ankle.translate(tip.x, hingeY + tip.y + 0.12, side * hingeZ + tip.z);
+      parts.push(ankle);
+
+      const foot = createChamferedBox(1.22, 0.46, 1.18, 0.07, '#252a32');
+      foot.translate(tip.x, hingeY + tip.y - 0.14, side * hingeZ + tip.z);
       parts.push(foot);
     }
     return finalizeParts(parts);
@@ -528,15 +583,88 @@ function buildFollowerGeo(
 function buildMagBaseGeo(
   dims: CentennialPartDims,
   pal: CentennialFinishColorSet,
-  isCircular: boolean
+  magStyle: MagazineStyle,
+  isOrdnance = false
 ): THREE.BufferGeometry {
-  if (isCircular) {
-    const r = clampMin(Math.min(dims.magW, dims.magH) * 0.44, 0.95);
-    return finalizeParts([cylX(r, r * 0.95, Math.max(0.85, dims.magT * 0.35), 0.06, 24, pal.secondary)]);
+  if (magStyle === 'curved_banana') {
+    // Align floorplate DEAD-FLUSH with curved banana toe at (+magH*0.24, 0, 0) & tilt 0.28 rad!
+    const w = clampMin(dims.magW * 1.12, 2.8);
+    const t = clampMin(dims.magT * 1.14, 1.6);
+    const h = clampMin(Math.min(1.05, dims.magH * 0.09), 0.55);
+    const sweepX = dims.magH * 0.24;
+    const plate = createChamferedBox(w, h, t, 0.06, pal.secondary);
+    plate.rotateZ(0.28);
+    plate.translate(sweepX, -h * 0.22, 0);
+    const lockPin = createChamferedBox(w * 0.36, h * 0.35, t * 0.45, 0.03, pal.accent);
+    lockPin.rotateZ(0.28);
+    lockPin.translate(sweepX, -h * 0.65, 0);
+    return finalizeParts([plate, lockPin]);
   }
+
+  if (magStyle === 'drum_71') {
+    const r = Math.max(dims.magH, dims.magW) * 0.42;
+    if (isOrdnance) {
+      // M61 Vulcan rear helical drum drive end-cap seated flush at rear of drum
+      const cap = cylX(r * 0.92, r * 0.88, Math.max(2.2, dims.magT * 0.14), 0.14, 28, pal.secondary);
+      cap.translate(6.5, 0, 0);
+      const hub = cylX(r * 0.34, r * 0.28, Math.max(3.4, dims.magT * 0.22), 0.1, 22, pal.accent);
+      hub.translate(5.0, 0, 0);
+      return finalizeParts([cap, hub]);
+    }
+    // PPSh-41 / AA-12 drum: flush concentric front drum cover plate + radial winding key
+    // translated UP (+dims.magH * 0.5) to sit concentric on the drum's front face (+X)!
+    const yCenter = dims.magH * 0.5;
+    const xFace = dims.magT * 0.6;
+    const cover = cylX(r * 0.92, r * 0.88, 0.52, 0.07, 32, pal.secondary);
+    cover.translate(xFace, yCenter, 0);
+    const windingKey = createChamferedBox(0.75, r * 0.44, r * 0.16, 0.04, pal.accent);
+    windingKey.translate(xFace + 0.32, yCenter, 0);
+    const latch = cylX(r * 0.18, r * 0.16, 0.82, 0.04, 18, pal.accent);
+    latch.translate(xFace + 0.26, yCenter, 0);
+    return finalizeParts([cover, windingKey, latch]);
+  }
+
+  if (magStyle === 'pan_47') {
+    // DP-28 horizontal 47-round pan: flush flat horizontal top cover lid + radial latch bar (axis Y!)
+    const r = Math.max(dims.magW, dims.magH) * 0.48;
+    const lid = createBeveledCylinder(r * 0.84, r * 0.88, 0.42, 0.06, 32, pal.secondary);
+    const hub = createBeveledCylinder(r * 0.24, r * 0.28, 0.72, 0.05, 22, pal.accent);
+    hub.translate(0, 0.22, 0);
+    const latch = createChamferedBox(r * 0.78, 0.32, r * 0.16, 0.04, pal.accent);
+    latch.translate(0, 0.38, 0);
+    return finalizeParts([lid, hub, latch]);
+  }
+
+  if (magStyle === 'helical_64') {
+    // PP-19 Bizon compact forward cylindrical end-cap ratchet matching scaled helical tubeR
+    const tubeR = Math.min(1.52, Math.max(1.18, dims.magT * 0.42));
+    const yDrop = -0.28;
+    const cap = cylX(tubeR * 1.04, tubeR * 0.92, 1.25, 0.08, 26, pal.secondary);
+    cap.translate(0, yDrop, 0);
+    const ratchet = cylX(tubeR * 0.56, tubeR * 0.48, 0.65, 0.05, 20, pal.accent);
+    ratchet.translate(0.75, yDrop, 0);
+    return finalizeParts([cap, ratchet]);
+  }
+
+  if (magStyle === 'tubular') {
+    // Compact knurled shotgun/lever-action front magazine tube end-cap
+    const tubeR = Math.max(0.85, dims.magT * 0.48);
+    const cap = cylX(tubeR * 1.15, tubeR * 1.08, 1.35, 0.08, 22, pal.accent);
+    const stud = cylX(tubeR * 0.42, tubeR * 0.36, 0.55, 0.04, 16, pal.secondary);
+    stud.translate(0.72, 0, 0);
+    return finalizeParts([cap, stud]);
+  }
+
+  if (magStyle === 'belt_tray') {
+    // Compact lower feed-chute retention plate tucked cleanly below belt tray
+    const plate = createChamferedBox(dims.magW * 0.78, 0.52, dims.magT * 0.95, 0.06, pal.secondary);
+    plate.translate(0, -dims.magH * 0.36, 0);
+    return finalizeParts([plate]);
+  }
+
   const w = clampMin(dims.magW * 1.12, 2.8);
   const t = clampMin(dims.magT * 1.14, 1.6);
-  const h = clampMin(Math.min(1.15, dims.magH * 0.12), 0.65);
+  const h = clampMin(Math.min(1.08, dims.magH * 0.11), 0.58);
   return finalizeParts([createChamferedBox(w, h, t, 0.07, pal.secondary)]);
 }
 
@@ -550,11 +678,20 @@ function buildMbtGeometryBuilders(
   pal: CentennialFinishColorSet
 ): Record<CentennialPartSlot, () => THREE.BufferGeometry> {
   const style = bp.archetype === 'mbt_wwii' ? 'mbt_wwii' : 'mbt_modern';
+  const variant: HeavyArmorVariant =
+    bp.id === 't34_85' ||
+    bp.id === 't90m' ||
+    bp.id === 'challenger2' ||
+    bp.id === 'merkava4'
+      ? bp.id
+      : style === 'mbt_wwii'
+        ? 't34_85'
+        : 't90m';
   const s = dims.armorScale;
 
   return {
     receiver: () =>
-      buildHeavyArmorHullAndTurretGeo('hull', s, pal.primary, style),
+      buildHeavyArmorHullAndTurretGeo('hull', s, pal.primary, style, variant),
     barrel: () =>
       buildSteppedBarrelGeo(
         dims.barrelLen,
@@ -565,7 +702,7 @@ function buildMbtGeometryBuilders(
       ),
     muzzle: () => buildStandaloneMuzzleGeo(bp, dims, pal),
     bolt_carrier: () =>
-      buildHeavyArmorHullAndTurretGeo('turret', s, pal.primary, style),
+      buildHeavyArmorHullAndTurretGeo('turret', s, pal.primary, style, variant),
     bolt: () =>
       buildRotaryAndArtilleryGeo('breech_block', dims.boltLen, pal.bolt),
     recoil_spring: () =>
@@ -597,27 +734,35 @@ function buildMbtGeometryBuilders(
           pal.secondary
         ),
       ];
-      for (const side of [-1, 1] as const) {
-        const drum = cylZ(s * 0.24, s * 0.24, s * 0.72, s * 0.03, 20, pal.accent);
-        drum.translate(-dims.stockLen * 0.35, s * 0.18, side * s * 0.82);
-        parts.push(drum);
+      // Twin cylindrical external rear fuel drums on T-34-85, T-90M & Challenger 2 (Merkava has rear crew doors!)
+      if (variant !== 'merkava4') {
+        for (const side of [-1, 1] as const) {
+          const drum = cylZ(s * 0.24, s * 0.24, s * 0.72, s * 0.03, 20, pal.primary);
+          drum.translate(-dims.stockLen * 0.35, s * 0.18, side * s * 0.82);
+          parts.push(drum);
+        }
       }
       return finalizeParts(parts);
     },
     grip: () =>
-      buildHeavyArmorHullAndTurretGeo('engine_block', s, pal.secondary, style),
+      buildHeavyArmorHullAndTurretGeo('engine_block', s, pal.secondary, style, variant),
     optic: () => {
+      // Matte armor-painted commander cupola / panoramic CITV housing (ZERO emerald flood!)
       const parts: THREE.BufferGeometry[] = [
-        createBeveledCylinder(s * 0.24, s * 0.28, s * 0.48, s * 0.04, 22, pal.optic),
-        createChamferedBox(s * 0.36, s * 0.24, s * 0.32, s * 0.03, pal.accent),
+        createBeveledCylinder(s * 0.24, s * 0.28, s * 0.44, s * 0.04, 22, pal.primary),
+        createChamferedBox(s * 0.36, s * 0.22, s * 0.32, s * 0.03, pal.accent),
       ];
-      parts[1].translate(s * 0.14, s * 0.16, 0);
+      parts[1].translate(s * 0.12, s * 0.16, 0);
+      // Tiny recessed dark anti-reflective periscope glass aperture on forward (+X) face
+      const lens = createChamferedBox(s * 0.05, s * 0.11, s * 0.18, s * 0.01, '#16332c');
+      lens.translate(s * 0.3, s * 0.16, 0);
+      parts.push(lens);
       return finalizeParts(parts);
     },
     gas_system: () =>
-      buildHeavyArmorHullAndTurretGeo('suspension_tracks', s, pal.secondary, style),
+      buildHeavyArmorHullAndTurretGeo('suspension_tracks', s, pal.secondary, style, variant),
     mount_rail: () =>
-      buildHeavyArmorHullAndTurretGeo('era_skirts', s, pal.accent, style),
+      buildHeavyArmorHullAndTurretGeo('era_skirts', s, pal.accent, style, variant),
     trigger: () => buildTriggerAssemblyGeo(s * 0.16, pal),
     hammer: () => buildHammerGeo(s * 0.18, pal),
     hammer_spring: () =>
@@ -781,7 +926,13 @@ function buildOrdnanceGeometryBuilders(
         SPRING_STEEL_HEX,
         isVulcan ? 'x' : 'y'
       ),
-    mag_base: () => buildMagBaseGeo(dims, pal, isVulcan),
+    mag_base: () =>
+      buildMagBaseGeo(
+        dims,
+        pal,
+        isVulcan ? 'drum_71' : isBofors ? 'top_clip' : 'belt_tray',
+        true
+      ),
   };
 }
 
@@ -795,114 +946,318 @@ function buildArcheryGeometryBuilders(
   const isLongbow = style === 'bow_longbow';
   const span = dims.specialSpan;
 
+  if (isLongbow) {
+    // 1415 Agincourt Medieval English Yew Warbow:
+    // Pure continuous tapered D-section yew stave, dark stitched-leather center grip wrap,
+    // carved pale cow-horn upper & lower nocks, taut braided hemp bowstring, and bodkin war-arrow.
+    // Every secondary slot seats seamlessly along the stave/grip/string with ZERO floating boxes,
+    // ZERO compound stabilizer rods, ZERO green sights, and ZERO protruding coil springs!
+    const leatherDark = pal.furniture; // '#452412'
+    const leatherCord = '#3a2315';
+    const hornPale = pal.accent; // '#cfc09e'
+    const hempHex = '#c7b796';
+
+    // Exact stave curve helper matching `centennialCadPrimitives.ts`: x(y) = -(|y|/(span/2))^1.85 * span * 0.145
+    const staveXAtY = (y: number) =>
+      -Math.pow(Math.min(1, Math.abs(y) / (span * 0.5)), 1.85) * (span * 0.145);
+
+    return {
+      receiver: () => buildArcheryGeo('riser', dims.receiverLen, leatherDark, style),
+      // Real GPU `SPRING_AXIS_MODE_FLEX` flexing tapered D-section yew stave!
+      barrel: () => buildArcheryGeo('limbs', span, pal.primary, style),
+      // Upper carved cow-horn tip nock seated dead-flush on upper stave tip
+      muzzle: () => {
+        const horn = createBeveledCylinder(0.46, 0.78, 2.8, 0.08, 18, hornPale);
+        horn.rotateZ(0.28);
+        horn.translate(-0.22, 0.55, 0);
+        const groove = createBeveledCylinder(0.68, 0.68, 0.35, 0.04, 16, leatherCord);
+        groove.rotateZ(0.28);
+        groove.translate(-0.18, 0.15, 0);
+        return finalizeParts([horn, groove]);
+      },
+      // Real GPU `SPRING_AXIS_MODE_FLEX` flexing natural-hemp bowstring!
+      bolt_carrier: () => buildArcheryGeo('bowstring', span * 0.96, hempHex, style),
+      bolt: () => buildArcheryGeo('projectile', dims.boltLen, pal.barrel, style),
+      // Compact dark-toned internal aSpringParam micro-coil concealed 100% inside leather grip at world (0,0,0)
+      recoil_spring: () => {
+        const s = buildDynamicHelicalSpringGeo(2.0, 0.24, 0.055, 5, leatherDark, 'x');
+        s.translate(3.2, span * 0.34, 0);
+        return s;
+      },
+      // Pale cow-horn arrow-pass inlay plate seated flush on arrow-pass side of stave
+      handguard: () => {
+        const inlay = createChamferedBox(0.55, 2.6, 0.72, 0.08, hornPale);
+        inlay.translate(-0.7, 1.6, 1.02);
+        return finalizeParts([inlay]);
+      },
+      // Lower-limb waxed linen whipping band seated flush on stave at y = -9.0
+      stock: () => {
+        const band = createBeveledCylinder(1.26, 1.28, 2.2, 0.08, 20, leatherCord);
+        band.translate(5.8 + staveXAtY(-9.0), -2.5, 0);
+        return finalizeParts([band]);
+      },
+      // Stitched lower leather grip binding collar seated flush on grip at world (0, -3.2, 0)
+      grip: () => {
+        const cuff = createBeveledCylinder(1.42, 1.44, 4.2, 0.1, 22, leatherDark);
+        cuff.translate(0.4, 1.0, 0);
+        return finalizeParts([cuff]);
+      },
+      // Upper leather grip collar & bowyer's mark ring seated flush at world (0, +6.2, 0) — ZERO green sight!
+      optic: () => {
+        const ring = createBeveledCylinder(1.36, 1.42, 1.25, 0.08, 20, leatherCord);
+        ring.translate(-4.6 + staveXAtY(6.2), -0.6, 1.8);
+        return finalizeParts([ring]);
+      },
+      // Upper-limb waxed linen whipping band seated flush on stave at y = +9.0
+      gas_system: () => {
+        const band = createBeveledCylinder(1.26, 1.28, 2.2, 0.08, 20, leatherCord);
+        band.translate(5.2 + staveXAtY(9.0), 2.8, -2.2);
+        return finalizeParts([band]);
+      },
+      // Lower leather grip retaining collar seated flush at world (0, -6.2, 0) — ZERO stabilizer rod!
+      mount_rail: () => {
+        const collar = createBeveledCylinder(1.42, 1.36, 1.25, 0.08, 20, leatherCord);
+        collar.translate(-11.5 + staveXAtY(-6.2), 4.0, 0);
+        return finalizeParts([collar]);
+      },
+      // Waxed leather bowstring nocking bead centered dead-flush on bowstring at world (stringX, 2.0, 0)
+      trigger: () => {
+        const bead = createBeveledCylinder(0.28, 0.28, 1.1, 0.05, 16, leatherCord);
+        bead.translate(1.2, 0, 0);
+        return finalizeParts([bead]);
+      },
+      // Compact horn arrow-shelf ridge flush on grip arrow pass
+      hammer: () => {
+        const shelf = createChamferedBox(0.7, 0.55, 0.65, 0.06, hornPale);
+        shelf.translate(-0.4, 0.45, -0.35);
+        return finalizeParts([shelf]);
+      },
+      // Compact internal aSpringParam micro-coil concealed 100% inside leather grip at world (0,0,0)
+      hammer_spring: () => {
+        const s = buildDynamicHelicalSpringGeo(2.0, 0.24, 0.055, 5, leatherDark, 'y');
+        s.translate(-0.4, 0.6, -1.4);
+        return s;
+      },
+      // Lower carved cow-horn tip nock — exact mirror of upper horn nock seated flush on lower stave tip!
+      selector: () => {
+        const horn = createBeveledCylinder(0.78, 0.46, 2.8, 0.08, 18, hornPale);
+        horn.rotateZ(-0.28);
+        // assembledPos.selector = (-span*0.23, -span*0.44, 0); lower tip is (-span*0.145, -span*0.495, 0)
+        horn.translate(span * (0.23 - 0.145) - 0.1, -span * (0.495 - 0.44) - 0.45, 0);
+        return finalizeParts([horn]);
+      },
+      // Seamless stitched leather grip over-sleeve tucked coaxial with grip waist (ZERO giant rectangular box!)
+      mag_body: () => {
+        const sleeve = createBeveledCylinder(1.36, 1.38, 8.6, 0.12, 22, leatherDark);
+        sleeve.translate(-2.8, 1.5, -5.2);
+        return finalizeParts([sleeve]);
+      },
+      // Compact waxed-hemp string serving ring centered on bowstring
+      follower: () => {
+        const serv = createBeveledCylinder(0.24, 0.24, 1.4, 0.04, 16, leatherCord);
+        serv.translate(-1.2 - span * 0.145, 0.6, 0);
+        return finalizeParts([serv]);
+      },
+      // Compact internal aSpringParam micro-coil concealed 100% inside leather grip at world (0,0,0)
+      mag_spring: () => {
+        const s = buildDynamicHelicalSpringGeo(2.0, 0.24, 0.055, 5, leatherDark, 'y');
+        s.translate(-2.8, 6.5, -5.2);
+        return s;
+      },
+      // Lower leather grip butt-ring seated coaxial at world (0, -4.6, 0)
+      mag_base: () => {
+        const ring = createBeveledCylinder(1.4, 1.38, 0.9, 0.08, 20, leatherCord);
+        ring.translate(-2.8, -15.1, -5.2);
+        return finalizeParts([ring]);
+      },
+    };
+  }
+
+  if (isCrossbow) {
+    // Excalibur Assassin Extreme Camless Recurve Crossbow:
+    // Pure tapered horizontal recurve limbs, front open tubular metal FOOT STIRRUP (NO giant cam disc!),
+    // horizontal low-profile side-mounted 4-bolt quiver (NO vertical M4 box magazine!),
+    // sculpted thumbhole crossbow buttstock, and matte dark-anodized scope (NO emerald green!).
+    return {
+      receiver: () => buildArcheryGeo('riser', dims.receiverLen, pal.primary, style),
+      barrel: () => buildArcheryGeo('limbs', span, pal.secondary, style),
+      // Authentic angled open D-shaped metal crossbow foot stirrup + twin rubber string suppressors
+      muzzle: () => {
+        const parts: THREE.BufferGeometry[] = [];
+        const loopW = 7.4;
+        const loopL = 6.2;
+        const tubeR = 0.34;
+        // Front flat foot-rest bar
+        const frontBar = cylZ(tubeR, tubeR, loopW, 0.04, 16, '#232830');
+        frontBar.translate(loopL * 0.68, -0.35, 0);
+        parts.push(frontBar);
+        // Twin swept side stirrup arms joining front bar cleanly back into riser nose
+        for (const side of [-1, 1] as const) {
+          const arm = cylX(tubeR, tubeR, loopL * 0.95, 0.04, 14, pal.secondary);
+          arm.rotateY(side * -0.26);
+          arm.translate(loopL * 0.2, -0.2, side * (loopW * 0.36));
+          parts.push(arm);
+          // Twin compact rubberized string-dampener bumpers behind riser
+          const dampRod = cylX(0.24, 0.24, 3.4, 0.03, 14, pal.accent);
+          dampRod.translate(-4.6, 1.4, side * 2.8);
+          parts.push(dampRod);
+          const pad = createChamferedBox(0.85, 1.15, 0.95, 0.08, '#232830');
+          pad.translate(-6.2, 1.4, side * 2.8);
+          parts.push(pad);
+        }
+        return finalizeParts(parts);
+      },
+      bolt_carrier: () => buildArcheryGeo('bowstring', span * 0.92, pal.brass, style),
+      bolt: () => buildArcheryGeo('projectile', dims.boltLen, pal.barrel, style),
+      recoil_spring: () =>
+        buildDynamicHelicalSpringGeo(3.6, 0.34, 0.08, 8, SPRING_STEEL_HEX, 'x'),
+      // Contoured ergonomic under-rail crossbow fore-grip guard seated flush under flight rail
+      handguard: () => {
+        const body = createChamferedBox(dims.handguardLen * 0.88, 2.0, 3.0, 0.14, pal.secondary);
+        body.translate(0, 0.45, 0);
+        const wingL = createChamferedBox(dims.handguardLen * 0.72, 0.42, 0.65, 0.06, pal.accent);
+        wingL.translate(0, 1.25, 1.72);
+        const wingR = createChamferedBox(dims.handguardLen * 0.72, 0.42, 0.65, 0.06, pal.accent);
+        wingR.translate(0, 1.25, -1.72);
+        return finalizeParts([body, wingL, wingR]);
+      },
+      stock: () =>
+        buildStockAndGripGeo(
+          dims.stockLen,
+          dims.stockH,
+          dims.stockW,
+          pal.secondary,
+          'crossbow_thumbhole'
+        ),
+      grip: () =>
+        buildStockAndGripGeo(
+          dims.gripLen,
+          dims.gripH,
+          dims.gripW,
+          pal.furniture,
+          'pistol_grip'
+        ),
+      optic: () => buildOpticAndSightGeo('tactical_scope', dims.opticLen, pal.optic),
+      // Integrated Charger silent crank strap spool tucked flush inside the flight rail channel
+      gas_system: () => {
+        const spool = cylX(0.42, 0.42, 8.5, 0.05, 16, pal.accent);
+        spool.translate(-5.5, 1.2, 0);
+        return finalizeParts([spool]);
+      },
+      // Flush CNC riser-limb mounting bridge yoke seated cleanly at riser nose (ZERO floating bar!)
+      mount_rail: () => {
+        const yoke = createChamferedBox(3.4, 2.2, 6.2, 0.12, pal.secondary);
+        yoke.translate(-7.2, 0.7, 0);
+        return finalizeParts([yoke]);
+      },
+      trigger: () => buildTriggerAssemblyGeo(0.95, pal),
+      hammer: () => buildHammerGeo(0.85, pal),
+      hammer_spring: () =>
+        buildDynamicHelicalSpringGeo(3.2, 0.34, 0.08, 7, SPRING_STEEL_HEX, 'y'),
+      selector: () => buildSelectorLeverGeo(0.9, pal),
+      // Sleek low-profile HORIZONTAL side-mounted 4-bolt crossbow quiver (ZERO vertical M4 box mag!)
+      mag_body: () => {
+        const parts: THREE.BufferGeometry[] = [];
+        const bracket = createChamferedBox(13.5, 1.65, 1.35, 0.1, pal.primary);
+        bracket.translate(0, 2.2, -1.35);
+        parts.push(bracket);
+        const arm = createChamferedBox(2.2, 1.1, 2.2, 0.08, pal.accent);
+        arm.translate(0, 2.4, -2.35);
+        parts.push(arm);
+        // 3 horizontal parallel carbon spare bolts clipped neatly along the side quiver
+        for (let i = 0; i < 3; i++) {
+          const by = 1.65 + i * 0.55;
+          const shaft = cylX(0.22, 0.22, 14.5, 0.02, 12, '#252b34');
+          shaft.translate(0.5, by, -0.78);
+          parts.push(shaft);
+          const fletch = createChamferedBox(2.2, 0.42, 0.16, 0.02, i === 0 ? '#c45822' : '#d8dde4');
+          fletch.translate(-5.6, by, -0.78);
+          parts.push(fletch);
+        }
+        return finalizeParts(parts);
+      },
+      follower: () => {
+        const clip = createChamferedBox(5.2, 0.42, 1.4, 0.05, pal.accent);
+        clip.translate(0, -0.25, 0);
+        return finalizeParts([clip]);
+      },
+      mag_spring: () => {
+        const s = buildDynamicHelicalSpringGeo(3.4, 0.24, 0.06, 7, SPRING_STEEL_HEX, 'x');
+        s.translate(0, 2.2, -1.35);
+        return s;
+      },
+      // Matching horizontal broadhead hood cap enclosing front bolt tips
+      mag_base: () => {
+        const hood = createChamferedBox(3.4, 2.1, 1.75, 0.12, pal.secondary);
+        hood.translate(-1.0, 2.2, -1.15);
+        return finalizeParts([hood]);
+      },
+    };
+  }
+
+  // 'bow_compound' (Hoyt Carbon RX-8 Ultra)
   return {
-    receiver: () =>
-      buildArcheryGeo(
-        'riser',
-        isCrossbow ? dims.receiverLen : dims.receiverLen,
-        isLongbow ? pal.furniture : pal.primary,
-        style
-      ),
-    // Real GPU `SPRING_AXIS_MODE_FLEX` flexing limbs!
-    barrel: () =>
-      buildArcheryGeo(
-        'limbs',
-        span,
-        isLongbow ? pal.primary : pal.secondary,
-        style
-      ),
-    muzzle: () =>
-      isLongbow
-        ? finalizeParts([
-            createBeveledCylinder(0.85, 1.35, 3.6, 0.12, 18, pal.accent),
-          ])
-        : buildArcheryGeo('cams', span, pal.accent, style),
-    // Real GPU `SPRING_AXIS_MODE_FLEX` flexing bowstring!
-    bolt_carrier: () =>
-      buildArcheryGeo('bowstring', span * 0.92, pal.brass, style),
-    bolt: () =>
-      buildArcheryGeo('projectile', dims.boltLen, pal.barrel, style),
+    receiver: () => buildArcheryGeo('riser', dims.receiverLen, pal.primary, style),
+    // Real GPU `SPRING_AXIS_MODE_FLEX` flexing split carbon quad limbs!
+    barrel: () => buildArcheryGeo('limbs', span, pal.secondary, style),
+    muzzle: () => buildArcheryGeo('cams', span, pal.accent, style),
+    // Real GPU `SPRING_AXIS_MODE_FLEX` flexing compound bowstring!
+    bolt_carrier: () => buildArcheryGeo('bowstring', span * 0.92, pal.brass, style),
+    bolt: () => buildArcheryGeo('projectile', dims.boltLen, pal.barrel, style),
     recoil_spring: () =>
-      buildDynamicHelicalSpringGeo(
-        dims.springLen,
-        dims.springR,
-        dims.springR * 0.2,
-        9,
-        SPRING_STEEL_HEX,
-        'x'
-      ),
+      buildDynamicHelicalSpringGeo(3.6, 0.36, 0.08, 8, SPRING_STEEL_HEX, 'x'),
     handguard: () =>
       finalizeParts([
         createChamferedBox(
-          dims.handguardLen,
-          dims.handguardH,
-          dims.handguardW,
-          0.14,
+          dims.handguardLen * 0.72,
+          dims.handguardH * 0.68,
+          dims.handguardW * 0.76,
+          0.12,
           pal.secondary
         ),
       ]),
     stock: () =>
-      isCrossbow
-        ? buildStockAndGripGeo(
-            dims.stockLen,
-            dims.stockH,
-            dims.stockW,
-            pal.secondary,
-            'telescoping_ar'
-          )
-        : finalizeParts([
-            cylX(0.62, 0.56, dims.stockLen, 0.06, 18, pal.secondary),
-          ]),
+      finalizeParts([cylX(0.48, 0.44, dims.stockLen * 0.85, 0.05, 18, pal.secondary)]),
     grip: () =>
       buildStockAndGripGeo(
-        dims.gripLen,
-        dims.gripH,
-        dims.gripW,
+        dims.gripLen * 0.85,
+        dims.gripH * 0.88,
+        dims.gripW * 0.88,
         pal.furniture,
         'pistol_grip'
       ),
-    optic: () =>
-      buildOpticAndSightGeo(
-        isCrossbow ? 'tactical_scope' : 'folding_tangent',
-        dims.opticLen,
-        pal.optic
-      ),
+    optic: () => buildOpticAndSightGeo('folding_tangent', dims.opticLen * 0.72, pal.optic),
     gas_system: () =>
       finalizeParts([
-        cylX(0.38, 0.38, Math.max(8, dims.handguardLen * 0.65), 0.04, 16, pal.accent),
+        cylX(0.32, 0.32, Math.max(7, dims.handguardLen * 0.62), 0.04, 16, pal.accent),
       ]),
     mount_rail: () =>
-      finalizeParts([
-        cylX(0.75, 0.62, isCrossbow ? 8.5 : 18, 0.08, 20, pal.secondary),
-      ]),
-    trigger: () => buildTriggerAssemblyGeo(0.95, pal),
-    hammer: () => buildHammerGeo(0.9, pal),
+      finalizeParts([cylX(0.68, 0.56, 15.5, 0.08, 20, pal.secondary)]),
+    trigger: () => buildTriggerAssemblyGeo(0.82, pal),
+    hammer: () => buildHammerGeo(0.8, pal),
     hammer_spring: () =>
-      buildDynamicHelicalSpringGeo(
-        dims.springLen * 0.65,
-        dims.springR * 0.85,
-        dims.springR * 0.18,
-        7,
-        SPRING_STEEL_HEX,
-        'y'
-      ),
-    selector: () =>
-      style === 'bow_compound'
-        ? buildArcheryGeo('cams', span, pal.accent, style)
-        : buildSelectorLeverGeo(0.95, pal),
-    mag_body: () =>
-      buildMagazineGeo('straight_box', dims.magH, dims.magW, dims.magT, pal.secondary),
+      buildDynamicHelicalSpringGeo(3.2, 0.34, 0.08, 7, SPRING_STEEL_HEX, 'y'),
+    selector: () => buildArcheryGeo('cams', span, pal.accent, style),
+    // Sleek vertical carbon-rod side hunting quiver w/ 3 carbon arrows (NOT an M4 box!)
+    mag_body: () => {
+      const parts: THREE.BufferGeometry[] = [];
+      const spine = createBeveledCylinder(0.45, 0.45, 19.5, 0.06, 16, pal.primary);
+      parts.push(spine);
+      const gripper = createChamferedBox(1.8, 1.4, 2.8, 0.08, pal.accent);
+      gripper.translate(0, -4.5, 0);
+      parts.push(gripper);
+      for (let i = -1; i <= 1; i++) {
+        const shaft = createBeveledCylinder(0.22, 0.22, 21.0, 0.02, 12, '#242a32');
+        shaft.translate(0.55, 0, i * 0.72);
+        parts.push(shaft);
+      }
+      return finalizeParts(parts);
+    },
     follower: () => buildFollowerGeo(dims, pal, false),
     mag_spring: () =>
-      buildDynamicHelicalSpringGeo(
-        dims.magH * 0.42,
-        dims.springR * 0.9,
-        dims.springR * 0.18,
-        7,
-        SPRING_STEEL_HEX,
-        'y'
-      ),
-    mag_base: () => buildMagBaseGeo(dims, pal, false),
+      buildDynamicHelicalSpringGeo(3.6, 0.28, 0.07, 7, SPRING_STEEL_HEX, 'y'),
+    mag_base: () =>
+      finalizeParts([createChamferedBox(2.4, 3.2, 3.4, 0.14, pal.secondary)]),
   };
 }
 
@@ -944,7 +1299,8 @@ function buildPistolRevolverGeometryBuilders(
         pal.barrel,
         {
           muzzleStyle: 'bare',
-          frontSightTower: isRevolver,
+          // Classic revolvers use low swept crescent front blade in `muzzle`, NEVER a tall AK tower!
+          frontSightTower: false,
           accentColorHex: pal.accent,
         }
       ),
@@ -952,7 +1308,7 @@ function buildPistolRevolverGeometryBuilders(
     bolt_carrier: () =>
       isRevolver
         ? finalizeParts([
-            cylX(0.45, 0.45, dims.barrelLen * 0.72, 0.04, 18, pal.accent),
+            cylX(0.32, 0.32, dims.barrelLen * 0.68, 0.04, 18, pal.accent),
           ])
         : buildBoltAndCarrierGeo(
             dims.boltLen,
@@ -967,35 +1323,58 @@ function buildPistolRevolverGeometryBuilders(
         pal.bolt,
         isRevolver ? 'revolver_cylinder' : 'falling_block'
       ),
-    recoil_spring: () =>
-      buildDynamicHelicalSpringGeo(
+    recoil_spring: () => {
+      if (isRevolver) {
+        // Compact internal trigger/bolt return spring concealed inside steel frame (ZERO exposed front coil!)
+        const s = buildDynamicHelicalSpringGeo(2.2, 0.22, 0.05, 7, SPRING_STEEL_HEX, 'y');
+        const gripY = -dims.receiverH * 0.42 - dims.gripH * 0.42;
+        s.translate(0.5, -gripY * 0.55 - 0.15, 0);
+        return s;
+      }
+      return buildDynamicHelicalSpringGeo(
         dims.springLen,
         dims.springR,
         dims.springR * 0.22,
         11,
         SPRING_STEEL_HEX,
-        isRevolver ? 'y' : 'x'
-      ),
-    handguard: () =>
-      finalizeParts([
-        createChamferedBox(
-          dims.handguardLen,
-          dims.handguardH,
-          dims.handguardW,
-          0.09,
-          pal.secondary
-        ),
-      ]),
-    stock: () =>
-      finalizeParts([
-        createChamferedBox(
-          dims.stockLen,
-          dims.stockH,
-          dims.stockW,
-          0.12,
-          isBroom ? pal.furniture : pal.secondary
-        ),
-      ]),
+        'x'
+      );
+    },
+    handguard: () => {
+      if (isRevolver) {
+        // Iconic slim cylindrical Colt SAA 1873 under-barrel ejector-rod housing tube (ZERO chunky brick!)
+        const tubeLen = dims.barrelLen * 0.68;
+        const tube = cylX(0.46, 0.42, tubeLen, 0.05, 20, pal.barrel);
+        tube.translate(-dims.barrelLen * 0.1, 0.22, 0.48);
+        const tab = createChamferedBox(0.75, 0.55, 0.52, 0.04, pal.accent);
+        tab.translate(tubeLen * 0.46 - dims.barrelLen * 0.1, 0.05, 0.68);
+        return finalizeParts([tube, tab]);
+      }
+      // Trim slide-pistol dustcover frame nose strictly flush behind muzzle face
+      const hgLen = isBroom ? dims.handguardLen * 0.72 : dims.receiverLen * 0.34;
+      const box = createChamferedBox(hgLen, dims.handguardH, dims.handguardW * 0.94, 0.09, pal.secondary);
+      if (!isBroom) {
+        box.translate(-dims.receiverLen * 0.04, 0, 0);
+      }
+      return finalizeParts([box]);
+    },
+    stock: () => {
+      if (isBroom) {
+        // Compact blued-steel Mauser C96 rear shoulder-stock dovetail mounting lug
+        const lug = createChamferedBox(1.8, dims.stockH * 0.78, dims.stockW * 0.76, 0.08, pal.secondary);
+        lug.translate(1.2, 0, 0);
+        return finalizeParts([lug]);
+      }
+      const cap = createChamferedBox(
+        Math.min(2.2, dims.stockLen * 0.65),
+        dims.stockH * 0.78,
+        dims.stockW * 0.84,
+        0.1,
+        pal.secondary
+      );
+      cap.translate(0.55, 0, 0);
+      return finalizeParts([cap]);
+    },
     grip: () =>
       buildStockAndGripGeo(
         dims.gripLen,
@@ -1004,50 +1383,120 @@ function buildPistolRevolverGeometryBuilders(
         pal.furniture,
         gripStyle
       ),
-    optic: () =>
-      buildOpticAndSightGeo(
-        bp.cad.hasOptic ? 'tactical_scope' : 'folding_tangent',
-        dims.opticLen,
-        pal.optic
-      ),
+    optic: () => {
+      if (bp.cad.hasOptic) {
+        return buildOpticAndSightGeo('tactical_scope', dims.opticLen, pal.optic);
+      }
+      if (isRevolver) {
+        // Slim matte blued-steel top-strap sighting groove bar (ZERO chunky green block!)
+        const strap = createChamferedBox(dims.receiverLen * 0.44, 0.34, 1.15, 0.04, pal.primary);
+        strap.translate(-0.2, -0.22, 0);
+        return finalizeParts([strap]);
+      }
+      if (isBroom) {
+        // Authentic Mauser C96 blued graduated tangent rear sight
+        return buildOpticAndSightGeo('folding_tangent', dims.opticLen, pal.optic);
+      }
+      // Sleek low-profile matte-black dovetail 3-dot rear pistol sight (Beretta 92 / P226 / CZ 75)
+      const base = createChamferedBox(1.45, 0.44, dims.receiverW * 0.64, 0.04, pal.optic);
+      const earL = createChamferedBox(1.05, 0.56, 0.44, 0.03, pal.optic);
+      earL.translate(-0.1, 0.34, 0.52);
+      const earR = createChamferedBox(1.05, 0.56, 0.44, 0.03, pal.optic);
+      earR.translate(-0.1, 0.34, -0.52);
+      return finalizeParts([base, earL, earR]);
+    },
     gas_system: () =>
       finalizeParts([
-        cylX(0.32, 0.32, dims.springLen * 0.96, 0.04, 16, pal.bolt),
+        cylX(0.3, 0.3, dims.springLen * 0.92, 0.04, 16, pal.bolt),
       ]),
-    mount_rail: () => buildBipodOrRailGeo(bp, dims, pal),
+    mount_rail: () => {
+      if (isRevolver || isBroom) {
+        // Sleek historical blued-steel front frame web / magazine housing collar (NO modern Picatinny!)
+        const web = createChamferedBox(2.2, 0.68, dims.receiverW * 0.62, 0.06, pal.secondary);
+        web.translate(-dims.receiverLen * 0.14, 0.12, 0);
+        return finalizeParts([web]);
+      }
+      // Compact under-dustcover accessory rail strictly trimmed behind slide/muzzle nose (Beretta 92!)
+      const railL = Math.min(dims.receiverLen * 0.28, 4.4);
+      const railW = Math.min(1.85, dims.receiverW * 0.66);
+      const rail = createMilStdPicatinnyRail(railL, -railL * 0.5, 0.26, railW, pal.accent);
+      rail.translate(-dims.receiverLen * 0.16, 0.12, 0);
+      return finalizeParts([rail]);
+    },
     trigger: () => buildTriggerAssemblyGeo(0.82, pal),
     hammer: () => buildHammerGeo(0.86, pal),
-    hammer_spring: () =>
-      buildDynamicHelicalSpringGeo(
-        Math.max(4.4, dims.gripH * 0.48),
-        0.38,
-        0.09,
-        9,
+    hammer_spring: () => {
+      // Concealed cleanly inside pistol/revolver grip frame (ZERO exposed coil sticking out front!)
+      const s = buildDynamicHelicalSpringGeo(
+        Math.min(4.2, dims.gripH * 0.42),
+        0.26,
+        0.065,
+        8,
         SPRING_STEEL_HEX,
         'y'
-      ),
+      );
+      if (isRevolver) {
+        s.translate(-0.45, 0.35, 0);
+      } else if (isBroom) {
+        s.translate(0.55, 0.25, 0);
+      }
+      return s;
+    },
     selector: () => buildSelectorLeverGeo(0.78, pal),
-    mag_body: () =>
-      isRevolver
-        ? buildMagazineGeo('drum_71', 3.4, 3.4, 2.2, pal.brass)
-        : buildMagazineGeo(
-            'straight_box',
-            dims.magH,
-            dims.magW,
-            dims.magT,
-            pal.secondary
-          ),
-    follower: () => buildFollowerGeo(dims, pal, isRevolver),
-    mag_spring: () =>
-      buildDynamicHelicalSpringGeo(
+    mag_body: () => {
+      if (isRevolver) {
+        // 6 gleaming brass revolver cartridges seated inside the fluted cylinder charge holes
+        const parts: THREE.BufferGeometry[] = [];
+        const pitch = dims.boltR * 0.58;
+        for (let i = 0; i < 6; i++) {
+          const a = (i / 6) * Math.PI * 2;
+          const rd = cylX(0.36, 0.34, dims.boltLen * 0.78, 0.02, 12, pal.brass);
+          rd.translate(0, Math.cos(a) * pitch, Math.sin(a) * pitch);
+          parts.push(rd);
+        }
+        return finalizeParts(parts);
+      }
+      return buildMagazineGeo(
+        'straight_box',
+        dims.magH,
+        dims.magW,
+        dims.magT,
+        pal.secondary
+      );
+    },
+    follower: () => {
+      if (isRevolver) {
+        // Star ratchet ejector seated dead-center on rear cylinder axis (ZERO floating top orange blob!)
+        const star = cylX(dims.boltR * 0.42, dims.boltR * 0.36, 0.45, 0.04, 18, pal.bolt);
+        star.translate(-dims.boltLen * 0.48, -dims.magH * 0.34, 0);
+        return finalizeParts([star]);
+      }
+      return buildFollowerGeo(dims, pal, false);
+    },
+    mag_spring: () => {
+      if (isRevolver) {
+        const s = buildDynamicHelicalSpringGeo(2.0, 0.2, 0.05, 6, SPRING_STEEL_HEX, 'y');
+        s.translate(-0.8, 0.1, 0);
+        return s;
+      }
+      return buildDynamicHelicalSpringGeo(
         Math.max(3.6, dims.magH * 0.65),
         0.44,
         0.09,
         9,
         SPRING_STEEL_HEX,
         'y'
-      ),
-    mag_base: () => buildMagBaseGeo(dims, pal, isRevolver),
+      );
+    },
+    mag_base: () => {
+      if (isRevolver) {
+        // Blued-steel cylinder base-pin & knurled arbor head seated dead-center on front cylinder axis!
+        const pin = cylX(0.36, 0.34, dims.boltLen * 0.72, 0.04, 16, pal.accent);
+        pin.translate(dims.boltLen * 0.48, dims.magH * 0.48, 0);
+        return finalizeParts([pin]);
+      }
+      return buildMagBaseGeo(dims, pal, 'straight_box');
+    },
   };
 }
 
@@ -1129,39 +1578,121 @@ function buildLongArmGeometryBuilders(
         SPRING_STEEL_HEX,
         'x'
       ),
-    handguard: () =>
-      buildHandguardGeo(
+    handguard: () => {
+      if (bp.id === 'wa2000') {
+        // Iconic Walther WA 2000 twin upper/lower anodized aluminum chassis rails + oiled walnut panels!
+        const L = dims.handguardLen;
+        const H = dims.handguardH;
+        const W = dims.handguardW;
+        const parts: THREE.BufferGeometry[] = [];
+        // Upper full-length anodized aluminum frame beam running cleanly ABOVE the free-floated barrel
+        const upperRail = createChamferedBox(L * 1.06, H * 0.24, W * 0.86, 0.08, pal.secondary);
+        upperRail.translate(0, H * 0.52, 0);
+        parts.push(upperRail);
+        // Lower anodized aluminum spine beam
+        const lowerRail = createChamferedBox(L * 1.02, H * 0.22, W * 0.84, 0.08, pal.secondary);
+        lowerRail.translate(0, -H * 0.48, 0);
+        parts.push(lowerRail);
+        // Rich oiled walnut side & lower forend panels sandwiched between the twin rails
+        const woodForend = createChamferedBox(L * 0.88, H * 0.52, W * 1.04, 0.14, pal.furniture);
+        woodForend.translate(-L * 0.04, -H * 0.14, 0);
+        parts.push(woodForend);
+        // Front vertical frame bridge strut linking upper & lower rails
+        const frontBridge = createChamferedBox(1.3, H * 1.12, W * 0.82, 0.07, pal.accent);
+        frontBridge.translate(L * 0.48, 0.02, 0);
+        parts.push(frontBridge);
+        return finalizeParts(parts);
+      }
+      if (bp.id === 'svd') {
+        // Slotted Russian birch-laminate Dragunov SVD ventilated handguard
+        const L = dims.handguardLen;
+        const H = dims.handguardH;
+        const W = dims.handguardW;
+        const base = buildHandguardGeo(L, H, W, pal.furniture, 'walnut_forend');
+        const parts: THREE.BufferGeometry[] = [base];
+        for (const side of [-1, 1] as const) {
+          for (let i = 0; i < 6; i++) {
+            const sx = -L * 0.34 + (i / 5) * (L * 0.68);
+            const slot = createChamferedBox(L * 0.075, H * 0.26, 0.2, 0.02, '#362114');
+            slot.translate(sx, H * 0.14, side * (W * 0.51));
+            parts.push(slot);
+          }
+        }
+        return finalizeParts(parts);
+      }
+      return buildHandguardGeo(
         dims.handguardLen,
         dims.handguardH,
         dims.handguardW,
         hgStyle === 'walnut_forend' ? pal.furniture : pal.secondary,
         hgStyle
-      ),
-    stock: () =>
-      buildStockAndGripGeo(
+      );
+    },
+    stock: () => {
+      if (bp.id === 'wa2000') {
+        // Iconic Walther WA 2000 oiled-walnut bullpup cheekpiece & buttstock framed in anodized aluminum
+        return buildStockAndGripGeo(
+          dims.stockLen,
+          dims.stockH,
+          dims.stockW,
+          pal.furniture,
+          'bullpup_stock'
+        );
+      }
+      const isWoodStock =
+        stockStyle === 'walnut_rifle' ||
+        stockStyle === 'straight_walnut' ||
+        stockStyle === 'dragunov_thumbhole';
+      return buildStockAndGripGeo(
         dims.stockLen,
         dims.stockH,
         dims.stockW,
-        stockStyle === 'walnut_rifle' ? pal.furniture : pal.secondary,
+        isWoodStock ? pal.furniture : pal.secondary,
         stockStyle
+      );
+    },
+    grip: () => {
+      if (bp.archetype === 'shotgun_pump') {
+        return buildHandguardGeo(
+          Math.max(8, dims.handguardLen * 0.52),
+          dims.handguardH * 0.92,
+          dims.handguardW * 1.08,
+          bp.cad.hasWoodFurniture ? pal.furniture : pal.secondary,
+          bp.cad.hasWoodFurniture ? 'walnut_forend' : 'ventilated_tube'
+        );
+      }
+      if (bp.archetype === 'shotgun_lever') {
+        // Iconic Winchester 1887 blued-steel curved finger-loop lever (NO vertical AK pistol grip!)
+        return buildStockAndGripGeo(
+          dims.gripLen,
+          dims.gripH,
+          dims.gripW,
+          pal.secondary,
+          'lever_loop'
+        );
+      }
+      if (bp.archetype === 'heavy_mg') {
+        // M2HB heavy steel tripod pintle mounting cradle lug tucked flush under receiver (NO pistol grip!)
+        const cradle = createChamferedBox(dims.gripLen * 1.45, 2.2, dims.receiverW * 0.88, 0.1, pal.secondary);
+        cradle.translate(0, dims.gripH * 0.34, 0);
+        const pintle = cylZ(0.65, 0.65, dims.receiverW * 1.06, 0.05, 18, pal.accent);
+        pintle.translate(0, dims.gripH * 0.24, 0);
+        return finalizeParts([cradle, pintle]);
+      }
+      return buildStockAndGripGeo(
+        dims.gripLen,
+        dims.gripH,
+        dims.gripW,
+        bp.cad.hasWoodFurniture ? pal.furniture : pal.secondary,
+        'pistol_grip'
+      );
+    },
+    optic: () =>
+      buildOpticAndSightGeo(
+        opticStyle,
+        dims.opticLen,
+        opticStyle === 'pso1_soviet' ? '#48515c' : pal.optic
       ),
-    grip: () =>
-      bp.archetype === 'shotgun_pump'
-        ? buildHandguardGeo(
-            Math.max(8, dims.handguardLen * 0.52),
-            dims.handguardH * 0.92,
-            dims.handguardW * 1.08,
-            bp.cad.hasWoodFurniture ? pal.furniture : pal.secondary,
-            bp.cad.hasWoodFurniture ? 'walnut_forend' : 'ventilated_tube'
-          )
-        : buildStockAndGripGeo(
-            dims.gripLen,
-            dims.gripH,
-            dims.gripW,
-            bp.cad.hasWoodFurniture ? pal.furniture : pal.secondary,
-            'pistol_grip'
-          ),
-    optic: () => buildOpticAndSightGeo(opticStyle, dims.opticLen, pal.optic),
     gas_system: () => buildGasSystemGeo(dims, pal),
     mount_rail: () => buildBipodOrRailGeo(bp, dims, pal),
     trigger: () => buildTriggerAssemblyGeo(1.0, pal),
@@ -1182,21 +1713,37 @@ function buildLongArmGeometryBuilders(
         dims.magH,
         dims.magW,
         dims.magT,
-        bp.finishPalette === 'bakelite_ak' && magStyle === 'curved_banana'
+        // AK-47 Type 3 uses authentic stamped dark blued steel curved mag (NOT orange bakelite!)
+        bp.finishPalette === 'bakelite_ak' &&
+          magStyle === 'curved_banana' &&
+          bp.id !== 'ak47'
           ? pal.furniture
           : pal.secondary
       ),
     follower: () => buildFollowerGeo(dims, pal, isCircularMag),
-    mag_spring: () =>
-      buildDynamicHelicalSpringGeo(
+    mag_spring: () => {
+      if (magStyle === 'helical_64') {
+        const s = buildDynamicHelicalSpringGeo(
+          Math.min(11.5, Math.max(6.5, dims.magH * 0.68)),
+          0.58,
+          0.09,
+          10,
+          SPRING_STEEL_HEX,
+          'x'
+        );
+        s.translate(0, -0.28, 0);
+        return s;
+      }
+      return buildDynamicHelicalSpringGeo(
         Math.max(3.6, dims.magH * 0.62),
         Math.max(0.42, Math.min(dims.magT, dims.magW) * 0.24),
         0.09,
         10,
         SPRING_STEEL_HEX,
         isTubeOrHelical ? 'x' : 'y'
-      ),
-    mag_base: () => buildMagBaseGeo(dims, pal, isCircularMag),
+      );
+    },
+    mag_base: () => buildMagBaseGeo(dims, pal, magStyle, false),
   };
 }
 
