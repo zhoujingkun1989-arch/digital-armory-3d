@@ -229,14 +229,14 @@ describe('V6.0 Acoustic Fidelity, SSOT Metrics, Cross-Lab UX & WCAG 2.1 AA Harde
 
     expect(MUSEUM_VERSION).toBe('v6.0');
     expect(MUSEUM_EXHIBIT_COUNT).toBe(WEAPON_MANIFESTS.length);
-    expect(MUSEUM_EXHIBIT_COUNT).toBe(34);
+    expect(MUSEUM_EXHIBIT_COUNT).toBe(100);
     expect(MUSEUM_TOTAL_PARTS).toBe(manifestPartsSum);
-    expect(MUSEUM_TOTAL_PARTS).toBe(854);
+    expect(MUSEUM_TOTAL_PARTS).toBe(2174);
     expect(MUSEUM_HALL_COUNT).toBe(10);
-    expect(MUSEUM_HALL_COUNTS.all).toBe(34);
-    expect(MUSEUM_HEAVY_ARMOR_COUNT).toBe(4);
-    expect(MUSEUM_ORDNANCE_COUNT).toBe(1);
-    expect(MUSEUM_FIREARM_COUNT).toBe(27);
+    expect(MUSEUM_HALL_COUNTS.all).toBe(100);
+    expect(MUSEUM_HEAVY_ARMOR_COUNT).toBe(8);
+    expect(MUSEUM_ORDNANCE_COUNT).toBe(4);
+    expect(MUSEUM_FIREARM_COUNT).toBe(83);
     expect(MUSEUM_SMALL_ARMS_CALIBER_COUNT).toBe(CARTRIDGE_LAB_ORDER.length);
     expect(MUSEUM_HEAVY_ORDNANCE_CALIBER_COUNT).toBe(
       TANK_ORDNANCE_ORDER.length
@@ -304,11 +304,11 @@ describe('V6.0 Acoustic Fidelity, SSOT Metrics, Cross-Lab UX & WCAG 2.1 AA Harde
     }
 
     // Verify runtime evaluated bilingual strings carry accurate SSOT counts and 0 CJK in EN
-    expect(COMMAND_PALETTE_STRINGS.zh.modal.groups.weapons).toContain('34');
-    expect(COMMAND_PALETTE_STRINGS.en.modal.groups.weapons).toContain('34');
-    expect(COMMAND_PALETTE_STRINGS.en.trigger.title).toContain('854');
-    expect(PASSPORT_STRINGS.zh.title).toContain('34');
-    expect(PASSPORT_STRINGS.en.title).toContain('34-Exhibit');
+    expect(COMMAND_PALETTE_STRINGS.zh.modal.groups.weapons).toContain('100');
+    expect(COMMAND_PALETTE_STRINGS.en.modal.groups.weapons).toContain('100');
+    expect(COMMAND_PALETTE_STRINGS.en.trigger.title).toContain('2174');
+    expect(PASSPORT_STRINGS.zh.title).toContain('100');
+    expect(PASSPORT_STRINGS.en.title).toContain('100-Exhibit');
     expect(CJK_REGEX.test(JSON.stringify(PASSPORT_STRINGS.en))).toBe(false);
 
     useAppStore.getState().setLang('en');
@@ -320,9 +320,9 @@ describe('V6.0 Acoustic Fidelity, SSOT Metrics, Cross-Lab UX & WCAG 2.1 AA Harde
     const timelineCmd = paletteItemsEn.find(
       (i) => i.id === 'lab:history-timeline'
     );
-    expect(passportCmd?.title).toContain('34-Exhibit');
-    expect(timelineCmd?.title).toContain('1894');
-    expect(timelineCmd?.subtitle).toContain('34 exhibits');
+    expect(passportCmd?.title).toContain('100-Exhibit');
+    expect(timelineCmd?.title).toContain('1415');
+    expect(timelineCmd?.subtitle).toContain('100 exhibits');
     for (const item of paletteItemsEn) {
       expect(CJK_REGEX.test(item.title)).toBe(false);
       expect(CJK_REGEX.test(item.subtitle)).toBe(false);

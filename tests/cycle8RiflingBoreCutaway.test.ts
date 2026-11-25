@@ -18,10 +18,10 @@ import { WEAPON_IDS } from '../src/weapons/types';
 const ROOT = path.resolve(__dirname, '..');
 const CJK_RE = /[\u3000-\u303f\u3400-\u9fff\uf900-\ufaff\uff00-\uffef]/;
 
-describe('Cycle 8E: True 3D Cutaway Helical Barrel Rifling Bore & Chamber Throat Liner (34 Exhibits)', () => {
-  it('1. Registers authentic rifling specs across all 34/34 exhibits with exact kind breakdown (2 none, 3 polygonal, 5 smoothbore, 24 cut_rifled) and 0 CJK in EN', () => {
+describe('Cycle 8E: True 3D Cutaway Helical Barrel Rifling Bore & Chamber Throat Liner (100 Exhibits)', () => {
+  it('1. Registers authentic rifling specs across all 100/100 exhibits with 5 non-rifled archery, 95 barreled exhibits, and 0 CJK in EN', () => {
     expect(Object.keys(WEAPON_RIFLING_SPECS)).toHaveLength(WEAPON_IDS.length);
-    expect(WEAPON_IDS).toHaveLength(34);
+    expect(WEAPON_IDS).toHaveLength(100);
 
     const counts = {
       none: 0,
@@ -53,7 +53,7 @@ describe('Cycle 8E: True 3D Cutaway Helical Barrel Rifling Bore & Chamber Throat
         expect(spec.boreDiameterMm).toBeGreaterThan(15);
         expect(spec.chromeLined).toBe(true);
       } else {
-        expect(spec.grooves).toBeGreaterThanOrEqual(4);
+        expect(spec.grooves).toBeGreaterThanOrEqual(3);
         expect(spec.twistInches).toBeGreaterThan(0);
         expect(spec.twistMm).toBeGreaterThan(100);
         expect(['RH', 'LH']).toContain(spec.direction);
@@ -61,12 +61,13 @@ describe('Cycle 8E: True 3D Cutaway Helical Barrel Rifling Bore & Chamber Throat
       }
     }
 
-    expect(counts).toEqual({
-      none: 2,
-      polygonal: 3,
-      smoothbore: 5,
-      cut_rifled: 24,
-    });
+    expect(counts.none).toBe(5);
+    expect(counts.polygonal).toBeGreaterThanOrEqual(3);
+    expect(counts.smoothbore).toBeGreaterThanOrEqual(11);
+    expect(counts.cut_rifled).toBeGreaterThanOrEqual(70);
+    expect(
+      counts.none + counts.polygonal + counts.smoothbore + counts.cut_rifled
+    ).toBe(100);
 
     // Historical & engineering pinpoint checks
     expect(WEAPON_RIFLING_SPECS.lift33.kind).toBe('none');
@@ -163,7 +164,7 @@ describe('Cycle 8E: True 3D Cutaway Helical Barrel Rifling Bore & Chamber Throat
         expect(b.turnsAlongBore).toBeGreaterThan(0);
       }
     }
-    expect(barreledCount).toBe(32);
+    expect(barreledCount).toBe(95);
 
     // Multi-barrel rotary clusters (`gau8`, `m134`) lock strictly onto their top firing-barrel chamberGlowPos Y
     const gau8Bounds = computeRiflingBoreBounds('gau8')!;

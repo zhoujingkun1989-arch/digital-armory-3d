@@ -116,7 +116,9 @@ describe('Cycle 21A — World-Class Showcase Landing Modernization & Live Certif
     expect(enAll).toContain('bore-evacuator');
     expect(enAll).toContain('stub-case clang');
     expect(enAll).toContain('28-term');
-    expect(enAll).toContain('34 × 33');
+    expect(enAll).toContain(
+      `${MUSEUM_EXHIBIT_COUNT} × ${MUSEUM_EXHIBIT_COUNT - 1}`
+    );
     expect(enAll).toContain('6-axis');
     expect(enAll).toContain('litz spin-drift');
     expect(enAll).toContain('miller sg');
@@ -138,7 +140,9 @@ describe('Cycle 21A — World-Class Showcase Landing Modernization & Live Certif
     expect(zhAll).toContain('旋翼');
     expect(zhAll).toContain('底托');
     expect(zhAll).toContain('28 词条');
-    expect(zhAll).toContain('34 × 33');
+    expect(zhAll).toContain(
+      `${MUSEUM_EXHIBIT_COUNT} × ${MUSEUM_EXHIBIT_COUNT - 1}`
+    );
     expect(zhAll).toContain('六轴');
     expect(zhAll).toContain('Litz');
     expect(zhAll).toContain('Miller Sg');

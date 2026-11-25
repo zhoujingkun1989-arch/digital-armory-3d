@@ -78,11 +78,11 @@ afterEach(() => {
 });
 
 describe('Cycle 3C — Workbench Craft, Discoverability & Micro-UX Polish', () => {
-  it('supports instant bilingual & mechanical role BOM search across all 34 exhibits', async () => {
+  it('supports instant bilingual & mechanical role BOM search across all 100 exhibits', async () => {
     const plugins = await Promise.all(
       WEAPON_MANIFESTS.map((m) => loadWeaponPlugin(m.id))
     );
-    expect(plugins).toHaveLength(34);
+    expect(plugins).toHaveLength(100);
 
     for (const plugin of plugins) {
       const id = plugin.id;

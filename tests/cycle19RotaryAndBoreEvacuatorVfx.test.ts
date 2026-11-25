@@ -64,11 +64,11 @@ function extractShaderLiteral(source: string, constName: string): string {
 }
 
 describe('Cycle 19A.1 — High-RPM Rotary Barrel-Cluster Motion-Blur Sweep Halo (GAU-8/A & M134D)', () => {
-  it('activates strictly for gau8 & m134 during firing (fireProgress > 0.04) and stays strictly inactive on all other 32 exhibits', () => {
+  it('activates strictly for gau8, m134 & m61vulcan during firing (fireProgress > 0.04) and stays strictly inactive on all other 97 exhibits', () => {
     expect(ROTARY_BLUR_FIRE_THRESHOLD).toBeCloseTo(0.04, 6);
 
     const allIds: WeaponId[] = WEAPON_MANIFESTS.map((m) => m.id);
-    expect(allIds).toHaveLength(34);
+    expect(allIds).toHaveLength(100);
 
     const activeIds: WeaponId[] = [];
     for (const id of allIds) {
@@ -84,7 +84,7 @@ describe('Cycle 19A.1 — High-RPM Rotary Barrel-Cluster Motion-Blur Sweep Halo 
       }
     }
 
-    expect(activeIds.sort()).toEqual(['gau8', 'm134']);
+    expect(activeIds.sort()).toEqual(['gau8', 'm134', 'm61vulcan']);
 
     // Spot-check key non-rotary exhibits across categories (small arms, MBT, archery)
     for (const nonRotary of ['ak15', 'ztz99a', 'lift33', 'r500', 'mg42', 'tiger1'] as const) {
@@ -226,7 +226,16 @@ describe('Cycle 19A.2 — 1:1 MBT Bore-Evacuator / Fume-Extractor & Tiger I Twin
       }
     }
 
-    expect(activeIds.sort()).toEqual(['leopard2a7', 'm1a2', 'tiger1', 'ztz99a']);
+    expect(activeIds.sort()).toEqual([
+      'challenger2',
+      'leopard2a7',
+      'm1a2',
+      'merkava4',
+      't34_85',
+      't90m',
+      'tiger1',
+      'ztz99a',
+    ]);
 
     // Explicitly verify small arms, rotary cannons & archery are never active across entire firing cycle
     const nonTanks: readonly WeaponId[] = [
