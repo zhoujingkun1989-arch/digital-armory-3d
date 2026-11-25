@@ -319,11 +319,11 @@ describe('Permanent Repository-Wide Museum Quality Invariants Gate', () => {
       }
     });
 
-    it('enforces exact 414 WebP textures / 340 Cycles plates and strictly 0 rogue PNGs', () => {
+    it('enforces exact 453 WebP textures / 340 Cycles plates and strictly 0 rogue PNGs', () => {
       const textureFiles = walkFiles(path.join(REPO_ROOT, 'public', 'textures'));
       const plateFiles = walkFiles(path.join(REPO_ROOT, 'public', 'plates'));
 
-      expect(textureFiles.filter((f) => f.endsWith('.webp'))).toHaveLength(414);
+      expect(textureFiles.filter((f) => f.endsWith('.webp'))).toHaveLength(453);
       expect(textureFiles.filter((f) => f.endsWith('.png'))).toHaveLength(0);
 
       expect(plateFiles.filter((f) => f.endsWith('.webp'))).toHaveLength(340);
