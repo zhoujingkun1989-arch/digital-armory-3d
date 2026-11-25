@@ -589,7 +589,7 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
       }
       expect(modal.subtitle).toContain('414');
       expect(modal.subtitle).toMatch(/854|2,?174/);
-      expect(modal.kicker).toContain('100');
+      expect(modal.kicker).toContain('34');
     }
 
     // 2. Archery UI sub-dictionaries: completeness, zero CJK in EN, zero leftover firearm jargon

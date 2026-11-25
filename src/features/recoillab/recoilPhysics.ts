@@ -817,8 +817,7 @@ export const RECOIL_LAB_STRINGS: Readonly<
   zh: {
     kicker: '牛顿第三定律 · 后坐冲量与枪口上跳物理实验室',
     title: '后坐冲量、火药燃气射流与枪口上跳力矩交互实验室',
-    subtitle:
-      '基于动量守恒 I = m_b·v₀ + β·m_p·v₀ 实时解算全馆 34 款馆藏的弹头动量、火箭燃气射流、制退器反推减震、120 点 F(t) 力波形与枪管轴线力矩 τ = F·h_bore',
+    subtitle: `基于动量守恒 I = m_b·v₀ + β·m_p·v₀ 实时解算全馆 ${WEAPON_MANIFESTS.length} 款馆藏的弹头动量、火箭燃气射流、制退器反推减震、120 点 F(t) 力波形与枪管轴线力矩 τ = F·h_bore`,
     closeAria: '关闭后坐与上跳物理实验室',
     presetsLabel: '经典后坐物理对决',
     sideALabel: '展品 A（青色曲线）',
@@ -859,8 +858,7 @@ export const RECOIL_LAB_STRINGS: Readonly<
   en: {
     kicker: "NEWTON'S 3RD LAW · RECOIL IMPULSE & MUZZLE-CLIMB PHYSICS LAB",
     title: 'Interactive Recoil Impulse, Gas-Jet Momentum & Muzzle-Climb Torque Lab',
-    subtitle:
-      'Solve exact momentum conservation I = m_b*v0 + beta*m_p*v0 across all 34 exhibits: bullet momentum, rocket gas-jet thrust, muzzle-brake counter-thrust, 120-point F(t) force waveforms, and bore-axis torque tau = F*h_bore',
+    subtitle: `Solve exact momentum conservation I = m_b*v0 + beta*m_p*v0 across all ${WEAPON_MANIFESTS.length} exhibits: bullet momentum, rocket gas-jet thrust, muzzle-brake counter-thrust, 120-point F(t) force waveforms, and bore-axis torque tau = F*h_bore`,
     closeAria: 'Close Recoil & Muzzle-Climb Physics Lab',
     presetsLabel: 'Iconic Recoil Matchups',
     sideALabel: 'Exhibit A (Cyan Trace)',

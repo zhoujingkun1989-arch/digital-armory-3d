@@ -43,6 +43,10 @@ import { COMMAND_PALETTE_STRINGS } from '../../i18n/commandPaletteStrings';
 import { WEAPON_EN_FALLBACKS } from '../../i18n/weaponFallbacks';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
+import {
+  MUSEUM_EXHIBIT_COUNT,
+  MUSEUM_TOTAL_PARTS,
+} from '../../weapons/museumMetrics';
 import { preloadWeaponPlugin, useWeaponPlugin } from '../../weapons/registry';
 import {
   buildCommandPaletteItems,
@@ -331,8 +335,8 @@ const CommandPaletteDialogBody: React.FC = () => {
             role="combobox"
             aria-label={
               lang === 'zh'
-                ? '搜索 34 款馆藏、854 个零件或博物馆实验室'
-                : 'Search 34 exhibits, 854 parts, or museum labs'
+                ? `搜索 ${MUSEUM_EXHIBIT_COUNT} 款馆藏、${MUSEUM_TOTAL_PARTS.toLocaleString('en-US')} 个零件或博物馆实验室`
+                : `Search ${MUSEUM_EXHIBIT_COUNT} exhibits, ${MUSEUM_TOTAL_PARTS.toLocaleString('en-US')} parts, or museum labs`
             }
             aria-expanded="true"
             aria-controls={LISTBOX_ID}

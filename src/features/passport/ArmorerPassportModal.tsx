@@ -539,8 +539,8 @@ export const ArmorerPassportModal: React.FC<ArmorerPassportModalProps> = ({
                 <Award size={14} aria-hidden="true" />
                 <span>
                   {lang === 'zh'
-                    ? '全馆 34/34 认证大满贯'
-                    : 'ALL 34/34 EXHIBITS CERTIFIED'}
+                    ? `全馆 ${rows.length}/${rows.length} 认证大满贯`
+                    : `ALL ${rows.length}/${rows.length} EXHIBITS CERTIFIED`}
                 </span>
               </span>
             )}
