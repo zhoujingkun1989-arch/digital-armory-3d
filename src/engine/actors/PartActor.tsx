@@ -65,6 +65,7 @@ import {
   configurePbrTextureAnisotropy,
   getArmorDetailTextures,
   getPartPbrBundle,
+  isCentennialSharedTextureFile,
   isTextureLoaded,
   subscribeTextureKeys,
 } from '../materials/pbrManager';
@@ -82,6 +83,25 @@ import {
 import { RIFLING_EXPLODE_VISIBILITY_MAX } from './RiflingBoreActor';
 
 export { SECTION_CUT_PLANES };
+
+/**
+ * Pure predicate determining whether vertex colors (`USE_COLOR`) remain active on
+ * a part's `MeshPhysicalMaterial`:
+ * - Optical X-Ray housings always disable vertex colors (`false`) for clean glass tint.
+ * - Full-color Cycles baked atlases (`isMultiplicativeDetailMap === false`) disable
+ *   vertex colors once `albedoReady` so baked colors are not double-tinted.
+ * - Shared Centennial 1K multiplicative detail maps (`centennial_mat_*_albedo.webp`,
+ *   `isMultiplicativeDetailMap === true`) KEEP `vertexColors: true` even when
+ *   `albedoReady` is true so ~0.88-mean surface grain multiplies cleanly with
+ *   authentic vertex colors (`CENTENNIAL_FINISH_COLORS`, brass rounds, CARC armor).
+ */
+export function shouldUsePartVertexColors(
+  isXrayHousing: boolean,
+  albedoReady: boolean,
+  isMultiplicativeDetailMap: boolean
+): boolean {
+  return !isXrayHousing && (!albedoReady || isMultiplicativeDetailMap);
+}
 
 const MAIN_BARREL_PART_ID_RE = /^(?:.*_)?(?:barrel|barrel_cluster|main_gun)$/;
 
@@ -777,9 +797,18 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     const activeOrmMap = roughReady ? pbr.roughnessMap : null;
     const activeMetalnessMap =
       pbr.hasCustomAtlas && activeOrmMap ? activeOrmMap : null;
+    const isMultiplicativeDetailMap = Boolean(
+      effectivePbrBinding &&
+        isCentennialSharedTextureFile(effectivePbrBinding.albedoFile)
+    );
+    const useVertexColors = shouldUsePartVertexColors(
+      isXrayHousing,
+      albedoReady,
+      isMultiplicativeDetailMap
+    );
     // Armory shader stays off on optical X-ray housings (clean glass look), except springs.
     const armoryActive = !isXrayHousing || armoryFeatures.spring;
-    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isTank ? 't1' : 't0'}-${isSectionCutShell ? (sectionCutAxis === 'box' ? 'cb' : 'c1') : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
+    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isTank ? 't1' : 't0'}-${isSectionCutShell ? (sectionCutAxis === 'box' ? 'cb' : 'c1') : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${useVertexColors ? 'vc1' : 'vc0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
     const hasMeshVisible = Boolean(
       geometry && !isGroupHidden && !isReplacedByAttachment
     );
@@ -1139,7 +1168,6 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     if (!geometry || isGroupHidden || isReplacedByAttachment) return null;
 
     const isTransparent = isGhostByIsolate || isXrayHousing;
-    const useVertexColors = !isXrayHousing && !albedoReady;
 
     // Optical X-ray clarity: ultra-low front-face haze + clean depth sorting (renderOrder 12)
     // keeps internal springs, locking rollers, gas pistons, and FCG sears razor-sharp!
@@ -1321,9 +1349,11 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       ? isTank
         ? 1.26
         : 0.95
-      : pbr.hasCustomAtlas
-        ? 0.65
-        : 0.48;
+      : isMultiplicativeDetailMap
+        ? 0.85
+        : pbr.hasCustomAtlas
+          ? 0.65
+          : 0.48;
 
     const armoryMaterialProps = armoryActive
       ? {
@@ -1372,7 +1402,9 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
                   : activeMetalnessMap
                     ? isGlbAsset
                       ? 1.0
-                      : 0.86
+                      : isMultiplicativeDetailMap
+                        ? 1.0
+                        : 0.86
                     : matCfg.metalness
               }
               roughness={
