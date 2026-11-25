@@ -122,9 +122,9 @@ describe('Cycle 19C — Monograph Rifling/Glossary Dossier & Atlas Live Pipeline
     ).toBe(100);
   });
 
-  it('buildAtlasPipelineTelemetry reports accurate WebP ORM + KTX2 states & 101/414/24 inventory in zh & en with 0 EN CJK & 0 WP-XX', () => {
-    expect(VERIFIED_ATLAS_SUITE_COUNT).toBe(101);
-    expect(VERIFIED_ATLAS_MAP_COUNT).toBe(414);
+  it('buildAtlasPipelineTelemetry reports accurate WebP ORM + KTX2 states & 114/453/24 inventory in zh & en with 0 EN CJK & 0 WP-XX', () => {
+    expect(VERIFIED_ATLAS_SUITE_COUNT).toBe(114);
+    expect(VERIFIED_ATLAS_MAP_COUNT).toBe(453);
     expect(VERIFIED_TANK_4K_MAP_COUNT).toBe(24);
 
     const states = [
@@ -137,7 +137,7 @@ describe('Cycle 19C — Monograph Rifling/Glossary Dossier & Atlas Live Pipeline
         expectedMode: 'transcoder_ready' as const,
       },
       {
-        status: { initialized: true, gpuSupported: true, publishedCount: 414 },
+        status: { initialized: true, gpuSupported: true, publishedCount: 453 },
         expectedMode: 'gpu_published' as const,
       },
     ];
@@ -146,8 +146,8 @@ describe('Cycle 19C — Monograph Rifling/Glossary Dossier & Atlas Live Pipeline
       for (const lang of ['zh', 'en'] as readonly LanguageCode[]) {
         const telemetry = buildAtlasPipelineTelemetry(status, lang);
         expect(telemetry.ktx2Mode).toBe(expectedMode);
-        expect(telemetry.totalSuites).toBe(101);
-        expect(telemetry.totalMaps).toBe(414);
+        expect(telemetry.totalSuites).toBe(114);
+        expect(telemetry.totalMaps).toBe(453);
         expect(telemetry.tank4kMaps).toBe(24);
 
         const joined = [
@@ -161,8 +161,8 @@ describe('Cycle 19C — Monograph Rifling/Glossary Dossier & Atlas Live Pipeline
         expect(joined).toContain('WebP');
         expect(joined).toContain('ORM');
         expect(joined).toContain('KTX2');
-        expect(joined).toContain('101');
-        expect(joined).toContain('414');
+        expect(joined).toContain('114');
+        expect(joined).toContain('453');
         expect(joined).toContain('24');
         expect(joined).not.toMatch(WP_TAG_RE);
 
@@ -172,7 +172,7 @@ describe('Cycle 19C — Monograph Rifling/Glossary Dossier & Atlas Live Pipeline
             'WebP 5-Channel Packed ORM Active'
           );
           expect(telemetry.inventorySummary).toBe(
-            '101 Material Suites · 414 Maps · 24× 4K MBT Textures'
+            '114 Material Suites · 453 Maps · 24× 4K MBT Textures'
           );
         }
       }
@@ -214,8 +214,8 @@ describe('Cycle 19C — Monograph Rifling/Glossary Dossier & Atlas Live Pipeline
     expect(html).toContain('data-testid="atlas-pipeline-telemetry"');
     expect(html).toContain('role="status"');
     expect(html).toContain('aria-live="polite"');
-    expect(html).toContain('101');
-    expect(html).toContain('414');
+    expect(html).toContain('114');
+    expect(html).toContain('453');
     expect(html).toContain('24× 4K');
     expect(html).toContain('KTX2 Basis Universal');
 

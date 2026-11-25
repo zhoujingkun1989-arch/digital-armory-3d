@@ -587,7 +587,7 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
           expect(s).not.toMatch(cjkRe);
         }
       }
-      expect(modal.subtitle).toContain('414');
+      expect(modal.subtitle).toContain('453');
       expect(modal.subtitle).toMatch(/854|2,?174/);
       expect(modal.kicker).toContain('34');
     }
@@ -659,14 +659,14 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     }
   });
 
-  it('synchronizes SHOWCASE_STRINGS metrics (34 / 854 / 1980 / 414) with WEAPON_IDS, plugins, audio & public/textures', async () => {
+  it('synchronizes SHOWCASE_STRINGS metrics (100 / 2174 / 1980 / 453) with WEAPON_IDS, plugins, audio & public/textures', async () => {
     const texturesDir = path.resolve(__dirname, '../public/textures');
     const audioDir = path.resolve(__dirname, '../public/audio');
 
     const textureFiles = fs
       .readdirSync(texturesDir)
       .filter((f) => f.endsWith('.webp'));
-    expect(textureFiles.length).toBe(414);
+    expect(textureFiles.length).toBe(453);
 
     const countMp3Files = (dir: string): number => {
       let count = 0;
@@ -692,13 +692,13 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
       const metricValues = showcase.metrics.map((m) => m.val).join(' | ');
       expect(metricValues).toContain('100');
       expect(metricValues).toContain('2174');
-      expect(metricValues).toContain('414');
+      expect(metricValues).toContain('453');
       expect(metricValues).toContain('1980');
 
       expect(showcase.hero.eyebrow).toContain('100');
       expect(showcase.hero.eyebrow).toContain('1980');
       expect(showcase.hero.subPartsStrong).toContain('2174');
-      expect(showcase.hero.subMapsStrong).toContain('414');
+      expect(showcase.hero.subMapsStrong).toContain('453');
       expect(showcase.hero.subAudioStrong).toContain('1980');
 
       const caliberText = showcase.documentary.caliberRows

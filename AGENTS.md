@@ -249,6 +249,13 @@
    - **统一编码与哈希留痕**：统一经 `ffmpeg -ar 24000 -ac 1 -codec:a libmp3lame -b:a 64k` 转码输出 `24 kHz` 单声道 `64 kbps` MP3，并在 `scripts/narrations/.cache/<weaponId>_tts_hashes.json` 记录 `sha256("gemini-3.8-flash-tts|Charon|<style>|<audioScript>")`。
    - **严禁私自替换 TTS 引擎铁律**：**绝对禁止**使用 `edge-tts`（如 `YunxiNeural` / `ChristopherNeural`）、系统 `say` 或任何第三方 TTS 引擎生成音频写入 `public/audio/`！当环境变量 / `.env.local` 缺少 `GEMINI_API_KEY` 或遭遇 `402/429` 配额熔断时，智能体必须**立即中止配音生成并向用户如实报告阻塞**，提示配置 `GEMINI_API_KEY` 后运行 `uv run --with google-genai --with pydantic python3 scripts/build_narrations.py --weapon <id> --batch-tts --force-audio`，严禁擅自用替代音色绕过。
 9. **科普安全边界、Git 纪律与路线图同步**：严禁导出任何可用于真实制造或 3D 打印的 STL / 公差蓝图；未经用户明确要求严禁私自 `git push` 至远端仓库；每完成并通过验收一个工程包（`WP-01` ~ `WP-30` / `PR-01` ~ `PR-04`），必须同步更新本 `AGENTS.md` 对应基线与复选框状态（`[x]`）。
+10. **Centennial 百年展品双轨视觉与机械统一宪法（6 大不可妥协铁律）**：为确保全部 100 款展品在统一世界级博物馆水准下交付，Tier 2 Centennial 66 款展品（`1,320` 个独立运动零件）除遵循本节第 1、4–9 条外，还必须永久满足以下 6 条宪法级红线：
+    - **10.1 零裸素模与多通道 PBR 材质铁律**：严禁任何展品仅以未贴图纯色或顶点色块交付；Tier 2 Centennial 66 款展品全部 `1,320` 个零件必须 100% 绑定共享 `1024×1024` 无缝 5 通道 Packed ORM + Normal + 乘算细节反照率博物馆材质图库（13 套核心真铁/实木/层压板/滚花/RHA/CARC/黄铜材质：`oiled_walnut`、`russian_laminate`、`beech_yew`、`blued_steel`、`parkerized_steel`、`anodized_alloy`、`brushed_stainless`、`tactical_polymer`、`checkered_grip`、`cast_rha_armor`、`carc_olive`、`carc_desert`、`cartridge_brass`，共 `39` 张严格 3 通道 RGB 无 Alpha WebP，总体积 `< 10 MB`，在 `pbrManager.ts` 中强制 `ownerWeapon: 'shared'` 及 `wrapRepeat: true` 全局池化无缝平铺零显存抖动），配合真实米制 Box-Projection UV（木纹沿枪托纵向生长、机加拉丝沿枪管/套筒 `+X` 轴向延伸、滚花按真实 `1.2 mm` 节距映射，乘算细节反照率均值锁在 `sRGB 0.78–0.96` 防止 AgX 压黑）与 `lockLinearTextureColorSpace` 线性色彩空间锁死。
+    - **10.2 零直棱方盒与零时代穿帮铁律**：所有主承力壳体与人机件（机匣、套筒、枪托、握把、护木、扳机护圈、坦克车体/炮塔）禁止粗糙无倒角直棱方盒，必须具备倒角/圆角挤出截面（`bevelEnabled: true`）、平滑弧形闭合扳机护圈、人体工学握把与贴腮弧度以及结构特征件；**1990 年以前的历史经典展品（`year < 1990`）绝对禁止出现现代皮卡汀尼 1913 导轨（3D 几何与双语零件命名/说明双禁）**，必须采用真实表尺照门、固定 A1 提把、燕尾侧轨、机匣瞄准筋或原装时代瞄具。
+    - **10.3 1 秒纯灰剪影辨识度与独立装甲履带铁律**：纯灰白模下须做到 1 秒可辨真枪/真车原型（如 `ppsh41` 整体直颈桦木步枪托 + 斜口防跳多孔散热护筒 + 径向加强筋 71 发圆鼓，严禁出现独立垂直 AK 握把；`beretta92` 标志性顶部大面积镂空套筒暴露圆柱枪管与落块闭锁；`m16a1` 三角棱纹护木 + 固定 A1 提把 + 三角准星座；`ak47`/`ak74m` 肋条防尘盖 + 倾斜/直角导气箍 + 斜切/双室制退器；`c96` 圆柱棱纹驳壳木柄 + 前置 10 发弹仓；`t90m`/`challenger2`/`merkava4`/`t34_85` 等全部 1:1 主战坦克必须具备**独立铰接履带板节段**与带螺栓轮毂橡胶负重轮/带齿主动轮/诱导轮/托带轮及时代炮塔外设，严禁平滑方盒履带）。
+    - **10.4 CT 纵剖内部机械完整度铁律**：所有外罩壳体（含主战坦克炮塔、半自动手枪套筒与所有可拆卸弹匣轻武器的弹匣壳体 `mag_body`）在 `?cut=1` 下均须声明 `isShell: true` 干净剖开，暴露内部枪管螺旋膛线、闭锁突笋/滑楔炮闩、螺旋复进簧与弹匣内位于托弹板正上方的金属黄铜实弹轮廓、托弹板及托弹簧，严禁空壳黑洞。
+    - **10.5 双轨实机逐像素评分红线**：对照 34 款旗舰同等严格标尺，1920×1080 无头 Chromium 逐像素目检强制门槛为 **Tier 1 旗舰 `>= 9.9 / 10.0`**、**Tier 2 Centennial 博物馆 CAD `>= 9.7 / 10.0`**（强制要求 `0` P0 / `0` P1 穿帮、`0` 时代穿帮、`0` 裸素模色块、`0` 直棱方盒主壳、`0` 压黑）；不达标一律打回返工复验，严禁降低标准放行。
+    - **10.6 渐进式 Wave 11+ Blender 5.2 Tier 1 旗舰晋升宪章**：在 `dist/ <= 800 MB` 体积预警线（或启用 `VITE_CDN_ASSET_BASE_URL` 外置重媒体分流）约束下，按全球历史影响力分批（Wave 11+ 首批优先 `ak47`、`m16a1`、`beretta92`、`ppsh41`、`t34_85`、`t90m` 等）将核心 Centennial 展品晋升为 Tier 1 Blender 5.2 高模 Draco `.glb` + 2K/4K Cycles ORM + Cycles 印刷主图；晋升后 100% 纳入本节第 2–4 条、第 8 条与第 5 节旗舰审计。
 
 ---
 
@@ -259,14 +266,14 @@
 ```bash
 npm run typecheck                  # 1. TypeScript 严格模式零错误
 npm run lint                       # 2. ESLint 零警告 / 零错误
-npm test                           # 3. Vitest 全量 100 展品 (2,174 零件) 几何、运动学、GLB/PBR、三维剧场与双语契约测试全部通过 (120 套件 / 698 项)
+npm test                           # 3. Vitest 全量 100 展品 (2,174 零件) 几何、运动学、GLB/PBR、三维剧场、双语契约与宪法不变式测试全部通过 (含 centennialConstitution.test.ts)
 npm run build                      # 4. 生产环境多入口 (index.html + showcase.html) 无环分包构建零告警 (全部 chunk < 800 kB, dist/ <= 1 GB)
-npm run assets:audit               # 5. 旗舰 34/34 展品资产预算 (<= 12 MB) 与 6 大 public/ 目录体积审计
+npm run assets:audit               # 5. 旗舰 34/34 展品资产预算 (<= 12 MB)、Centennial 共享材质图库 (< 10 MB) 与 6 大 public/ 目录体积审计
 npm run qa:fleet -- --mode=full    # 6a. 实机 108/108 全馆 100 展品 + 8 大视图无头 Chromium 零错巡检
 npm run qa:a11y                    # 6b. 实机 75/75 (100%) WCAG 2.1 AA 与移动端触控审计
 ```
 
 6. **1920×1080 实机无头 Chromium 逐像素视觉与运行时 QA（新增/重构 3D 资产强制门禁：`npm run qa:visual`）**：
    - 可运行 `npm run qa:visual -- --weapons <id> --cut` 或在真实浏览器（`http://127.0.0.1:5173/?screen=workbench&weapon=<id>`）逐一抓取 **影棚 3/4 全景、核心铭文微距、特色机构特写、实时 CT 纵剖面（`?cut=1`）与 `t = 1.0` 爆炸图** 并通过 `read_file` 逐像素人工/智能体目检；
-   - 运行时断言强制全绿：`consoleErrors === 0`、`pageErrors === 0`、`failedRequests === 0`、实体件 `100%` `userData.isGlbAsset === true`、动态件 `100%` 保留 `aSpringParam`、`0` 线性/sRGB `colorSpace` 违规；
-   - 发现任何悬空零件、穿模、破壁、铭文镜像/遮挡、色渗或压黑，**必须直接打回对应画师/工程师返工复验至 10/10**，并将最终签收的 1920×1080 实拍图归档至 `docs/screenshots/<id>-v6-hero.jpg`（或既有 `<id>-v3-macro.jpg`）并同步校验 `README.md` / `README.zh-CN.md` 零断链。
+   - 运行时与宪法评分强制全绿：`consoleErrors === 0`、`pageErrors === 0`、`failedRequests === 0`、Tier 1 实体件 `100%` `userData.isGlbAsset === true`、Tier 2 全部 `1,320` 零件 `100%` 绑定共享 5 通道 ORM WebP（`0` 裸素模）、动态件 `100%` 保留 `aSpringParam`、`0` 线性/sRGB `colorSpace` 违规、`0` `year < 1990` 皮卡汀尼时代穿帮；**逐像素目检强制门槛：Tier 1 旗舰 `>= 9.9 / 10.0`、Tier 2 Centennial 博物馆 CAD `>= 9.7 / 10.0`**（`0` P0 / `0` P1）；
+   - 发现任何悬空零件、穿模、破壁、铭文镜像/遮挡、色渗、压黑、直棱方盒、时代穿帮或裸素模色块，**必须直接打回对应画师/工程师返工复验至达标**，并将最终签收的 1920×1080 实拍图归档至 `docs/screenshots/<id>-v6-hero.jpg`（或 `docs/screenshots/centennial-<id>-*.jpg` / 既有 `<id>-v3-macro.jpg`）并同步校验 `README.md` / `README.zh-CN.md` 零断链。
