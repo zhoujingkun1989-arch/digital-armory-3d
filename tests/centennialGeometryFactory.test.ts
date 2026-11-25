@@ -69,6 +69,7 @@ function assertValidGeometry(geo: THREE.BufferGeometry, label: string): void {
   const pos = geo.getAttribute('position');
   const norm = geo.getAttribute('normal');
   const uv = geo.getAttribute('uv');
+  const uv1 = geo.getAttribute('uv1');
   const color = geo.getAttribute('color');
   const curv = geo.getAttribute('aCurvature');
 
@@ -77,6 +78,8 @@ function assertValidGeometry(geo: THREE.BufferGeometry, label: string): void {
   expect(pos.count % 3, `${label}: triangle list`).toBe(0);
   expect(norm?.count, `${label}: normal count`).toBe(pos.count);
   expect(uv?.count, `${label}: uv count`).toBe(pos.count);
+  expect(uv1?.count, `${label}: uv1 count for ORM aoMap`).toBe(pos.count);
+  expect(uv1?.itemSize, `${label}: uv1 itemSize = 2`).toBe(2);
   expect(color?.count, `${label}: color count`).toBe(pos.count);
   expect(curv?.count, `${label}: aCurvature count`).toBe(pos.count);
 
@@ -720,6 +723,47 @@ describe('Centennial 66-Exhibit 20-Part Procedural CAD Geometry Factory & Layout
         `${id} must feature articulated track link belts + bolted roadwheels + toothed sprockets`
       ).toBeGreaterThan(6000);
       tracks.dispose();
+    }
+
+    // 7. Wave B-3b: Flush curved trigger-guard mounting tang posts (ZERO world-space air gap into
+    //    frame/receiver underside AND zero top poke-through across pistols, revolvers, crossbows,
+    //    rifles & SMGs) + `uv1` copy matching `uv` for Three.js ORM `aoMap` channel 1.
+    for (const id of [
+      'beretta92',
+      'usp45',
+      'c96',
+      'saa1873',
+      'sw500',
+      'excalibur',
+      'ak47',
+      'm16a1',
+      'ppsh41',
+    ] as const) {
+      const bp = CENTENNIAL_BLUEPRINT_MAP[id];
+      const layout = computeCentennialPartLayout(bp);
+      const rec = buildGeo(id, 'receiver');
+      const trig = buildGeo(id, 'trigger');
+      rec.computeBoundingBox();
+      trig.computeBoundingBox();
+      const recWorldMinY = layout.assembledPos.receiver[1] + rec.boundingBox!.min.y;
+      const recWorldMaxY = layout.assembledPos.receiver[1] + rec.boundingBox!.max.y;
+      const trigWorldMaxY = layout.assembledPos.trigger[1] + trig.boundingBox!.max.y;
+      expect(
+        trigWorldMaxY,
+        `${id}_trigger mounting tangs must weld >= 1.5 mm into frame underside (recMinY=${recWorldMinY.toFixed(2)})`
+      ).toBeGreaterThan(recWorldMinY + 0.15);
+      expect(
+        trigWorldMaxY,
+        `${id}_trigger mounting tangs must stay cleanly below receiver top (recMaxY=${recWorldMaxY.toFixed(2)})`
+      ).toBeLessThan(recWorldMaxY - 0.5);
+      const uv = trig.getAttribute('uv');
+      const uv1 = trig.getAttribute('uv1');
+      expect(uv1, `${id}_trigger uv1 present for ORM aoMap`).toBeDefined();
+      expect(uv1.count).toBe(uv.count);
+      expect(uv1.getX(0)).toBeCloseTo(uv.getX(0), 6);
+      expect(uv1.getY(0)).toBeCloseTo(uv.getY(0), 6);
+      rec.dispose();
+      trig.dispose();
     }
   });
 });
