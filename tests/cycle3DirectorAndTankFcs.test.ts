@@ -216,10 +216,10 @@ describe('Cycle 3E — 4-Nation Main Battle Tank Gunner Reticles & FLIR Optics',
   });
 });
 
-describe('Cycle 3E — 34/34 Story Director Choreography & Broadcast Director Reel', () => {
-  it('resolves valid non-null focusPartIds & 0.25x firing beats across ALL 34 exhibits in both zh and en (fixing rem870 EN)', async () => {
-    expect(WEAPON_IDS).toHaveLength(34);
-    expect(Object.keys(EXHIBIT_DIRECTOR_PROFILES)).toHaveLength(34);
+describe('Cycle 3E — 100/100 Story Director Choreography & Broadcast Director Reel', () => {
+  it('resolves valid non-null focusPartIds & 0.25x firing beats across ALL 100 exhibits in both zh and en (fixing rem870 EN)', async () => {
+    expect(WEAPON_IDS).toHaveLength(100);
+    expect(Object.keys(EXHIBIT_DIRECTOR_PROFILES)).toHaveLength(100);
 
     for (const weaponId of WEAPON_IDS) {
       const profile = getExhibitDirectorProfile(weaponId);
