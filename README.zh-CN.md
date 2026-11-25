@@ -17,7 +17,7 @@
 [![馆藏规模](https://img.shields.io/badge/Collection-100_Exhibits_·_2%2C174_Parts-d97706)](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=zh)
 [![WCAG 2.1 AA](https://img.shields.io/badge/WCAG_2.1_AA-75%2F75_(100%25)-10b981)](scripts/qa_a11y_audit.mjs)
 [![WebGL 2.0](https://img.shields.io/badge/WebGL_2.0-108%2F108_Fleet_·_60.2_FPS-0284c7)](scripts/qa_full_fleet_audit.mjs)
-[![Visual Audit](https://img.shields.io/badge/Visual_Audit-9.97_Flagship_|_9.58_Centennial-f59e0b)](docs/screenshots/centennial-t90m-cut.jpg)
+[![Visual Audit](https://img.shields.io/badge/Visual_Audit-9.97_Flagship_|_9.80_Centennial-f59e0b)](docs/screenshots/centennial-ak47-cut.jpg)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6_Strict-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Blender 5.2](https://img.shields.io/badge/Dual--Track-34_Blender_GLB_+_66_CAD-e87d0d?logo=blender&logoColor=white)](scripts/blender/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg)](LICENSE)
@@ -44,31 +44,39 @@
 
 ![Digital Armory 3D — AK-15M1 实时 CT 纵剖、真三维螺旋膛线与博物馆工作台](docs/screenshots/hero-ct-cutaway.jpg)
 
-> 基于 **React 18 + TypeScript 5.6 + Three.js (`@react-three/fiber` / 分级双轨 Blender 5.2 Draco `.glb` + 程序化 Web Worker `three-bvh-csg` / Web Audio API)** 构建——零客户端安装、原生秒开，支持 **暗室展厅与瑞士普鲁士蓝墨工程白昼（Blueprint Daylight）双影棚** 及 **Filament / Kaplanyan Specular AA（`ARMORY_SHADER_VERSION = 11`）**、**生产级 KTX2 (`toktx`) + 重媒体 CDN（`VITE_CDN_ASSET_BASE_URL`）+ PWA 离线博物馆**，全站生产分包 **`0` 循环依赖告警（最大 chunk `684.66 kB < 800 kB`，`dist/ 641.4 MB = 62.6%` GitHub Pages 1 GB 限额）**，并通过 **实机 `9.97 / 10.0` 旗舰 34 馆 + `9.58 / 10.0` Centennial 66 馆双视觉认证 · `108/108` 全馆舰队 WebGL 零错认证 · `75/75 (100%)` WCAG 2.1 AA · `60.2 FPS` Metal 性能长测**。
+> 基于 **React 18 + TypeScript 5.6 + Three.js (`@react-three/fiber` / 分级双轨 Blender 5.2 Draco `.glb` + 程序化 Web Worker `three-bvh-csg` / Web Audio API)** 构建——零客户端安装、原生秒开，支持 **暗室展厅与瑞士普鲁士蓝墨工程白昼（Blueprint Daylight）双影棚** 及 **Filament / Kaplanyan Specular AA（`ARMORY_SHADER_VERSION = 11`）**、**生产级 KTX2 (`toktx`) + 重媒体 CDN（`VITE_CDN_ASSET_BASE_URL`）+ PWA 离线博物馆**，全站生产分包 **`0` 循环依赖告警（最大 chunk `684.66 kB < 800 kB`，`dist/ 645.8 MB = 63.1%` GitHub Pages 1 GB 限额）**，并通过 **实机 `9.97 / 10.0` Tier 1 旗舰 34 馆 + `9.80 / 10.0` Tier 2 Centennial 66 馆 Rule 4.10 视觉认证（`0` P0 / `0` P1）· `108/108` 全馆舰队 WebGL 零错认证 · `75/75 (100%)` WCAG 2.1 AA · `60.2 FPS` Metal 性能长测**。
 >
-> 实时检视跨越 **611 年机械工程史（`1415–2026`）的 100 款交互式 3D 展品、10 大博物馆展厅、2,174 个可动 CAD 零件**：**24 款突击/战斗步枪** · **10 款轻/重机枪** · **13 款冲锋枪与 PDW** · **12 款狙击与反器材步枪** · **8 款霰弹枪** · **16 款手枪与转轮手枪** · **5 款弓弩**（横跨 **1415 年中世纪英格兰紫杉长弓** 至现代复合弓弩）· **8 款 `1:1` 真实尺度主战坦克**（**ZTZ-99A**、**M1A2 SEP v3**、**豹 2A7V**、**虎式 131**、**T-90M「突破」**、**挑战者 2**、**梅卡瓦 Mk.4M**、**T-34-85**）· **4 款 `1:1` 重型航空与火炮重武**（**GE GAU-8/A「复仇者」30mm**、**GE M61A1「火神」20mm**、**博福斯 40mm L/60 高炮**、**BAE M777A2 155mm 超轻型榴弹炮**）。依托 **分级双轨架构**：**34 款旗舰 Blender 5.2 精雕展品（`9.97/10`，`775` 个水密 Draco `.glb` 精模 + `79` 个 `aSpringParam` GPU 实时形变 CSG 弹簧/弓片 = `854` 零件、`414` 张 2K/4K 5 通道 Packed ORM WebP、`340` 张 Cycles `2880×1800` RGBA 印刷主图、`1,980` 段 Gemini `Charon` TTS MP3）** + **66 款 Centennial 程序化 CAD 展品（`9.58/10`，28 类几何原型与 22 套运动学定律实时生成 `1,320` 个水密 Web Worker CSG 零件，零包体膨胀 Web Speech API 双语导览）**——全线打通 **100/100 中英双语四幕研发史与零件解说**、**42 组跨时代经典机构对决**（`100×99` 任意自由配对与六轴工程雷达）、**史密森尼 1415–2026 折断比例尺时间线**、**1:1 真实尺度对比墙**、**后坐冲量物理实验室**、**Tate 流体侵彻 3D 复合装甲剧场** 与 **1,000m Applied Ballistics Litz/Miller/施利伦 3D 靶场**。
+> 实时检视跨越 **611 年机械工程史（`1415–2026`）的 100 款交互式 3D 展品、10 大博物馆展厅、2,174 个可动 CAD 零件**：**24 款突击/战斗步枪** · **10 款轻/重机枪** · **13 款冲锋枪与 PDW** · **12 款狙击与反器材步枪** · **8 款霰弹枪** · **16 款手枪与转轮手枪** · **5 款弓弩**（横跨 **1415 年中世纪英格兰紫杉长弓** 至现代复合弓弩）· **8 款 `1:1` 真实尺度主战坦克**（**ZTZ-99A**、**M1A2 SEP v3**、**豹 2A7V**、**虎式 131**、**T-90M「突破」**、**挑战者 2**、**梅卡瓦 Mk.4M**、**T-34-85**）· **4 款 `1:1` 重型航空与火炮重武**（**GE GAU-8/A「复仇者」30mm**、**GE M61A1「火神」20mm**、**博福斯 40mm L/60 高炮**、**BAE M777A2 155mm 超轻型榴弹炮**）。依托 **分级双轨架构（全馆 `453` 张 WebP PBR 贴图 / `114` 套图集，`0` 张 PNG）**：**34 款旗舰 Blender 5.2 精雕展品（`9.97/10`，`775` 个水密 Draco `.glb` 精模 + `79` 个 `aSpringParam` GPU 实时形变 CSG 弹簧/弓片 = `854` 零件、`414` 张 2K/4K 5 通道 Packed ORM WebP / `101` 套图集、`340` 张 Cycles `2880×1800` RGBA 印刷主图、`1,980` 段 Gemini `Charon` TTS MP3）** + **66 款 Centennial Rule 4.10 精雕程序化 CAD 展品（`9.80/10` 宪法认证，`1,320` 个倒角水密 Web Worker CSG 零件配米制 Box-UV、`100%` 绑定 `13` 套共享 `1024×1024` 5 通道 Packed ORM 博物馆材质图库 [`39` 张 RGB WebP，`4.31 MB`]、48 节独立铰接坦克履带、剖切弹匣 5 发黄铜弹柱与零 1990 前皮卡汀尼时代穿帮）**——全线打通 **100/100 中英双语四幕研发史与零件解说**、**42 组跨时代经典机构对决**（`100×99` 任意自由配对与六轴工程雷达）、**史密森尼 1415–2026 折断比例尺时间线**、**1:1 真实尺度对比墙**、**后坐冲量物理实验室**、**Tate 流体侵彻 3D 复合装甲剧场** 与 **1,000m Applied Ballistics Litz/Miller/施利伦 3D 靶场**。
 
 ---
 
-## Centennial 100 展品实机画廊（`9.58 / 10.0` 视觉认证 · WebGL 2.0 实机直拍）
+## Centennial 100 展品实机画廊（`9.80 / 10.0` Rule 4.10 宪法视觉认证 · WebGL 2.0 实机直拍）
 
-*以下 8 帧无修实机画面由无头 Chromium WebGL 2.0 实时直拍自 Centennial 66 款扩馆展品（`BAY-35 ~ BAY-100`），横跨全馆 10 大展厅（`1415–2026`），集中呈现 1:1 剖切主战坦克炮塔与手枪套筒（`?cut=1`）、哑光 CARC 装甲涂层、1:1 重装机库地坪承托、28 类程序化 CAD 原型与 100 节点折断比例尺史密森尼时间线。*
+*以下 12 帧无修实机画面由无头 Chromium WebGL 2.0 实时直拍自 Centennial 66 款扩馆展品（`BAY-35 ~ BAY-100`），横跨全馆 10 大展厅（`1415–2026`），集中呈现 13 套共享 `1024×1024` 5 通道 Packed ORM 材质图库（`4.31 MB`）、米制 Box-UV 纹理映射、倒角雕塑剪影、零 1990 前皮卡汀尼导轨、48 节独立铰接主战坦克履带、敞顶套筒与剖切弹匣内 5 发黄铜实弹柱（`?cut=1`），以及 100 节点折断比例尺史密森尼时间线。*
 
-| **🇷🇺 `BAY-94` T-90M「突破」（`125mm 2A46M-5`）· *1:1 实时 CT 纵剖（`?cut=1`）剖切哑光 CARC 炮塔与转盘装弹机*** | **🇷🇺 `BAY-97` T-34-85（1944）· *工程白昼影棚、裸露克里斯蒂悬挂与铸造 85mm 炮塔*** |
+| **🇷🇺 `BAY-35` 卡拉什尼科夫 AK-47 III 型（`7.62×39mm` · 1949）· *实时 CT 纵剖（`?cut=1`）俄式层压木纹、螺旋膛线与 5 发黄铜弹柱*** | **🇺🇸 `BAY-37` 柯尔特 M16A1（`5.56×45mm` · 1967）· *三角棱纹护木、固定 A1 提把、三角准星塔与 20 发华夫直匣*** |
 | :---: | :---: |
-| ![T-90M 突破 1:1 主战坦克实时 CT 纵剖剖切哑光 CARC 炮塔](docs/screenshots/centennial-t90m-cut.jpg) | ![T-34-85 1944 中型坦克工程白昼影棚与克里斯蒂悬挂](docs/screenshots/centennial-t34-85-daylight.jpg) |
+| ![卡拉什尼科夫 AK-47 III 型实时 CT 纵剖俄式层压木纹与 5 发黄铜弹柱](docs/screenshots/centennial-ak47-cut.jpg) | ![柯尔特 M16A1 三角棱纹护木固定 A1 提把与三角准星塔](docs/screenshots/centennial-m16a1-studio.jpg) |
 
-| **🇺🇸 `BAY-98` GE M61A1「火神」（`20×102mm` · 6,000 RPM）· *1:1 六管旋转航炮落地重装混凝土机库*** | **🏴󠁧󠁢󠁥󠁮󠁧󠁿 `BAY-93` 1415 中世纪英格兰紫杉长弓（`1.96 m` 战弓）· *双色锥度紫杉弓身、牛角弓梢与破甲锥箭*** |
+| **🇮🇹 `BAY-81` 伯莱塔 92FS / M9（`9×19mm` · 1976）· *实时 CT 纵剖（`?cut=1`）敞顶套筒、剖切握把弹匣与 5 发 9mm 黄铜弹*** | **🇷🇺 `BAY-59` PPSh-41「波波沙」（`7.62×25mm` · 1941）· *一体式俄式层压桦木托、斜口多孔烤蓝护筒与 71 发弹鼓*** |
 | :---: | :---: |
-| ![GE M61A1 火神 20mm 六管航炮落地重装混凝土机库](docs/screenshots/centennial-m61vulcan-studio.jpg) | ![1415 中世纪英格兰紫杉长弓双色锥度弓身与破甲锥箭](docs/screenshots/centennial-longbow-1415.jpg) |
+| ![伯莱塔 92FS M9 实时 CT 纵剖敞顶套筒与 5 发 9mm 黄铜弹柱](docs/screenshots/centennial-beretta92-cut.jpg) | ![PPSh-41 冲锋枪一体式俄式层压桦木托与多孔烤蓝护筒实拍](docs/screenshots/centennial-ppsh41-studio.jpg) |
 
-| **🇷🇺 `BAY-55` PPSh-41「波波沙」（`7.62×25mm` · 900 RPM）· *冲压多孔散热护筒、71 发弹鼓与油浸桦木托*** | **🇩🇪 `BAY-71` 瓦尔特 WA 2000（`.300 Win Mag`）· *核桃木无托框架、双铝导轨与顶置悬吊两脚架*** |
+| **🇩🇪 `BAY-86` 毛瑟 C96「驳壳枪」（`7.63×25mm` · 1896）· *烤蓝钢机匣、前置 10 发弹仓与棱纹核桃木扫帚柄*** | **🇩🇪 `BAY-71` 瓦尔特 WA 2000（`.300 Win Mag` · 1982）· *油浸核桃木无托护木、阳极氧化双轨与顶置两脚架*** |
 | :---: | :---: |
-| ![PPSh-41 冲锋枪多孔散热护筒与 71 发弹鼓实拍](docs/screenshots/centennial-ppsh41-studio.jpg) | ![瓦尔特 WA 2000 无托狙击步枪核桃木护木与顶置两脚架](docs/screenshots/centennial-wa2000-studio.jpg) |
+| ![毛瑟 C96 驳壳枪烤蓝机匣与棱纹油浸核桃木扫帚柄](docs/screenshots/centennial-c96-studio.jpg) | ![瓦尔特 WA 2000 无托狙击步枪油浸核桃木纹与顶置两脚架](docs/screenshots/centennial-wa2000-studio.jpg) |
 
-| **🇮🇹 `BAY-81` 伯莱塔 92FS / M9（`9×19mm`）· *实时 CT 纵剖（`?cut=1`）剖切敞顶套筒与下垂卡铁闭锁*** | **🕰️ 100 节点史密森尼百年演化时间线（`1415–2026` · 611 年）· *分段 `1415 // 1870` 折断比例尺与零重叠标注*** |
+| **🇷🇺 `BAY-94` T-90M「突破」（`125mm 2A46M-5`）· *1:1 实时 CT 纵剖（`?cut=1`）哑光军绿 CARC 炮塔、48 节履带与转盘装弹机*** | **🇷🇺 `BAY-97` T-34-85（1944）· *工程白昼影棚、二战铸造 RHA 质感与 48 节独立履带缠绕克里斯蒂轮*** |
 | :---: | :---: |
-| ![伯莱塔 92FS M9 实时 CT 纵剖剖切敞顶套筒与下垂卡铁闭锁](docs/screenshots/centennial-beretta92-cut.jpg) | ![100 展品史密森尼百年演化时间线 1415-2026 分段折断比例尺](docs/screenshots/centennial-timeline-1415-2026.jpg) |
+| ![T-90M 突破 1:1 主战坦克实时 CT 纵剖哑光 CARC 炮塔与独立履带](docs/screenshots/centennial-t90m-cut.jpg) | ![T-34-85 1944 中型坦克工程白昼影棚铸造 RHA 与 48 节独立履带](docs/screenshots/centennial-t34-85-daylight.jpg) |
+
+| **🇮🇱 `BAY-96` 梅卡瓦 Mk.4M（`120mm MG253`）· *1:1 西奈沙漠 CARC 装甲、前置动力舱、战利品主动防护与独立履带*** | **🇺🇸 `BAY-98` GE M61A1「火神」（`20×102mm` · 6,000 RPM）· *1:1 六管旋转航炮落地重装混凝土机库*** |
+| :---: | :---: |
+| ![梅卡瓦 Mk 4M 1:1 主战坦克西奈沙漠 CARC 装甲战利品主动防护与独立履带](docs/screenshots/centennial-merkava4-studio.jpg) | ![GE M61A1 火神 20mm 六管航炮落地重装混凝土机库](docs/screenshots/centennial-m61vulcan-studio.jpg) |
+
+| **🏴󠁧󠁢󠁥󠁮󠁧󠁿 `BAY-93` 1415 中世纪英格兰紫杉长弓（`1.96 m` 战弓）· *哑光紫杉木纹弓身、有机牛角弓梢与破甲锥箭*** | **🕰️ 100 节点史密森尼百年演化时间线（`1415–2026` · 611 年）· *分段 `1415 // 1870` 折断比例尺与零重叠标注*** |
+| :---: | :---: |
+| ![1415 中世纪英格兰紫杉长弓哑光木纹弓身与牛角弓梢](docs/screenshots/centennial-longbow-1415.jpg) | ![100 展品史密森尼百年演化时间线 1415-2026 分段折断比例尺](docs/screenshots/centennial-timeline-1415-2026.jpg) |
 
 ---
 
@@ -222,9 +230,9 @@
 | :---: | :---: |
 | ![全局 Cmd+K 双语指令面板](docs/screenshots/ux-cmdk-palette.jpg) | ![Digital Armory 3D 100 槽数字兵器库](docs/screenshots/armory-showcase.jpg) |
 
-- **✦ 分级双轨 100 展品架构（34 款 Blender 5.2 精雕旗舰 + 66 款 Centennial 程序化 CAD 展品 · `dist/ 641.4 MB`）**：
-  - **34 款旗舰 Blender 5.2 深度精雕展品（`BAY-01 ~ BAY-34` · `9.97 / 10.0` 视觉认证）**：每款旗舰展品（`27` 款名枪 + `2` 款复合弓弩 + `4` 款 4K `1:1` 主战坦克 + `1` 款 `1:1` `30×173mm` GE GAU-8/A「复仇者」七管航炮）全部经 MIT 开源无头 Python 脚本（`scripts/blender/build_*_photoreal.py`）深度精雕并 Cycles GPU 烘焙为紧凑 Draco `.glb`（`775` 个水密精模 + `79` 个 `aSpringParam` GPU 实时形变 CSG 弹簧/弓片 = `854` 零件，单展品 `1.33–11.27 MB`，`34/34` 通过 `npm run assets:audit <= 12 MB`），配套 `414` 张 2K/4K 5 通道 Packed ORM WebP（`101` 套图集，`0` 张 PNG）、`340/340` 同步 Cycles `2880×1800` RGBA 透明底印刷主图，以及 `1,980` 段 Gemini `Charon` TTS MP3 语音导览。
-  - **66 款 Centennial 程序化 CAD 展品（`BAY-35 ~ BAY-100` · `9.58 / 10.0` 视觉认证）**：零包体膨胀 Web Worker CSG 几何工厂（`centennialGeometryFactory.ts`，懒加载 `43.31 kB`）+ 22 套运动学定律运行时（`centennialPluginFactory.ts`，`23.45 kB`）+ 无环静态目录叶节点（`armory-centennial-catalog`，`409.98–410.19 kB`），横跨 **28 类几何原型** 实时生成 **`1,320` 个水密 3D CAD 零件**（含 4 款新增 `1:1` 主战坦克、3 款新增 `1:1` 重型航空与火炮重武与 1415 中世纪英格兰紫杉长弓），配合实时中英双语 Web Speech API 朗读（`100/100` `public/narrations/*.json`），令完整 `dist/` 生产构建严格控制在 **`641.40 MB`（仅占 GitHub Pages 1 GB 限额 `62.64%`）**。
+- **✦ 分级双轨 100 展品架构（34 款 Blender 5.2 精雕旗舰 + 66 款 Centennial Rule 4.10 精雕 CAD 展品 · `453` 张 WebP PBR 贴图 · `dist/ 645.8 MB`）**：
+  - **34 款旗舰 Blender 5.2 深度精雕展品（`BAY-01 ~ BAY-34` · `9.97 / 10.0` 视觉认证）**：每款旗舰展品（`27` 款名枪 + `2` 款复合弓弩 + `4` 款 4K `1:1` 主战坦克 + `1` 款 `1:1` `30×173mm` GE GAU-8/A「复仇者」七管航炮）全部经 MIT 开源无头 Python 脚本（`scripts/blender/build_*_photoreal.py`）深度精雕并 Cycles GPU 烘焙为紧凑 Draco `.glb`（`775` 个水密精模 + `79` 个 `aSpringParam` GPU 实时形变 CSG 弹簧/弓片 = `854` 零件，单展品 `1.33–11.27 MB`，`34/34` 通过 `npm run assets:audit <= 12 MB`），配套 `414` 张 2K/4K 5 通道 Packed ORM WebP（`101` 套旗舰图集，`0` 张 PNG）、`340/340` 同步 Cycles `2880×1800` RGBA 透明底印刷主图，以及 `1,980` 段 Gemini `Charon` TTS MP3 语音导览。
+  - **66 款 Centennial Rule 4.10 精雕程序化 CAD 展品（`BAY-35 ~ BAY-100` · `9.80 / 10.0` 宪法认证）**：零包体膨胀 Web Worker CSG 几何工厂（`centennialGeometryFactory.ts`，懒加载 `73.58 kB`）+ 22 套运动学定律运行时（`centennialPluginFactory.ts`，`30.37 kB`）+ 无环静态目录叶节点（`armory-centennial-catalog`，`417.89 kB`），横跨 **28 类几何原型** 实时生成 **`1,320` 个带米制 Box-UV（`uv` + `uv1`）的倒角水密 3D CAD 零件**——`100%` 绑定 **13 套共享 `1024×1024` 无缝 5 通道 Packed ORM 博物馆材质图库（`39` 张严格 3 通道 RGB WebP，`4.31 MB < 10 MB`，`ownerWeapon: 'shared'` + `wrapRepeat: true`，全馆总计 `114` 套 / `453` 张 WebP）**，配备 48 节独立铰接 1:1 坦克履带、剖切弹匣与握把内 5 发黄铜弹柱、零 1990 前皮卡汀尼时代穿帮及实时中英双语 Web Speech API 朗读（`100/100` `public/narrations/*.json`），令完整 `dist/` 生产构建严格控制在 **`645.8 MB`（仅占 GitHub Pages 1 GB 限额 `63.1%`）**。
   - **Filament / Kaplanyan Specular AA 与瑞士普鲁士蓝墨工程白昼剖视（`ARMORY_SHADER_VERSION = 11`）**：屏幕空间法线导数粗糙度展宽彻底消除高光日照下的平直机匣高光闪烁，配合高对比普鲁士蓝墨 ISO 128 建筑制图剖面封口、哑光 CARC 装甲漆面、加深胡桃木/层压桦木横切年轮与白昼校准螺旋膛线浮雕深度，暗室 ↔ 工程白昼一键切换零漂移。
   - **生产级 KTX2 (`toktx`)、重媒体 CDN、体积审计与全套无头 Chromium 自动化门禁**：真实 Khronos `toktx` UASTC/ETC1S 编码与 WebP 回退、`npm run assets:audit`、`VITE_CDN_ASSET_BASE_URL`、PWA 离线博物馆管理器（`?panel=offline`）以及零依赖自动化门禁套件（`qa:a11y`、`qa:perf`、`qa:fleet -- --mode=full`、`qa:subpath`、`qa:visual`、`docs:screenshots`）。
 - **✦ 全馆 100 展品（95 款身管类）真三维螺旋膛线剖视与膛内火药燃爆辉光**：按下 `[C]` 实时切开枪管/身管、主战坦克炮塔与手枪套筒即可直视全部 95 款身管展品的真实三维螺旋阴线/阳线缠距（切削膛线、多边形膛线或硬铬滑膛），并在慢放击发时同步渲染 1:1 贴合弹底推进的膛内燃爆等离子辉光与博克塞底火引燃闪光。
@@ -242,13 +250,13 @@
 
 | 自动化认证门禁 | 执行命令 | 实机验证结果 |
 | :--- | :--- | :--- |
-| **无头 Chromium 实机视觉美学认证** | 多视口实拍审计（`1920×1080` / `1024×768` / `390×844`） | **`9.97 / 10.0` 旗舰 34 馆认证** + **`9.58 / 10.0` Centennial 66 馆认证**（31 镜跨 10 展厅视觉验收 `6.85 → 9.58 / 10.0`：剖切坦克炮塔与手枪套筒、哑光 CARC 装甲、1:1 M61A1 火神落地机库、1415 英格兰长弓与 100 节点折断比例尺时间线） |
-| **全馆 100 展品舰队实机渲染审计** | `npm run qa:fleet -- --mode=full` | **`108 / 108 PASS (100%)`** — 全馆 `100` 款展品 + `8` 大博物馆视图无头 Chromium 实机零报错渲染（`0` 控制台/页面/网络错、`0` 404、`0` 空白画布） |
+| **无头 Chromium 实机视觉美学认证** | 多视口实拍审计（`1920×1080` / `1024×768` / `390×844`） | **`9.97 / 10.0` Tier 1 旗舰 34 馆认证** + **`9.80 / 10.0` Tier 2 Centennial 66 馆 Rule 4.10 认证**（超越 `>= 9.7` 宪法红线 · `0` P0 / `0` P1，28 镜跨 10 展厅实拍验真：13 套 1K 5 通道 ORM 共享材质、米制 Box-UV、倒角剪影、48 节独立坦克履带、剖切 5 发黄铜弹柱与零 1990 前皮卡汀尼导轨） |
+| **全馆 100 展品舰队实机渲染审计** | `npm run qa:fleet -- --mode=full` | **`108 / 108 PASS (100%)`** — 全馆 `100` 款展品 + `8` 大博物馆视图无头 Chromium 实机零报错渲染（`0` 控制台/页面/网络错、`0` 404 覆盖全馆 `453` 张 WebP、`0` 空白画布） |
 | **WCAG 2.1 AA 无障碍与移动端触控门禁** | `npm run qa:a11y` | **`75 / 75 PASS (100%)`** — `6` 主屏 + `14` 弹窗 + `5` HUD × 暗室桌面 / 工程白昼 / 移动端 `390×844`（`0` 错误、`0` 警告、`0px` 横向溢出、`0` 过小触控按钮） |
 | **1080p WebGL 2.0 性能与帧率长测** | `npm run qa:perf` | **`12 / 12 PASS`** — 平均 **`60.2 FPS`**（最低 `60.1`，`p95 <= 16.8 ms`，`0` 控制台/页面/网络错误） |
 | **子路径部署与单页显存压力长测** | `npm run qa:subpath` | **`12 / 12 PASS`** — `/digital-armory-3d/` 严格零 404 子路径验证 + 12 展品连续切换 LRU 显存长测（峰值 `jsHeapMb 20.4 MB`，`0` 上下文丢失） |
 | **旗舰文档实机截图摄影流水线** | `npm run docs:screenshots` | **`43 / 43 PASS`** — 全自动 `1920×1080` WebGL 2.0 文档摄影（`5` 核心场景 + `27` 精雕特写 + `11` 物理实验室） |
-| **资产预算、分包卫生与契约测试门禁** | `npm run typecheck && npm run lint && npm test && npm run build && npm run assets:audit` | **`120` 套 Vitest 契约测试 · `698` 项全绿** · **`0` 循环分包告警**（最大 chunk `684.66 kB < 800 kB`）· **`dist/ 641.4 MB`（1 GB 限额 `62.6%`）** · **`34/34 <= 12 MB`** · **`0` PNG** · **`340/340` 同步 Cycles 印刷主图** |
+| **资产预算、分包卫生与宪法测试门禁** | `npm run typecheck && npm run lint && npm test && npm run build && npm run assets:audit` | **`122` 套 Vitest 契约测试 · `711` 项全绿**（含 `centennialConstitution.test.ts` 锁定 Rule 4.10）· **`0` 循环分包告警**（最大 chunk `684.66 kB < 800 kB`）· **`453` 张 WebP PBR 贴图（`114` 套，`0` PNG）** · **`dist/ 645.8 MB`（1 GB 限额 `63.1%`）** · **`34/34 <= 12 MB`** · **`340/340` 同步 Cycles 印刷主图** |
 
 ---
 
@@ -407,7 +415,7 @@ digital-armory-3d/
 │   ├── narrations/                # 100 套结构化中英双语四幕研发史与零件工程 JSON (34 旗舰 + 66 Centennial)
 │   ├── plates/                    # 旗舰 34/34 Cycles 2880×1800 RGBA 透明底 DK 印刷主图 (340 张 WebP)
 │   ├── showcase/                  # 宣传主页实机 WebGL 2.0 高清展示图 (WebP)
-│   └── textures/                  # 414 张 2K/4K 5 通道 Packed ORM 与装甲微细节 WebP (101 套图集，0 张 PNG)
+│   └── textures/                  # 453 张 1K/2K/4K 5 通道 Packed ORM 与装甲微细节 WebP (114 套图集 = 101 旗舰 + 13 共享 Centennial 1K，0 张 PNG)
 ├── scripts/
 │   ├── audit_asset_budget.mjs     # 全馆 34/34 展品 <= 12 MB 与 6 大 public/ 目录体积自动审计器
 │   ├── blender/                   # 34 套 MIT 无头 Blender 5.2 雕塑脚本 + HDRI 与 DK 印刷主图渲染器
@@ -450,7 +458,7 @@ digital-armory-3d/
 │   ├── narration/                 # 音频队列、speechSynthesis 兜底与 3D 导演运镜器
 │   ├── store/                     # 强类型 Zustand 状态仓库
 │   └── weapons/                   # 34 套旗舰懒加载插件 + expansion/ (66 款 Centennial 蓝图、28 类原型 CAD 几何工厂、22 套运动学懒加载插件工厂、无环投影层) + SSOT museumMetrics
-└── tests/                         # 120 套 Vitest 几何、膛线、脱壳/旋翼 VFX、重装声学、Specular AA、普鲁士蓝剖视、42 组对决、时间线、百科、工程卡、无障碍、GLB、运动学与双语契约测试 (698 项)
+└── tests/                         # 122 套 Vitest Rule 4.10 宪法、13 材质图库、几何、膛线、脱壳/旋翼 VFX、重装声学、Specular AA、普鲁士蓝剖视、42 组对决、时间线、百科、工程卡、无障碍、GLB、运动学与双语契约测试 (711 项)
 ```
 
 ---
