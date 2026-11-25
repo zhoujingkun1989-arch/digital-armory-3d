@@ -28,6 +28,7 @@ import {
   type HandguardStyle,
   type HeavyArmorPartKind,
   type HeavyArmorStyle,
+  type HeavyArmorVariant,
   type MagazineStyle,
   type OpticSightStyle,
   type RotaryArtilleryPartKind,
@@ -254,14 +255,19 @@ describe('Centennial Parametric CAD Primitives Library (Phase 1B)', () => {
     }
   });
 
-  it('builds valid buttstocks & grips across all 8 styles (walnut, folding, AR, bullpup, broomhandle, plowhandle, spade)', () => {
+  it('builds valid buttstocks & grips across all 13 styles (walnut, straight, Dragunov thumbhole, SPAS-12 top-fold, folding, AR, bullpup, crossbow thumbhole, lever loop, pistol, broomhandle, plowhandle, spade)', () => {
     const p = CENTENNIAL_FINISH_COLORS.walnut_classic;
     const styles: StockGripStyle[] = [
       'walnut_rifle',
+      'straight_walnut',
+      'dragunov_thumbhole',
+      'spas12_top_fold',
       'folding_skeleton',
       'telescoping_ar',
       'bullpup_stock',
+      'crossbow_thumbhole',
       'pistol_grip',
+      'lever_loop',
       'broomhandle_grip',
       'plowhandle_grip',
       'spade_grips',
@@ -310,7 +316,7 @@ describe('Centennial Parametric CAD Primitives Library (Phase 1B)', () => {
     }
   });
 
-  it('builds valid 1:1 Main Battle Tank armor assemblies across all 6 partKinds and both modern/WWII styles', () => {
+  it('builds valid 1:1 Main Battle Tank armor assemblies across all 6 partKinds and all 4 MBT variants (T-90M, Challenger 2, Merkava 4M, T-34-85)', () => {
     const partKinds: HeavyArmorPartKind[] = [
       'hull',
       'turret',
@@ -319,16 +325,17 @@ describe('Centennial Parametric CAD Primitives Library (Phase 1B)', () => {
       'engine_block',
       'autoloader',
     ];
-    const styles: HeavyArmorStyle[] = ['mbt_modern', 'mbt_wwii'];
-    for (const style of styles) {
-      const hex =
-        style === 'mbt_modern'
-          ? CENTENNIAL_FINISH_COLORS.russian_green.primary
-          : CENTENNIAL_FINISH_COLORS.wwii_soviet.primary;
+    const variants: Array<{ style: HeavyArmorStyle; variant: HeavyArmorVariant; hex: string }> = [
+      { style: 'mbt_modern', variant: 't90m', hex: CENTENNIAL_FINISH_COLORS.russian_green.primary },
+      { style: 'mbt_modern', variant: 'challenger2', hex: CENTENNIAL_FINISH_COLORS.nato_camo.primary },
+      { style: 'mbt_modern', variant: 'merkava4', hex: CENTENNIAL_FINISH_COLORS.desert_carc.primary },
+      { style: 'mbt_wwii', variant: 't34_85', hex: CENTENNIAL_FINISH_COLORS.wwii_soviet.primary },
+    ];
+    for (const { style, variant, hex } of variants) {
       for (const kind of partKinds) {
         expectValidMuseumGeometry(
-          buildHeavyArmorHullAndTurretGeo(kind, 100, hex, style),
-          `armor:${style}:${kind}`
+          buildHeavyArmorHullAndTurretGeo(kind, 100, hex, style, variant),
+          `armor:${variant}:${kind}`
         );
       }
     }
@@ -394,5 +401,61 @@ describe('Centennial Parametric CAD Primitives Library (Phase 1B)', () => {
       'spring:y',
       SPRING_AXIS_MODE_Y
     );
+  });
+
+  it('enforces Phase 5C-1 matte gunmetal optic palettes, deep oiled woods, compact helical drum, and distinct 4-MBT silhouettes', () => {
+    // #3 Eliminate global emerald-green optic flood across all 15 palettes
+    for (const [name, pal] of Object.entries(CENTENNIAL_FINISH_COLORS)) {
+      const r = parseInt(pal.optic.slice(1, 3), 16);
+      const g = parseInt(pal.optic.slice(3, 5), 16);
+      const b = parseInt(pal.optic.slice(5, 7), 16);
+      expect(g - r, `${name}.optic must be matte dark steel, not emerald green`).toBeLessThanOrEqual(12);
+      expect(Math.max(r, g, b), `${name}.optic dark matte anodized tone`).toBeLessThanOrEqual(72);
+    }
+
+    // #8 Rich darkened oiled walnut / laminate wood tones (never pale peach)
+    for (const hex of [
+      CENTENNIAL_FINISH_COLORS.walnut_classic.furniture,
+      CENTENNIAL_FINISH_COLORS.bakelite_ak.furniture,
+      CENTENNIAL_FINISH_COLORS.yew_wood.primary,
+    ]) {
+      const r = parseInt(hex.slice(1, 3), 16);
+      expect(r, `${hex} deep oiled wood`).toBeLessThan(0x80);
+    }
+
+    // #7 Compact PP-19 Bizon helical_64 radius (< 2.0 cm half-height so barrel stays clear)
+    const helical = buildMagazineGeo('helical_64', 18, 3.6, 3.4, CENTENNIAL_FINISH_COLORS.tactical_black.secondary);
+    helical.computeBoundingBox();
+    const helSize = new THREE.Vector3();
+    helical.boundingBox!.getSize(helSize);
+    expect(helSize.y * 0.5).toBeLessThan(2.0);
+    expect(helSize.z * 0.5).toBeLessThan(2.0);
+    helical.dispose();
+
+    // #9 WWII T-34-85 fenders sit strictly above tracks (ZERO ERA wall hiding Christie roadwheels)
+    const t34Fenders = buildHeavyArmorHullAndTurretGeo(
+      'era_skirts',
+      100,
+      CENTENNIAL_FINISH_COLORS.wwii_soviet.primary,
+      'mbt_wwii',
+      't34_85'
+    );
+    t34Fenders.computeBoundingBox();
+    expect(t34Fenders.boundingBox!.min.y).toBeGreaterThan(0);
+    t34Fenders.dispose();
+
+    // #9 Distinct modern MBT turret silhouettes (T-90M vs Merkava 4M vs Challenger 2)
+    const t90Turret = buildHeavyArmorHullAndTurretGeo('turret', 100, '#3c4932', 'mbt_modern', 't90m');
+    const merkTurret = buildHeavyArmorHullAndTurretGeo('turret', 100, '#8f7d5d', 'mbt_modern', 'merkava4');
+    const challyTurret = buildHeavyArmorHullAndTurretGeo('turret', 100, '#434e38', 'mbt_modern', 'challenger2');
+    const vCounts = new Set([
+      t90Turret.getAttribute('position').count,
+      merkTurret.getAttribute('position').count,
+      challyTurret.getAttribute('position').count,
+    ]);
+    expect(vCounts.size).toBe(3);
+    t90Turret.dispose();
+    merkTurret.dispose();
+    challyTurret.dispose();
   });
 });
