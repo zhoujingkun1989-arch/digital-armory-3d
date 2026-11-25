@@ -487,6 +487,18 @@ function buildTriggerAssemblyGeo(
     seg.translate((x0 + x1) * 0.5, (y0 + y1) * 0.5, 0);
     parts.push(seg);
   }
+  // Vertical front & rear upper mounting tang posts + trigger pivot stem welding curved
+  // trigger guard and crescent trigger shoe cleanly into every pistol/revolver/crossbow/rifle
+  // frame underside (ZERO air gap even on deep-framed revolvers `recH=3.8` & C96 `recH=3.6`).
+  const tangH = 1.5 * s;
+  for (const endSign of [-1, 1] as const) {
+    const tang = createChamferedBox(bandT * 1.15, tangH, bandW, 0.04 * s, pal.secondary);
+    tang.translate(0.1 * s + endSign * rx, tangH * 0.45, 0);
+    parts.push(tang);
+  }
+  const pivotStem = createChamferedBox(0.36 * s, tangH * 0.92, 0.42 * s, 0.04 * s, pal.bolt);
+  pivotStem.translate(0.16 * s, tangH * 0.42, 0);
+  parts.push(pivotStem);
   return finalizeParts(parts);
 }
 

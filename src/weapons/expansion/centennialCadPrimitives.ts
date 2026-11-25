@@ -474,7 +474,11 @@ export function applyMetricBoxUVs(
     }
   }
 
-  geo.setAttribute('uv', new THREE.BufferAttribute(uvArr, 2));
+  const uvAttr = new THREE.BufferAttribute(uvArr, 2);
+  geo.setAttribute('uv', uvAttr);
+  // Three.js r151+ `aoMap` samples channel 1 (`uv1`) — duplicate metric UVs so
+  // packed 5-channel ORM `R = AO` maps cleanly at full physical resolution!
+  geo.setAttribute('uv1', uvAttr.clone());
   return geo;
 }
 
