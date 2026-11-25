@@ -3,16 +3,21 @@ import { resolve } from 'node:path';
 import type * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { SPRING_AXIS_MODE_FLEX } from '../src/engine/geometry/csgBuilder';
-import { ARCHERY_ARMOR_ORDNANCE_BLUEPRINTS } from '../src/weapons/expansion/catalog/archeryArmorOrdnance';
+import {
+  CENTENNIAL_BLUEPRINTS,
+  CENTENNIAL_BLUEPRINT_MAP,
+} from '../src/weapons/expansion/centennialCatalog';
 import {
   CENTENNIAL_PART_SLOTS,
-  buildCentennialGeometryBuildersForBlueprint,
+  buildCentennialGeometryBuilders,
   centennialPartId,
   computeCentennialPartLayout,
 } from '../src/weapons/expansion/centennialGeometryFactory';
-import type {
-  CentennialArchetype,
-  CentennialWeaponBlueprint,
+import {
+  CENTENNIAL_66_IDS,
+  type CentennialArchetype,
+  type CentennialWeaponBlueprint,
+  type CentennialWeaponId,
 } from '../src/weapons/expansion/centennialTypes';
 import type { CameraPresetType } from '../src/weapons/types';
 
@@ -104,9 +109,10 @@ function assertValidGeometry(geo: THREE.BufferGeometry, label: string): void {
   geo.computeBoundingSphere();
   const bb = geo.boundingBox!;
   const bs = geo.boundingSphere!;
-  expect(Number.isFinite(bs.radius) && bs.radius > 0, `${label}: bs.radius`).toBe(
-    true
-  );
+  expect(
+    Number.isFinite(bs.radius) && bs.radius > 0,
+    `${label}: finite positive bs.radius`
+  ).toBe(true);
   const dx = bb.max.x - bb.min.x;
   const dy = bb.max.y - bb.min.y;
   const dz = bb.max.z - bb.min.z;
@@ -116,7 +122,7 @@ function assertValidGeometry(geo: THREE.BufferGeometry, label: string): void {
 function assertValidSpringParam(
   geo: THREE.BufferGeometry,
   label: string,
-  expectedFlexMode?: boolean
+  expectedFlexMode: boolean
 ): void {
   const sp = geo.getAttribute('aSpringParam');
   expect(sp, `${label}: must expose aSpringParam`).toBeDefined();
@@ -150,7 +156,7 @@ function assertValidSpringParam(
   }
 }
 
-function assertValidLayout(bp: CentennialWeaponBlueprint): void {
+function assertValidLayoutAndExplosion(bp: CentennialWeaponBlueprint): void {
   const layout = computeCentennialPartLayout(bp);
   expect(Number.isFinite(layout.sceneScale) && layout.sceneScale > 0).toBe(true);
   expect(Number.isFinite(layout.boreY)).toBe(true);
@@ -171,17 +177,20 @@ function assertValidLayout(bp: CentennialWeaponBlueprint): void {
   expect(layout.boundsMax[1]).toBeGreaterThan(layout.boundsMin[1]);
   expect(layout.boundsMax[2]).toBeGreaterThan(layout.boundsMin[2]);
 
-  for (const slot of CENTENNIAL_PART_SLOTS) {
-    const pos = layout.assembledPos[slot];
-    const exp = layout.explodeOffset[slot];
-    expect(pos, `${bp.id}: assembledPos.${slot}`).toBeDefined();
-    expect(exp, `${bp.id}: explodeOffset.${slot}`).toBeDefined();
-    for (let i = 0; i < 3; i++) {
-      expect(Number.isFinite(pos[i]), `${bp.id}: finite pos.${slot}`).toBe(true);
-      expect(Number.isFinite(exp[i]), `${bp.id}: finite exp.${slot}`).toBe(true);
-    }
+  if (
+    bp.archetype === 'mbt_modern' ||
+    bp.archetype === 'mbt_wwii' ||
+    bp.archetype === 'aa_autocannon' ||
+    bp.archetype === 'howitzer'
+  ) {
+    expect(layout.gridY, `${bp.id}: heavy hangar floor gridY`).toBe(-121.0);
+    expect(
+      layout.boundsMin[1],
+      `${bp.id}: anchored flush on -120 cm floor`
+    ).toBe(-120);
   }
 
+  // Validate all 7 camera presets
   for (const preset of CAMERA_PRESET_KEYS) {
     const cam = layout.cameraPresets[preset];
     expect(cam, `${bp.id}: camera preset ${preset}`).toBeDefined();
@@ -198,142 +207,110 @@ function assertValidLayout(bp: CentennialWeaponBlueprint): void {
       5
     );
   }
+
+  // Validate t = 1.0 full explosion separation across all 20 parts
+  let minExX = Infinity;
+  let maxExX = -Infinity;
+  let minExY = Infinity;
+  let maxExY = -Infinity;
+  let minExZ = Infinity;
+  let maxExZ = -Infinity;
+
+  let minAsX = Infinity;
+  let maxAsX = -Infinity;
+  let minAsY = Infinity;
+  let maxAsY = -Infinity;
+
+  const explodedPositions: Array<[number, number, number]> = [];
+  let movingPartsCount = 0;
+
+  for (const slot of CENTENNIAL_PART_SLOTS) {
+    const pos = layout.assembledPos[slot];
+    const exp = layout.explodeOffset[slot];
+    expect(pos, `${bp.id}: assembledPos.${slot}`).toBeDefined();
+    expect(exp, `${bp.id}: explodeOffset.${slot}`).toBeDefined();
+
+    const ex = pos[0] + exp[0];
+    const ey = pos[1] + exp[1];
+    const ez = pos[2] + exp[2];
+    expect(
+      Number.isFinite(ex) && Number.isFinite(ey) && Number.isFinite(ez),
+      `${bp.id}: finite t=1.0 exploded pos for ${slot}`
+    ).toBe(true);
+
+    const disp = Math.hypot(exp[0], exp[1], exp[2]);
+    if (slot === 'receiver') {
+      expect(disp, `${bp.id}: receiver anchored at t=1.0`).toBe(0);
+    } else {
+      expect(disp, `${bp.id}: ${slot} separates cleanly at t=1.0`).toBeGreaterThan(
+        1.5
+      );
+      movingPartsCount++;
+    }
+
+    minAsX = Math.min(minAsX, pos[0]);
+    maxAsX = Math.max(maxAsX, pos[0]);
+    minAsY = Math.min(minAsY, pos[1]);
+    maxAsY = Math.max(maxAsY, pos[1]);
+
+    minExX = Math.min(minExX, ex);
+    maxExX = Math.max(maxExX, ex);
+    minExY = Math.min(minExY, ey);
+    maxExY = Math.max(maxExY, ey);
+    minExZ = Math.min(minExZ, ez);
+    maxExZ = Math.max(maxExZ, ez);
+    explodedPositions.push([ex, ey, ez]);
+  }
+
+  expect(movingPartsCount, `${bp.id}: 19 non-receiver parts explode`).toBe(19);
+
+  // Full exploded 3D diagonal spread must strictly exceed assembled centroid spread
+  const assembledDiag = Math.hypot(maxAsX - minAsX, maxAsY - minAsY);
+  const explodedDiag = Math.hypot(
+    maxExX - minExX,
+    maxExY - minExY,
+    maxExZ - minExZ
+  );
+  expect(
+    explodedDiag,
+    `${bp.id}: exploded 3D spread exceeds assembled spread`
+  ).toBeGreaterThan(assembledDiag * 1.15);
+
+  // Class-calibrated realistic minimum exploded diagonal
+  const minExpectedSpread =
+    bp.category === 'armor'
+      ? 550
+      : bp.category === 'ordnance'
+        ? 180
+        : bp.category === 'archery'
+          ? 48
+          : bp.category === 'pistol'
+            ? 24
+            : 40;
+  expect(
+    explodedDiag,
+    `${bp.id} (${bp.category}): realistic t=1.0 spread >= ${minExpectedSpread} cm`
+  ).toBeGreaterThanOrEqual(minExpectedSpread);
+
+  // Ensure no two distinct slots collapse onto the exact same exploded point
+  let collapsedPairs = 0;
+  for (let i = 0; i < explodedPositions.length; i++) {
+    for (let j = i + 1; j < explodedPositions.length; j++) {
+      const d = Math.hypot(
+        explodedPositions[i][0] - explodedPositions[j][0],
+        explodedPositions[i][1] - explodedPositions[j][1],
+        explodedPositions[i][2] - explodedPositions[j][2]
+      );
+      if (d < 1.0) collapsedPairs++;
+    }
+  }
+  expect(
+    collapsedPairs,
+    `${bp.id}: zero collapsed part pairs at t=1.0`
+  ).toBe(0);
 }
 
-/** Builds a realistic synthetic blueprint for any archetype not yet in catalog files. */
-function makeSyntheticBlueprint(
-  archetype: CentennialArchetype,
-  overrides: Partial<CentennialWeaponBlueprint> & {
-    cadOverrides?: Partial<CentennialWeaponBlueprint['cad']>;
-  } = {}
-): CentennialWeaponBlueprint {
-  const base = ARCHERY_ARMOR_ORDNANCE_BLUEPRINTS[0];
-  const isPistol =
-    archetype === 'pistol_slide' ||
-    archetype === 'pistol_broomhandle' ||
-    archetype === 'revolver_sa' ||
-    archetype === 'revolver_da';
-  const isMbt = archetype === 'mbt_modern' || archetype === 'mbt_wwii';
-  const isHeavy = archetype === 'heavy_mg' || archetype === 'rotary_cannon';
-  const isOrdnance = archetype === 'aa_autocannon' || archetype === 'howitzer';
-
-  const cad: CentennialWeaponBlueprint['cad'] = {
-    barrelLenCm: isMbt ? 580 : isOrdnance ? 320 : isPistol ? 12.5 : 46,
-    receiverLenCm: isMbt ? 680 : isOrdnance ? 140 : isPistol ? 16.5 : 28,
-    receiverHeightCm: isMbt ? 230 : isOrdnance ? 170 : isPistol ? 13.5 : 22,
-    stockLenCm: isMbt ? 185 : isOrdnance ? 180 : isPistol ? 5 : 26,
-    handguardLenCm: isMbt ? 220 : isOrdnance ? 110 : isPistol ? 7 : 26,
-    magStyle:
-      archetype === 'lmg_pan'
-        ? 'pan'
-        : archetype === 'lmg_belt' || archetype === 'heavy_mg'
-          ? 'belt'
-          : archetype === 'smg_drum'
-            ? 'drum'
-            : archetype === 'shotgun_pump' ||
-                archetype === 'shotgun_auto' ||
-                archetype === 'shotgun_lever'
-              ? 'tube'
-              : archetype === 'pistol_slide'
-                ? 'pistol_grip'
-                : archetype === 'pistol_broomhandle' || archetype === 'sniper_bolt'
-                  ? 'box_internal'
-                  : archetype === 'revolver_sa' || archetype === 'revolver_da'
-                    ? 'cylinder'
-                    : archetype === 'aa_autocannon'
-                      ? 'top_clip'
-                      : archetype === 'mbt_modern'
-                        ? 'carousel'
-                        : archetype === 'ak_rifle'
-                          ? 'curved'
-                          : 'straight',
-    hasOptic:
-      archetype === 'sniper_bolt' ||
-      archetype === 'sniper_bullpup' ||
-      archetype === 'sniper_dmr',
-    hasCarryHandle: archetype === 'ar_rifle' || archetype === 'bullpup_rifle',
-    hasBipod:
-      archetype === 'lmg_belt' ||
-      archetype === 'lmg_pan' ||
-      archetype === 'sniper_bolt',
-    hasWoodFurniture:
-      archetype === 'ak_rifle' ||
-      archetype === 'battle_rifle' ||
-      archetype === 'shotgun_lever' ||
-      archetype === 'pistol_broomhandle' ||
-      archetype === 'revolver_sa',
-    muzzleStyle:
-      archetype === 'mbt_modern'
-        ? 'tank_evacuator'
-        : archetype === 'howitzer'
-          ? 'artillery_brake'
-          : archetype === 'rotary_cannon'
-            ? 'rotary_clamp'
-            : archetype === 'heavy_mg' || archetype === 'smg_drum'
-              ? 'shroud'
-              : archetype === 'sniper_dmr'
-                ? 'suppressor'
-                : archetype === 'sniper_bolt'
-                  ? 'brake'
-                  : 'flash_hider',
-    ...overrides.cadOverrides,
-  };
-
-  return {
-    ...base,
-    id: overrides.id ?? ('ak47' as CentennialWeaponBlueprint['id']),
-    archetype,
-    category: isMbt
-      ? 'armor'
-      : isOrdnance || archetype === 'rotary_cannon'
-        ? 'ordnance'
-        : isPistol
-          ? 'pistol'
-          : archetype.startsWith('smg')
-            ? 'smg'
-            : archetype.startsWith('sniper')
-              ? 'sniper'
-              : archetype.startsWith('shotgun')
-                ? 'shotgun'
-                : archetype.startsWith('lmg') || archetype === 'heavy_mg'
-                  ? 'lmg'
-                  : archetype.startsWith('bow') || archetype.startsWith('crossbow')
-                    ? 'archery'
-                    : 'rifle',
-    scaleProfile: isMbt || isOrdnance
-      ? 'main_battle_tank'
-      : isHeavy
-        ? 'heavy_sniper'
-        : isPistol
-          ? 'pistol'
-          : archetype.startsWith('bow') || archetype.startsWith('crossbow')
-            ? 'compound_bow'
-            : 'rifle',
-    finishPalette: overrides.finishPalette ?? 'parkerized',
-    mechanismFilter: isMbt
-      ? 'heavy_armor'
-      : archetype === 'sniper_bolt' || archetype === 'shotgun_pump'
-        ? 'manual_action'
-        : 'gas_piston',
-    kinematicLaw:
-      archetype === 'sniper_bolt'
-        ? 'bolt_action'
-        : archetype === 'shotgun_pump'
-          ? 'pump_action'
-          : archetype === 'shotgun_lever'
-            ? 'lever_action'
-            : archetype === 'revolver_sa' || archetype === 'revolver_da'
-              ? 'revolver_cylinder'
-              : archetype === 'pistol_slide'
-                ? 'browning_tilt_barrel'
-                : archetype === 'pistol_broomhandle'
-                  ? 'falling_block_pistol'
-                  : 'long_stroke_piston',
-    cad,
-  };
-}
-
-describe('Centennial 20-Part Procedural CAD Geometry Factory & Shared Layout Math (Phase 2D)', () => {
+describe('Centennial 66-Exhibit 20-Part Procedural CAD Geometry Factory & Layout Math (Phase 2K)', () => {
   it('enforces pure zero-Three.js leaf import hygiene in centennialLayoutMath.ts and worker safety in centennialGeometryFactory.ts', () => {
     const layoutSrc = readFileSync(
       resolve(process.cwd(), 'src/weapons/expansion/centennialLayoutMath.ts'),
@@ -351,127 +328,121 @@ describe('Centennial 20-Part Procedural CAD Geometry Factory & Shared Layout Mat
     );
     expect(factorySrc).not.toMatch(/from\s+['"]react['"]/);
     expect(factorySrc).not.toMatch(/useAppStore/);
+
     expect(CENTENNIAL_PART_SLOTS).toHaveLength(20);
+    expect(CENTENNIAL_BLUEPRINTS).toHaveLength(66);
+    expect(CENTENNIAL_66_IDS).toHaveLength(66);
+
+    // Unknown ID guard
+    expect(() =>
+      buildCentennialGeometryBuilders(
+        'nonexistent_weapon' as CentennialWeaponId
+      )
+    ).toThrow(/Unknown Centennial exhibit id/);
   });
 
-  it('builds exact 20 valid watertight parts, GPU springs/flex, and 1:1 hangar floor layouts for ALL 10 real BAY-91..100 exhibits', () => {
-    expect(ARCHERY_ARMOR_ORDNANCE_BLUEPRINTS).toHaveLength(10);
+  it(
+    'builds & validates ALL 66 / 66 real Centennial exhibits (1,320 live 3D CAD meshes, 198 springs, 6 flexing archery parts, all 28 archetypes)',
+    () => {
+      const globalPartIds = new Set<string>();
+      const seenArchetypes = new Set<CentennialArchetype>();
+      let totalMeshes = 0;
+      let totalDynamicSprings = 0;
+      let totalArcheryFlexParts = 0;
 
-    for (const bp of ARCHERY_ARMOR_ORDNANCE_BLUEPRINTS) {
-      assertValidLayout(bp);
-      const layout = computeCentennialPartLayout(bp);
+      for (const id of CENTENNIAL_66_IDS) {
+        const bp = CENTENNIAL_BLUEPRINT_MAP[id];
+        expect(bp, `${id}: blueprint present in CENTENNIAL_BLUEPRINT_MAP`).toBeDefined();
+        seenArchetypes.add(bp.archetype);
 
-      if (
-        bp.archetype === 'mbt_modern' ||
-        bp.archetype === 'mbt_wwii' ||
-        bp.archetype === 'aa_autocannon' ||
-        bp.archetype === 'howitzer'
-      ) {
-        expect(layout.gridY, `${bp.id}: heavy hangar floor gridY`).toBe(-121.0);
+        const builders = buildCentennialGeometryBuilders(id);
+        const keys = Object.keys(builders);
+        expect(keys, `${id}: exact 20 part builders`).toHaveLength(20);
+
+        for (const slot of CENTENNIAL_PART_SLOTS) {
+          const partId = centennialPartId(id, slot);
+          expect(
+            globalPartIds.has(partId),
+            `${partId}: globally unique part ID`
+          ).toBe(false);
+          globalPartIds.add(partId);
+
+          expect(builders[partId], `${partId}: builder function`).toBeTypeOf(
+            'function'
+          );
+          const geo = builders[partId]();
+          assertValidGeometry(geo, partId);
+          totalMeshes++;
+
+          if (
+            slot === 'recoil_spring' ||
+            slot === 'hammer_spring' ||
+            slot === 'mag_spring'
+          ) {
+            assertValidSpringParam(geo, partId, false);
+            totalDynamicSprings++;
+          }
+
+          if (
+            bp.category === 'archery' &&
+            (slot === 'barrel' || slot === 'bolt_carrier')
+          ) {
+            assertValidSpringParam(geo, partId, true);
+            totalArcheryFlexParts++;
+          }
+
+          geo.dispose();
+        }
+      }
+
+      expect(totalMeshes).toBe(1320);
+      expect(globalPartIds.size).toBe(1320);
+      expect(totalDynamicSprings).toBe(198);
+      expect(totalArcheryFlexParts).toBe(6);
+
+      // All 28 archetypes must be exercised by the real 66-exhibit catalog
+      for (const arch of ALL_28_ARCHETYPES) {
         expect(
-          layout.boundsMin[1],
-          `${bp.id}: anchored flush on -120 cm floor`
-        ).toBe(-120);
+          seenArchetypes.has(arch),
+          `archetype ${arch} covered in real 66 exhibits`
+        ).toBe(true);
       }
+    },
+    45_000
+  );
 
-      const builders = buildCentennialGeometryBuildersForBlueprint(bp);
-      const keys = Object.keys(builders);
-      expect(keys, `${bp.id}: exact 20 part builders`).toHaveLength(20);
-
-      for (const slot of CENTENNIAL_PART_SLOTS) {
-        const partId = centennialPartId(bp.id, slot);
-        expect(builders[partId], `${partId}: builder exists`).toBeTypeOf(
-          'function'
-        );
-        const geo = builders[partId]();
-        assertValidGeometry(geo, partId);
-
-        if (
-          slot === 'recoil_spring' ||
-          slot === 'hammer_spring' ||
-          slot === 'mag_spring'
-        ) {
-          assertValidSpringParam(geo, partId, false);
-        }
-
-        if (
-          bp.category === 'archery' &&
-          (slot === 'barrel' || slot === 'bolt_carrier')
-        ) {
-          assertValidSpringParam(geo, partId, true);
-        }
-
-        geo.dispose();
-      }
-    }
-  }, 20_000);
-
-  it('covers ALL 28 CentennialArchetypes + signature variants (M16A1, Bizon, SVD, Merkava front-engine) with 20/20 valid meshes', () => {
-    expect(ALL_28_ARCHETYPES).toHaveLength(28);
-
-    const specialVariants: CentennialWeaponBlueprint[] = [
-      makeSyntheticBlueprint('ar_rifle', {
-        id: 'm16a1',
-        cadOverrides: { hasCarryHandle: true, hasOptic: false },
-      }),
-      makeSyntheticBlueprint('smg_drum', {
-        id: 'bizon',
-        cadOverrides: { magStyle: 'drum' },
-      }),
-      makeSyntheticBlueprint('sniper_dmr', {
-        id: 'svd',
-        cadOverrides: { hasOptic: true, hasWoodFurniture: true },
-      }),
-    ];
-
-    const allCases: CentennialWeaponBlueprint[] = [
-      ...ALL_28_ARCHETYPES.map((arch) => makeSyntheticBlueprint(arch)),
-      ...specialVariants,
-    ];
-
-    for (const bp of allCases) {
-      assertValidLayout(bp);
-      const builders = buildCentennialGeometryBuildersForBlueprint(bp);
-      expect(
-        Object.keys(builders),
-        `${bp.archetype}/${bp.id}: exact 20 builders`
-      ).toHaveLength(20);
-
-      for (const slot of CENTENNIAL_PART_SLOTS) {
-        const partId = centennialPartId(bp.id, slot);
-        const geo = builders[partId]();
-        assertValidGeometry(geo, `${bp.archetype}:${partId}`);
-
-        if (
-          slot === 'recoil_spring' ||
-          slot === 'hammer_spring' ||
-          slot === 'mag_spring'
-        ) {
-          assertValidSpringParam(geo, `${bp.archetype}:${partId}`, false);
-        }
-
-        if (
-          (bp.archetype === 'bow_compound' ||
-            bp.archetype === 'crossbow_recurve' ||
-            bp.archetype === 'bow_longbow') &&
-          (slot === 'barrel' || slot === 'bolt_carrier')
-        ) {
-          assertValidSpringParam(geo, `${bp.archetype}:${partId}`, true);
-        }
-
-        geo.dispose();
-      }
+  it('verifies finite 7-camera layouts, t = 1.0 exploded separation, and signature mechanical geometry across ALL 66 / 66 exhibits', () => {
+    for (const bp of CENTENNIAL_BLUEPRINTS) {
+      assertValidLayoutAndExplosion(bp);
     }
 
-    // Verify authentic Merkava Mk 4M front powerpack vs T-90M rear powerpack distinction
-    const merkava = ARCHERY_ARMOR_ORDNANCE_BLUEPRINTS.find(
-      (b) => b.id === 'merkava4'
-    )!;
-    const t90m = ARCHERY_ARMOR_ORDNANCE_BLUEPRINTS.find((b) => b.id === 't90m')!;
-    const merkavaLayout = computeCentennialPartLayout(merkava);
-    const t90mLayout = computeCentennialPartLayout(t90m);
-    expect(merkavaLayout.assembledPos.grip[0]).toBeGreaterThan(0); // front engine
-    expect(t90mLayout.assembledPos.grip[0]).toBeLessThan(0); // rear engine
-    expect(merkavaLayout.assembledPos.bolt_carrier[0]).toBeLessThan(0); // rear-set turret
-  }, 30_000);
+    // Authentic mechanical architecture spot-checks across real exhibits
+    const merkava = computeCentennialPartLayout(
+      CENTENNIAL_BLUEPRINT_MAP.merkava4
+    );
+    const t90m = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP.t90m);
+    expect(merkava.assembledPos.grip[0]).toBeGreaterThan(0); // front powerpack
+    expect(merkava.assembledPos.bolt_carrier[0]).toBeLessThan(0); // rear-set turret
+    expect(t90m.assembledPos.grip[0]).toBeLessThan(0); // rear powerpack
+
+    const dp28 = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP.dp28);
+    const ak47 = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP.ak47);
+    expect(dp28.assembledPos.mag_body[1]).toBeGreaterThan(0); // top 47-rd pan
+    expect(ak47.assembledPos.mag_body[1]).toBeLessThan(0); // bottom curved banana
+
+    const famas = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP.famas);
+    const m16a1 = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP.m16a1);
+    expect(famas.assembledPos.mag_body[0]).toBeLessThan(0); // bullpup rear mag
+    expect(famas.assembledPos.grip[0]).toBeGreaterThan(0); // bullpup forward grip
+    expect(m16a1.assembledPos.mag_body[0]).toBeGreaterThan(0); // standard mag ahead
+    expect(m16a1.assembledPos.grip[0]).toBeLessThan(0); // standard rear grip
+
+    const bizon = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP.bizon);
+    const mossberg = computeCentennialPartLayout(
+      CENTENNIAL_BLUEPRINT_MAP.mossberg500
+    );
+    expect(bizon.assembledPos.mag_body[0]).toBeGreaterThan(0); // under-handguard helical tube
+    expect(mossberg.assembledPos.mag_body[0]).toBeGreaterThan(0); // under-barrel tube
+    expect(mossberg.assembledPos.mag_body[1]).toBeLessThan(mossberg.boreY);
+  });
 });
