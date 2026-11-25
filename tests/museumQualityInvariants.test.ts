@@ -489,12 +489,12 @@ describe('Permanent Repository-Wide Museum Quality Invariants Gate', () => {
         }>;
       };
 
-      // Accurate 34-exhibit / 10-hall / 854-part counts & zero WP-XX / EN CJK leaks
-      expect(manifest.name).toContain('34 Exhibits');
+      // Accurate 100-exhibit / 10-hall / 2,174-part counts & zero WP-XX / EN CJK leaks
+      expect(manifest.name).toContain('100 Exhibits');
       expect(manifest.name).toContain('10 Halls');
-      expect(manifest.description).toContain('34 Exhibits');
+      expect(manifest.description).toContain('100 Exhibits');
       expect(manifest.description).toContain('10 Halls');
-      expect(manifest.description).toContain('854 Parts');
+      expect(manifest.description).toContain('2,174 Parts');
       expect(manifestRaw).not.toMatch(WP_CODE_RE);
       expect(manifestRaw).not.toMatch(CJK_RE);
 
