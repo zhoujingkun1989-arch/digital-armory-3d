@@ -541,14 +541,18 @@ export function assemblePosterMetadata(
   const serialCode = `DA-2026-${catalog.bayCode}-${serialSlug}`;
 
   const standardLabel = cartridgeSpec?.standard ?? ballisticsSpec.standard;
+  const parenStripRe = /\s*(?:\([^)]*\)|（[^）]*）)/g;
   const compactOal = primaryMeta.overallLengthMm
-    .replace(/\s*\(.*?\)/g, '')
+    .replace(parenStripRe, '')
     .trim();
-  const rawBarrelFirst = primaryMeta.barrelSpec.split('·')[0].trim();
-  const compactBarrel =
-    rawBarrelFirst.length > 28
-      ? rawBarrelFirst.replace(/\s*\(.*?\)/g, '').trim()
-      : rawBarrelFirst;
+  const compactBarrel = primaryMeta.barrelSpec
+    .replace(parenStripRe, '')
+    .split('·')[0]
+    .trim();
+  const compactCaliber =
+    primaryMeta.caliber.length > 26
+      ? primaryMeta.caliber.replace(parenStripRe, '').trim()
+      : primaryMeta.caliber;
   const rawWeight = primaryMeta.weightKg;
   const compactWeight =
     rawWeight.length > 28 ? rawWeight.split('/')[0].trim() : rawWeight;
@@ -573,7 +577,7 @@ export function assemblePosterMetadata(
     ? [
         {
           label: copy.poster.metricMainCannon,
-          value: primaryMeta.caliber,
+          value: compactCaliber,
           subValue: `${standardLabel} · ${copy.poster.peakPressureTag(roundedPeakMpa)}`,
         },
         {
@@ -599,7 +603,7 @@ export function assemblePosterMetadata(
       ? [
           {
             label: copy.poster.metricAutocannon,
-            value: primaryMeta.caliber,
+            value: compactCaliber,
             subValue: `${standardLabel} · ${copy.poster.peakPressureTag(roundedPeakMpa)}`,
           },
           {
@@ -624,7 +628,7 @@ export function assemblePosterMetadata(
       : [
           {
             label: copy.poster.metricCaliber,
-            value: primaryMeta.caliber,
+            value: compactCaliber,
             subValue: `${standardLabel} · ${
               isArchery
                 ? copy.poster.drawPeakTag(roundedPeakMpa)

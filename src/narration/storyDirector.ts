@@ -384,7 +384,7 @@ const DIRECTOR_CATEGORY_BADGES: Readonly<
 };
 
 const EN_ABBREV_REGEX =
-  /\b(?:U\.S|Obr|Gen|Mk|Dr|Mr|St|No|vs|approx|cal|in|mm|cm|kg|ft)\.$/i;
+  /\b(?:U\.S|Obr|Gen|Mk|Dr|Mr|St|No|Mfg|Co|vs|approx|cal|in|mm|cm|kg|ft)\.$/i;
 
 function splitEnglishSentences(raw: string): string[] {
   const trimmed = raw.trim();
