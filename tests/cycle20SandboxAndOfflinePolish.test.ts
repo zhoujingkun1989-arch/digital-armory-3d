@@ -143,12 +143,12 @@ describe('Cycle 20A — Causality Sandbox & Offline Museum Final Craft & WCAG Po
     expect(CJK_RE.test(enArchery)).toBe(false);
   });
 
-  it('partitions all 34 exhibits across all specialized halls in buildOfflineHallBreakdown() and exposes persistent aria-live & hall bar in OfflineMuseumModal', () => {
+  it('partitions all 100 exhibits across all specialized halls in buildOfflineHallBreakdown() and exposes persistent aria-live & hall bar in OfflineMuseumModal', () => {
     const emptyBreakdown = buildOfflineHallBreakdown([]);
     expect(emptyBreakdown.length).toBe(OFFLINE_SPECIALIZED_HALLS.length);
     const totalSum = emptyBreakdown.reduce((acc, h) => acc + h.total, 0);
     expect(totalSum).toBe(WEAPON_MANIFESTS.length);
-    expect(totalSum).toBe(34);
+    expect(totalSum).toBe(100);
     expect(emptyBreakdown.every((h) => h.cached === 0 && !h.isComplete)).toBe(
       true
     );
@@ -156,21 +156,28 @@ describe('Cycle 20A — Causality Sandbox & Offline Museum Final Craft & WCAG Po
     const armorRow = emptyBreakdown.find((h) => h.hallId === 'armor');
     const ordnanceRow = emptyBreakdown.find((h) => h.hallId === 'ordnance');
     const archeryRow = emptyBreakdown.find((h) => h.hallId === 'archery');
-    expect(armorRow?.total).toBe(4);
-    expect(ordnanceRow?.total).toBe(1);
-    expect(archeryRow?.total).toBe(2);
+    expect(armorRow?.total).toBe(8);
+    expect(ordnanceRow?.total).toBe(4);
+    expect(archeryRow?.total).toBe(5);
 
     const partialBreakdown = buildOfflineHallBreakdown([
       'ztz99a',
       'm1a2',
       'leopard2a7',
       'tiger1',
+      't90m',
+      'challenger2',
+      'merkava4',
+      't34_85',
       'gau8',
+      'm61vulcan',
+      'bofors40',
+      'm777',
       'ak15',
     ]);
     expect(
       partialBreakdown.reduce((acc, h) => acc + h.cached, 0)
-    ).toBe(6);
+    ).toBe(13);
     expect(partialBreakdown.find((h) => h.hallId === 'armor')?.isComplete).toBe(
       true
     );

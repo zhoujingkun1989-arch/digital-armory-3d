@@ -18,6 +18,7 @@ import {
   createInternalBallisticsSample,
   evaluateInternalBallisticsInto,
   getWeaponFiringTiming,
+  isArcheryWeapon,
 } from '../src/engine/physics/armoryPhysics';
 import { WEAPON_MANIFESTS, getWeaponManifest } from '../src/weapons/manifests';
 import type { WeaponId } from '../src/weapons/types';
@@ -193,14 +194,14 @@ describe('Cycle 15A — Real-Time 3D In-Bore Propellant Deflagration Glow & Boxe
       expect(under.columnEndX).toBeCloseTo(under.chamberX, 5);
     }
 
-    // All 32 barreled exhibits produce valid positive bore plasma geometry in Z-cutaway
+    // All 95 barreled exhibits produce valid positive bore plasma geometry in Z-cutaway
     const allIds: WeaponId[] = WEAPON_MANIFESTS.map((m) => m.id);
     let activeBarreledCount = 0;
     for (const id of allIds) {
       const timing = getWeaponFiringTiming(id);
       const midF = (timing.ignitionF + timing.muzzleExitF) * 0.5;
       const sample = computeInBoreDeflagrationSample(id, midF, 0.8, 0.5, true);
-      if (id === 'lift33' || id === 'r500') {
+      if (isArcheryWeapon(id)) {
         expect(sample.active).toBe(false);
       } else {
         activeBarreledCount++;
@@ -210,7 +211,7 @@ describe('Cycle 15A — Real-Time 3D In-Bore Propellant Deflagration Glow & Boxe
         expect(sample.columnRadiusCm).toBeGreaterThan(0);
       }
     }
-    expect(activeBarreledCount).toBe(32);
+    expect(activeBarreledCount).toBe(95);
   });
 
   it('maps pressure ratio monotonically from 3,200K incandescent white-gold -> 1,900K burnt orange -> ember glow with Zero-GC scratch reuse', () => {

@@ -44,7 +44,7 @@ describe('Cycle 10B — 34/34 3D Vernier Caliper Metrology (mm/in) & Live In-Wor
     expect(Object.keys(CALIPER_V2_BENCHMARK_NOTES)).toHaveLength(
       WEAPON_IDS.length
     );
-    expect(WEAPON_IDS.length).toBe(34);
+    expect(WEAPON_IDS.length).toBe(100);
 
     for (const weaponId of WEAPON_IDS) {
       const notes = CALIPER_V2_BENCHMARK_NOTES[weaponId];
