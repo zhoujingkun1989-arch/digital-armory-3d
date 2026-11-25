@@ -209,15 +209,19 @@ describe('100-Weapon Expansion Phase 2L — Modal Ergonomics (ScaleWall, Offline
       resolveAtlasWeaponTab('ak47' as unknown as WeaponId, filteredBaked)
     ).toBe('ak15');
 
-    // Coverage note is strictly bilingual with 0 EN CJK and 0 WP-XX
+    // Coverage note is strictly bilingual, cites the 13 Shared 1K 5-Ch ORM library (never stale vertex-curvature copy), with 0 EN CJK & 0 WP-XX
     const note100En = buildAtlasBakedCoverageNote(34, 100, 'en');
     const note100Zh = buildAtlasBakedCoverageNote(34, 100, 'zh');
     expect(note100En).toContain('34');
     expect(note100En).toContain('66');
+    expect(note100En).toContain('13 Shared 1K 5-Ch ORM PBR Suites');
+    expect(note100En).not.toContain('Vertex-Curvature');
     expect(CJK_OR_FULLWIDTH_RE.test(note100En)).toBe(false);
     expect(WP_LEAK_RE.test(note100En)).toBe(false);
     expect(note100Zh).toContain('34');
     expect(note100Zh).toContain('66');
+    expect(note100Zh).toContain('13 套 1K 5通道 ORM 材质图库');
+    expect(note100Zh).not.toContain('曲率');
     expect(WP_LEAK_RE.test(note100Zh)).toBe(false);
 
     const enHtml = withStoreState({ lang: 'en', activeWeaponId: 'gau8' }, () =>
@@ -226,8 +230,20 @@ describe('100-Weapon Expansion Phase 2L — Modal Ergonomics (ScaleWall, Offline
       )
     );
     expect(enHtml).toContain('data-testid="atlas-baked-coverage-note"');
+    expect(enHtml).toContain('13 Shared 1K 5-Ch ORM PBR Suites');
+    expect(enHtml).toContain('Flagship (+13 Shared)');
+    expect(enHtml).toContain('class="tex-weapon-pill-label"');
     expect(CJK_OR_FULLWIDTH_RE.test(enHtml)).toBe(false);
     expect(WP_LEAK_RE.test(enHtml)).toBe(false);
+
+    // Anti-overlap CSS contract for #33 Thompson / #34 GAU-8/A tabs in atlas-modal.css
+    const atlasCss = fs.readFileSync(
+      path.join(REPO_ROOT, 'src/styles/atlas-modal.css'),
+      'utf8'
+    );
+    expect(atlasCss).toContain('grid-template-columns: repeat(7, minmax(0, 1fr))');
+    expect(atlasCss).toContain('text-overflow: ellipsis');
+    expect(atlasCss).toContain('.tex-weapon-pill-label');
   });
 
   it('enforces Blueprint Daylight, >= 34px mobile touch targets, balanced CSS braces & 0 WP-XX across edited stylesheets', () => {

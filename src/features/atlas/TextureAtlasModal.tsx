@@ -60,7 +60,7 @@ export function resolveAtlasWeaponTab(
 
 /**
  * Concise bilingual coverage badge clarifying the 34 Flagship baked Cycles ORM
- * atlases vs real-time vertex-curvature PBR shaders on Centennial CAD exhibits.
+ * atlases vs the shared 13-suite 1K 5-channel Packed ORM library on Centennial exhibits.
  */
 export function buildAtlasBakedCoverageNote(
   bakedCount: number,
@@ -70,11 +70,11 @@ export function buildAtlasBakedCoverageNote(
   const proceduralCount = Math.max(0, totalCount - bakedCount);
   if (lang === 'zh') {
     return proceduralCount > 0
-      ? `${bakedCount} 款旗舰 Cycles 2K/4K 烘焙 ORM 图集 · ${proceduralCount} 款百年展品采用实时曲率 PBR 着色`
+      ? `${bakedCount} 款旗舰 Cycles 2K/4K 烘焙 ORM 图集 · ${proceduralCount} 款百年展品共享 13 套 1K 5通道 ORM 材质图库`
       : `${bakedCount} 款旗舰全量 Cycles 2K/4K 5 通道烘焙 ORM 图集`;
   }
   return proceduralCount > 0
-    ? `${bakedCount} Flagship Cycles 2K/4K Baked ORM Atlases · ${proceduralCount} Centennial Exhibits Use Live Vertex-Curvature PBR`
+    ? `${bakedCount} Flagship Cycles 2K/4K Baked ORM Atlases · ${proceduralCount} Centennial Exhibits Use 13 Shared 1K 5-Ch ORM PBR Suites`
     : `${bakedCount} Flagship Cycles 2K/4K 5-Ch Baked ORM Atlases`;
 }
 
@@ -250,13 +250,13 @@ export const ATLAS_PIPELINE_STRINGS: Readonly<
   >
 > = {
   zh: {
-    searchPlaceholder: '搜索全馆 114 套贴图（如 4K / 胡桃木 / 装甲 / ZTZ / 弹鼓 / 防磁）...',
+    searchPlaceholder: `搜索 ${ATLAS_SUITE_SEARCH_INDEX.length} 套旗舰 2K/4K 图集（如 4K / 胡桃木 / 装甲 / ZTZ / 弹鼓 / 防磁）...`,
     searchAria: '按展品或材质关键词检索 PBR 贴图套件',
     clearSearch: '清除检索',
     filterAll: '全部套件',
     filter4k: '4K 主战坦克 (8)',
     filter2k: '2K 精雕套件',
-    matchesCount: (shown, total) => `${shown} / ${total} 套贴图`,
+    matchesCount: (shown, total) => `${shown} / ${total} 旗舰套件（+13 共享）`,
     noMatches: '未找到匹配的 PBR 材质套件，请尝试其他关键词或重置筛选。',
     resetFilters: '重置筛选',
     ormPackingBadge: '5通道 Packed ORM · R=环境遮蔽 G=粗糙度 B=金属度',
@@ -267,14 +267,13 @@ export const ATLAS_PIPELINE_STRINGS: Readonly<
     ktx2WebpFallback: 'WebP 5通道 ORM 物理材质管线',
   },
   en: {
-    searchPlaceholder:
-      'Search 114 PBR suites (e.g. 4K, walnut, ERA, zimmerit, GAU-8, chrome)...',
+    searchPlaceholder: `Search ${ATLAS_SUITE_SEARCH_INDEX.length} Flagship 2K/4K suites (e.g. 4K, walnut, ERA, zimmerit, GAU-8)...`,
     searchAria: 'Filter PBR texture suites by exhibit or material keyword',
     clearSearch: 'Clear search',
     filterAll: 'All Suites',
     filter4k: '4K Tank Atlas (8)',
     filter2k: '2K Suites',
-    matchesCount: (shown, total) => `${shown} / ${total} suites`,
+    matchesCount: (shown, total) => `${shown} / ${total} Flagship (+13 Shared)`,
     noMatches: 'No matching PBR suites found. Try another material keyword or reset filters.',
     resetFilters: 'Reset Filters',
     ormPackingBadge: '5-Ch Packed ORM · R=AO G=Rough B=Metal',
@@ -612,25 +611,28 @@ export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
                 role="tablist"
                 aria-label={atlasUi.weaponSwitcherAria}
               >
-                {visibleManifests.map((m) => (
-                  <button
-                    key={m.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={resolvedWeaponTab === m.id}
-                    className={`tex-weapon-pill ${
-                      resolvedWeaponTab === m.id ? 'active' : ''
-                    }`}
-                    onMouseEnter={() => preloadWeaponPlugin(m.id)}
-                    onClick={() => {
-                      setWeaponTab(m.id);
-                      setActiveSuiteId('');
-                    }}
-                  >
-                    {m.catalog.bayCode.replace('BAY-', '#')}{' '}
-                    {getLocalizedShortWeaponLabel(m.id, lang)}
-                  </button>
-                ))}
+                {visibleManifests.map((m) => {
+                  const pillText = `${m.catalog.bayCode.replace('BAY-', '#')} ${getLocalizedShortWeaponLabel(m.id, lang)}`;
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      role="tab"
+                      title={pillText}
+                      aria-selected={resolvedWeaponTab === m.id}
+                      className={`tex-weapon-pill ${
+                        resolvedWeaponTab === m.id ? 'active' : ''
+                      }`}
+                      onMouseEnter={() => preloadWeaponPlugin(m.id)}
+                      onClick={() => {
+                        setWeaponTab(m.id);
+                        setActiveSuiteId('');
+                      }}
+                    >
+                      <span className="tex-weapon-pill-label">{pillText}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             <div>
