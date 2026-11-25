@@ -43,8 +43,8 @@ function loadNarrationBundle(weaponId: WeaponId): WeaponNarrationBundle {
 }
 
 describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () => {
-  it('produces valid bilingual DkScaleReference for all 34 exhibits with accurate silhouettes', () => {
-    expect(WEAPON_IDS.length).toBe(34);
+  it('produces valid bilingual DkScaleReference for all 100 exhibits with accurate silhouettes', () => {
+    expect(WEAPON_IDS.length).toBe(100);
 
     for (const weaponId of WEAPON_IDS) {
       const manifest = getWeaponManifest(weaponId);
@@ -66,30 +66,30 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
           expect(Number.isFinite(ref.barrelMm)).toBe(true);
           expect(ref.barrelMm).toBeGreaterThanOrEqual(4000);
           expect(Number.isFinite(ref.weightKg)).toBe(true);
-          expect(ref.weightKg).toBeGreaterThanOrEqual(40000);
+          expect(ref.weightKg).toBeGreaterThanOrEqual(30000);
           expect(ref.weightKg).toBeLessThanOrEqual(80000);
           expect(ref.ratioPercent).toBeGreaterThanOrEqual(400);
           expect(ref.ratioPercent).toBeLessThanOrEqual(750);
         } else if (isHeavyOrdnance) {
-          expect(ref.oalMm).toBeGreaterThanOrEqual(2500);
-          expect(ref.oalMm).toBeLessThanOrEqual(7000);
+          expect(ref.oalMm).toBeGreaterThanOrEqual(1500);
+          expect(ref.oalMm).toBeLessThanOrEqual(12000);
           expect(Number.isFinite(ref.barrelMm)).toBe(true);
-          expect(ref.barrelMm).toBeGreaterThanOrEqual(1500);
+          expect(ref.barrelMm).toBeGreaterThanOrEqual(1400);
           expect(Number.isFinite(ref.weightKg)).toBe(true);
           expect(ref.weightKg).toBeGreaterThanOrEqual(100);
-          expect(ref.weightKg).toBeLessThanOrEqual(2500);
-          expect(ref.ratioPercent).toBeGreaterThanOrEqual(150);
-          expect(ref.ratioPercent).toBeLessThanOrEqual(450);
+          expect(ref.weightKg).toBeLessThanOrEqual(5000);
+          expect(ref.ratioPercent).toBeGreaterThanOrEqual(100);
+          expect(ref.ratioPercent).toBeLessThanOrEqual(700);
         } else {
-          expect(ref.oalMm).toBeGreaterThanOrEqual(180);
-          expect(ref.oalMm).toBeLessThanOrEqual(1600);
+          expect(ref.oalMm).toBeGreaterThanOrEqual(150);
+          expect(ref.oalMm).toBeLessThanOrEqual(2100);
           expect(Number.isFinite(ref.barrelMm)).toBe(true);
-          expect(ref.barrelMm).toBeGreaterThanOrEqual(90);
+          expect(ref.barrelMm).toBeGreaterThanOrEqual(80);
           expect(Number.isFinite(ref.weightKg)).toBe(true);
           expect(ref.weightKg).toBeGreaterThan(0.4);
-          expect(ref.weightKg).toBeLessThan(20);
-          expect(ref.ratioPercent).toBeGreaterThanOrEqual(10);
-          expect(ref.ratioPercent).toBeLessThanOrEqual(200);
+          expect(ref.weightKg).toBeLessThan(45);
+          expect(ref.ratioPercent).toBeGreaterThanOrEqual(8);
+          expect(ref.ratioPercent).toBeLessThanOrEqual(210);
         }
         expect(ref.silhouetteKind).toBe(expectedSilhouette);
         expect(ref.referenceLengthMm).toBe(
@@ -140,7 +140,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
         for (const node of timeline) {
           expect(node.year).toMatch(/^\d{4}$/);
           const yearNum = Number(node.year);
-          expect(yearNum).toBeGreaterThanOrEqual(1850);
+          expect(yearNum).toBeGreaterThanOrEqual(1350);
           expect(yearNum).toBeLessThanOrEqual(2030);
           expect(yearNum).toBeGreaterThanOrEqual(prevYear);
           prevYear = yearNum;
@@ -299,8 +299,8 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
       }
     }
 
-    // 34 exhibits (854 total parts) × 2 languages = 1,708 part micro-copies checked
-    expect(totalPartsChecked).toBe(1708);
+    // 100 exhibits (2,174 total parts) × 2 languages = 4,348 part micro-copies checked
+    expect(totalPartsChecked).toBe(4348);
   });
 
   it('handles null narration fallback cleanly in buildDkPartMicroCopy for both zh and en', async () => {

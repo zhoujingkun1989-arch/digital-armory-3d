@@ -237,18 +237,18 @@ describe('Permanent Repository-Wide Museum Quality Invariants Gate', () => {
     });
   });
 
-  describe('3. Complete 34/34 Exhibit Registry Parity Gate', () => {
+  describe('3. Complete 100/100 Exhibit Registry Parity Gate', () => {
     const canonicalIds = WEAPON_MANIFESTS.map((m) => m.id) as WeaponId[];
     const canonicalSet = new Set<string>(canonicalIds);
 
-    it('covers exact 34/34 WeaponIds across manifests, rifling, recoil, caliper, director, scale wall & glossary', () => {
-      expect(canonicalIds).toHaveLength(34);
-      expect(canonicalSet.size).toBe(34);
+    it('covers exact 100/100 WeaponIds across manifests, rifling, recoil, caliper, director, scale wall & glossary', () => {
+      expect(canonicalIds).toHaveLength(100);
+      expect(canonicalSet.size).toBe(100);
 
       const assertKeySetParity = (label: string, keys: readonly string[]) => {
-        expect(keys, `${label} count`).toHaveLength(34);
+        expect(keys, `${label} count`).toHaveLength(100);
         const keySet = new Set(keys);
-        expect(keySet.size, `${label} unique count`).toBe(34);
+        expect(keySet.size, `${label} unique count`).toBe(100);
         for (const id of canonicalIds) {
           expect(keySet.has(id), `${label} missing ${id}`).toBe(true);
         }

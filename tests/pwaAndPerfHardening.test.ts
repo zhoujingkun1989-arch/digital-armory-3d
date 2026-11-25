@@ -20,7 +20,10 @@ import {
   removeExhibitOfflineCache,
   SMALL_ARMS_HDRI_FILE,
 } from '../src/engine/offline/offlineMuseumManager';
-import { isTankWeapon } from '../src/engine/physics/armoryPhysics';
+import {
+  isHeavyScaleWeapon,
+  isTankWeapon,
+} from '../src/engine/physics/armoryPhysics';
 import { MechanismShowdownModal } from '../src/features/armory/MechanismShowdownModal';
 import { WeaponSilhouetteSvg } from '../src/features/armory/WeaponSilhouetteSvg';
 import { TextureAtlasModal } from '../src/features/atlas/TextureAtlasModal';
@@ -224,15 +227,16 @@ afterEach(() => {
 });
 
 describe('PWA Offline Museum Manifests, Zero-404 Asset Parity & Cache Lifecycle', () => {
-  it('resolves 100% real on-disk assets inside public/ for ALL 34 exhibits with zero 404s', () => {
-    expect(WEAPON_IDS).toHaveLength(34);
+  it('resolves 100% real on-disk assets inside public/ for ALL 100 exhibits with zero 404s', () => {
+    expect(WEAPON_IDS).toHaveLength(100);
     expect(OFFLINE_MUSEUM_CACHE_NAME).toBe('digital-armory-offline-v6-0');
     expect(OFFLINE_RUNTIME_CACHE_NAME).toBe('digital-armory-runtime-v6-0');
 
     for (const weaponId of WEAPON_IDS) {
       const manifest = buildExhibitOfflineAssetUrls(weaponId, '/');
+      const glbCfg = GLB_WEAPON_CONFIGS[weaponId];
       expect(manifest.weaponId).toBe(weaponId);
-      expect(manifest.urls.length).toBeGreaterThanOrEqual(11);
+      expect(manifest.urls.length).toBeGreaterThanOrEqual(glbCfg ? 11 : 2);
       // Every URL must be unique (deduplicated)
       expect(new Set(manifest.urls).size).toBe(manifest.urls.length);
 
@@ -250,7 +254,6 @@ describe('PWA Offline Museum Manifests, Zero-404 Asset Parity & Cache Lifecycle'
       }
 
       // Assert exact expected assets derived from GLB_WEAPON_CONFIGS[weaponId] (Flagship 34)
-      const glbCfg = GLB_WEAPON_CONFIGS[weaponId];
       expect(manifest.urls).toContain(`/narrations/${weaponId}.json`);
       if (glbCfg) {
         expect(manifest.urls).toContain(`/models/${glbCfg.modelFile}`);
@@ -266,8 +269,8 @@ describe('PWA Offline Museum Manifests, Zero-404 Asset Parity & Cache Lifecycle'
         }
       }
 
-      // Heavy armor (4 MBTs) + GAU-8/A use hangar HDRI + armor micro-detail maps
-      const isHeavy = isTankWeapon(weaponId) || weaponId === 'gau8';
+      // Heavy armor (8 MBTs) + heavy ordnance (4) use hangar HDRI + armor micro-detail maps
+      const isHeavy = isHeavyScaleWeapon(weaponId);
       if (isHeavy) {
         for (const detailFile of ARMOR_DETAIL_TEXTURE_FILES) {
           expect(manifest.urls).toContain(`/textures/${detailFile}`);
@@ -279,13 +282,18 @@ describe('PWA Offline Museum Manifests, Zero-404 Asset Parity & Cache Lifecycle'
         expect(manifest.urls).not.toContain(`/hdri/${HEAVY_ARMOR_HDRI_FILE}`);
       }
 
-      // Shared Draco WASM decoder binaries always included
-      for (const dracoPath of DRACO_RUNTIME_ASSET_PATHS) {
-        expect(manifest.urls).toContain(`/${dracoPath}`);
+      // Shared Draco WASM decoder binaries included for Flagship GLB exhibits
+      if (glbCfg) {
+        for (const dracoPath of DRACO_RUNTIME_ASSET_PATHS) {
+          expect(manifest.urls).toContain(`/${dracoPath}`);
+        }
       }
 
       // Accurate category-based estimatedMb
-      if (isTankWeapon(weaponId)) {
+      if (!glbCfg) {
+        expect(manifest.estimatedMb).toBeGreaterThanOrEqual(0.5);
+        expect(manifest.estimatedMb).toBeLessThanOrEqual(2.5);
+      } else if (isTankWeapon(weaponId)) {
         expect(manifest.estimatedMb).toBeGreaterThanOrEqual(10);
         expect(manifest.estimatedMb).toBeLessThanOrEqual(12.5);
       } else if (weaponId === 'gau8') {
