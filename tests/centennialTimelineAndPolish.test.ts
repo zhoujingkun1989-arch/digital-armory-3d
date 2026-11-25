@@ -146,12 +146,25 @@ describe('100-Weapon Expansion Phase 5C-3 — Timeline Scale-Break, Offline BAY 
         expect(html).toContain(`data-testid="timeline-tick-${yr}"`);
       }
       const nodeCount = (html.match(/class="timeline-node-g"/g) ?? []).length;
+      const hitCircleCount = (html.match(/class="timeline-node-hit"/g) ?? [])
+        .length;
       const labelCount = (html.match(/data-testid="timeline-node-label-/g) ?? [])
         .length;
       expect(nodeCount).toBe(100);
+      expect(hitCircleCount).toBe(100);
       expect(labelCount).toBeLessThan(70);
       expect(html).toContain('data-testid="timeline-node-label-ak15"');
       expect(html).toContain('<title>');
+
+      // Mobile WCAG 2.5.8 SVG scroll-wrap & min-width lock (>= 34x34px hit targets on 390x844)
+      const timelineCss = fs.readFileSync(
+        path.join(REPO_ROOT, 'src/styles/timeline-museum.css'),
+        'utf8'
+      );
+      const canvasCardMatch = timelineCss.match(/\.timeline-canvas-card\s*\{[^}]+\}/);
+      const svgMatch = timelineCss.match(/\.timeline-svg\s*\{[^}]+\}/);
+      expect(canvasCardMatch?.[0]).toContain('overflow-x: auto');
+      expect(svgMatch?.[0]).toMatch(/min-width:\s*(?:960|1020|1080)px/);
     } finally {
       useAppStore.setState({ lang: prevLang });
     }
