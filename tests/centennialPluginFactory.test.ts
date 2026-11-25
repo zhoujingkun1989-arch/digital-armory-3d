@@ -6,11 +6,12 @@ import {
   createMutablePose,
   evaluatePartPoseInto,
 } from '../src/engine/kinematics/math';
-import { CENTENNIAL_BLUEPRINTS } from '../src/weapons/expansion/centennialCatalog';
+import { CENTENNIAL_BLUEPRINT_MAP, CENTENNIAL_BLUEPRINTS } from '../src/weapons/expansion/centennialCatalog';
 import {
   CENTENNIAL_PART_SLOTS,
   computeCentennialPartLayout,
 } from '../src/weapons/expansion/centennialLayoutMath';
+import { isCentennialShellSlot } from '../src/weapons/expansion/centennialPartNomenclature';
 import {
   buildCentennialPlugin,
   buildCentennialPluginForBlueprint,
@@ -125,9 +126,7 @@ describe('Centennial Lazy Runtime Plugin & 22-Law Kinematic Engine (Phase 2H)', 
         expect(part.nameEn).not.toMatch(CJK_OR_FULLWIDTH_RE);
         expect(part.nameEn).not.toMatch(WP_TAG_RE);
         expect(part.description).not.toMatch(WP_TAG_RE);
-        expect(Boolean(part.isShell)).toBe(
-          slot === 'receiver' || slot === 'mag_body'
-        );
+        expect(Boolean(part.isShell)).toBe(isCentennialShellSlot(bp, slot));
 
         for (const v of part.assembledPos) {
           expect(Number.isFinite(v)).toBe(true);
@@ -414,5 +413,67 @@ describe('Centennial Lazy Runtime Plugin & 22-Law Kinematic Engine (Phase 2H)', 
     expect(source).not.toMatch(/\bimport\s*\(/);
     expect(source).not.toMatch(/\brequire\s*\(/);
     expect(source).not.toContain('@ts-ignore');
+  });
+
+  it('locks Phase 5C-2 cutaway turret/slide isShell, m61vulcan 1:1 concrete hangar grounding & rifle/longbow framing', () => {
+    // 1. Cutaway outer shells: all 4 Centennial MBTs & all 7 pistol_slide pistols mark bolt_carrier as isShell=true
+    const shellCarrierIds: readonly CentennialWeaponId[] = [
+      't90m',
+      'challenger2',
+      'merkava4',
+      't34_85',
+      'beretta92',
+      'p226',
+      'usp45',
+      'cz75',
+      'ppk',
+      'tt33',
+      'fiveseven',
+    ];
+    for (const id of shellCarrierIds) {
+      const plugin = buildCentennialPlugin(id);
+      const carrier = plugin.parts.find((p) => p.id === `${id}_bolt_carrier`);
+      expect(carrier?.isShell, `${id}_bolt_carrier must slice open in ?cut=1`).toBe(true);
+      if (CENTENNIAL_BLUEPRINT_MAP[id].category === 'armor') {
+        expect(
+          carrier?.material,
+          `${id} MBT turret must use matte CARC polymer_frame (no glossy chrome specular blob)`
+        ).toBe('polymer_frame');
+      }
+    }
+    for (const nonShellId of ['ak47', 'm16a1', 'c96', 'saa1873', 'm61vulcan'] as const) {
+      const plugin = buildCentennialPlugin(nonShellId);
+      const carrier = plugin.parts.find((p) => p.id === `${nonShellId}_bolt_carrier`);
+      expect(carrier?.isShell, `${nonShellId}_bolt_carrier must remain solid internal`).toBe(false);
+    }
+
+    // 2. m61vulcan promoted to 1:1 heavy concrete hangar stage (gridY=-121, floor=-120)
+    const m61Bp = CENTENNIAL_BLUEPRINT_MAP.m61vulcan;
+    expect(m61Bp.scaleProfile).toBe('main_battle_tank');
+    const m61Layout = computeCentennialPartLayout(m61Bp);
+    expect(m61Layout.gridY).toBe(-121);
+    expect(m61Layout.boundsMin[1]).toBe(-120);
+    expect(m61Layout.boreY).toBeCloseTo(-75.8, 2);
+
+    const stageSrc = readFileSync(
+      resolve(process.cwd(), 'src/engine/canvas/GunsmithStageMat.tsx'),
+      'utf8'
+    );
+    expect(stageSrc).toContain('isHeavyScaleWeapon(activeWeaponId)');
+
+    // 3. Tightened vertical explodeOffset on Centennial rifles/bullpups & pulled-back englishlongbow framing
+    for (const rifleId of ['famas', 'ak47', 'stg44', 'qbz95', 'tavor'] as const) {
+      const layout = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP[rifleId]);
+      expect(Math.abs(layout.explodeOffset.optic[1])).toBeLessThanOrEqual(10);
+      expect(Math.abs(layout.explodeOffset.mag_base[1])).toBeLessThanOrEqual(14);
+    }
+    const bowLayout = computeCentennialPartLayout(
+      CENTENNIAL_BLUEPRINT_MAP.englishlongbow
+    );
+    expect(bowLayout.gridY).toBe(-58);
+    expect(bowLayout.cameraPresets.iso.pos[2]).toBeGreaterThanOrEqual(130);
+    expect(bowLayout.cameraPresets.armory_showcase.pos[2]).toBeGreaterThanOrEqual(
+      142
+    );
   });
 });

@@ -9,6 +9,7 @@ import {
 } from '../src/weapons/expansion/centennialCatalog';
 import {
   CENTENNIAL_PART_SLOTS,
+  isCentennialShellSlot,
   resolveCentennialGroupMetas,
   resolveCentennialPartMeta,
 } from '../src/weapons/expansion/centennialPartNomenclature';
@@ -182,7 +183,7 @@ describe('100-Weapon Expansion Phase 2G — Unified 66-Exhibit Catalog & 1,320-P
 
         expect(meta.slot).toBe(slot);
         bomCodes.push(meta.bomCode);
-        expect(meta.isShell).toBe(slot === 'receiver' || slot === 'mag_body');
+        expect(meta.isShell).toBe(isCentennialShellSlot(bp, slot));
 
         // Callout label length strictly within [3, 32]
         expect(

@@ -655,7 +655,7 @@ function resolveMbtSlotMeta(
 
   const map: Record<CentennialPartSlot, PartTextSpec> = {
     receiver: {
-      material: 'nitride_steel',
+      material: 'polymer_frame',
       nameZh: isWwii ? '铸造斜甲主炮塔壳体' : '复合装甲主炮塔壳体',
       nameEn: isWwii ? 'Cast Sloped Turret Shell' : 'Composite Armored Turret Shell',
       calloutLabelZh: isWwii ? '铸造炮塔壳' : '复合装甲炮塔',
@@ -678,7 +678,7 @@ function resolveMbtSlotMeta(
     },
     muzzle: resolveMuzzleText(bp),
     bolt_carrier: {
-      material: 'stainless',
+      material: 'polymer_frame',
       nameZh: '主炮液压反后坐摇架总成',
       nameEn: 'Main Gun Recoil Cradle & Guard',
       calloutLabelZh: '反后坐摇架',
@@ -711,7 +711,7 @@ function resolveMbtSlotMeta(
       descEn: `Stores cannon recoil energy and returns the multi-ton barrel assembly smoothly to battery after firing.`,
     },
     handguard: {
-      material: 'nitride_steel',
+      material: 'polymer_frame',
       nameZh: isWwii
         ? '大倾角首上均质钢装甲板'
         : isFrontEngine
@@ -730,7 +730,7 @@ function resolveMbtSlotMeta(
       descEn: `Primary frontal ballistic armor zone engineered to shear, erode, and deflect incoming kinetic penetrators.`,
     },
     stock: {
-      material: 'nitride_steel',
+      material: 'polymer_frame',
       nameZh: '全焊接高强度装甲车体底盘',
       nameEn: 'Welded Armored Lower Hull Chassis',
       calloutLabelZh: '装甲车体底盘',
@@ -786,7 +786,7 @@ function resolveMbtSlotMeta(
       descEn: `Distributes ${weightTonnes} tonnes across low ground pressure while damping cross-country shocks for stabilized fire.`,
     },
     mount_rail: {
-      material: 'nitride_steel',
+      material: 'polymer_frame',
       nameZh: isWwii ? '侧装甲钢裙与外挂副油箱' : '侧裙复合装甲与主动防护模块',
       nameEn: isWwii
         ? 'Side Hull Armor & Auxiliary Fuel Drums'
@@ -2829,29 +2829,46 @@ function resolveStandardSmallArmSlotMeta(
  * Resolves authentic, archetype-tailored bilingual part nomenclature for any
  * of the 66 Centennial exhibits and 20 canonical structural slots.
  */
+/**
+ * Returns true when `slot` acts as an outer housing/armor shell that should
+ * slice open under CT section cutaway (`?cut=1`) and soften in X-Ray mode.
+ * Includes MBT armored turrets and semi-auto pistol outer slides (`bolt_carrier`).
+ */
+export function isCentennialShellSlot(
+  bp: CentennialWeaponBlueprint,
+  slot: CentennialPartSlot
+): boolean {
+  return (
+    slot === 'receiver' ||
+    slot === 'mag_body' ||
+    (slot === 'bolt_carrier' &&
+      (bp.category === 'armor' || bp.archetype === 'pistol_slide'))
+  );
+}
+
 export function resolveCentennialPartMeta(
   bp: CentennialWeaponBlueprint,
   slot: CentennialPartSlot
 ): CentennialPartSlotMeta {
+  let meta: CentennialPartSlotMeta;
   if (bp.category === 'armor') {
-    return resolveMbtSlotMeta(bp, slot);
-  }
-  if (bp.category === 'ordnance') {
-    return resolveOrdnanceSlotMeta(bp, slot);
-  }
-  if (bp.category === 'archery') {
-    return resolveArcherySlotMeta(bp, slot);
-  }
-  if (bp.archetype === 'revolver_sa' || bp.archetype === 'revolver_da') {
-    return resolveRevolverSlotMeta(bp, slot);
-  }
-  if (
+    meta = resolveMbtSlotMeta(bp, slot);
+  } else if (bp.category === 'ordnance') {
+    meta = resolveOrdnanceSlotMeta(bp, slot);
+  } else if (bp.category === 'archery') {
+    meta = resolveArcherySlotMeta(bp, slot);
+  } else if (bp.archetype === 'revolver_sa' || bp.archetype === 'revolver_da') {
+    meta = resolveRevolverSlotMeta(bp, slot);
+  } else if (
     bp.archetype === 'pistol_slide' ||
     bp.archetype === 'pistol_broomhandle'
   ) {
-    return resolvePistolSlotMeta(bp, slot);
+    meta = resolvePistolSlotMeta(bp, slot);
+  } else {
+    meta = resolveStandardSmallArmSlotMeta(bp, slot);
   }
-  return resolveStandardSmallArmSlotMeta(bp, slot);
+  const isShell = isCentennialShellSlot(bp, slot);
+  return meta.isShell === isShell ? meta : { ...meta, isShell };
 }
 
 /**
