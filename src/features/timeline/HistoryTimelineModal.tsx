@@ -1166,6 +1166,13 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                       }
                     >
                       <title>{`${shortLabel} · ${node.year}`}</title>
+                      <circle
+                        className="timeline-node-hit"
+                        cx={pt.x}
+                        cy={pt.y}
+                        r={19}
+                        fill="transparent"
+                      />
                       {tourOrder >= 0 && (
                         <circle
                           cx={pt.x}
