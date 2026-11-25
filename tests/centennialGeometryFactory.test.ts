@@ -445,4 +445,175 @@ describe('Centennial 66-Exhibit 20-Part Procedural CAD Geometry Factory & Layout
     expect(mossberg.assembledPos.mag_body[0]).toBeGreaterThan(0); // under-barrel tube
     expect(mossberg.assembledPos.mag_body[1]).toBeLessThan(mossberg.boreY);
   });
+
+  it('locks all Phase 5C-1 visual silhouette, material, bipod, magazine, archery, small-arm & MBT fixes (#434 Defects #2/#3/#4/#6/#7/#8/#9)', () => {
+    const meanColor = (geo: THREE.BufferGeometry): [number, number, number] => {
+      const col = geo.getAttribute('color');
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      for (let i = 0; i < col.count; i++) {
+        r += col.getX(i);
+        g += col.getY(i);
+        b += col.getZ(i);
+      }
+      return [r / col.count, g / col.count, b / col.count];
+    };
+
+    const getBox = (id: CentennialWeaponId, slot: (typeof CENTENNIAL_PART_SLOTS)[number]) => {
+      const builders = buildCentennialGeometryBuilders(id);
+      const geo = builders[centennialPartId(id, slot)]();
+      geo.computeBoundingBox();
+      const bb = geo.boundingBox!.clone();
+      const rgb = meanColor(geo);
+      geo.dispose();
+      return { bb, rgb };
+    };
+
+    // #2 Bipod feet seated flush on rotated leg tips (no detached X gap) & WA 2000 top-mounted bipod
+    for (const id of ['famas', 'dp28', 'wa2000', 'pkm'] as const) {
+      const builders = buildCentennialGeometryBuilders(id);
+      const geo = builders[centennialPartId(id, 'mount_rail')]();
+      geo.computeBoundingBox();
+      const pos = geo.getAttribute('position');
+      const minY = geo.boundingBox!.min.y;
+      let footMinX = Infinity;
+      let footMaxX = -Infinity;
+      let lowerLegMinX = Infinity;
+      let lowerLegMaxX = -Infinity;
+      for (let i = 0; i < pos.count; i++) {
+        const y = pos.getY(i);
+        const x = pos.getX(i);
+        if (y <= minY + 0.55) {
+          footMinX = Math.min(footMinX, x);
+          footMaxX = Math.max(footMaxX, x);
+        } else if (y <= minY + 1.8 && y > minY + 0.55) {
+          lowerLegMinX = Math.min(lowerLegMinX, x);
+          lowerLegMaxX = Math.max(lowerLegMaxX, x);
+        }
+      }
+      const footCenterX = (footMinX + footMaxX) * 0.5;
+      const legCenterX = (lowerLegMinX + lowerLegMaxX) * 0.5;
+      expect(
+        Math.abs(footCenterX - legCenterX),
+        `${id}: bipod foot flush with lower leg tip in X`
+      ).toBeLessThan(0.85);
+      if (id === 'wa2000') {
+        const layout = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP.wa2000);
+        expect(geo.boundingBox!.max.y).toBeGreaterThan(layout.dims.handguardH * 0.9);
+      }
+      geo.dispose();
+    }
+
+    // #3 Zero emerald-green optic/cupola/carry-handle flood across halls
+    for (const id of [
+      'famas',
+      'svd',
+      'ak47',
+      'excalibur',
+      't90m',
+      't34_85',
+      'beretta92',
+      'saa1873',
+    ] as const) {
+      const { rgb } = getBox(id, 'optic');
+      expect(
+        rgb[1] - rgb[0],
+        `${id}_optic must not flood bright emerald green`
+      ).toBeLessThan(0.06);
+    }
+
+    // #4 Flush mag_base on curved banana, PPSh-41 drum, DP-28 pan & Bizon helical
+    for (const id of ['ak47', 'stg44', 'svd'] as const) {
+      const layout = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP[id]);
+      const { bb } = getBox(id, 'mag_base');
+      const cx = (bb.min.x + bb.max.x) * 0.5;
+      expect(cx, `${id}_mag_base aligned to curved toe +sweepX`).toBeGreaterThan(
+        layout.dims.magH * 0.18
+      );
+    }
+    const ppshBase = getBox('ppsh41', 'mag_base').bb;
+    expect(ppshBase.min.y, 'ppsh41 drum cover centered on drum face (not hanging below)').toBeGreaterThan(0);
+
+    const dp28Base = getBox('dp28', 'mag_base').bb;
+    expect(
+      dp28Base.max.x - dp28Base.min.x,
+      'dp28 pan lid is wide & horizontal (axis Y)'
+    ).toBeGreaterThan((dp28Base.max.y - dp28Base.min.y) * 3);
+
+    // #7 Compact Bizon helical drum + dark ventilated steel shrouds on PPSh-41, DP-28, M2HB
+    const bizonMag = getBox('bizon', 'mag_body').bb;
+    expect(bizonMag.max.y - bizonMag.min.y).toBeLessThan(3.6);
+    expect(bizonMag.max.z - bizonMag.min.z).toBeLessThan(3.6);
+    for (const id of ['ppsh41', 'dp28', 'm2hb'] as const) {
+      const { rgb } = getBox(id, 'handguard');
+      expect(
+        rgb[2],
+        `${id}_handguard must be dark steel shroud (not warm brown wood)`
+      ).toBeGreaterThanOrEqual(rgb[0] * 0.85);
+    }
+
+    // #6 Authentic 1415 English Longbow & Camless Excalibur Recurve Crossbow
+    const longbowLayout = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP.englishlongbow);
+    for (const springSlot of ['recoil_spring', 'hammer_spring', 'mag_spring'] as const) {
+      const { bb } = getBox('englishlongbow', springSlot);
+      const pos = longbowLayout.assembledPos[springSlot];
+      const worldCx = pos[0] + (bb.min.x + bb.max.x) * 0.5;
+      const worldCy = pos[1] + (bb.min.y + bb.max.y) * 0.5;
+      const worldCz = pos[2] + (bb.min.z + bb.max.z) * 0.5;
+      expect(Math.abs(worldCx), `englishlongbow_${springSlot} tucked inside grip X`).toBeLessThan(2.0);
+      expect(Math.abs(worldCy), `englishlongbow_${springSlot} tucked inside grip Y`).toBeLessThan(2.0);
+      expect(Math.abs(worldCz), `englishlongbow_${springSlot} tucked inside grip Z`).toBeLessThan(2.0);
+    }
+    const longbowMag = getBox('englishlongbow', 'mag_body').bb;
+    const longbowMagPos = longbowLayout.assembledPos.mag_body;
+    expect(
+      Math.abs(longbowMagPos[2] + (longbowMag.min.z + longbowMag.max.z) * 0.5),
+      'englishlongbow mag_body coaxial with leather waist (no protruding box riser)'
+    ).toBeLessThan(1.5);
+
+    const excalMuzzle = getBox('excalibur', 'muzzle').bb;
+    expect(
+      excalMuzzle.max.y - excalMuzzle.min.y,
+      'excalibur foot stirrup is slim (no giant circular cam disc)'
+    ).toBeLessThan(4.5);
+    const excalMag = getBox('excalibur', 'mag_body').bb;
+    expect(
+      excalMag.max.x - excalMag.min.x,
+      'excalibur side quiver is horizontal (no vertical M4 box mag)'
+    ).toBeGreaterThan((excalMag.max.y - excalMag.min.y) * 2.5);
+
+    // #8 Iconic small-arms differentiation (Beretta 92, SAA 1873, Winchester 1887, M2HB, AK-47)
+    const berettaLayout = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP.beretta92);
+    const berettaRail = getBox('beretta92', 'mount_rail').bb;
+    const berettaRailMaxWorldX = berettaLayout.assembledPos.mount_rail[0] + berettaRail.max.x;
+    expect(berettaRailMaxWorldX, 'beretta92 front rail stays behind muzzle').toBeLessThan(
+      berettaLayout.muzzlePos[0] - 1.0
+    );
+
+    const saaHg = getBox('saa1873', 'handguard').bb;
+    expect(saaHg.max.y - saaHg.min.y, 'saa1873 slim under-barrel ejector tube').toBeLessThan(1.8);
+    const saaLayout = computeCentennialPartLayout(CENTENNIAL_BLUEPRINT_MAP.saa1873);
+    const saaFollower = getBox('saa1873', 'follower').bb;
+    expect(
+      saaLayout.assembledPos.follower[1] + saaFollower.max.y,
+      'saa1873 star ratchet seated inside cylinder (not floating above sight)'
+    ).toBeLessThan(saaLayout.boreY + 1.0);
+
+    const winGrip = getBox('winchester1887', 'grip').bb;
+    expect(
+      winGrip.max.x - winGrip.min.x,
+      'winchester1887 horizontal finger-loop lever (not vertical AK grip)'
+    ).toBeGreaterThan((winGrip.max.y - winGrip.min.y) * 1.2);
+
+    const m2Optic = getBox('m2hb', 'optic').bb;
+    expect(m2Optic.max.y - m2Optic.min.y, 'm2hb low folding AA leaf sight (no carry handle)').toBeLessThan(2.5);
+
+    const akMagRgb = getBox('ak47', 'mag_body').rgb;
+    expect(akMagRgb[0], 'ak47 stamped dark steel curved magazine').toBeLessThan(0.16);
+
+    // #9 T-34-85 exposes all 5 Christie roadwheels (no ERA side skirt wall)
+    const t34Skirts = getBox('t34_85', 'mount_rail').bb;
+    expect(t34Skirts.min.y, 't34_85 fenders strictly above roadwheels').toBeGreaterThan(0);
+  });
 });
