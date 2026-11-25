@@ -49,7 +49,7 @@ afterEach(() => {
 });
 
 describe('Cycle 6B · PWA Manifest & Multi-Entry HTML SEO / OpenGraph Parity', () => {
-  it('keeps index.html & showcase.html free of stale 27/29/731/v5.0 metadata and aligned to 34 Exhibits · 10 Halls · 854 Parts · 30mm Aviation Ordnance', () => {
+  it('keeps index.html & showcase.html free of stale 27/29/731/v5.0 metadata and aligned to 100 Exhibits · 10 Halls · 2,174 Parts · 1415–2026 · 30mm Aviation Ordnance', () => {
     for (const fileName of ['index.html', 'showcase.html']) {
       const html = fs.readFileSync(path.join(REPO_ROOT, fileName), 'utf8');
 
@@ -59,9 +59,10 @@ describe('Cycle 6B · PWA Manifest & Multi-Entry HTML SEO / OpenGraph Parity', (
       expect(html).toContain('href="./manifest.webmanifest"');
       expect(html).toContain('href="./favicon.ico"');
       expect(html).toContain('name="theme-color" content="#0b1120"');
-      expect(html).toContain('34 Exhibits');
+      expect(html).toContain('100 Exhibits');
       expect(html).toContain('10 Halls');
-      expect(html).toContain('854 Parts');
+      expect(html).toContain('2,174 Parts');
+      expect(html).toContain('1415–2026');
       expect(html).toContain('30mm Aviation Ordnance');
       expect(html).toContain('property="og:title"');
       expect(html).toContain('property="og:description"');
@@ -70,7 +71,7 @@ describe('Cycle 6B · PWA Manifest & Multi-Entry HTML SEO / OpenGraph Parity', (
     }
   });
 
-  it('ships valid subpath-safe public/manifest.webmanifest with 34/10/854/30mm copy and 4 PWA shortcuts', () => {
+  it('ships valid subpath-safe public/manifest.webmanifest with 100/10/2,174/1415–2026/30mm copy and 4 PWA shortcuts', () => {
     const raw = fs.readFileSync(
       path.join(PUBLIC_DIR, 'manifest.webmanifest'),
       'utf8'
@@ -98,9 +99,10 @@ describe('Cycle 6B · PWA Manifest & Multi-Entry HTML SEO / OpenGraph Parity', (
     expect(manifest.scope).toBe('./');
     expect(manifest.display).toBe('standalone');
     expect(manifest.theme_color).toBe('#0b1120');
-    expect(manifest.description).toContain('34 Exhibits');
+    expect(manifest.description).toContain('100 Exhibits');
     expect(manifest.description).toContain('10 Halls');
-    expect(manifest.description).toContain('854 Parts');
+    expect(manifest.description).toContain('2,174 Parts');
+    expect(manifest.description).toContain('1415–2026');
     expect(manifest.description).toContain('30mm Aviation Ordnance');
 
     expect(Array.isArray(manifest.shortcuts)).toBe(true);

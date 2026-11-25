@@ -162,7 +162,7 @@ describe('Cycle 19B — Armorer Passport SVG Mastery Ring & 1080p Director Reel 
         )
     );
     expect(masterEnHtml).toContain('100%');
-    expect(masterEnHtml).toContain('ALL 34/34 EXHIBITS CERTIFIED');
+    expect(masterEnHtml).toContain('ALL 100/100 EXHIBITS CERTIFIED');
     expect(masterEnHtml).not.toContain('data-testid="passport-next-drill-btn"');
     expect(CJK_RE.test(masterEnHtml)).toBe(false);
 

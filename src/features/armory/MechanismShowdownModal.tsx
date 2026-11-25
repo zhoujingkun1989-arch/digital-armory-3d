@@ -648,14 +648,14 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
 
       {/* Main Scrollable Stage */}
       <div className="showdown-scroll-body">
-        {/* Universal Free-Pair 34 × 33 Custom Duel Builder (Always Accessible Across Matrix & Showdown) */}
+        {/* Universal Free-Pair Custom Duel Builder (Always Accessible Across Matrix & Showdown) */}
         <section
           className="sd-staging-bar sd-custom-duel-bar"
           data-testid="sd-custom-duel-bar"
           aria-label={
             lang === 'zh'
-              ? '34 × 33 全馆自由配对对决构建器'
-              : 'Free-Pair 34 x 33 Custom Duel Builder'
+              ? `${allProfiles.length} × ${Math.max(1, allProfiles.length - 1)} 全馆自由配对对决构建器`
+              : `Free-Pair ${allProfiles.length} × ${Math.max(1, allProfiles.length - 1)} Custom Duel Builder`
           }
         >
           <div className="sd-custom-duel-pickers">
