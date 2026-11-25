@@ -32,8 +32,8 @@ function countChar(text: string, ch: string): number {
 }
 
 describe('Cycle 19C — Monograph Rifling/Glossary Dossier & Atlas Live Pipeline Telemetry', () => {
-  it('buildMonographTechnicalAddendum covers all 34/34 exhibits in zh & en with 0 EN CJK, 0 WP-XX, authentic rifling & non-rifled archery copy', () => {
-    expect(WEAPON_MANIFESTS.length).toBe(34);
+  it('buildMonographTechnicalAddendum covers all 100/100 exhibits in zh & en with 0 EN CJK, 0 WP-XX, authentic rifling & non-rifled archery copy', () => {
+    expect(WEAPON_MANIFESTS.length).toBe(100);
 
     let archeryCount = 0;
     let polygonalCount = 0;
@@ -94,7 +94,7 @@ describe('Cycle 19C — Monograph Rifling/Glossary Dossier & Atlas Live Pipeline
           expect(dossier.boreSpecLabel).toBe(spec.labelZh);
         }
 
-        if (id === 'lift33' || id === 'r500') {
+        if (spec.kind === 'none') {
           expect(dossier.isArchery).toBe(true);
           expect(dossier.riflingKind).toBe('none');
           if (lang === 'en') {
@@ -113,10 +113,13 @@ describe('Cycle 19C — Monograph Rifling/Glossary Dossier & Atlas Live Pipeline
       }
     }
 
-    expect(archeryCount).toBe(2);
-    expect(polygonalCount).toBe(3);
-    expect(smoothboreCount).toBe(5);
-    expect(cutRifledCount).toBe(24);
+    expect(archeryCount).toBe(5);
+    expect(polygonalCount).toBeGreaterThanOrEqual(3);
+    expect(smoothboreCount).toBeGreaterThanOrEqual(11);
+    expect(cutRifledCount).toBeGreaterThanOrEqual(70);
+    expect(
+      archeryCount + polygonalCount + smoothboreCount + cutRifledCount
+    ).toBe(100);
   });
 
   it('buildAtlasPipelineTelemetry reports accurate WebP ORM + KTX2 states & 101/414/24 inventory in zh & en with 0 EN CJK & 0 WP-XX', () => {

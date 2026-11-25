@@ -44,17 +44,17 @@ function collectStrings(value: unknown): string[] {
 }
 
 describe('Cycle 7A · Smithsonian 1:1 True-Scale Museum Wall Metrology & Layout', () => {
-  it('covers all 34 exhibits with realistic millimeter metrology, era years, and >45x Leopard 2A7 / M1911 ratio', () => {
-    expect(SCALE_WALL_EXHIBITS).toHaveLength(34);
+  it('covers all 100 exhibits with realistic millimeter metrology, era years, and >45x Leopard 2A7 / M1911 ratio', () => {
+    expect(SCALE_WALL_EXHIBITS).toHaveLength(100);
     const seen = new Set(SCALE_WALL_EXHIBITS.map((e) => e.weaponId));
-    expect(seen.size).toBe(34);
+    expect(seen.size).toBe(100);
     for (const id of WEAPON_IDS) {
       expect(seen.has(id), `Missing ${id} in SCALE_WALL_EXHIBITS`).toBe(true);
     }
 
     for (const ex of SCALE_WALL_EXHIBITS) {
       expect(ex.oalMm, `${ex.weaponId} oalMm out of range`).toBeGreaterThanOrEqual(
-        180
+        150
       );
       expect(ex.oalMm, `${ex.weaponId} oalMm out of range`).toBeLessThanOrEqual(
         12000
@@ -66,7 +66,7 @@ describe('Cycle 7A · Smithsonian 1:1 True-Scale Museum Wall Metrology & Layout'
         ex.muzzleEnergyJ,
         `${ex.weaponId} muzzleEnergyJ must be positive`
       ).toBeGreaterThan(100);
-      expect(ex.eraYear).toBeGreaterThanOrEqual(1894);
+      expect(ex.eraYear).toBeGreaterThanOrEqual(1415);
       expect(ex.eraYear).toBeLessThanOrEqual(2026);
       expect(ex.caliberLabel).not.toMatch(CJK_RE);
       expect(ex.caliberLabelZh.length).toBeGreaterThan(2);

@@ -206,8 +206,8 @@ describe('Cycle 20E — Heavy Ordnance Acoustic Layer & Acoustic Studio Deck Tel
     useAppStore.getState().resetAll();
   });
 
-  it('provides valid bilingual getActiveAcousticTelemetry across all 34 exhibits × 4 rooms with 0 EN CJK & 0 WP-XX', () => {
-    expect(WEAPON_MANIFESTS.length).toBe(34);
+  it('provides valid bilingual getActiveAcousticTelemetry across all 100 exhibits × 4 rooms with 0 EN CJK & 0 WP-XX', () => {
+    expect(WEAPON_MANIFESTS.length).toBe(100);
     expect(ACOUSTIC_TELEMETRY_ROOMS).toEqual([
       'bench_close',
       'indoor_range',

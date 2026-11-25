@@ -63,10 +63,11 @@ describe('Cycle 13A — Armory Vault Inline Sort & Operating-Mechanism Filter St
     expect(curatorial.map((w) => w.id)).toEqual(snapshotIds);
     expect(curatorial).not.toBe(ARMORY_WEAPONS);
 
-    // Chronological 1894 -> 2024 starts with Winchester M1894 and syncs 1:1 with HistoryTimeline
+    // Chronological 1415 -> 2024 starts with English Yew Warbow (1415) and syncs 1:1 with HistoryTimeline
     const byYear = sortAndFilterArmoryWeapons(ARMORY_WEAPONS, 'year_asc', 'all');
     expect(byYear).toHaveLength(WEAPON_MANIFESTS.length);
-    expect(byYear[0].id).toBe('winchester1894');
+    expect(byYear[0].id).toBe('englishlongbow');
+    expect(EXHIBIT_DESIGN_YEAR.englishlongbow).toBe(1415);
     expect(EXHIBIT_DESIGN_YEAR.winchester1894).toBe(1894);
     for (let i = 1; i < byYear.length; i++) {
       expect(
@@ -90,7 +91,8 @@ describe('Cycle 13A — Armory Vault Inline Sort & Operating-Mechanism Filter St
     );
     expect(byEnergy).toHaveLength(WEAPON_MANIFESTS.length);
     const eIdx = (id: string) => byEnergy.findIndex((w) => w.id === id);
-    expect(eIdx('ztz99a')).toBe(0);
+    expect(eIdx('ztz99a')).toBeLessThan(eIdx('m82a1'));
+    expect(eIdx('t90m')).toBeLessThan(eIdx('m82a1'));
     expect(eIdx('leopard2a7')).toBeLessThan(eIdx('m82a1'));
     expect(eIdx('m1a2')).toBeLessThan(eIdx('m82a1'));
     expect(eIdx('gau8')).toBeLessThan(eIdx('m82a1'));
@@ -111,8 +113,9 @@ describe('Cycle 13A — Armory Vault Inline Sort & Operating-Mechanism Filter St
       'all'
     );
     const lIdx = (id: string) => byLength.findIndex((w) => w.id === id);
-    expect(byLength[0].id).toBe('leopard2a7');
-    expect(byLength[1].id).toBe('ztz99a');
+    expect(byLength[0].id).toBe('challenger2');
+    expect(byLength[1].id).toBe('leopard2a7');
+    expect(byLength[2].id).toBe('ztz99a');
     expect(lIdx('ztz99a')).toBeLessThan(lIdx('gau8'));
     expect(lIdx('gau8')).toBeLessThan(lIdx('m82a1'));
     expect(lIdx('m82a1')).toBeLessThan(lIdx('g17'));
@@ -191,14 +194,30 @@ describe('Cycle 13A — Armory Vault Inline Sort & Operating-Mechanism Filter St
     expect(idsFor('manual_action')).toEqual(
       expect.arrayContaining(['k98k', 'awm', 'winchester1894', 'rem870', 'python'])
     );
-    expect(idsFor('rotary_cannon')).toEqual(['m134', 'gau8']);
+    expect(idsFor('rotary_cannon')).toEqual([
+      'm134',
+      'gau8',
+      'm61vulcan',
+      'bofors40',
+      'm777',
+    ]);
     expect(idsFor('smoothbore_armor')).toEqual([
       'ztz99a',
       'm1a2',
       'leopard2a7',
       'tiger1',
+      't90m',
+      'challenger2',
+      'merkava4',
+      't34_85',
     ]);
-    expect(idsFor('compound_archery')).toEqual(['lift33', 'r500']);
+    expect(idsFor('compound_archery')).toEqual([
+      'lift33',
+      'r500',
+      'hoytrx8',
+      'excalibur',
+      'englishlongbow',
+    ]);
     expect(Object.keys(EXHIBIT_MECHANISM_TAGS)).toHaveLength(
       WEAPON_MANIFESTS.length
     );
@@ -294,7 +313,7 @@ describe('Cycle 13A — Armory Vault Inline Sort & Operating-Mechanism Filter St
     );
     expect(CJK_RE.test(stripLangSwitchPill(yearEn))).toBe(false);
 
-    // Graceful empty intersection renders 0 / 34 counter & 1-click reset CTA
+    // Graceful empty intersection renders 0 / 100 counter & 1-click reset CTA
     const emptyEn = withSsrLang('en', () =>
       renderToStaticMarkup(
         React.createElement(ArmoryView, {
@@ -305,7 +324,7 @@ describe('Cycle 13A — Armory Vault Inline Sort & Operating-Mechanism Filter St
         })
       )
     );
-    expect(emptyEn).toContain('0 / 34');
+    expect(emptyEn).toContain('0 / 100');
     expect(emptyEn).toContain('data-testid="armory-rack-empty"');
     expect(emptyEn).toContain('data-testid="armory-empty-reset-btn"');
     expect(CJK_RE.test(stripLangSwitchPill(emptyEn))).toBe(false);

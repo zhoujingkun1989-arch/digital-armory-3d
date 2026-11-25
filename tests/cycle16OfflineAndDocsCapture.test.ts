@@ -11,6 +11,7 @@ import {
   OFFLINE_RUNTIME_CACHE_NAME,
   summarizeOfflinePack,
 } from '../src/engine/offline/offlineMuseumManager';
+import { FLAGSHIP_34_IDS } from '../src/weapons/expansion/centennialTypes';
 import { WEAPON_MANIFESTS } from '../src/weapons/manifests';
 import type { WeaponId } from '../src/weapons/types';
 
@@ -122,17 +123,19 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
     });
   });
 
-  describe('Offline Museum Pack On-Disk Asset Verification (All 34 Exhibits)', () => {
+  describe('Offline Museum Pack On-Disk Asset Verification (All 100 Exhibits)', () => {
     const allWeaponIds = WEAPON_MANIFESTS.map((m) => m.id) as WeaponId[];
+    const flagshipSet = new Set<string>(FLAGSHIP_34_IDS);
 
     it('resolves 100% real existing files inside public/ for every exhibit (0 dangling/404 paths)', () => {
-      expect(allWeaponIds).toHaveLength(34);
+      expect(allWeaponIds).toHaveLength(100);
 
       const missingFiles: string[] = [];
       for (const weaponId of allWeaponIds) {
         const manifest = buildExhibitOfflineAssetUrls(weaponId, '/');
-        expect(manifest.urls.length).toBeGreaterThanOrEqual(8);
-        expect(manifest.estimatedMb).toBeGreaterThan(2);
+        const isFlagship = flagshipSet.has(weaponId);
+        expect(manifest.urls.length).toBeGreaterThanOrEqual(isFlagship ? 8 : 2);
+        expect(manifest.estimatedMb).toBeGreaterThanOrEqual(isFlagship ? 2 : 1);
 
         for (const url of manifest.urls) {
           expect(url.startsWith('/')).toBe(true);
@@ -161,7 +164,7 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
       expect(legendsPack.estimatedMb).toBeGreaterThan(15);
 
       const armorPack = summarizeOfflinePack(ARMOR_HALL_OFFLINE_IDS, '/');
-      expect(armorPack.weaponIds).toHaveLength(4);
+      expect(armorPack.weaponIds).toHaveLength(8);
       expect(armorPack.estimatedMb).toBeGreaterThan(35);
     });
   });
