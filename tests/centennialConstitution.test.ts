@@ -29,6 +29,7 @@ vi.mock('../src/engine/geometry/csgBuilder', async (importOriginal) => {
   };
 });
 
+import { shouldUsePartVertexColors } from '../src/engine/actors/PartActor';
 import {
   CENTENNIAL_SHARED_MATERIAL_PREFIX,
   clearPbrTextureCache,
@@ -847,5 +848,29 @@ describe('AGENTS.md Rule 4.10 · Unified 100-Exhibit Centennial Visual & Mechani
     expect(section5).toContain('< 10 MB');
     expect(section5).toContain('>= 9.9 / 10.0');
     expect(section5).toContain('>= 9.7 / 10.0');
+  });
+
+  it('Rule 10.1 (PartActor multiplicative albedo lock): preserves vertexColors & 1:1 ORM metalness for shared centennial_mat_* maps', () => {
+    // Multiplicative Centennial detail maps MUST keep vertexColors=true even when albedoReady=true
+    expect(shouldUsePartVertexColors(false, true, true)).toBe(true);
+    // Flagship full-color Cycles baked atlases MUST disable vertexColors once albedoReady=true
+    expect(shouldUsePartVertexColors(false, true, false)).toBe(false);
+    // Fallback before albedo loads keeps vertexColors=true
+    expect(shouldUsePartVertexColors(false, false, false)).toBe(true);
+    expect(shouldUsePartVertexColors(false, false, true)).toBe(true);
+    // Optical X-Ray housings ALWAYS disable vertexColors
+    expect(shouldUsePartVertexColors(true, false, true)).toBe(false);
+    expect(shouldUsePartVertexColors(true, true, true)).toBe(false);
+    expect(shouldUsePartVertexColors(true, true, false)).toBe(false);
+
+    const partActorSrc = fs.readFileSync(
+      path.resolve(__dirname, '../src/engine/actors/PartActor.tsx'),
+      'utf-8'
+    );
+    expect(partActorSrc).toContain('isCentennialSharedTextureFile');
+    expect(partActorSrc).toContain('shouldUsePartVertexColors');
+    expect(partActorSrc).toContain("${useVertexColors ? 'vc1' : 'vc0'}");
+    expect(partActorSrc).toContain('isMultiplicativeDetailMap\n                        ? 1.0');
+    expect(partActorSrc).toContain('isMultiplicativeDetailMap\n        ? 0.85');
   });
 });
