@@ -9,6 +9,7 @@ import type {
   FiringPhaseInfo,
   KeyframeStep,
   PartKinematicDelta,
+  PbrBindingSpec,
   TimelinePresetItem,
   WeaponId,
   WeaponPartSpec,
@@ -1395,6 +1396,503 @@ function computeBallisticsForBlueprint(
 }
 
 // ============================================================================
+// Shared 13-Material Centennial 1024×1024 5-Ch ORM PBR Binding Resolver
+// ----------------------------------------------------------------------------
+// Deterministically binds every single one of the 66 × 20 = 1,320 Centennial
+// parts to one of the 13 seamless museum PBR material suites (`centennial_mat_*`,
+// pooled under `ownerWeapon = 'shared'` in `pbrManager.ts` for zero VRAM churn).
+// ============================================================================
+
+export const CENTENNIAL_SHARED_MATERIAL_SUITES = [
+  'oiled_walnut',
+  'russian_laminate',
+  'beech_yew',
+  'blued_steel',
+  'parkerized_steel',
+  'anodized_alloy',
+  'brushed_stainless',
+  'tactical_polymer',
+  'checkered_grip',
+  'cast_rha_armor',
+  'carc_olive',
+  'carc_desert',
+  'cartridge_brass',
+] as const;
+
+export type CentennialMaterialSuiteId =
+  (typeof CENTENNIAL_SHARED_MATERIAL_SUITES)[number];
+
+const CENTENNIAL_SUITE_NORMAL_SCALE: Readonly<
+  Record<CentennialMaterialSuiteId, number>
+> = {
+  oiled_walnut: 0.66,
+  russian_laminate: 0.64,
+  beech_yew: 0.6,
+  blued_steel: 0.48,
+  parkerized_steel: 0.58,
+  anodized_alloy: 0.5,
+  brushed_stainless: 0.44,
+  tactical_polymer: 0.52,
+  checkered_grip: 0.76,
+  cast_rha_armor: 0.72,
+  carc_olive: 0.62,
+  carc_desert: 0.66,
+  cartridge_brass: 0.44,
+};
+
+const RUSSIAN_LAMINATE_IDS: ReadonlySet<CentennialWeaponId> = new Set([
+  'ak47',
+  'pkm',
+  'rpk74',
+  'svd',
+  'ppsh41',
+  'dp28',
+  'mosin',
+  'sks',
+  'ks23',
+]);
+
+const POLYMER_BODY_IDS: ReadonlySet<CentennialWeaponId> = new Set([
+  'g36c',
+  'qbz95',
+  'tavor',
+  'famas',
+  'mp7',
+  'ump45',
+  'scorpion',
+  'aa12',
+]);
+
+const POLYMER_MAG_IDS: ReadonlySet<CentennialWeaponId> = new Set([
+  'ak74m',
+  'hk416',
+  'qbz95',
+  'tavor',
+  'g36c',
+  'sig550',
+  'mp7',
+  'ump45',
+  'scorpion',
+  'bizon',
+  'aa12',
+  'saiga12',
+  'fiveseven',
+]);
+
+const ANODIZED_RECEIVER_IDS: ReadonlySet<CentennialWeaponId> = new Set([
+  'm16a1',
+  'hk416',
+  'sr25',
+  'xm7',
+  'wa2000',
+  'm200',
+  'mk14ebr',
+  'mossberg500',
+]);
+
+const ANODIZED_HANDGUARD_IDS: ReadonlySet<CentennialWeaponId> = new Set([
+  'hk416',
+  'sr25',
+  'xm7',
+  'm200',
+  'mk14ebr',
+]);
+
+const BLUED_CLASSIC_IDS: ReadonlySet<CentennialWeaponId> = new Set([
+  'ak47',
+  'fnfal',
+  'sks',
+  'pkm',
+  'bar1918',
+  'dp28',
+  'mp40',
+  'ppsh41',
+  'svd',
+  'mosin',
+  'leeenfield',
+  'springfield1903',
+  'winchester1887',
+  'ks23',
+  'cz75',
+  'ppk',
+  'c96',
+  'tt33',
+  'saa1873',
+]);
+
+const BRIGHT_CARRIER_IDS: ReadonlySet<CentennialWeaponId> = new Set([
+  'ak47',
+  'sks',
+  'm16a1',
+  'svd',
+  'mosin',
+  'leeenfield',
+  'springfield1903',
+  'ppsh41',
+  'bar1918',
+  'winchester1887',
+  'c96',
+  'm14',
+]);
+
+const ALUMINUM_MAG_IDS: ReadonlySet<CentennialWeaponId> = new Set([
+  'm16a1',
+  'sr25',
+  'xm7',
+]);
+
+/**
+ * Resolves the authentic museum PBR material suite from the 13 shared
+ * `centennial_mat_*` suites for any of the 66 Centennial exhibits × 20 slots.
+ */
+export function resolveCentennialPartMaterialSuite(
+  bp: CentennialWeaponBlueprint,
+  slot: CentennialPartSlot
+): CentennialMaterialSuiteId {
+  // 1. 1:1 Main Battle Tanks (`t90m`, `challenger2`, `merkava4`, `t34_85`)
+  if (bp.category === 'armor') {
+    const hullArmor: CentennialMaterialSuiteId =
+      bp.id === 't34_85'
+        ? 'cast_rha_armor'
+        : bp.id === 'merkava4'
+          ? 'carc_desert'
+          : 'carc_olive';
+
+    switch (slot) {
+      case 'receiver':
+      case 'bolt_carrier':
+      case 'handguard':
+      case 'stock':
+      case 'grip':
+      case 'mount_rail':
+        return hullArmor;
+      case 'gas_system':
+        return 'cast_rha_armor';
+      case 'barrel':
+      case 'muzzle':
+      case 'trigger':
+      case 'hammer':
+      case 'mag_body':
+      case 'mag_base':
+        return 'parkerized_steel';
+      case 'optic':
+        return 'anodized_alloy';
+      case 'bolt':
+      case 'recoil_spring':
+      case 'hammer_spring':
+      case 'mag_spring':
+        return 'brushed_stainless';
+      case 'follower':
+      case 'selector':
+        return 'cartridge_brass';
+    }
+  }
+
+  // 2. 1:1 Heavy Ordnance (`m61vulcan`, `bofors40`, `m777`)
+  if (bp.category === 'ordnance') {
+    const primaryChassis: CentennialMaterialSuiteId =
+      bp.id === 'bofors40' ? 'cast_rha_armor' : 'anodized_alloy';
+
+    switch (slot) {
+      case 'receiver':
+      case 'handguard':
+      case 'stock':
+      case 'mount_rail':
+      case 'optic':
+        return primaryChassis;
+      case 'bolt_carrier':
+        return bp.id === 'm61vulcan' ? 'anodized_alloy' : 'parkerized_steel';
+      case 'grip':
+        return bp.id === 'm61vulcan' ? 'parkerized_steel' : 'checkered_grip';
+      case 'barrel':
+      case 'muzzle':
+      case 'trigger':
+      case 'gas_system':
+      case 'mag_body':
+      case 'mag_base':
+        return 'parkerized_steel';
+      case 'bolt':
+      case 'recoil_spring':
+      case 'hammer':
+      case 'hammer_spring':
+      case 'mag_spring':
+        return 'brushed_stainless';
+      case 'follower':
+      case 'selector':
+        return 'cartridge_brass';
+    }
+  }
+
+  // 3. Archery (`englishlongbow`, `hoytrx8`, `excalibur`)
+  if (bp.category === 'archery') {
+    if (bp.archetype === 'bow_longbow') {
+      switch (slot) {
+        case 'receiver':
+        case 'barrel':
+        case 'bolt':
+        case 'stock':
+        case 'handguard':
+          return 'beech_yew';
+        case 'grip':
+          return 'checkered_grip';
+        case 'mag_body':
+        case 'mag_base':
+        case 'optic':
+        case 'mount_rail':
+          return 'oiled_walnut';
+        case 'muzzle':
+        case 'selector':
+        case 'follower':
+        case 'trigger':
+          return 'cartridge_brass';
+        case 'bolt_carrier':
+        case 'recoil_spring':
+        case 'gas_system':
+        case 'hammer':
+        case 'hammer_spring':
+        case 'mag_spring':
+          return 'tactical_polymer';
+      }
+    }
+
+    // Modern compound bow & recurve crossbow (`hoytrx8`, `excalibur`)
+    switch (slot) {
+      case 'receiver':
+      case 'barrel':
+      case 'stock':
+      case 'handguard':
+      case 'mag_body':
+      case 'mag_base':
+        return 'tactical_polymer';
+      case 'grip':
+        return 'checkered_grip';
+      case 'muzzle':
+      case 'selector':
+      case 'optic':
+      case 'mount_rail':
+        return 'anodized_alloy';
+      case 'follower':
+        return 'cartridge_brass';
+      default:
+        return 'brushed_stainless';
+    }
+  }
+
+  // 4. Revolvers (`saa1873`, `sw500`)
+  if (bp.archetype === 'revolver_sa' || bp.archetype === 'revolver_da') {
+    const isStainlessRev = bp.finishPalette === 'stainless';
+    switch (slot) {
+      case 'grip':
+        return isStainlessRev ? 'checkered_grip' : 'oiled_walnut';
+      case 'follower':
+      case 'selector':
+        return 'cartridge_brass';
+      case 'optic':
+      case 'mount_rail':
+        return isStainlessRev ? 'anodized_alloy' : 'blued_steel';
+      case 'bolt':
+      case 'bolt_carrier':
+      case 'trigger':
+      case 'hammer':
+      case 'gas_system':
+      case 'recoil_spring':
+      case 'hammer_spring':
+      case 'mag_spring':
+        return 'brushed_stainless';
+      default:
+        return isStainlessRev ? 'brushed_stainless' : 'blued_steel';
+    }
+  }
+
+  // 5. Semi-Auto & Broomhandle Pistols
+  if (
+    bp.archetype === 'pistol_slide' ||
+    bp.archetype === 'pistol_broomhandle'
+  ) {
+    const isPolymerFrame = bp.id === 'usp45' || bp.id === 'fiveseven';
+    const isAlloyFrame = bp.id === 'beretta92' || bp.id === 'p226';
+    const isBluedSlide =
+      bp.id === 'beretta92' ||
+      bp.id === 'cz75' ||
+      bp.id === 'ppk' ||
+      bp.id === 'c96' ||
+      bp.id === 'tt33';
+
+    switch (slot) {
+      case 'grip':
+        if (bp.id === 'c96') return 'oiled_walnut';
+        if (bp.id === 'ppk') return 'beech_yew';
+        return 'checkered_grip';
+      case 'receiver':
+      case 'stock':
+      case 'handguard':
+      case 'mount_rail':
+        if (isPolymerFrame) return 'tactical_polymer';
+        if (isAlloyFrame) return 'anodized_alloy';
+        return 'blued_steel';
+      case 'bolt_carrier':
+      case 'barrel':
+      case 'muzzle':
+      case 'optic':
+      case 'trigger':
+        return isBluedSlide ? 'blued_steel' : 'parkerized_steel';
+      case 'mag_body':
+        return bp.id === 'fiveseven'
+          ? 'tactical_polymer'
+          : isBluedSlide
+            ? 'blued_steel'
+            : 'parkerized_steel';
+      case 'mag_base':
+        return isPolymerFrame ? 'tactical_polymer' : 'parkerized_steel';
+      case 'follower':
+      case 'selector':
+        return 'cartridge_brass';
+      case 'bolt':
+      case 'recoil_spring':
+      case 'hammer':
+      case 'hammer_spring':
+      case 'mag_spring':
+      case 'gas_system':
+        return 'brushed_stainless';
+    }
+  }
+
+  // 6. Standard Small Arms (Rifles, LMGs, SMGs, Snipers, Shotguns)
+  const woodSuite: CentennialMaterialSuiteId | null =
+    bp.id === 'stg44'
+      ? 'beech_yew'
+      : RUSSIAN_LAMINATE_IDS.has(bp.id)
+        ? 'russian_laminate'
+        : bp.cad.hasWoodFurniture
+          ? 'oiled_walnut'
+          : null;
+
+  const isPolymerBody = POLYMER_BODY_IDS.has(bp.id);
+  const isAnodizedRec = ANODIZED_RECEIVER_IDS.has(bp.id);
+  const primarySteel: CentennialMaterialSuiteId =
+    bp.finishPalette === 'stainless'
+      ? 'brushed_stainless'
+      : BLUED_CLASSIC_IDS.has(bp.id)
+        ? 'blued_steel'
+        : 'parkerized_steel';
+
+  switch (slot) {
+    case 'receiver':
+      if (isPolymerBody) return 'tactical_polymer';
+      if (isAnodizedRec) return 'anodized_alloy';
+      return primarySteel;
+
+    case 'barrel':
+    case 'muzzle':
+      if (bp.id === 'aa12') return 'brushed_stainless';
+      return primarySteel;
+
+    case 'bolt_carrier':
+      return BRIGHT_CARRIER_IDS.has(bp.id)
+        ? 'brushed_stainless'
+        : primarySteel;
+
+    case 'bolt':
+    case 'recoil_spring':
+    case 'hammer':
+    case 'hammer_spring':
+    case 'mag_spring':
+    case 'gas_system':
+      return 'brushed_stainless';
+
+    case 'handguard':
+      if (bp.id === 'ak47' || bp.id === 'svd' || bp.id === 'sks' || bp.id === 'mosin' || bp.id === 'dp28' || bp.id === 'ppsh41' || bp.id === 'ks23') {
+        return 'russian_laminate';
+      }
+      if (bp.id === 'stg44') return 'parkerized_steel';
+      if (bp.cad.hasWoodFurniture && woodSuite) return woodSuite;
+      if (ANODIZED_HANDGUARD_IDS.has(bp.id)) return 'anodized_alloy';
+      if (bp.id === 'sten' || bp.id === 'm2hb' || bp.id === 'mac10') {
+        return 'parkerized_steel';
+      }
+      return 'tactical_polymer';
+
+    case 'stock':
+      if (woodSuite && (bp.cad.hasWoodFurniture || bp.id === 'pkm' || bp.id === 'rpk74')) {
+        return woodSuite;
+      }
+      if (bp.id === 'm2hb' || bp.id === 'sten' || bp.id === 'mac10' || bp.id === 'mp40') {
+        return primarySteel;
+      }
+      if (bp.id === 'm200' || bp.id === 'mk14ebr') return 'anodized_alloy';
+      return 'tactical_polymer';
+
+    case 'grip':
+      if (bp.id === 'm2hb') return 'oiled_walnut';
+      if (bp.id === 'sten') return 'parkerized_steel';
+      if (
+        bp.id === 'ppsh41' ||
+        bp.id === 'mosin' ||
+        bp.id === 'sks' ||
+        bp.id === 'dp28' ||
+        bp.id === 'svd' ||
+        bp.id === 'ks23' ||
+        bp.id === 'ak47'
+      ) {
+        return 'russian_laminate';
+      }
+      if (bp.id === 'stg44') return 'beech_yew';
+      if (
+        bp.cad.hasWoodFurniture &&
+        (bp.id === 'm14' ||
+          bp.id === 'bar1918' ||
+          bp.id === 'leeenfield' ||
+          bp.id === 'springfield1903' ||
+          bp.id === 'winchester1887' ||
+          bp.id === 'wa2000')
+      ) {
+        return 'oiled_walnut';
+      }
+      return 'checkered_grip';
+
+    case 'optic':
+      return bp.cad.hasOptic ? 'anodized_alloy' : primarySteel;
+
+    case 'mount_rail':
+      if (bp.id === 'hk416' || bp.id === 'sr25' || bp.id === 'xm7' || bp.id === 'm200' || bp.id === 'mk14ebr') {
+        return 'anodized_alloy';
+      }
+      return primarySteel;
+
+    case 'trigger':
+      return primarySteel;
+
+    case 'selector':
+    case 'follower':
+      return 'cartridge_brass';
+
+    case 'mag_body':
+      if (POLYMER_MAG_IDS.has(bp.id)) return 'tactical_polymer';
+      if (ALUMINUM_MAG_IDS.has(bp.id)) return 'anodized_alloy';
+      return primarySteel;
+
+    case 'mag_base':
+      if (POLYMER_MAG_IDS.has(bp.id)) return 'tactical_polymer';
+      return primarySteel;
+  }
+}
+
+/** Builds a `PbrBindingSpec` pointing to the shared 1024×1024 museum suite. */
+export function resolveCentennialPartPbrBinding(
+  bp: CentennialWeaponBlueprint,
+  slot: CentennialPartSlot
+): PbrBindingSpec {
+  const suite = resolveCentennialPartMaterialSuite(bp, slot);
+  return {
+    albedoFile: `centennial_mat_${suite}_albedo.webp`,
+    normalFile: `centennial_mat_${suite}_normal.webp`,
+    roughnessFile: `centennial_mat_${suite}_roughness.webp`,
+    normalScale: CENTENNIAL_SUITE_NORMAL_SCALE[suite],
+    repeat: 1,
+  };
+}
+
+// ============================================================================
 // Public Factory API
 // ============================================================================
 
@@ -1407,12 +1905,15 @@ export function buildCentennialPluginForBlueprint(
   const layout = computeCentennialPartLayout(bp);
   const ctx = createKinematicContext(bp, layout);
 
+  const pbrBindings: Record<string, PbrBindingSpec> = {};
   const parts: WeaponPartSpec[] = CENTENNIAL_PART_SLOTS.map((slot) => {
+    const partId = centennialPartId(bp.id, slot);
     const meta = resolveCentennialPartMeta(bp, slot);
     const assembled = layout.assembledPos[slot];
     const explodeOffset = layout.explodeOffset[slot];
+    pbrBindings[partId] = resolveCentennialPartPbrBinding(bp, slot);
     return {
-      id: centennialPartId(bp.id, slot),
+      id: partId,
       bomCode: meta.bomCode,
       nameZh: meta.nameZh,
       calloutLabel: meta.calloutLabelZh,
@@ -1449,7 +1950,7 @@ export function buildCentennialPluginForBlueprint(
     },
     computeBallisticsState: (fRaw: number) =>
       computeBallisticsForBlueprint(ctx, fRaw),
-    pbrBindings: {},
+    pbrBindings,
     pbrSuites: [],
   };
 }
