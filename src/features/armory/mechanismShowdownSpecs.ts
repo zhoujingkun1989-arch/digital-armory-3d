@@ -2894,6 +2894,211 @@ export const CLASSIC_RIVALRY_SEEDS: readonly ClassicRivalrySeed[] = [
       en: 'Two 1:1 titans of modern ordnance: ZTZ-99A concentrates 7.60 MJ into one 1,780 m/s 125mm dart defeating 700+ mm frontal composite armor, while GAU-8/A delivers 65 rounds (13.1 MJ aggregate) per second onto vulnerable roof and engine-deck armor from a diving A-10!',
     },
   },
+  // --- Centennial Expansion Rivalries (31..42) ---
+  {
+    id: 'ak47_vs_m16a1',
+    weaponA: 'ak47',
+    weaponB: 'm16a1',
+    pillLabel: {
+      zh: 'AK-47 vs M16A1',
+      en: 'AK-47 vs M16A1',
+    },
+    headline: {
+      zh: '冷战双雄世纪交锋：大公差长行程活塞 7.62×39mm vs 轻量化斯通纳气吹 5.56×45mm',
+      en: 'Cold War Titans: Long-Stroke Piston 7.62x39mm vs Direct Impingement 5.56x45mm',
+    },
+    verdict: {
+      zh: '20 世纪最具代表性的两种步兵哲学：AK-47 Type 3 以重型一体式长行程活塞、双大闭锁突笋与大间隙导轨铸就泥沙极寒下的钢铁可靠性（715 m/s）；M16A1 则凭借 7075-T6 锻铝机匣、直托共轴与 990 m/s 小口径高速弹将全枪减重近 1 kg 并大幅压低后坐上跳。',
+      en: 'The defining infantry rivalry of the 20th century: the AK-47 Type 3 pairs a unitized long-stroke piston, generous receiver clearances, and twin locking lugs (715 m/s) for extreme-environment reliability, while the M16A1 uses forged aluminum, inline recoil, and direct impingement at 990 m/s to shed nearly 1 kg and flatten trajectory.',
+    },
+  },
+  {
+    id: 'fnfal_vs_g3a3',
+    weaponA: 'fnfal',
+    weaponB: 'g3a3',
+    pillLabel: {
+      zh: 'FN FAL vs H&K G3A3',
+      en: 'FN FAL vs H&K G3A3',
+    },
+    headline: {
+      zh: '北约 7.62mm 战斗步枪双璧：可调导气偏移闭锁 vs 4:1 滚柱延迟半自由枪机',
+      en: 'NATO 7.62 Battle Rifles: Tilting-Bolt Gas Piston vs Roller-Delayed Blowback',
+    },
+    verdict: {
+      zh: '两款定义冷战西欧与全球战场的 7.62×51mm 全威力步枪：FN FAL 采用短行程活塞、多档燃气调节阀与下倾闭锁偏移枪机，配 533 mm 长枪管发挥 3.35 kJ 满额动能；H&K G3A3 取消导气系统，以冲压钢机匣、12 条浮置弹膛槽与双滚柱 4:1 机械杠杆延迟开锁实现极低制造成本。',
+      en: 'Two iconic 7.62x51mm NATO battle rifles: the FN FAL couples an adjustable short-stroke gas piston with a rear-tilting breechblock and 533 mm barrel (3.35 kJ), whereas the H&K G3A3 eliminates the gas system entirely via a stamped steel receiver, fluted chamber, and 4:1 roller-delayed blowback.',
+    },
+  },
+  {
+    id: 'ppsh41_vs_mp40',
+    weaponA: 'ppsh41',
+    weaponB: 'mp40',
+    pillLabel: {
+      zh: 'PPSh-41 波波沙 vs MP 40',
+      en: 'PPSh-41 vs MP 40',
+    },
+    headline: {
+      zh: '二战东线近战冲锋枪宿敌：71 发弹鼓 900 RPM 火力泼水 vs 500 RPM 伸缩复进筒精准可控',
+      en: 'WWII Eastern Front SMGs: 71-Rd Drum 900 RPM vs Telescoping-Spring 500 RPM',
+    },
+    verdict: {
+      zh: '同为开膛自由枪机冲锋枪，却代表截然不同的步兵战术：PPSh-41 以 71 发蜗壳弹鼓、冲压防烫孔散热套筒与 900 RPM 高射速配合 7.62×25mm 托卡列夫弹（488 m/s）形成毁灭性近战弹幕；MP 40 通过三段式伸缩防尘复进筒阻尼与 500 RPM 低射速换取极佳的单手持控与点射精度。',
+      en: 'Both open-bolt straight-blowback icons diverged sharply in doctrine: the PPSh-41 unleashed 900 RPM bursts of 488 m/s 7.62x25mm Tokarev from a 71-round drum inside a perforated barrel shroud, while the MP 40 tamed 9x19mm recoil with a telescoping recoil-spring buffer and controllable 500 RPM cadence.',
+    },
+  },
+  {
+    id: 'mosin_vs_leeenfield',
+    weaponA: 'mosin',
+    weaponB: 'leeenfield',
+    pillLabel: {
+      zh: '莫辛-纳甘 M91/30 vs 李-恩菲尔德 No.4',
+      en: 'Mosin M91/30 vs Lee-Enfield No.4',
+    },
+    headline: {
+      zh: '两次世界大战手动栓动双雄：90° 分体机匣前闭锁 vs 60° 后置突笋 10 发“疯狂一分钟”',
+      en: 'WWI/WWII Bolt Actions: 90-Deg Split-Bridge vs 60-Deg Rear-Lug Mad Minute',
+    },
+    verdict: {
+      zh: '莫辛-纳甘 M91/30 以 730 mm 长枪管、90° 抬栓前闭锁双突笋与 5 发内置弹仓将 7.62×54mmR 推至 865 m/s 高初速；李-恩菲尔德 No.4 采用 60° 短转角后置闭锁突笋、闭栓待击与 10 发双排弹匣，造就单兵每分钟 30+ 发精准急促射的“疯狂一分钟”传奇。',
+      en: 'The Mosin-Nagant M91/30 drives 7.62x54mmR to 865 m/s through a 730 mm barrel with a rugged 90-degree front-locking split-bridge action, while the Lee-Enfield No.4 pairs a fast 60-degree rear-lug bolt, cock-on-closing cam, and 10-round box magazine famed for its rapid-fire Mad Minute.',
+    },
+  },
+  {
+    id: 't90m_vs_merkava4',
+    weaponA: 't90m',
+    weaponB: 'merkava4',
+    pillLabel: {
+      zh: 'T-90M 突破-3 vs 梅卡瓦 Mk.4M',
+      en: 'T-90M Proryv vs Merkava Mk.4M',
+    },
+    headline: {
+      zh: '现代主战坦克两极设计哲学：48 吨低矮转盘自动装弹 vs 65 吨动力前置全向乘员生存',
+      en: 'Modern MBT Doctrines: Carousel Autoloader vs Front-Engine Crew Survivability',
+    },
+    verdict: {
+      zh: 'T-90M 将战斗全重压在 48 吨，依托底置转盘自动装弹机、125mm 2A46M-5 高膛压滑膛炮（7.35 MJ）与化石（Relikt）反应装甲实现紧凑低矮投影；梅卡瓦 Mk.4M 反其道将 1,500 马力动力包置于车体最前方充当附加装甲，配合后置炮塔、车尾步兵舱门与“战利品”主动防护将乘员生存推向极致。',
+      en: 'T-90M keeps combat mass at 48 tonnes with a low-silhouette hull, floor carousel autoloader, Relikt ERA, and high-velocity 125mm 2A46M-5 gun (7.35 MJ); Merkava Mk.4M flips the layout at 65 tonnes, placing its 1,500-hp powerpack upfront as extra armor with a rear turret, rear troop hatch, and Trophy APS.',
+    },
+  },
+  {
+    id: 'saa1873_vs_sw500',
+    weaponA: 'saa1873',
+    weaponB: 'sw500',
+    pillLabel: {
+      zh: '柯尔特 SAA 1873 vs S&W M500 巨蟒',
+      en: 'Colt SAA 1873 vs S&W Model 500',
+    },
+    headline: {
+      zh: '转轮手枪 130 年机械演进：1873 单动和平缔造者 .45 Colt vs 现代 X 框架 .500 马格南步枪级动能',
+      en: 'Revolver Evolution: 1873 Single-Action Peacemaker vs .500 S&W Magnum',
+    },
+    verdict: {
+      zh: '跨越 130 年的转轮棘轮定位血脉：1873 柯尔特“和平缔造者”以固定闭框、右侧装弹门与四响清脆单动击锤确立西部经典（346 J）；2003 年 S&W M500 以超大 X 框架、双闭锁球珠与 213 mm 补偿器枪管将 .500 S&W 弹头推上 3,515 J——枪口动能暴涨超过 10 倍。',
+      en: 'Spanning 130 years of rotating-cylinder mechanics: the 1873 Colt Peacemaker defined single-action simplicity with its solid frame, loading gate, and four-click hammer (346 J), while the 2003 S&W Model 500 scales up to a massive X-Frame with dual lockup and ported 213 mm barrel delivering 3,515 J - over 10x the muzzle energy.',
+    },
+  },
+  {
+    id: 'gau8_vs_m61vulcan',
+    weaponA: 'gau8',
+    weaponB: 'm61vulcan',
+    pillLabel: {
+      zh: 'GAU-8/A 30mm 复仇者 vs M61A1 20mm 火神',
+      en: 'GAU-8/A 30mm vs M61A1 20mm Vulcan',
+    },
+    headline: {
+      zh: '通用电气航空转管双子星：30mm 七管 3,900 RPM 反装甲巨炮 vs 20mm 六管 6,000 RPM 空战格斗炮',
+      en: 'GE Rotary Cannon Siblings: 30mm Tank-Buster vs 20mm Supersonic Dogfighter',
+    },
+    verdict: {
+      zh: '同源外能源静止椭圆凸轮轨道与闭环无链螺旋弹鼓：M61A1“火神”仅长 1.83 米、重 112 kg，却以每秒 100 发（6,000 RPM）20mm 炮弹称霸超音速空战 65 载；GAU-8/A“复仇者”则膨胀为 6.06 米 7 管巨兽，用 30×173mm 贫铀穿甲弹与 45 kN 后坐推力专职撕碎主战坦克顶甲。',
+      en: 'Built on General Electric external-drive sinusoidal cam tracks and linkless closed-loop drums: the compact 1.83 m, 112 kg M61A1 Vulcan dominates supersonic dogfights at 6,000 RPM (100 rds/sec) of 20mm fire, while the 6.06 m seven-barrel GAU-8/A trades cadence (3,900 RPM) for 30x173mm DU armor-piercing punch.',
+    },
+  },
+  {
+    id: 'spas12_vs_aa12',
+    weaponA: 'spas12',
+    weaponB: 'aa12',
+    pillLabel: {
+      zh: 'SPAS-12 双模战斗霰弹 vs AA-12 全自动霰弹',
+      en: 'SPAS-12 Dual-Mode vs AA-12 Full-Auto',
+    },
+    headline: {
+      zh: '战斗霰弹枪两大工程奇观：导气半自动/泵动一键切换 vs 开膛恒定后坐全自动',
+      en: 'Combat Shotguns: Dual-Mode Pump/Semi vs Open-Bolt Constant-Recoil Full-Auto',
+    },
+    verdict: {
+      zh: '弗兰基 SPAS-12 凭借护木按钮自由切换短行程活塞半自动（发射高威力鹿弹）与手动泵动（可靠发射低膛压防暴弹），并以标志性穿孔散热罩与上折钩托名震影史；AA-12 则以超长行程复进缓冲器实现枪机不撞机匣底部的“恒定后坐”全自动 300 RPM 连射，大幅削减 12 号霰弹上跳。',
+      en: 'The Franchi SPAS-12 switches via a forend button between short-stroke gas semi-auto for full-power buckshot and manual pump action for low-pressure tactical loads, whereas the AA-12 fires from an open bolt with an extended recoil stroke that prevents bolt-bottoming for remarkably controllable 300 RPM full-auto 12-gauge fire.',
+    },
+  },
+  {
+    id: 'beretta92_vs_p226',
+    weaponA: 'beretta92',
+    weaponB: 'p226',
+    pillLabel: {
+      zh: '伯莱塔 92FS (M9) vs 西格 P226',
+      en: 'Beretta 92FS (M9) vs SIG P226',
+    },
+    headline: {
+      zh: '1985 美军 XM9 制式手枪终极竞标：开放套筒下摆闭锁块直线枪管 vs 封闭套筒勃朗宁-佩特偏移闭锁',
+      en: 'XM9 Service Pistol Trials: Falling Locking Block vs Tilting Barrel',
+    },
+    verdict: {
+      zh: '1985 年美军 XM9 手枪竞标中仅存的两大双动全金属决赛强者：伯莱塔 92FS 采用顶部大开口套筒与直行枪管下摆双翼闭锁块，抛壳零阻滞且顺滑无比；西格 P226 以封闭冲压套筒、抛壳窗闭锁偏移枪管、精妙待击解脱杆与卓越防泥沙密封性赢得美国海军海豹突击队长期青睐。',
+      en: 'The final two contenders of the 1985 US Army XM9 trials: the Beretta 92FS pairs an open-top slide with a straight-recoiling barrel and falling locking block for ultra-smooth cycling, while the SIG P226 answers with a sealed slide, SIG-Petter tilting-barrel lockup, and ergonomic decocker prized by Navy SEALs.',
+    },
+  },
+  {
+    id: 'stg44_vs_ak47',
+    weaponA: 'stg44',
+    weaponB: 'ak47',
+    pillLabel: {
+      zh: 'StG 44 突击步枪鼻祖 vs AK-47 传奇',
+      en: 'StG 44 Pioneer vs AK-47 Legend',
+    },
+    headline: {
+      zh: '现代突击步枪诞生与定型之辨：7.92×33mm 偏移闭锁冲压先驱 vs 7.62×39mm 回转闭锁极简经典',
+      en: 'Birth of the Assault Rifle: Tilting-Bolt Pioneer vs Rotating-Bolt Legend',
+    },
+    verdict: {
+      zh: '外形相似却内部架构截然不同的两代里程碑：StG 44 率先定义“中间威力弹 + 弧形 30 发弹匣 + 可控全自动”的突击步枪概念，采用上置长行程活塞与下倾偏移闭锁、复进簧深入木托；卡拉什尼科夫的 AK-47 则改用双突笋回转闭锁、内置机匣复进簧与高可维护模块化布局，缔造全球最广泛服役纪录。',
+      en: 'Despite external kinship, their internals diverge completely: the StG 44 pioneered the intermediate-cartridge assault rifle (7.92x33mm Kurz) with a tilting breechblock and buttstock-housed recoil spring, whereas the AK-47 adopted a rotating two-lug bolt, receiver-contained recoil spring, and simplified field stripping.',
+    },
+  },
+  {
+    id: 'famas_vs_aug',
+    weaponA: 'famas',
+    weaponB: 'aug',
+    pillLabel: {
+      zh: 'FAMAS F1 杠杆延迟 vs 斯太尔 AUG 无托',
+      en: 'FAMAS F1 vs Steyr AUG Bullpup',
+    },
+    headline: {
+      zh: '欧洲 1970s 制式无托双星：无导气杠杆延迟半自由枪机 vs 短行程活塞模块化快拆枪管',
+      en: 'Bullpup Icons: Lever-Delayed Blowback vs Short-Stroke Gas Piston',
+    },
+    verdict: {
+      zh: '同在紧凑 760–790 mm 全长内塞入约 500 mm 步枪长管：法国 FAMAS F1 彻底省去导气管，靠机头与机框间一对高精度机械杠杆倍增惯性延迟开锁并爆发出 1,000 RPM 射速；奥地利 AUG A1 则以短行程活塞、三档气阀、5 秒快换枪管与聚合物透明弹匣开启模块化步枪时代。',
+      en: 'Both pack ~500 mm rifle barrels into compact 757-790 mm bullpup envelopes: France\'s FAMAS F1 ditches the gas system for a two-piece lever-delayed blowback bolt cycling near 1,000 RPM, while Austria\'s Steyr AUG A1 pairs an adjustable short-stroke piston, quick-change barrel, and translucent polymer magazines.',
+    },
+  },
+  {
+    id: 'bofors40_vs_m777',
+    weaponA: 'bofors40',
+    weaponB: 'm777',
+    pillLabel: {
+      zh: '博福斯 40mm 高射炮 vs M777A2 155mm 榴弹炮',
+      en: 'Bofors 40mm L/60 vs M777A2 155mm',
+    },
+    headline: {
+      zh: '跨越七十年的重型牵引火炮交响：40mm 顶装 4 发桥夹长后坐高炮 vs 155mm 4.2 吨钛合金数字榴弹炮',
+      en: 'Heavy Artillery: 40mm Recoil Autocannon vs 155mm Titanium Howitzer',
+    },
+    verdict: {
+      zh: '博福斯 40mm L/60 以长后坐自动开闩、立式楔形炮闩与顶置 4 发桥夹连供实现 120 RPM 连续防空火力网，从二战太平洋海战一直服役至 AC-130 炮艇机；M777A2 则以 70% 钛合金铸造下架将 155mm 39 倍径榴弹炮压至仅 4.2 吨可由直升机吊运，并借“神剑”制导炮弹达成 40 km 精确打击。',
+      en: 'The Bofors 40mm L/60 combines long-recoil vertical-wedge cycling with continuous 4-round top clips for 120 RPM anti-aircraft fire from WWII carriers to AC-130 gunships; the M777A2 uses extensive titanium structures to cut a 155mm 39-caliber howitzer to 4.2 tonnes for helicopter sling-lift and 40 km Excalibur precision fire.',
+    },
+  },
 ];
 
 // ----------------------------------------------------------------------------
