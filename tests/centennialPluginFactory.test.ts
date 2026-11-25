@@ -599,5 +599,82 @@ describe('Centennial Lazy Runtime Plugin & 22-Law Kinematic Engine (Phase 2H)', 
         'follower'
       )
     ).toBe('cartridge_brass');
+
+    // Regression locks for material-to-geometry alignment (#464)
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.ppsh41,
+        'handguard'
+      )
+    ).toBe('blued_steel');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.dp28,
+        'handguard'
+      )
+    ).toBe('blued_steel');
+    expect(
+      buildCentennialPlugin('ppsh41').parts.find(
+        (p) => p.id === 'ppsh41_handguard'
+      )
+    ).toMatchObject({
+      material: 'nitride_steel',
+      nameEn: 'Perforated Steel Barrel Cooling Shroud',
+    });
+    expect(
+      buildCentennialPlugin('dp28').parts.find((p) => p.id === 'dp28_handguard')
+    ).toMatchObject({
+      material: 'nitride_steel',
+      nameEn: 'Perforated Steel Barrel Cooling Shroud',
+    });
+
+    for (const id of ['spas12', 'pkm', 'm240b', 'm60e4'] as const) {
+      expect(
+        resolveCentennialPartMaterialSuite(
+          CENTENNIAL_BLUEPRINT_MAP[id],
+          'handguard'
+        )
+      ).toBe('parkerized_steel');
+    }
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.spas12,
+        'stock'
+      )
+    ).toBe('parkerized_steel');
+    expect(
+      buildCentennialPlugin('spas12').parts.find((p) => p.id === 'spas12_stock')
+        ?.material
+    ).toBe('nitride_steel');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.mp40,
+        'handguard'
+      )
+    ).toBe('blued_steel');
+
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.winchester1887,
+        'grip'
+      )
+    ).toBe('blued_steel');
+    expect(
+      buildCentennialPlugin('winchester1887').parts.find(
+        (p) => p.id === 'winchester1887_grip'
+      )?.material
+    ).toBe('nitride_steel');
+
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.englishlongbow,
+        'muzzle'
+      )
+    ).toBe('beech_yew');
+    expect(
+      buildCentennialPlugin('englishlongbow').parts.find(
+        (p) => p.id === 'englishlongbow_muzzle'
+      )?.material
+    ).toBe('polymer_frame');
   });
 });

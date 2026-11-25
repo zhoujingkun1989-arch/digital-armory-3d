@@ -1632,6 +1632,8 @@ export function resolveCentennialPartMaterialSuite(
         case 'bolt':
         case 'stock':
         case 'handguard':
+        case 'muzzle':
+        case 'selector':
           return 'beech_yew';
         case 'grip':
           return 'checkered_grip';
@@ -1639,12 +1641,9 @@ export function resolveCentennialPartMaterialSuite(
         case 'mag_base':
         case 'optic':
         case 'mount_rail':
-          return 'oiled_walnut';
-        case 'muzzle':
-        case 'selector':
         case 'follower':
         case 'trigger':
-          return 'cartridge_brass';
+          return 'oiled_walnut';
         case 'bolt_carrier':
         case 'recoil_spring':
         case 'gas_system':
@@ -1801,18 +1800,36 @@ export function resolveCentennialPartMaterialSuite(
       return 'brushed_stainless';
 
     case 'handguard':
-      if (bp.id === 'ak47' || bp.id === 'svd' || bp.id === 'sks' || bp.id === 'mosin' || bp.id === 'dp28' || bp.id === 'ppsh41' || bp.id === 'ks23') {
-        return 'russian_laminate';
+      if (bp.id === 'ppsh41' || bp.id === 'dp28' || bp.id === 'mp40') {
+        return 'blued_steel';
       }
-      if (bp.id === 'stg44') return 'parkerized_steel';
-      if (bp.cad.hasWoodFurniture && woodSuite) return woodSuite;
-      if (ANODIZED_HANDGUARD_IDS.has(bp.id)) return 'anodized_alloy';
-      if (bp.id === 'sten' || bp.id === 'm2hb' || bp.id === 'mac10') {
+      if (
+        bp.id === 'spas12' ||
+        bp.id === 'pkm' ||
+        bp.id === 'm240b' ||
+        bp.id === 'm60e4' ||
+        bp.id === 'stg44' ||
+        bp.id === 'sten' ||
+        bp.id === 'm2hb' ||
+        bp.id === 'mac10'
+      ) {
         return 'parkerized_steel';
       }
+      if (
+        bp.id === 'ak47' ||
+        bp.id === 'svd' ||
+        bp.id === 'sks' ||
+        bp.id === 'mosin' ||
+        bp.id === 'ks23'
+      ) {
+        return 'russian_laminate';
+      }
+      if (bp.cad.hasWoodFurniture && woodSuite) return woodSuite;
+      if (ANODIZED_HANDGUARD_IDS.has(bp.id)) return 'anodized_alloy';
       return 'tactical_polymer';
 
     case 'stock':
+      if (bp.id === 'spas12') return 'parkerized_steel';
       if (woodSuite && (bp.cad.hasWoodFurniture || bp.id === 'pkm' || bp.id === 'rpk74')) {
         return woodSuite;
       }
@@ -1823,6 +1840,7 @@ export function resolveCentennialPartMaterialSuite(
       return 'tactical_polymer';
 
     case 'grip':
+      if (bp.id === 'winchester1887') return 'blued_steel';
       if (bp.id === 'm2hb') return 'oiled_walnut';
       if (bp.id === 'sten') return 'parkerized_steel';
       if (
@@ -1843,7 +1861,6 @@ export function resolveCentennialPartMaterialSuite(
           bp.id === 'bar1918' ||
           bp.id === 'leeenfield' ||
           bp.id === 'springfield1903' ||
-          bp.id === 'winchester1887' ||
           bp.id === 'wa2000')
       ) {
         return 'oiled_walnut';

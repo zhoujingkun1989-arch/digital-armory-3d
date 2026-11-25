@@ -1494,7 +1494,7 @@ function resolveArcherySlotMeta(
       descEn: `Launches at ${bp.muzzleVelocityMs} m/s with helical fletching inducing aerodynamic spin stabilization.`,
     },
     muzzle: {
-      material: 'copper_accent',
+      material: isLongbow ? 'polymer_frame' : 'copper_accent',
       nameZh: isLongbow
         ? '锻钢四棱破甲箭头与牛角弦槽'
         : isCrossbow
@@ -1529,7 +1529,7 @@ function resolveArcherySlotMeta(
           : 'Drops clear milliseconds after launch so helical vanes pass with zero contact interference.',
     },
     bolt_carrier: {
-      material: 'stainless',
+      material: isLongbow ? 'polymer_frame' : 'stainless',
       nameZh: isLongbow
         ? '紫杉上/下弹性储能弓臂'
         : isCrossbow
@@ -1556,7 +1556,7 @@ function resolveArcherySlotMeta(
       descEn: `Stores peak bending strain energy across the ${bp.barrelLengthMm} mm draw stroke and releases it cleanly into the arrow.`,
     },
     bolt: {
-      material: 'copper_accent',
+      material: isLongbow ? 'polymer_frame' : 'copper_accent',
       nameZh: isLongbow
         ? '手工搓制亚麻纤维主弓弦'
         : isCrossbow
@@ -1825,7 +1825,7 @@ function resolveArcherySlotMeta(
       descEn: `Powers the safety latch that prevents catastrophic dry-firing when no arrow or bolt is seated.`,
     },
     selector: {
-      material: 'copper_accent',
+      material: isLongbow ? 'polymer_frame' : 'copper_accent',
       nameZh: isCrossbow
         ? '自动保险与 CeaseFire 防空放拨片'
         : '拉距微调模组锁止销',
@@ -2790,48 +2790,76 @@ function resolveStandardSmallArmSlotMeta(
         : 'Absorbs carrier recoil energy and powers smooth forward chambering and lockup.',
     },
     handguard: {
-      material: bp.cad.hasWoodFurniture ? 'polymer_frame' : 'nitride_steel',
-      nameZh: bp.cad.hasWoodFurniture
-        ? '经典实木隔热前护木'
-        : isPump
-          ? '防滑罗纹往复泵动前护木'
-          : bp.year < 1990
-            ? '经典散热前护木与隔热罩'
-            : '战术散热护木与隔热罩',
-      nameEn: bp.cad.hasWoodFurniture
-        ? 'Classic Hardwood Forend Handguard'
-        : isPump
-          ? 'Ribbed Reciprocating Pump Forend'
-          : bp.year < 1990
-            ? 'Classic Ventilated Forend Handguard'
-            : 'Ventilated Tactical Handguard',
-      calloutLabelZh: bp.cad.hasWoodFurniture
-        ? '实木前护木'
-        : isPump
-          ? '泵动滑动护木'
-          : bp.year < 1990
-            ? '经典散热护木'
-            : '战术散热护木',
-      calloutLabelEn: bp.cad.hasWoodFurniture
-        ? 'Hardwood Forend'
-        : isPump
-          ? 'Pump Forend Slide'
-          : bp.year < 1990
-            ? 'Ventilated Handguard'
-            : 'Tactical Handguard',
+      material:
+        bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? 'nitride_steel'
+          : bp.cad.hasWoodFurniture
+            ? 'polymer_frame'
+            : 'nitride_steel',
+      nameZh:
+        bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? '多孔散热钢制枪管护筒'
+          : bp.cad.hasWoodFurniture
+            ? '经典实木隔热前护木'
+            : isPump
+              ? '防滑罗纹往复泵动前护木'
+              : bp.year < 1990
+                ? '经典散热前护木与隔热罩'
+                : '战术散热护木与隔热罩',
+      nameEn:
+        bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? 'Perforated Steel Barrel Cooling Shroud'
+          : bp.cad.hasWoodFurniture
+            ? 'Classic Hardwood Forend Handguard'
+            : isPump
+              ? 'Ribbed Reciprocating Pump Forend'
+              : bp.year < 1990
+                ? 'Classic Ventilated Forend Handguard'
+                : 'Ventilated Tactical Handguard',
+      calloutLabelZh:
+        bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? '多孔钢制护筒'
+          : bp.cad.hasWoodFurniture
+            ? '实木前护木'
+            : isPump
+              ? '泵动滑动护木'
+              : bp.year < 1990
+                ? '经典散热护木'
+                : '战术散热护木',
+      calloutLabelEn:
+        bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? 'Steel Cooling Shroud'
+          : bp.cad.hasWoodFurniture
+            ? 'Hardwood Forend'
+            : isPump
+              ? 'Pump Forend Slide'
+              : bp.year < 1990
+                ? 'Ventilated Handguard'
+                : 'Tactical Handguard',
       roleTagZh: isPump ? '手动抽拉' : '隔热握持',
       roleTagEn: isPump ? 'Manual Cycling' : 'Heat Shield',
       descZh: isPump
         ? '通过双钢连杆直连枪机滑架，前后拉推即可干脆利落完成退壳上膛。'
-        : bp.year < 1990
-          ? '隔绝连发高温枪管热辐射，提供经典稳固的前手握持支撑。'
-          : '隔绝连发高温枪管热辐射，提供稳定前手支撑与附件挂载空间。',
+        : bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? '冲压多孔钢制散热护筒包裹连发高温枪管，强化空气对流冷却并保护前手免受烫伤。'
+          : bp.year < 1990
+            ? '隔绝连发高温枪管热辐射，提供经典稳固的前手握持支撑。'
+            : '隔绝连发高温枪管热辐射，提供稳定前手支撑与附件挂载空间。',
       descEn: isPump
         ? 'Coupled via twin action bars to the bolt carrier for brisk manual shell cycling.'
-        : 'Insulates the support hand from barrel heat while bracing steady forward control.',
+        : bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? 'Stamped perforated steel cooling jacket promoting convective airflow and hand protection during sustained fire.'
+          : 'Insulates the support hand from barrel heat while bracing steady forward control.',
     },
     stock: {
-      material: 'polymer_frame',
+      material:
+        bp.id === 'spas12' ||
+        bp.id === 'mp40' ||
+        bp.id === 'sten' ||
+        bp.id === 'mac10' ||
+        bp.id === 'm2hb'
+          ? 'nitride_steel'
+          : 'polymer_frame',
       nameZh: isHeavyMg
         ? '后置双铲形握把与缓冲尾板'
         : bp.cad.hasWoodFurniture
@@ -2870,7 +2898,7 @@ function resolveStandardSmallArmSlotMeta(
       descEn: `Channels ${bp.recoilImpulseNs} N·s recoil impulse evenly into the shoulder or mount for steady sight recovery.`,
     },
     grip: {
-      material: 'polymer_frame',
+      material: isLever ? 'nitride_steel' : 'polymer_frame',
       nameZh: isHeavyMg
         ? '右侧防烫快换枪管提把'
         : bp.id === 'ppsh41'
