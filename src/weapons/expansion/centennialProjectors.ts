@@ -1294,8 +1294,14 @@ export function buildCentennialInteractionSpecs(): {
       handleKind = 'bowstring';
       labelZh = '向后拉满弓弦';
       labelEn = 'Draw Bowstring';
+      parts = [p('bolt_carrier'), p('bolt'), p('recoil_spring')];
+    } else if (bp.category === 'armor') {
+      handleKind = 'breech_block';
+      worldDragAxis = AXIS_DOWN;
+      labelZh = '操作主炮炮闩';
+      labelEn = 'Cycle Main Cannon Breech';
       parts = [p('bolt'), p('recoil_spring')];
-    } else if (bp.category === 'armor' || bp.archetype === 'aa_autocannon' || bp.archetype === 'howitzer') {
+    } else if (bp.archetype === 'aa_autocannon' || bp.archetype === 'howitzer') {
       handleKind = 'breech_block';
       worldDragAxis = AXIS_DOWN;
       labelZh = '操作主炮炮闩';
@@ -1311,12 +1317,12 @@ export function buildCentennialInteractionSpecs(): {
       worldDragAxis = AXIS_UP;
       labelZh = '拨动转轮弹巢与击锤';
       labelEn = 'Cock Hammer & Index Cylinder';
-      parts = [p('hammer'), p('mag_body')];
+      parts = [p('bolt'), p('hammer'), p('mag_body')];
     } else if (bp.archetype === 'pistol_slide') {
       handleKind = 'slide';
       labelZh = '向后拉动套筒';
       labelEn = 'Rack Pistol Slide';
-      parts = [p('receiver'), p('bolt')];
+      parts = [p('bolt_carrier'), p('bolt')];
     } else if (bp.kinematicLaw === 'bolt_action') {
       handleKind = 'bolt_handle';
       labelZh = '抬栓并向后拉动枪机';
@@ -1332,7 +1338,7 @@ export function buildCentennialInteractionSpecs(): {
       worldDragAxis = AXIS_DOWN;
       labelZh = '下压指环杠杆抛壳';
       labelEn = 'Throw Finger Lever';
-      parts = [p('grip'), p('bolt_carrier')];
+      parts = [p('selector'), p('grip'), p('bolt_carrier')];
     }
 
     explicitActionParts[bp.id] = parts;
@@ -1958,36 +1964,39 @@ export function buildCentennialTankCrewSpecs(): {
     const layout = computeCentennialPartLayout(bp);
     const p = (slot: Parameters<typeof centennialPartId>[1]) =>
       centennialPartId(bp.id, slot);
-    const turretPos = layout.assembledPos.receiver;
-    const gunPos = layout.assembledPos.bolt_carrier;
+    const turretPos = layout.assembledPos.bolt_carrier;
+    const s = layout.dims.armorScale;
+
+    const turretParts: string[] = [
+      p('bolt_carrier'),
+      p('barrel'),
+      p('muzzle'),
+      p('bolt'),
+      p('recoil_spring'),
+      p('optic'),
+      p('trigger'),
+      p('hammer'),
+      p('hammer_spring'),
+      p('selector'),
+    ];
+    if (bp.cad.magStyle === 'bustle') {
+      turretParts.push(p('mag_body'));
+    }
 
     kinematics[id] = {
       weaponId: id,
-      turretRingPivot: [turretPos[0], round2(turretPos[1] - 34), 0],
-      trunnionPivot: [round2(gunPos[0] + 42), layout.boreY, 0],
+      turretRingPivot: [turretPos[0], round2(turretPos[1] - s * 0.34), 0],
+      trunnionPivot: [round2(turretPos[0] + s * 1.15), layout.boreY, 0],
       gunnerEyeOffset: [58, 34, 48],
       gunnerLookOffsetY: 0,
       elevLimitsDeg: m.elevLimitsDeg,
       defaultProjectileSpeedMps: bp.muzzleVelocityMs,
       sightNameZh: m.sightNameZh,
       sightNameEn: m.sightNameEn,
-      turretPartIds: new Set<string>([
-        p('receiver'),
-        p('barrel'),
-        p('muzzle'),
-        p('bolt_carrier'),
-        p('bolt'),
-        p('recoil_spring'),
-        p('optic'),
-        p('trigger'),
-        p('hammer'),
-        p('hammer_spring'),
-        p('selector'),
-      ]),
+      turretPartIds: new Set<string>(turretParts),
       gunPartIds: new Set<string>([
         p('barrel'),
         p('muzzle'),
-        p('bolt_carrier'),
         p('bolt'),
         p('recoil_spring'),
       ]),

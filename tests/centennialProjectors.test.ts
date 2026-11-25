@@ -378,11 +378,25 @@ describe('100-Weapon Expansion Phase 2I — Pure Acyclic Centennial Registry Pro
       assertCleanEn(gm.familyTitleEn, `gm.${id}.titleEn`);
       assertCleanEn(gm.flowNoteEn, `gm.${id}.noteEn`);
 
-      // 13F. Interaction specs
+      // 13F. Interaction specs — 3D slot-to-mesh handle alignment locks
       const actParts = interaction.explicitActionParts[id];
       expect(actParts.length).toBeGreaterThan(0);
       for (const pid of actParts) {
         expect(partSet.has(pid)).toBe(true);
+      }
+      if (bp.category === 'archery') {
+        expect(actParts).toContain(centennialPartId(id, 'bolt_carrier'));
+      } else if (bp.category === 'armor') {
+        expect(actParts).toContain(centennialPartId(id, 'bolt'));
+        expect(actParts).not.toContain(centennialPartId(id, 'receiver'));
+        expect(actParts).not.toContain(centennialPartId(id, 'bolt_carrier'));
+      } else if (bp.archetype === 'pistol_slide') {
+        expect(actParts).toContain(centennialPartId(id, 'bolt_carrier'));
+        expect(actParts).not.toContain(centennialPartId(id, 'receiver'));
+      } else if (bp.archetype === 'revolver_sa' || bp.archetype === 'revolver_da') {
+        expect(actParts).toContain(centennialPartId(id, 'bolt'));
+      } else if (bp.kinematicLaw === 'lever_action') {
+        expect(actParts).toContain(centennialPartId(id, 'selector'));
       }
       const drag = interaction.dragSpecs[id];
       assertCleanEn(drag.labelEn, `drag.${id}.labelEn`);
@@ -436,8 +450,10 @@ describe('100-Weapon Expansion Phase 2I — Pure Acyclic Centennial Registry Pro
     expect(gasFlow.muzzleShockwaves.m777?.isHeavyHangar).toBe(true);
     expect(gasFlow.muzzleShockwaves.m2hb?.maxRadiusCm).toBeGreaterThan(40);
 
-    // 13J. Tank Crew specs for all 4 new 1:1 MBTs
+    // 13J. Tank Crew specs for all 4 new 1:1 MBTs — strict hull/turret/gun separation
     for (const tankId of CENTENNIAL_TANK_IDS) {
+      const bp = CENTENNIAL_BLUEPRINT_MAP[tankId];
+      const layout = computeCentennialPartLayout(bp);
       const partSet = validPartsFor(tankId);
       const kin = tankCrew.kinematics[tankId];
       const opt = tankCrew.gunnerOptics[tankId];
@@ -450,6 +466,25 @@ describe('100-Weapon Expansion Phase 2I — Pure Acyclic Centennial Registry Pro
       if (opt.museumStudyThermalNoteEn) {
         assertCleanEn(opt.museumStudyThermalNoteEn, `tank.${tankId}.thermalEn`);
       }
+
+      // Hull (`receiver`) must stay stationary; turret (`bolt_carrier`) rotates at turretRingPivot
+      // and must NOT pitch inside gunPartIds!
+      expect(kin.turretRingPivot[0]).toBe(layout.assembledPos.bolt_carrier[0]);
+      expect(kin.trunnionPivot[0]).toBeGreaterThan(kin.turretRingPivot[0]);
+      expect(kin.trunnionPivot[1]).toBe(layout.boreY);
+      expect(kin.turretPartIds.has(centennialPartId(tankId, 'receiver'))).toBe(false);
+      expect(kin.turretPartIds.has(centennialPartId(tankId, 'bolt_carrier'))).toBe(
+        true
+      );
+      expect(kin.gunPartIds.has(centennialPartId(tankId, 'bolt_carrier'))).toBe(
+        false
+      );
+      expect(kin.gunPartIds.has(centennialPartId(tankId, 'barrel'))).toBe(true);
+      expect(kin.gunPartIds.has(centennialPartId(tankId, 'bolt'))).toBe(true);
+      expect(kin.turretPartIds.has(centennialPartId(tankId, 'mag_body'))).toBe(
+        bp.cad.magStyle === 'bustle'
+      );
+
       for (const pid of kin.turretPartIds) {
         expect(partSet.has(pid)).toBe(true);
       }
