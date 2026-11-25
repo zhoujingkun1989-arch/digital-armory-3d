@@ -23,8 +23,9 @@ describe('100-Weapon Expansion Phase 1A — Centennial Types & Archery/Armor/Ord
     expect(CENTENNIAL_66_IDS).toHaveLength(66);
     expect(ALL_100_WEAPON_IDS).toHaveLength(100);
 
-    // FLAGSHIP_34_IDS mirrors WEAPON_IDS 1:1 in exact order
-    expect([...FLAGSHIP_34_IDS]).toEqual([...WEAPON_IDS]);
+    // ALL_100_WEAPON_IDS mirrors WEAPON_IDS 1:1 in exact order (34 Flagships + 66 Centennial)
+    expect([...ALL_100_WEAPON_IDS]).toEqual([...WEAPON_IDS]);
+    expect([...FLAGSHIP_34_IDS]).toEqual([...WEAPON_IDS.slice(0, 34)]);
 
     // Disjoint uniqueness check -> exact 100 unique exhibit IDs
     const flagshipSet = new Set<string>(FLAGSHIP_34_IDS);

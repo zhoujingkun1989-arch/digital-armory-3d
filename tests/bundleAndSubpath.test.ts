@@ -369,9 +369,9 @@ describe('Bundle Code-Splitting, VITE_BASE_PATH Subpath & HD Poster Studio Contr
     }
   });
 
-  it('generates valid poster filenames, metrology, ballistics & scannable ISO 18004 QR matrices for all 29 exhibits (16:9 & 4:5, S/A/B/C rank seals)', () => {
+  it('generates valid poster filenames, metrology, ballistics & scannable ISO 18004 QR matrices for all 100 exhibits (16:9 & 4:5, S/A/B/C rank seals)', () => {
     const ranks: (PosterArmorerRank | null)[] = ['S', 'A', 'B', 'C', null];
-    expect(WEAPON_IDS).toHaveLength(34);
+    expect(WEAPON_IDS).toHaveLength(100);
 
     WEAPON_IDS.forEach((weaponId, idx) => {
       expect(buildPosterFilename(weaponId)).toBe(
@@ -397,7 +397,7 @@ describe('Bundle Code-Splitting, VITE_BASE_PATH Subpath & HD Poster Studio Contr
         },
       });
 
-      expect(metaEn.bayCode).toMatch(/^BAY-\d{2}$/);
+      expect(metaEn.bayCode).toMatch(/^BAY-\d{2,3}$/);
       expect(metaEn.primaryTitle.length).toBeGreaterThan(2);
       expect(metaEn.secondaryTitle.length).toBeGreaterThan(2);
       // Primary title & mechanism line are strictly English (0 CJK); secondaryTitle is the paired Chinese museum subtitle

@@ -383,14 +383,14 @@ describe('Cycle 6C (9.55 -> 9.85 / 10): Pinpoint Telemetry, Optics, 3D Framing, 
       expect(CJK_RE.test(s)).toBe(false);
     }
 
-    // EN Showcase 2-line keynote hero preserving 34 / 854 / 414 / 1980 & 0 CJK
+    // EN Showcase 2-line keynote hero preserving 100 / 2174 / 414 / 1980 & 0 CJK
     const enHero = SHOWCASE_STRINGS.en.hero;
     const fullH1 = `${enHero.titlePrefix}${enHero.titleHighlight}${enHero.titleSuffix}`;
     expect(fullH1.length).toBeLessThanOrEqual(70);
-    expect(fullH1).toContain('34');
+    expect(fullH1).toContain('100');
     const subCombined = `${enHero.subLead}${enHero.subPartsStrong}${enHero.subMid1}${enHero.subMapsStrong}${enHero.subMid2}${enHero.subAudioStrong}${enHero.subTail}`;
     expect(subCombined.length).toBeLessThan(140);
-    expect(subCombined).toContain('854');
+    expect(subCombined).toContain('2174');
     expect(subCombined).toContain('414');
     expect(subCombined).toContain('1980');
     for (const s of collectStrings(enHero)) {

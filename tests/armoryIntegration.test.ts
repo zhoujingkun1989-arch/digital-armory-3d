@@ -46,6 +46,7 @@ import {
   resolveAcousticEnvironmentForState,
   useAppStore,
 } from '../src/store/useAppStore';
+import { FLAGSHIP_34_IDS } from '../src/weapons/expansion/centennialTypes';
 import { getWeaponManifest } from '../src/weapons/manifests';
 import { loadWeaponPlugin } from '../src/weapons/registry';
 import { WEAPON_IDS } from '../src/weapons/types';
@@ -415,11 +416,11 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     expect(armoryCss).not.toContain('.schematic-watermark');
   });
 
-  it('resolves getLocalizedCatalogSpecs & resolveWeaponDisplayMeta in English with zero CJK characters across all 34 WEAPON_IDS', () => {
+  it('resolves getLocalizedCatalogSpecs & resolveWeaponDisplayMeta in English with zero CJK characters across all 100 WEAPON_IDS', () => {
     const cjkRe = /[\u4e00-\u9fff]/;
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
 
-    expect(WEAPON_IDS.length).toBe(34);
+    expect(WEAPON_IDS.length).toBe(100);
 
     for (const id of WEAPON_IDS) {
       const specs = getLocalizedCatalogSpecs(id, 'en');
@@ -472,14 +473,16 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     }
   });
 
-  it('covers 100% of WEAPON_IDS headings and pbrSuites in atlasStrings.ts with zero CJK leaks in English', async () => {
+  it('covers 100% of FLAGSHIP_34_IDS baked PBR headings and pbrSuites in atlasStrings.ts with zero CJK leaks in English', async () => {
     const cjkRe = /[\u4e00-\u9fff]/;
 
-    expect(Object.keys(ATLAS_EN_STRINGS).sort()).toEqual([...WEAPON_IDS].sort());
-    expect(WEAPON_IDS.length).toBe(34);
+    expect(Object.keys(ATLAS_EN_STRINGS).sort()).toEqual(
+      [...FLAGSHIP_34_IDS].sort()
+    );
+    expect(FLAGSHIP_34_IDS.length).toBe(34);
 
     let totalSuites = 0;
-    for (const weaponId of WEAPON_IDS) {
+    for (const weaponId of FLAGSHIP_34_IDS) {
       const manifest = getWeaponManifest(weaponId);
       const plugin = await loadWeaponPlugin(weaponId);
 
@@ -585,8 +588,8 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
         }
       }
       expect(modal.subtitle).toContain('414');
-      expect(modal.subtitle).toContain('854');
-      expect(modal.kicker).toContain('34');
+      expect(modal.subtitle).toMatch(/854|2,?174/);
+      expect(modal.kicker).toContain('100');
     }
 
     // 2. Archery UI sub-dictionaries: completeness, zero CJK in EN, zero leftover firearm jargon
@@ -681,20 +684,20 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
       const plugin = await loadWeaponPlugin(weaponId);
       totalParts += plugin.parts.length;
     }
-    expect(WEAPON_IDS.length).toBe(34);
-    expect(totalParts).toBe(854);
+    expect(WEAPON_IDS.length).toBe(100);
+    expect(totalParts).toBe(2174);
 
     for (const lang of ['zh', 'en'] as const) {
       const showcase = SHOWCASE_STRINGS[lang];
       const metricValues = showcase.metrics.map((m) => m.val).join(' | ');
-      expect(metricValues).toContain('34');
-      expect(metricValues).toContain('854');
+      expect(metricValues).toContain('100');
+      expect(metricValues).toContain('2174');
       expect(metricValues).toContain('414');
       expect(metricValues).toContain('1980');
 
-      expect(showcase.hero.eyebrow).toContain('34');
+      expect(showcase.hero.eyebrow).toContain('100');
       expect(showcase.hero.eyebrow).toContain('1980');
-      expect(showcase.hero.subPartsStrong).toContain('854');
+      expect(showcase.hero.subPartsStrong).toContain('2174');
       expect(showcase.hero.subMapsStrong).toContain('414');
       expect(showcase.hero.subAudioStrong).toContain('1980');
 

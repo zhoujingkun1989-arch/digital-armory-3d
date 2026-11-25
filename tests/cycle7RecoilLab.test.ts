@@ -32,10 +32,10 @@ function collectStrings(value: unknown): string[] {
 }
 
 describe('Cycle 7C · Recoil Impulse, Gas-Jet Momentum & Muzzle-Climb Physics Engine', () => {
-  it('evaluates finite, momentum-conserving recoil dynamics across all 34 exhibits with 120-point F(t) waveforms', () => {
-    expect(RECOIL_EXHIBIT_PROFILES).toHaveLength(34);
+  it('evaluates finite, momentum-conserving recoil dynamics across all 100 exhibits with 120-point F(t) waveforms', () => {
+    expect(RECOIL_EXHIBIT_PROFILES).toHaveLength(100);
     const seen = new Set(RECOIL_EXHIBIT_PROFILES.map((p) => p.weaponId));
-    expect(seen.size).toBe(34);
+    expect(seen.size).toBe(100);
     for (const id of WEAPON_IDS) {
       expect(seen.has(id), `Missing ${id} in RECOIL_EXHIBIT_PROFILES`).toBe(true);
     }
