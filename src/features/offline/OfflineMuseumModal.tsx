@@ -5,6 +5,7 @@ import {
   Download,
   HardDrive,
   RefreshCw,
+  Search,
   Sparkles,
   Trash2,
   WifiOff,
@@ -30,7 +31,11 @@ import {
   matchesArmoryCategory,
   WEAPON_MANIFESTS,
 } from '../../weapons/manifests';
-import type { ArmoryCategory, WeaponId } from '../../weapons/types';
+import type {
+  ArmoryCategory,
+  WeaponId,
+  WeaponManifest,
+} from '../../weapons/types';
 import '../../styles/offline-museum.css';
 
 export type OfflineSpecializedHallId = Exclude<ArmoryCategory, 'all'>;
@@ -103,6 +108,48 @@ export function buildOfflineHallBreakdown(
   });
 }
 
+/**
+ * Pure bilingual hall + multi-token search filter for Offline Museum exhibit packs
+ * (scales cleanly from 34 flagships to 100+ exhibits).
+ */
+export function filterOfflineManifests(
+  manifests: readonly WeaponManifest[],
+  hall: ArmoryCategory = 'all',
+  query = ''
+): WeaponManifest[] {
+  const tokens = query
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((t) => t.length > 0);
+
+  return manifests.filter((m) => {
+    if (!matchesArmoryCategory(m.catalog, hall)) return false;
+    if (tokens.length === 0) return true;
+
+    const shortEn = getLocalizedShortWeaponLabel(m.id, 'en');
+    const shortZh = getLocalizedShortWeaponLabel(m.id, 'zh');
+    const blob = [
+      m.id,
+      m.shortLabel,
+      m.catalog.bayCode,
+      m.catalog.bayCode.replace('BAY-', '#'),
+      m.catalog.modelCode,
+      m.catalog.nameCn,
+      m.catalog.subtitleEn,
+      m.catalog.caliber,
+      m.catalog.category,
+      m.catalog.categoryCn,
+      shortEn,
+      shortZh,
+    ]
+      .join(' ')
+      .toLowerCase();
+
+    return tokens.every((tok) => blob.includes(tok));
+  });
+}
+
 export interface OfflineMuseumModalProps {
   onClose: () => void;
 }
@@ -135,9 +182,15 @@ export const OFFLINE_MUSEUM_STRINGS = {
     ktx2Label: 'Basis / KTX2 GPU 状态',
     ktx2Ready: 'BasisU 转码器就绪 (WebP 无损回退)',
     ktx2Standby: 'WebP 默认在线流式渲染',
-    cacheFeaturedLegendsBtn: '一键缓存五大殿堂传奇 (5)',
-    cacheArmorHallBtn: '一键缓存重装坦克展厅 (4)',
+    cacheFeaturedLegendsBtn: `一键缓存五大殿堂传奇 (${FEATURED_LEGENDS_OFFLINE_IDS.length})`,
+    cacheArmorHallBtn: `一键缓存重装坦克展厅 (${ARMOR_HALL_OFFLINE_IDS.length})`,
     purgeBtn: '清空离线缓存',
+    searchPlaceholder: '搜索离线展品包（名称 / 展位 / 口径，如 AK / 9mm / ZTZ）...',
+    searchAria: '检索离线博物馆展品缓存包',
+    clearSearchAria: '清空离线展品搜索词',
+    matchCount: (shown: number, total: number) => `显示 ${shown} / ${total}`,
+    emptyFilterText: '当前展厅与搜索条件下无匹配离线展品包',
+    resetFilterBtn: '重置筛选',
     cachedPill: '已离线缓存',
     cacheBtn: '缓存离线包',
     removeTitle: (name: string) => `点击移除「${name}」离线缓存包`,
@@ -180,9 +233,15 @@ export const OFFLINE_MUSEUM_STRINGS = {
     ktx2Label: 'Basis / KTX2 Pipeline',
     ktx2Ready: 'BasisU Transcoder Ready (WebP Fallback)',
     ktx2Standby: 'WebP Runtime Streaming',
-    cacheFeaturedLegendsBtn: 'Cache Featured 5 Legends',
-    cacheArmorHallBtn: 'Cache Heavy Armor Hall (4)',
+    cacheFeaturedLegendsBtn: `Cache Featured ${FEATURED_LEGENDS_OFFLINE_IDS.length} Legends`,
+    cacheArmorHallBtn: `Cache Heavy Armor Hall (${ARMOR_HALL_OFFLINE_IDS.length})`,
     purgeBtn: 'Purge All Cache',
+    searchPlaceholder: 'Search offline packs (name, bay, caliber, e.g. AK, 9mm, ZTZ)...',
+    searchAria: 'Search offline museum exhibit cache packages',
+    clearSearchAria: 'Clear offline exhibit search query',
+    matchCount: (shown: number, total: number) => `Showing ${shown} / ${total}`,
+    emptyFilterText: 'No offline exhibit packages match the current hall and search query.',
+    resetFilterBtn: 'Reset Filter',
     cachedPill: 'Cached Offline',
     cacheBtn: 'Cache Offline',
     removeTitle: (name: string) => `Click to remove offline package for ${name}`,
@@ -236,6 +295,14 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
   const [statusBanner, setStatusBanner] = useState<StatusBannerState | null>(
     null
   );
+  const [activeHall, setActiveHall] = useState<ArmoryCategory>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const filteredManifests = useMemo(
+    () => filterOfflineManifests(WEAPON_MANIFESTS, activeHall, searchQuery),
+    [activeHall, searchQuery]
+  );
+  const isFiltering = activeHall !== 'all' || searchQuery.trim().length > 0;
 
   const exhibitSizes = useMemo(() => {
     const map = new Map<WeaponId, { estimatedMb: number; assetCount: number }>();
@@ -600,12 +667,28 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
                 {cachedIds.size} / {WEAPON_MANIFESTS.length} ({totalCachedPct}%)
               </span>
             </div>
-            <div className="offline-halls-bar" role="list">
-              <div
-                role="listitem"
+            <div
+              className="offline-halls-bar"
+              role="group"
+              aria-label={
+                lang === 'zh'
+                  ? '按展厅筛选离线缓存包'
+                  : 'Filter offline packages by museum hall'
+              }
+            >
+              <button
+                type="button"
+                data-hall-id="all"
+                data-testid="offline-hall-filter-all"
+                aria-pressed={activeHall === 'all'}
+                aria-label={`${OFFLINE_HALL_LABELS.all[lang]} (${cachedIds.size}/${WEAPON_MANIFESTS.length})`}
                 className={`offline-hall-chip ${
                   cachedIds.size === WEAPON_MANIFESTS.length ? 'is-complete' : ''
-                }`}
+                } ${activeHall === 'all' ? 'is-active' : ''}`}
+                onClick={() => {
+                  playWorkbenchFoley('toggle_switch');
+                  setActiveHall('all');
+                }}
               >
                 <span className="offline-hall-top">
                   <span className="offline-hall-name">
@@ -621,30 +704,94 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
                     style={{ width: `${totalCachedPct}%` }}
                   />
                 </span>
+              </button>
+              {hallBreakdown.map((h) => {
+                const label = lang === 'zh' ? h.labelZh : h.labelEn;
+                return (
+                  <button
+                    key={h.hallId}
+                    type="button"
+                    data-hall-id={h.hallId}
+                    data-testid={`offline-hall-filter-${h.hallId}`}
+                    aria-pressed={activeHall === h.hallId}
+                    aria-label={`${label} (${h.cached}/${h.total})`}
+                    className={`offline-hall-chip ${h.isComplete ? 'is-complete' : ''} ${
+                      activeHall === h.hallId ? 'is-active' : ''
+                    }`}
+                    onClick={() => {
+                      playWorkbenchFoley('toggle_switch');
+                      setActiveHall((prev) =>
+                        prev === h.hallId ? 'all' : h.hallId
+                      );
+                    }}
+                  >
+                    <span className="offline-hall-top">
+                      <span className="offline-hall-name">{label}</span>
+                      <span className="offline-hall-ratio tabular">
+                        {h.cached}/{h.total}
+                      </span>
+                    </span>
+                    <span className="offline-hall-track" aria-hidden="true">
+                      <span
+                        className="offline-hall-fill"
+                        style={{ width: `${h.pct}%` }}
+                      />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Compact Bilingual Quick-Search Bar for 100-Pack Browsing */}
+            <div className="offline-filter-bar">
+              <div className="offline-search-wrap">
+                <Search
+                  size={13}
+                  className="offline-search-icon"
+                  aria-hidden="true"
+                />
+                <input
+                  type="search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={ui.searchPlaceholder}
+                  aria-label={ui.searchAria}
+                  data-testid="offline-exhibit-search"
+                  className="offline-search-input"
+                />
+                {searchQuery.length > 0 && (
+                  <button
+                    type="button"
+                    className="offline-search-clear"
+                    aria-label={ui.clearSearchAria}
+                    onClick={() => setSearchQuery('')}
+                  >
+                    <X size={12} aria-hidden="true" />
+                  </button>
+                )}
               </div>
-              {hallBreakdown.map((h) => (
-                <div
-                  key={h.hallId}
-                  role="listitem"
-                  data-hall-id={h.hallId}
-                  className={`offline-hall-chip ${h.isComplete ? 'is-complete' : ''}`}
+              <span
+                className="offline-filter-count tabular"
+                data-testid="offline-filter-count"
+              >
+                {ui.matchCount(
+                  filteredManifests.length,
+                  WEAPON_MANIFESTS.length
+                )}
+              </span>
+              {isFiltering && (
+                <button
+                  type="button"
+                  className="offline-reset-btn"
+                  data-testid="offline-filter-reset-btn"
+                  onClick={() => {
+                    setActiveHall('all');
+                    setSearchQuery('');
+                  }}
                 >
-                  <span className="offline-hall-top">
-                    <span className="offline-hall-name">
-                      {lang === 'zh' ? h.labelZh : h.labelEn}
-                    </span>
-                    <span className="offline-hall-ratio tabular">
-                      {h.cached}/{h.total}
-                    </span>
-                  </span>
-                  <span className="offline-hall-track" aria-hidden="true">
-                    <span
-                      className="offline-hall-fill"
-                      style={{ width: `${h.pct}%` }}
-                    />
-                  </span>
-                </div>
-              ))}
+                  {ui.resetFilterBtn}
+                </button>
+              )}
             </div>
           </section>
 
@@ -671,8 +818,23 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
             </div>
           )}
 
-          <div className="offline-grid">
-            {WEAPON_MANIFESTS.map((m) => {
+          {filteredManifests.length === 0 ? (
+            <div className="offline-empty-state" role="status">
+              <span>{ui.emptyFilterText}</span>
+              <button
+                type="button"
+                className="offline-reset-btn"
+                onClick={() => {
+                  setActiveHall('all');
+                  setSearchQuery('');
+                }}
+              >
+                {ui.resetFilterBtn}
+              </button>
+            </div>
+          ) : (
+            <div className="offline-grid">
+              {filteredManifests.map((m) => {
               const isCached = cachedIds.has(m.id);
               const isBusy = busyId === m.id;
               const shortName = getLocalizedShortWeaponLabel(m.id, lang);
@@ -731,7 +893,8 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
                 </div>
               );
             })}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </dialog>
