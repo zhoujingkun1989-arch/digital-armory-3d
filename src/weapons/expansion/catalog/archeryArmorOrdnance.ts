@@ -690,7 +690,7 @@ export const ARCHERY_ARMOR_ORDNANCE_BLUEPRINTS: readonly CentennialWeaponBluepri
       mechanismFilter: 'rotary_heavy',
       kinematicLaw: 'rotary_gatling',
       timelineLineage: 'roller_blowback_delayed',
-      scaleProfile: 'heavy_sniper',
+      scaleProfile: 'main_battle_tank',
       overallLengthMm: 1827,
       overallLengthDisplayZh: '1,827 mm（全炮总长）',
       overallLengthDisplayEn: '1,827 mm (71.9 in Overall)',

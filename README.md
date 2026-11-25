@@ -8,27 +8,30 @@
   <a href="CONTRIBUTING.md">Contributing Guide</a>
 </p>
 
-# Digital Armory 3D · World-Class Museum Edition
+# Digital Armory 3D · Centennial 100-Exhibit Edition
 
-**The World's First Browser-Native Open-Source 3D Firearms, Archery, Heavy Armor & Aero Ordnance Mechanical Museum · Interactive Engineering Encyclopedia**
+**The World's First Browser-Native Open-Source 100-Exhibit 3D Firearms, Archery, Heavy Armor & Ordnance Mechanical Museum · Interactive Engineering Encyclopedia (1415–2026)**
 
 [![CI](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/ci.yml/badge.svg)](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/ci.yml)
 [![GitHub Pages](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/deploy-pages.yml/badge.svg)](https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html?lang=en)
+[![Exhibits](https://img.shields.io/badge/Collection-100_Exhibits_·_2%2C174_Parts-d97706)](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=en)
 [![WCAG 2.1 AA](https://img.shields.io/badge/WCAG_2.1_AA-75%2F75_(100%25)-10b981)](scripts/qa_a11y_audit.mjs)
-[![WebGL 2.0](https://img.shields.io/badge/WebGL_2.0-60.2_FPS_Soak-0284c7)](scripts/qa_perf_soak.mjs)
-[![Visual Audit](https://img.shields.io/badge/Visual_Certification-9.97%2F10.0-f59e0b)](docs/screenshots/hero-ct-cutaway.jpg)
+[![WebGL 2.0](https://img.shields.io/badge/WebGL_2.0-108%2F108_Fleet_·_60.2_FPS-0284c7)](scripts/qa_full_fleet_audit.mjs)
+[![Visual Audit](https://img.shields.io/badge/Visual_Audit-9.97_Flagship_|_9.58_Centennial-f59e0b)](docs/screenshots/centennial-t90m-cut.jpg)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6_Strict-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Blender 5.2](https://img.shields.io/badge/Blender_5.2-34%2F34_Waves_1--10-e87d0d?logo=blender&logoColor=white)](scripts/blender/)
+[![Blender 5.2](https://img.shields.io/badge/Dual--Track-34_Blender_GLB_+_66_CAD-e87d0d?logo=blender&logoColor=white)](scripts/blender/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg)](LICENSE)
 
 <h3>
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html?lang=en">✦ Interactive Live Showcase</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=en">🚀 Enter 34-Bay 10-Hall Vault</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=en">🚀 Enter 100-Bay 10-Hall Vault</a>
+  &nbsp;·&nbsp;
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=t90m&screen=workbench&cut=1&lang=en">🛡️ 1:1 T-90M Tank Cutaway</a>
   &nbsp;·&nbsp;
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=gau8&screen=workbench&cut=1&lang=en">✈️ 1:1 GAU-8/A 30mm Cutaway</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=split_showdown&weaponA=ztz99a&weaponB=m1a2&lang=en">⚔️ Live 3D Split-Screen</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=split_showdown&weaponA=ak47&weaponB=m16a1&lang=en">⚔️ Live 3D Split-Screen</a>
   &nbsp;·&nbsp;
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=ballistics&lang=en">🎯 3D 1,000m Range & Bullet-Cam</a>
   &nbsp;·&nbsp;
@@ -41,9 +44,31 @@
 
 ![Digital Armory 3D — AK-15M1 Live CT-Scan Cutaway, 3D Helical Rifling & Museum Workbench](docs/screenshots/hero-ct-cutaway.jpg)
 
-> Built with **React 18 + TypeScript 5.6 + Three.js (`@react-three/fiber` / Dual-Track Blender 5.2 Draco `.glb` + Web Worker `three-bvh-csg` / Web Audio API)** — zero installs, instant browser launch, **Dark Tactical Vault & Swiss Prussian-Ink Blueprint Daylight Dual Studios** with **Filament/Kaplanyan Specular AA (`ARMORY_SHADER_VERSION = 11`)**, optional **KTX2 (`toktx`) + Heavy-Media CDN (`VITE_CDN_ASSET_BASE_URL`) + PWA Offline Museum**, **`0` circular chunk build warnings (`max < 800 kB`)**, and **Live `9.97 / 10.0` Visual Certification + `75/75 (100%)` WCAG 2.1 AA + `60.2 FPS` WebGL Certification**.
+> Built with **React 18 + TypeScript 5.6 + Three.js (`@react-three/fiber` / Tiered Dual-Track Blender 5.2 Draco `.glb` + Procedural Web Worker `three-bvh-csg` / Web Audio API)** — zero installs, instant browser launch, **Dark Tactical Vault & Swiss Prussian-Ink Blueprint Daylight Dual Studios** with **Filament/Kaplanyan Specular AA (`ARMORY_SHADER_VERSION = 11`)**, optional **KTX2 (`toktx`) + Heavy-Media CDN (`VITE_CDN_ASSET_BASE_URL`) + PWA Offline Museum**, **`0` circular chunk build warnings (`max chunk 684.66 kB < 800 kB`, `dist/ 641.4 MB = 62.6%` of GitHub Pages 1 GB limit)**, and **Live `9.97 / 10.0` Flagship + `9.58 / 10.0` Centennial Visual Certification · `108/108` Live WebGL Fleet · `75/75 (100%)` WCAG 2.1 AA · `60.2 FPS` Metal Perf Soak**.
 >
-> Explore **854 moving CAD components across 34 legendary exhibits and 10 curated halls** (**27 firearms** incl. **Colt M1911A1**, **MG 42**, **Mauser K98k**, **Thompson M1928A1**, Winchester Model 1894 & Remington Model 870 + **2 compound archery systems** + **4 1:1 Main Battle Tanks** in the **Heavy Armor Hall**: **ZTZ-99A**, **M1A2 SEP v3**, **Leopard 2A7V**, **Tiger I 131** + the **10th Hall — Heavy Aero Ordnance**: **1:1 GE GAU-8/A Avenger `30×173mm` 7-barrel rotary autocannon** with 1,150-rd helical drum), backed by the **100% (`34/34`) Complete Museum Blender 5.2 Cycles Hyper-Sculpting Grand Slam (Waves 1–10: `29/29` small arms & archery + `4/4` 4K 1:1 MBTs + `1/1` 1:1 GAU-8/A)** (**`775` watertight meshes + `79` dynamic CSG `aSpringParam` GPU-deforming springs, recuperators, quad-limbs & bowstrings = `854/854` parts**, `34/34` passing `npm run assets:audit <= 12 MB`), **340 synced Cycles `2880×1800` 32-bit RGBA DK Master Plates**, **414 2K/4K 5-channel Packed ORM & micro-detail WebP maps (`0` PNGs, `101` PBR suites)**, **4 Cycles 32-bit `.hdr` domes**, **34/34 True 3D Cutaway Helical Rifling & In-Bore Propellant Deflagration Glow**, **1:1 MBT 3-Petal Discarding Sabot Separation, Rotary Blur Halos & Synchronized Heavy-Ordnance Acoustics**, **Armory Vault `← / →` Keyboard Browsing**, **28-Term Bilingual Smithsonian Engineering Glossary & 1-Click Markdown Tech Dossier Export**, **Smithsonian 1:1 True-Scale Museum Wall**, **Recoil Impulse & Muzzle-Climb Physics Lab**, **Universal `34×33` Mechanism Showdown & 6-Axis Engineering Radar**, **Tate Hydrodynamic 3D Armor Penetration Theater**, **1,000m Applied Ballistics Litz/Miller/Schlieren Proving Ground**, and **1,980 Bilingual `Charon` (`gemini-3.8-flash-tts`) Voiceovers**.
+> Explore **2,174 moving CAD components across 100 interactive 3D exhibits, 10 museum halls, and 611 years of mechanical engineering (`1415–2026`)**: **24 Assault/Battle Rifles** · **10 Machine Guns** · **13 SMGs & PDWs** · **12 Sniper & Anti-Materiel Rifles** · **8 Shotguns** · **16 Pistols & Revolvers** · **5 Archery Systems** (from the **1415 Medieval English Yew Longbow** to modern compound bows & crossbows) · **8 `1:1` Main Battle Tanks** (**ZTZ-99A**, **M1A2 SEP v3**, **Leopard 2A7V**, **Tiger I 131**, **T-90M Proryv**, **Challenger 2**, **Merkava Mk.4M**, **T-34-85**) · **4 `1:1` Heavy Ordnance Systems** (**GE GAU-8/A Avenger 30mm**, **GE M61A1 Vulcan 20mm**, **Bofors 40mm L/60**, **BAE M777A2 155mm Howitzer**). Powered by our **Tiered Dual-Track Architecture**: **34 Flagship Blender 5.2 Hyper-Sculpted Exhibits (`9.97/10`, `775` Draco `.glb` meshes + `79` GPU `aSpringParam` dynamic CSG springs/limbs = `854` parts, `414` 2K/4K 5-ch Packed ORM WebP maps, `340` Cycles `2880×1800` RGBA print plates, `1,980` Gemini `Charon` TTS MP3s)** + **66 Centennial Procedural CAD Exhibits (`9.58/10`, `1,320` watertight Web Worker CSG parts across 28 geometric archetypes & 22 kinematic laws, zero-bloat Web Speech API narration)** — backed by **100/100 Bilingual 4-Act & Part Narrations**, **42 Curated Showdown Rivalries** (`100×99` free-pair custom duels & 6-axis radar), **Smithsonian 1415–2026 Scale-Break Timeline**, **1:1 True-Scale Museum Wall**, **Recoil Impulse Lab**, **Tate Hydrodynamic 3D Armor Theater**, and **1,000m Applied Ballistics Litz/Miller/Schlieren Proving Ground**.
+
+---
+
+## Centennial 100-Exhibit Showcase Gallery (`9.58 / 10.0` Live Visual Certified · WebGL 2.0)
+
+*Unretouched live headless Chromium WebGL 2.0 captures from the Centennial 66-exhibit expansion (`BAY-35 ~ BAY-100`) spanning all 10 halls (`1415–2026`), demonstrating sliced MBT turrets & pistol slides (`?cut=1`), matte CARC armor, 1:1 heavy hangar grounding, 28 procedural CAD archetypes, and the 100-node Smithsonian scale-break timeline.*
+
+| **🇷🇺 `BAY-94` T-90M Proryv (`125mm 2A46M-5`) · *1:1 Live CT Cutaway (`?cut=1`) Sliced Matte CARC Turret & Carousel*** | **🇷🇺 `BAY-97` T-34-85 (1944) · *Blueprint Daylight Studio, Exposed Christie Suspension & Cast 85mm Turret*** |
+| :---: | :---: |
+| ![T-90M Proryv 1:1 MBT Live CT Cutaway Sliced Matte CARC Turret](docs/screenshots/centennial-t90m-cut.jpg) | ![T-34-85 1944 Medium Tank Blueprint Daylight Studio with Christie Suspension](docs/screenshots/centennial-t34-85-daylight.jpg) |
+
+| **🇺🇸 `BAY-98` GE M61A1 "Vulcan" (`20×102mm` · 6,000 RPM) · *1:1 6-Barrel Rotary Cannon Grounded on Hangar Pit*** | **🏴󠁧󠁢󠁥󠁮󠁧󠁿 `BAY-93` 1415 English Yew Longbow (`1.96 m` Warbow) · *Bi-Color Tapered Yew Stave, Horn Nocks & Bodkin Arrow*** |
+| :---: | :---: |
+| ![GE M61A1 Vulcan 20mm 6-Barrel Rotary Cannon Grounded on Heavy Concrete Hangar](docs/screenshots/centennial-m61vulcan-studio.jpg) | ![1415 Medieval English Yew Longbow with Tapered Stave and Bodkin War Arrow](docs/screenshots/centennial-longbow-1415.jpg) |
+
+| **🇷🇺 `BAY-55` PPSh-41 (`7.62×25mm` · 900 RPM) · *Perforated Steel Shroud, 71-Rd Drum & Oiled Birch Stock*** | **🇩🇪 `BAY-71` Walther WA 2000 (`.300 Win Mag`) · *Walnut Bullpup Chassis, Twin Aluminum Rails & Top-Mounted Bipod*** |
+| :---: | :---: |
+| ![PPSh-41 Submachine Gun with Perforated Steel Shroud and 71-Round Drum](docs/screenshots/centennial-ppsh41-studio.jpg) | ![Walther WA 2000 Bullpup Sniper Rifle with Walnut Furniture and Top Bipod](docs/screenshots/centennial-wa2000-studio.jpg) |
+
+| **🇮🇹 `BAY-81` Beretta 92FS / M9 (`9×19mm`) · *Live CT Cutaway (`?cut=1`) Sliced Open-Top Slide & Falling Locking Block*** | **🕰️ 100-Node Smithsonian Evolution Timeline (`1415–2026` · 611 Years) · *Piecewise `1415 // 1870` Scale-Break & Decluttered Labels*** |
+| :---: | :---: |
+| ![Beretta 92FS M9 Live CT Cutaway Sliced Slide and Falling Locking Block](docs/screenshots/centennial-beretta92-cut.jpg) | ![100-Exhibit Smithsonian Evolution Timeline 1415-2026 with Piecewise Scale-Break](docs/screenshots/centennial-timeline-1415-2026.jpg) |
 
 ---
 
@@ -55,13 +80,13 @@
 | :---: | :---: |
 | ![ZTZ-99A 125mm 3-Petal Discarding Sabot Separation, Bore-Evacuator Smoke and Fresnel Schlieren Shockwave](docs/screenshots/v7-mbt-sabot-discard.jpg) | ![GE GAU-8/A Avenger 30mm 7-Barrel Rotary Motion-Blur Halo and X-Ray Cam Housing](docs/screenshots/v7-gau8-rotary-blur.jpg) |
 
-| **📏 Smithsonian 1:1 True-Scale Museum Wall (All 34 Exhibits vs 1.75m Human Reference)** | **📈 Interactive Recoil Impulse, Gas-Jet Momentum & Muzzle-Climb Physics Lab (Blueprint Daylight)** |
+| **📏 Smithsonian 1:1 True-Scale Museum Wall (All 100 Exhibits vs 1.75m Human Reference)** | **📈 Interactive Recoil Impulse, Gas-Jet Momentum & Muzzle-Climb Physics Lab (Blueprint Daylight)** |
 | :---: | :---: |
-| ![Smithsonian 1:1 True-Scale Museum Wall comparing 34 exhibits against a 1.75m human silhouette](docs/screenshots/v7-scale-wall.jpg) | ![Interactive Recoil Impulse, Gas-Jet Momentum and Muzzle-Climb Torque Physics Lab](docs/screenshots/v7-recoil-lab.jpg) |
+| ![Smithsonian 1:1 True-Scale Museum Wall comparing museum exhibits against a 1.75m human silhouette](docs/screenshots/v7-scale-wall.jpg) | ![Interactive Recoil Impulse, Gas-Jet Momentum and Muzzle-Climb Torque Physics Lab](docs/screenshots/v7-recoil-lab.jpg) |
 
-| **⚔️ Universal `34×33` Mechanism Showdown Custom Duel Builder & 6-Axis Engineering Radar** | **📐 Blueprint Daylight Studio & Floating 3D CAD Vernier Caliper (`mm / in` Dimension Sprite)** |
+| **⚔️ Universal `100×99` Mechanism Showdown Custom Duel Builder & 6-Axis Engineering Radar** | **📐 Blueprint Daylight Studio & Floating 3D CAD Vernier Caliper (`mm / in` Dimension Sprite)** |
 | :---: | :---: |
-| ![Universal 34x33 Mechanism Showdown Custom Duel Builder and 6-Axis Engineering Radar](docs/screenshots/v7-showdown-radar.jpg) | ![Blueprint Daylight Studio with Floating 3D CAD Vernier Caliper mm/in Dimension Sprite](docs/screenshots/v7-caliper-daylight.jpg) |
+| ![Universal 100x99 Mechanism Showdown Custom Duel Builder and 6-Axis Engineering Radar](docs/screenshots/v7-showdown-radar.jpg) | ![Blueprint Daylight Studio with Floating 3D CAD Vernier Caliper mm/in Dimension Sprite](docs/screenshots/v7-caliper-daylight.jpg) |
 
 | **🎖️ Armorer Mastery Passport — Radial SVG Progress Ring, 1-Click Next-Drill CTA & 10-Hall Breakdown** |
 | :---: |
@@ -193,23 +218,23 @@
 
 ## World-Class Architecture, Physics & UX Highlights
 
-| **Global `Cmd+K` / `Ctrl+K` Bilingual Instant Command Palette** | **34-Bay 10-Hall Interactive 3D Digital Vault & Museum Showcase** |
+| **Global `Cmd+K` / `Ctrl+K` Bilingual Instant Command Palette** | **100-Bay 10-Hall Interactive 3D Digital Vault & Museum Showcase** |
 | :---: | :---: |
-| ![Cmd+K Global Command Palette](docs/screenshots/ux-cmdk-palette.jpg) | ![Digital Armory 3D 34-Bay Vault](docs/screenshots/armory-showcase.jpg) |
+| ![Cmd+K Global Command Palette](docs/screenshots/ux-cmdk-palette.jpg) | ![Digital Armory 3D 100-Bay Vault](docs/screenshots/armory-showcase.jpg) |
 
-- **✦ Dual-Track Blender 5.2 Hyper-Sculpted Draco `.glb` + Web Worker CSG Engine (`34/34` Waves 1–10 Grand Slam)**:
-  - **100% (`34/34`) Complete Museum Hyper-Sculpting Coverage across 10 Halls**: Every exhibit (`29/29` small arms & compound archery + `4/4` 4K 1:1 Main Battle Tanks + `1/1` 1:1 `30×173mm` GE GAU-8/A Avenger rotary autocannon in the **10th Hall `ordnance`**) is hyper-sculpted and Cycles-baked via MIT-licensed headless Python scripts (`scripts/blender/build_*_photoreal.py`) into compact Draco `.glb` bundles (`775` watertight solid CAD meshes, `1.33–11.27 MB` total each, `34/34` passing `npm run assets:audit <= 12 MB`, `100%` manifold, exact `1u = 1cm` coordinates) backed by `414` 2K/4K 5-channel Packed ORM & detail WebP maps (`101` PBR suites, `0` PNGs) and `340/340` synced Cycles `2880×1800` 32-bit RGBA DK Master Plates.
-  - **Filament / Kaplanyan Specular AA & Swiss Prussian-Ink Blueprint Daylight Cutaways (`ARMORY_SHADER_VERSION = 11`)**: Screen-space geometric normal-derivative roughness broadening eliminates harsh flat-receiver specular aliasing in high-luminance daylight, paired with high-contrast Prussian cobalt-navy ISO 128 architectural drafting-ink section caps, deeper cross-cut walnut/bakelite end-grain, and calibrated helical rifling groove relief across live Dark Vault ↔ Blueprint Daylight studio toggles.
-  - **Zero-Compromise Dynamic Springs, Limbs & Bowstrings**: `79` helical recoil, buffer, sear, drum, tubular-magazine, cannon recuperator, breech, striker, and V-leaf springs plus flexing compound quad-limbs, cam axles, bowstrings, and power cables remain on the procedural CSG Web Worker track so per-vertex `aSpringParam` GPU compression stays physically exact at 60 FPS.
+- **✦ Tiered Dual-Track 100-Exhibit Architecture (34 Blender 5.2 Hyper-Sculpted Flagships + 66 Centennial Procedural CAD Exhibits · `dist/ 641.4 MB`)**:
+  - **34 Flagship Blender 5.2 Hyper-Sculpted Exhibits (`BAY-01 ~ BAY-34` · `9.97 / 10.0` Certified)**: Every flagship exhibit (`27` firearms + `2` compound archery + `4` 4K `1:1` Main Battle Tanks + `1` `1:1` `30×173mm` GE GAU-8/A Avenger rotary autocannon) is hyper-sculpted and Cycles-baked via MIT-licensed headless Python scripts (`scripts/blender/build_*_photoreal.py`) into compact Draco `.glb` bundles (`775` watertight solid CAD meshes + `79` GPU `aSpringParam` dynamic CSG springs/limbs = `854` parts, `1.33–11.27 MB` each, `34/34` passing `npm run assets:audit <= 12 MB`), backed by `414` 2K/4K 5-channel Packed ORM & detail WebP maps (`101` PBR suites, `0` PNGs), `340/340` synced Cycles `2880×1800` RGBA DK Master Plates, and `1,980` Gemini `Charon` TTS MP3 voiceovers.
+  - **66 Centennial Procedural CAD Exhibits (`BAY-35 ~ BAY-100` · `9.58 / 10.0` Certified)**: Zero-asset-bloat Web Worker CSG geometry factory (`centennialGeometryFactory.ts`, lazy `43.31 kB` chunk) + lazy 22-law kinematic runtime (`centennialPluginFactory.ts`, `23.45 kB`) + acyclic catalog leaf (`armory-centennial-catalog`, `409.98–410.19 kB`) generating **`1,320` watertight 3D CAD parts** across **28 geometric archetypes** (including 4 additional `1:1` MBTs, 3 additional `1:1` heavy ordnance systems, and the 1415 Medieval English Longbow) with real-time bilingual Web Speech API narration (`100/100` `public/narrations/*.json`), keeping the entire `dist/` footprint at **`641.40 MB` (`62.64%` of GitHub Pages 1 GB limit)**.
+  - **Filament / Kaplanyan Specular AA & Swiss Prussian-Ink Blueprint Daylight Cutaways (`ARMORY_SHADER_VERSION = 11`)**: Screen-space geometric normal-derivative roughness broadening eliminates harsh flat-receiver specular aliasing in high-luminance daylight, paired with high-contrast Prussian cobalt-navy ISO 128 architectural drafting-ink section caps, matte CARC armor finishes, deeper cross-cut walnut/laminate end-grain, and calibrated helical rifling groove relief across live Dark Vault ↔ Blueprint Daylight studio toggles.
   - **Production KTX2 (`toktx`), Heavy-Media CDN, Budget Audit & Automated Visual/Perf/A11y QA**: Real Khronos `toktx` UASTC+Zstd (linear) / ETC1S (sRGB) pipeline with graceful WebP fallback (`scripts/build_ktx2_textures.mjs` + self-hosted `public/basis/`), `npm run assets:audit` enforcing `<= 12 MB` budgets, optional `VITE_CDN_ASSET_BASE_URL` heavy-media offloading, PWA Offline Museum Manager (`?panel=offline`), and zero-dependency headless Chromium QA gates (`qa:a11y`, `qa:perf`, `qa:fleet`, `qa:subpath`, `qa:visual`, `docs:screenshots`).
-- **✦ True 3D Cutaway Helical Rifling Bore & In-Bore Propellant Deflagration Glow (34/34 Exhibits)**: Real-time barrel slicing via `[C]` exposes exact 3D helical lands/grooves (cut-rifled, polygonal, or hard-chrome smoothbore across all 34 exhibits) paired with 1:1 plasma-to-projectile base ignition glow & Boxer primer flash during live slow-motion firing.
-- **✦ 1:1 Smoothbore MBT 3-Petal Discarding Sabot Separation, Rotary Blur Halos & Bore-Evacuator Vent Plumes**: During live firing of `ZTZ-99A`, `M1A2`, and `Leopard 2A7V`, three separate machined-aluminum sabot petals separate symmetrically at 120° with nose-up aerodynamic flare while curl-turbulent bore-evacuator smoke plumes purge the cannon tube; `GAU-8/A` and `M134D` project synchronized high-RPM rotary motion-blur halos and Fresnel Schlieren blast shells.
-- **✦ Synchronized Heavy-Ordnance Acoustics & Workbench Acoustic Studio Deck**: Real-time procedural Web Audio engine coupling **APFSDS supersonic discarding-sabot air-crack**, **MBT autoloader & bustle stub-case clang**, **Tiger I 88mm drawn-brass bell ring**, and **lifecycle-managed rotary hydraulic (`GAU-8/A`) & 28V DC electric (`M134D`) drive motor spin-up whine** through 4-room stereo convolution IR reverb and Euler-Bernoulli steel waveguides—inspectable & auditionable live via the Workbench Acoustic Studio Deck (`RT60` telemetry + 4 instant foley/live-shot cues).
-- **✦ 28-Term Bilingual Smithsonian Engineering Glossary & 1-Click Markdown Tech Dossier Export**: Interactive inline glossary chips cross-linked across all 34 exhibits plus 1-click `[Copy Tech Dossier]` in `PartInspectorCard` exporting a structured Smithsonian / IEEE-style Markdown engineering specification sheet (provenance, ballistics, rifling, active component, glossary & 3D deep-link).
-- **✦ Smithsonian 1:1 True-Scale Museum Wall (`?panel=scalewall`), Recoil Impulse & Muzzle-Climb Physics Lab (`?panel=recoil`) & Universal `34×33` Mechanism Showdown (`[S]`)**: Compare all 34 exhibits side-by-side in true millimeters against a `1.75 m` human silhouette; decompose projectile vs rocket gas-jet momentum, muzzle-brake counter-thrust, 120-pt `F(t)` waveforms & bore-axis climb torque; build any `34×33` custom comparison duel with a 6-axis engineering radar and jump straight into Single-Canvas Dual-Scissor Live 3D Split-Screen (`?screen=split_showdown`).
+- **✦ True 3D Cutaway Helical Rifling Bore & In-Bore Propellant Deflagration Glow (100/100 Exhibits · 95 Barreled)**: Real-time barrel slicing via `[C]` exposes exact 3D helical lands/grooves (cut-rifled, polygonal, or hard-chrome smoothbore across all 95 barreled exhibits, plus sliced MBT turrets and semi-auto pistol slides) paired with 1:1 plasma-to-projectile base ignition glow & Boxer primer flash during live slow-motion firing.
+- **✦ 1:1 Smoothbore MBT 3-Petal Discarding Sabot Separation, Rotary Blur Halos & Bore-Evacuator Vent Plumes**: During live firing across our **8 `1:1` Main Battle Tanks**, three separate machined-aluminum sabot petals separate symmetrically at 120° with nose-up aerodynamic flare while curl-turbulent bore-evacuator smoke plumes purge the cannon tube; **`GAU-8/A`, `M61A1 Vulcan`, and `M134D`** project synchronized high-RPM rotary motion-blur halos and Fresnel Schlieren blast shells.
+- **✦ Synchronized Heavy-Ordnance Acoustics & Workbench Acoustic Studio Deck**: Real-time procedural Web Audio engine coupling **APFSDS supersonic discarding-sabot air-crack**, **MBT autoloader & bustle stub-case clang**, **Tiger I 88mm drawn-brass bell ring**, and **lifecycle-managed rotary hydraulic (`GAU-8/A`, `M61A1`) & 28V DC electric (`M134D`) drive motor spin-up whine** through 4-room stereo convolution IR reverb and Euler-Bernoulli steel waveguides—inspectable & auditionable live via the Workbench Acoustic Studio Deck (`RT60` telemetry + 4 instant foley/live-shot cues).
+- **✦ 28-Term Bilingual Smithsonian Engineering Glossary & 1-Click Markdown Tech Dossier Export**: Interactive inline glossary chips cross-linked across all 100 exhibits plus 1-click `[Copy Tech Dossier]` in `PartInspectorCard` exporting a structured Smithsonian / IEEE-style Markdown engineering specification sheet (provenance, ballistics, rifling, active component, glossary & 3D deep-link).
+- **✦ Smithsonian 1:1 True-Scale Museum Wall (`?panel=scalewall`), Recoil Impulse & Muzzle-Climb Physics Lab (`?panel=recoil`) & Universal `100×99` Mechanism Showdown (`[S]`)**: Compare all 100 exhibits side-by-side in true millimeters against a `1.75 m` human silhouette (with 10-hall filter & search); decompose projectile vs rocket gas-jet momentum, muzzle-brake counter-thrust, 120-pt `F(t)` waveforms & bore-axis climb torque; explore **42 curated cross-era rivalries** or build any `100×99` custom comparison duel with a 6-axis engineering radar and jump straight into Single-Canvas Dual-Scissor Live 3D Split-Screen (`?screen=split_showdown`).
 - **✦ Applied Ballistics 1,000m 3D Proving Ground (`[R]`) & Tate Hydrodynamic 3D Composite Armor Theater (`?panel=armor`)**: Zero-GC RK4 3-DOF solver across **23 projectile profiles** upgraded with **Applied Ballistics Litz spin-drift**, **Don Miller gyroscopic stability ($S_g$)**, **Schlieren Mach-cone waves**, **AR500 steel impact sparks**, swinging steel gong & `d/343` acoustic return, 10% ballistic gel cavity pulse & FFP MIL reticle; paired with the **Tate hydrodynamic erosion** + Lanz-Odermatt 3D composite armor cutaway theater (`5` penetrators incl. `30×173mm PGU-14/B API`).
-- **✦ Physically Coupled Modular Optics & Muzzle Bench (`[O]`), Tri-Axial CT + 6-Plane 3D Slice Box (`[C]`), Blueprint Daylight Studio & Floating 3D CAD Vernier Caliper (`[K]`)**: Flush 1:1 mounts across all 34 exhibits (4 muzzles × 4 optics × 4 presets) coupled live to CT cutaway baffles/LPVO/FLIR PCB, gas vortices, `-28 dB / +6 dB` acoustics, and recoil telemetry; Dark Tactical Vault, Gunsmith Bench & high-contrast **Blueprint Daylight** studios; plus floating `mm / in` 3D caliper dimension sprites.
-- **✦ Two-Tier Detail Strip (`[G]`), Armorer Mastery Passport (`?panel=passport` · Radial SVG Ring), Mystery Triage (`[J]`), 1:1 Tank Crew FLIR FCS (`?panel=crew`), 1894–2026 Timeline (`?panel=timeline`), 1080p Director Reel (`?panel=reel`), HD Share Posters (`[U]`), 340-Plate Print Studio (`[Ctrl/Cmd+P]`) & 1,980 `Charon` Voiceovers**: Complete interactive curriculum from guided field-strip & blind exams to A4/Letter DK Encyclopedia and Kids 3D Picture Book publication.
+- **✦ Physically Coupled Modular Optics & Muzzle Bench (`[O]`), Tri-Axial CT + 6-Plane 3D Slice Box (`[C]`), Blueprint Daylight Studio & Floating 3D CAD Vernier Caliper (`[K]`)**: Flush 1:1 mounts across all compatible firearms (4 muzzles × 4 optics × 4 presets) coupled live to CT cutaway baffles/LPVO/FLIR PCB, gas vortices, `-28 dB / +6 dB` acoustics, and recoil telemetry; Dark Tactical Vault, Gunsmith Bench & high-contrast **Blueprint Daylight** studios; plus floating `mm / in` 3D caliper dimension sprites.
+- **✦ Two-Tier Detail Strip (`[G]`), Armorer Mastery Passport (`?panel=passport` · Radial SVG Ring), Mystery Triage (`[J]`), 8-MBT 1:1 Tank Crew FLIR FCS (`?panel=crew`), 1415–2026 Scale-Break Timeline (`?panel=timeline`), 1080p Director Reel (`?panel=reel`), HD Share Posters (`[U]`), 340-Plate Print Studio (`[Ctrl/Cmd+P]`) & 100/100 Bilingual Narrations (`1,980` `Charon` MP3s + Web Speech API)**: Complete interactive curriculum from guided field-strip & blind exams to A4/Letter DK Encyclopedia and Kids 3D Picture Book publication.
 
 ---
 
@@ -217,13 +242,13 @@
 
 | Automated Certification Gate | Command | Verified Result |
 | :--- | :--- | :--- |
-| **Live Headless Chromium Visual Certification** | `43`-Shot Multi-Viewport Audit (`1920×1080` / `1024×768` / `390×844`) | **`9.97 / 10.0` Certified** (`7.20 → 8.90 → 9.55 → 9.68 → 9.92 → 9.97 / 10.0`, plus all 3 residual micro-nits resolved: Daylight 3D armor sprite contrast, mobile `390px` portrait rifle framing & compact mobile Passport hero card) |
+| **Live Headless Chromium Visual Certification** | Multi-Viewport Pixel Audits (`1920×1080` / `1024×768` / `390×844`) | **`9.97 / 10.0` Flagship 34 Certified** + **`9.58 / 10.0` Centennial 66 Certified** (`6.85 → 9.58 / 10.0` across 31-shot 10-hall visual certification: sliced MBT turrets & pistol slides, matte CARC armor, grounded `1:1` M61A1 Vulcan, 1415 English Longbow & 100-node scale-break timeline) |
+| **Full-Fleet 100-Exhibit Live Render Audit** | `npm run qa:fleet -- --mode=full` | **`108 / 108 PASS (100%)`** — ALL `100` exhibits + `8` museum views rendered live in headless Chromium (`0` console/page/network errors, `0` 404s, `0` error boundaries, `0` blank canvases) |
 | **WCAG 2.1 AA Accessibility & Mobile Ergonomics** | `npm run qa:a11y` | **`75 / 75 PASS (100%)`** — `6` screens + `14` modals + `5` HUDs × Dark Desktop / Blueprint Daylight / Mobile `390×844` (`0` errors, `0` warnings, `0px` mobile X-overflow, `0` undersized controls) |
 | **1080p WebGL 2.0 Performance & Frame-Pacing Soak** | `npm run qa:perf` | **`12 / 12 PASS`** — **`60.2 FPS`** avg (`60.1` min, `p95 <= 16.8 ms`, `0` console/page/network errors) |
-| **Full-Fleet Live Render Audit** | `npm run qa:fleet` | **`42 / 42 PASS`** — all `34` exhibits + core labs rendered live in headless Chromium (`0` WebGL errors) |
-| **Subpath Deployment & Single-Tab VRAM Soak** | `npm run qa:subpath` | **`12 / 12 PASS`** — `/digital-armory-3d/` zero-404 subpath verification + 12-exhibit LRU VRAM soak (`0` WebGL context losses) |
+| **Subpath Deployment & Single-Tab VRAM Soak** | `npm run qa:subpath` | **`12 / 12 PASS`** — `/digital-armory-3d/` zero-404 subpath verification + 12-exhibit LRU VRAM soak (`peak jsHeapMb 20.4 MB`, `0` WebGL context losses) |
 | **Flagship Documentation Screenshot Pipeline** | `npm run docs:screenshots` | **`43 / 43 PASS`** — automated `1920×1080` live WebGL documentation studio (`5` core + `27` sculptures + `11` labs) |
-| **Asset Budget, Bundle Hygiene & Contract Suites** | `npm run typecheck && npm run lint && npm test && npm run build && npm run assets:audit` | **`637+` automated Vitest tests (`103+` suites)** · **`0` circular chunk warnings** (`max chunk < 800 kB`) · **`34/34 <= 12 MB`** · **`0` PNGs** · **`340/340` synced Cycles plates** |
+| **Asset Budget, Bundle Hygiene & Contract Suites** | `npm run typecheck && npm run lint && npm test && npm run build && npm run assets:audit` | **`120` Vitest suites · `698` tests PASS** · **`0` circular chunk warnings** (`max chunk 684.66 kB < 800 kB`) · **`dist/ 641.4 MB` (`62.6%` of 1 GB)** · **`34/34 <= 12 MB`** · **`0` PNGs** · **`340/340` synced Cycles plates** |
 
 ---
 
@@ -231,14 +256,31 @@
 
 | Inspiration Benchmark | What We Synthesize & Advance |
 | :--- | :--- |
-| **Matt Rittman 3D Cutaway Animations** | Real-time **Live CT-Scan Section Plane (`[C]`)**, **34/34 True 3D Helical Rifling & In-Bore Deflagration**, **6-role functional color-coding (`[T]`)**, dynamic propellant gas-flow & sabot discard VFX, and automated 3D documentary choreography—pause, orbit, slice, or inspect any part at any millisecond. |
+| **Matt Rittman 3D Cutaway Animations** | Real-time **Live CT-Scan Section Plane (`[C]`)**, **95/100 Barreled True 3D Helical Rifling & In-Bore Deflagration**, **6-role functional color-coding (`[T]`)**, dynamic propellant gas-flow & sabot discard VFX, and automated 3D documentary choreography—pause, orbit, slice, or inspect any part at any millisecond. |
 | **World of Guns: Gun Disassembly** | **Hands-on military field-strip & full detail-strip DAGs & Timed Blind Qualification Exams (`[G]`)**, **Mystery Stoppage Triage (`[J]`)**, `SAFE / SEMI / AUTO` sear/disconnector physics, and **Radial Mastery Passport** certification—100% open-source in the browser with zero downloads or paywalls. |
 | **Bartosz Ciechanowski (`ciechanow.ski`)** | Instant web launch, direct 3D slide/bolt manipulation, **1,000m Litz/Miller/Schlieren RK4 external ballistics (`[R]`)**, **Recoil Impulse Physics Lab**, and 1:1 coupling between **SAAMI/CIP internal ballistics curves ($P(t)$, $V(t)$)** and 7-stage kinematics at 60 FPS with zero React re-renders. |
 | **Smithsonian 3D & Royal Armouries** | Bilingual (`EN / ZH`) 4-act R&D histories, **28-Term Engineering Glossary**, **1:1 True-Scale Museum Wall**, **1-Click Markdown Technical Dossier Copy**, factory `1:1` CAD metrology (`1u = 1cm`), museum-grade **Blender 5.2 Cycles PBR exhibits**, and MIT-licensed reproducible asset pipelines. |
 
 ---
 
-## 34-Exhibit Collection Matrix (10 Halls · 854 Moving CAD Parts · 34/34 Blender 5.2 Grand Slam)
+## 100-Exhibit Collection Matrix (10 Halls · 2,174 Moving CAD Parts · 34 Flagship GLB + 66 Centennial CAD)
+
+### Ten-Hall Distribution (`1415–2026` · 611 Years)
+
+| Hall | Flagship 34 (Blender 5.2 GLB) | Centennial 66 (Procedural CAD) | Total | Signature Exhibits |
+| :--- | :---: | :---: | :---: | :--- |
+| **Assault & Battle Rifles (`assault`)** | 10 | 14 | **24** | AK-15M1, M4A1, SCAR-L, AUG A1, M1 Garand, G11 K2, AN-94, K98k, AK-47, M16A1, HK416, FN FAL, H&K G3A3, StG 44, FAMAS F1, QBZ-95, XM7 |
+| **Machine Guns (`lmg`)** | 3 | 7 | **10** | FN M249 SAW, M134D Minigun, MG 42, PKM, M240B, M60E4, Browning M2HB, RPK-74M, BAR M1918, DP-28 |
+| **Submachine Guns & PDWs (`smg`)** | 4 | 9 | **13** | H&K MP5A3, FN P90, KRISS Vector, Thompson M1928A1, Uzi, MP 40, PPSh-41, Sten Mk II, H&K UMP45, MP7A1, PP-19 Bizon, MAC-10, Scorpion EVO |
+| **Sniper & Anti-Materiel (`sniper`)** | 3 | 9 | **12** | Barrett M82A1, AI AWM, VSS Vintorez, Dragunov SVD, Mosin M91/30, Lee-Enfield No.4, Springfield M1903, CheyTac M200, Walther WA 2000, Mk 14 EBR |
+| **Shotguns (`shotgun`)** | 2 | 6 | **8** | Benelli M4 (M1014), Remington 870, SPAS-12, Mossberg 500, AA-12, Saiga-12, Winchester 1887, KS-23 |
+| **Pistols & Revolvers (`pistol`)** | 6 | 10 | **16** | Glock 17, SIG P320, Desert Eagle, Colt Python, Luger P08, Colt M1911A1, Beretta 92FS, SIG P226, H&K USP .45, CZ 75, Walther PPK, Mauser C96, Colt SAA 1873, S&W Model 500 |
+| **Archery (`archery`)** | 2 | 3 | **5** | Mathews LIFT 33, Ravin R500, Hoyt Carbon RX-8, Excalibur Micro 380, **1415 Medieval English Yew Longbow** |
+| **Heavy Armor — 1:1 MBTs (`armor`)** | 4 | 4 | **8** | ZTZ-99A, M1A2 SEP v3, Leopard 2A7V, Tiger I 131, **T-90M Proryv**, **Challenger 2**, **Merkava Mk.4M**, **T-34-85 (1944)** |
+| **Heavy Ordnance — 1:1 (`ordnance`)** | 1 | 3 | **4** | **GE GAU-8/A Avenger 30mm**, **GE M61A1 Vulcan 20mm**, **Bofors 40mm L/60**, **BAE M777A2 155mm Howitzer** |
+| **Total Museum Collection** | **34** *(854 parts)* | **66** *(1,320 parts)* | **100** | **`2,174` Moving Parts · `100/100` Bilingual Narrations · `42` Curated Rivalries** |
+
+### Flagship 34 Blender 5.2 Hyper-Sculpted Exhibits (`BAY-01 ~ BAY-34` · `9.97 / 10.0` Certified)
 
 | Bay | Exhibit | Pipeline | Caliber / Projectile | Operating & Locking Mechanism | Parts | Live Bench |
 | :--- | :--- | :---: | :--- | :--- | :---: | :---: |
@@ -283,28 +325,28 @@
 
 ### URL Deep-Link Parameters
 - Interactive Product Showcase: `/showcase.html?lang=en` or `/?screen=showcase&lang=en`
-- 34-Bay 10-Hall Armory Turntable, Heavy Armor & Heavy Ordnance Halls: `/?screen=armory&weapon=gau8&lang=en`
-- Live 3D Split-Screen Showdown: `/?screen=split_showdown&weaponA=ztz99a&weaponB=m1a2&lang=en`
-- Live Cutaway Workbench (Small Arms / 1:1 MBTs / 1:1 GAU-8/A): `/?weapon=gau8&screen=workbench&cut=1&lang=en`
+- 100-Bay 10-Hall Armory Turntable, Inline Quick-Search, Heavy Armor & Heavy Ordnance Halls: `/?screen=armory&weapon=t90m&lang=en`
+- Live 3D Split-Screen Showdown: `/?screen=split_showdown&weaponA=ak47&weaponB=m16a1&lang=en`
+- Live Cutaway Workbench (Small Arms / 8 1:1 MBTs / 4 1:1 Heavy Ordnance): `/?weapon=gau8&screen=workbench&cut=1&lang=en`
 - 3D 1,000m Firing Range, Bullet-Cam & RK4 DOPE Lab: `/?screen=ballistics&caliber=30x173_gau8&lang=en`
 - 17+4 1:1 Ordnance Cutaway Lab (Small Arms, Aero & Tank Cannon Rounds): `/?screen=cartridges&caliber=30x173_gau8&lang=en`
-- Direct Physics & Museum Panels: `/?panel=armor` (3D Penetration Theater) · `/?panel=scalewall` (1:1 True-Scale Museum Wall) · `/?panel=recoil` (Recoil Impulse Lab) · `/?panel=causality` (Causality Sandbox) · `/?panel=crew&optic=flir` (Tank Crew FLIR FCS) · `/?panel=timeline` (1894–2026 Timeline) · `/?panel=reel` (1080p Director Recorder) · `/?panel=passport` (Armorer Passport) · `/?panel=atlas` (PBR Texture Atlas) · `/?panel=monograph` (Cycles Print Studio) · `/?panel=offline` (PWA Offline Museum)
+- Direct Physics & Museum Panels: `/?panel=armor` (3D Penetration Theater) · `/?panel=scalewall` (100-Exhibit 1:1 True-Scale Wall) · `/?panel=recoil` (Recoil Impulse Lab) · `/?panel=causality` (Causality Sandbox) · `/?panel=crew&optic=flir` (8-MBT Tank Crew FLIR FCS) · `/?panel=timeline` (1415–2026 Scale-Break Timeline) · `/?panel=reel` (1080p Director Recorder) · `/?panel=passport` (100-Exhibit Armorer Passport) · `/?panel=atlas` (Flagship-34 PBR Atlas) · `/?panel=monograph` (Cycles Print Studio) · `/?panel=offline` (100-Pack PWA Offline Museum)
 
 ### Global & Workbench Hotkeys
 | Key | Action |
 | :---: | :--- |
-| `Cmd / Ctrl + K` | Open **Global Bilingual Instant Command Palette** (34 exhibits, 854 parts, 10 halls, 3D theaters & studio controls) |
+| `Cmd / Ctrl + K` | Open **Global Bilingual Instant Command Palette** (100 exhibits, 2,174 parts, 10 halls, 3D theaters & studio controls) |
 | `Space` | Play / pause staged explosion or 7-phase live firing cycle |
-| `C` | Toggle **Tri-Axial Live Draggable CT-Scan Cutaway & 6-Plane 3D Slice Box** (`Z / X / Y / 3D Box`, `±25 mm` small arms / `±1,800 mm` MBTs & GAU-8/A) |
+| `C` | Toggle **Tri-Axial Live Draggable CT-Scan Cutaway & 6-Plane 3D Slice Box** (`Z / X / Y / 3D Box`, `±25 mm` small arms / `±1,800 mm` MBTs & Heavy Ordnance) |
 | `O` | Toggle **Physically Coupled Modular Optics & Muzzle Attachment Bench** (Suppressor / Brake / Flash Hider · Red Dot / LPVO / FLIR) |
-| `T` | Toggle **6-Role Engineering Functional Color-Coding** & cutaway cap tint (small-arms & heavy-armor/ordnance roles) |
+| `T` | Toggle **6-Role Engineering Functional Color-Coding** & cutaway cap tint (small-arms, archery & heavy-armor/ordnance roles) |
 | `G` | Toggle **Hands-On Guided Field-Strip, Full Detail-Strip & Blind Timed Exam (DAG)** |
 | `J` | Toggle **Malfunction Cutaway & Mystery Stoppage Triage Exam** (`Stovepipe / Double-Feed / Light-Strike / OOB`) |
 | `K` | Toggle **1:1 3D Armorer Vernier Caliper** (`mm`) & 3D envelope scale ruler |
 | `R` | Open / return from **3D 1,000m Interactive Firing Range, Bullet-Cam & RK4 DOPE Lab** (23 profiles) |
 | `U` | Open / close **Instant HD 3D Cutaway Social Poster Studio** (`16:9 / 4:5` + QR + Rank Seal) |
 | `B` | Open / exit standalone **17+4 1:1 Small-Arms, Aero & Tank Ordnance Cutaway Lab** |
-| `S` | Open / close **9×9×9 3-Axis Mechanism Showdown & Dual-Exhibit Comparison Lab** (30 rivalries + instant Split-Screen launch) |
+| `S` | Open / close **9×9×9 3-Axis Mechanism Showdown & Dual-Exhibit Comparison Lab** (42 curated rivalries + `100×99` custom duels + instant Split-Screen launch) |
 | `X` | Toggle optical X-Ray translucent receiver / slide / magazine / drum housings |
 | `P / V / F` | Armorer **Press-Check** (`P`) · Cycle `SAFE / SEMI / AUTO` selector (`V`) · Hold trigger (`F`) |
 | `E / L / M / H` | CAD Hard-Edges (`E`) · 3D Callouts (`L`) · Web Audio Mute (`M`) · **Clean Fullscreen** (`H`) |
@@ -339,9 +381,9 @@ npm run assets:audit
 # 4. Automated live headless Chromium QA & documentation studio suites
 npm run qa:a11y                    # 75/75 (100%) WCAG 2.1 AA + mobile ergonomics audit
 npm run qa:perf                    # 12/12 60.2 FPS 1080p WebGL performance soak
-npm run qa:fleet                   # 42/42 full-fleet live WebGL render verification
+npm run qa:fleet -- --mode=full    # 108/108 full-fleet live WebGL render verification (100 exhibits + 8 views)
 npm run qa:subpath                 # 12/12 /digital-armory-3d/ subpath zero-404 & VRAM soak
-npm run qa:visual -- --weapons gau8,m1911 --cut
+npm run qa:visual -- --weapons gau8,t90m --cut
 npm run docs:screenshots           # 43/43 automated 1920x1080 flagship documentation captures
 ```
 
@@ -406,9 +448,9 @@ digital-armory-3d/
 │   ├── draco/                     # Self-hosted Three.js WebAssembly Draco mesh decoders
 │   ├── hdri/                      # 4 Cycles-rendered 32-bit .hdr domes (Vault / Bench / Daylight + 1:1 Heavy Armor Hangar)
 │   ├── manifest.webmanifest & sw.js # Subpath-safe PWA manifest & offline museum Service Worker
-│   ├── models/                    # All 34 Blender 5.2 Draco-compressed .glb exhibits (27 firearms + 2 archery + 4 1:1 MBTs + 1:1 GAU-8/A)
-│   ├── narrations/                # 34 structured zh/en R&D documentaries & part engineering JSONs
-│   ├── plates/                    # All 34/34 Blender 5.2 Cycles 2880×1800 transparent RGBA DK master plates (340 WebPs + manifest.json)
+│   ├── models/                    # 34 Flagship Blender 5.2 Draco-compressed .glb exhibits (27 firearms + 2 archery + 4 1:1 MBTs + 1:1 GAU-8/A)
+│   ├── narrations/                # 100 structured zh/en R&D documentaries & part engineering JSONs (34 Flagship + 66 Centennial)
+│   ├── plates/                    # Flagship 34/34 Blender 5.2 Cycles 2880×1800 transparent RGBA DK master plates (340 WebPs + manifest.json)
 │   ├── showcase/                  # Live WebGL 2.0 showcase gallery captures (WebP)
 │   └── textures/                  # 414 pre-baked 2K/4K 5-Channel Packed ORM & micro-detail WebP textures (136 albedo / 139 normal / 139 ORM & detail, 101 suites, 0 PNGs)
 ├── scripts/
@@ -419,7 +461,7 @@ digital-armory-3d/
 │   ├── narrations/.cache/         # 34 SHA-256 content-addressed Charon TTS verification manifests
 │   ├── pbr_core/ & pbr/           # Procedural Worley, knurling, 512px seamless RHA/CARC detail maps, normal-integrated AO & legacy PBR bakers
 │   ├── qa_a11y_audit.mjs          # Live 75-target WCAG 2.1 AA + mobile touch-target CDP audit
-│   ├── qa_full_fleet_audit.mjs    # Live 42-target full-fleet WebGL render auditor
+│   ├── qa_full_fleet_audit.mjs    # Live 108-target full-fleet WebGL render auditor (100 exhibits + 8 views)
 │   ├── qa_perf_soak.mjs           # Live 12-target 1080p 60 FPS WebGL performance soak
 │   ├── qa_subpath_and_memory.mjs  # Strict /digital-armory-3d/ subpath zero-404 & 12-exhibit VRAM soak
 │   ├── qa_visual_gate.mjs         # Automated 1920×1080 headless Chromium zero-error visual QA gate
@@ -428,32 +470,32 @@ digital-armory-3d/
 │   ├── app/                       # Bidirectional URL sync (?cut=1 / ?screen=split_showdown / ?screen=ballistics / ?screen=cartridges / ?panel=*), hotkeys & ErrorBoundary
 │   ├── engine/
 │   │   ├── actors/                # PartActor, RiflingBoreActor, AttachmentActor, Tri-Axial StencilSectionCap + SectionBoxGuide, BallisticsSystem (3-petal sabot & rotary halo), GasFlowVisualizer
-│   │   ├── attachments/           # 34-exhibit flush boreY/rail anchors, 4 muzzles × 4 optics × 4 presets & Zero-GC physics coupling
+│   │   ├── attachments/           # 100-exhibit flush boreY/rail anchors, 4 muzzles × 4 optics × 4 presets & Zero-GC physics coupling
 │   │   ├── audio/                 # 4-venue stereo convolution IR + waveguide gunsmith, APFSDS sabot crack, MBT stub-case clang, rotary hydraulic/electric whine & Acoustic Studio Deck telemetry
-│   │   ├── ballistics/            # 34-exhibit helical rifling & chamber throat registry (riflingSpecs) + magazine ammo stack specs
+│   │   ├── ballistics/            # 100-exhibit helical rifling & chamber throat registry (riflingSpecs) + magazine ammo stack specs
 │   │   ├── callout/               # ResizeObserver HUD obstacle cache & 60fps hairline callouts
 │   │   ├── canvas/                # ArmoryViewport, studioHdriManager, GunsmithStageMat (Mat + feathered 18×12m Armor Hangar & 4096 shadows) & GTAO/DOF/AgX PostFX
 │   │   ├── caliper/               # 1:1 3D Vernier caliper (`1u = 10mm`), floating mm/in dimension sprites & envelope metrology
 │   │   ├── cartridges/            # 21 exact 1:1 standing cutaway specs (17 small arms + 4 heavy/aero ordnance: 30mm/88mm/120mm/125mm)
 │   │   ├── clock/                 # Transient 60Hz playbackClock (zero React re-renders)
-│   │   ├── encyclopedia/          # 28-term bilingual Smithsonian Engineering Glossary cross-linked across all 34 exhibits
+│   │   ├── encyclopedia/          # 28-term bilingual Smithsonian Engineering Glossary cross-linked across all 100 exhibits
 │   │   ├── exam/                  # Armorer Blind Field-Strip, Detail-Strip & Triage grading + JSON Mastery Passport store
-│   │   ├── fieldstrip/            # 34-exhibit two-tier Field-Strip & Detail-Strip DAG specs & Zero-GC runtime
+│   │   ├── fieldstrip/            # 100-exhibit two-tier Field-Strip & Detail-Strip DAG specs & Zero-GC runtime
 │   │   ├── geometry/              # Dual-Track Draco GLB loader (glbAssetService) + Web Worker CSG & raycast
 │   │   ├── interaction/           # Direct 3D slide/bolt/lever drag, Press-Check & SAFE/SEMI/AUTO FCG
 │   │   ├── kinematics/            # Zero-GC keyframe & multi-stage pose evaluators
-│   │   ├── malfunctions/          # 4-stoppage diagnostic profiles & clearing drill state machine (34 exhibits)
+│   │   ├── malfunctions/          # 4-stoppage diagnostic profiles & clearing drill state machine (100 exhibits)
 │   │   ├── materials/             # Custom GLSL armoryShader v11 (Thermal Glow / Fouling / Micro-Shadowing / Jimenez AO / Lagarde SO / RNM / AR Fresnel / Filament Specular AA / Patina), 6-role tint & KTX2 fallback
-│   │   ├── offline/               # Per-exhibit PWA Offline Museum cache pinning & verification manager
+│   │   ├── offline/               # Per-exhibit PWA Offline Museum cache pinning & verification manager (100 packs)
 │   │   ├── physics/               # Internal ballistics (17+4+2), Causality Sandbox, Tate/Lanz-Odermatt Armor Penetration (5 penetrators) & 1,000m Litz/Miller/Schlieren RK4 external ballistics (23 profiles)
-│   │   ├── tank/                  # 4-MBT 360° turret traverse, gun trunnion elevation, laser FCS & FLIR gunner optic store
+│   │   ├── tank/                  # 8-MBT 360° turret traverse, gun trunnion elevation, laser FCS & FLIR gunner optic store
 │   │   └── utils/                 # Subpath-safe VITE_BASE_PATH / CDN resolvers & pure Smithsonian Markdown Tech Dossier formatter
 │   ├── features/                  # Modular UI views (showcase / armory / workbench / showdown3d / scalewall / recoillab / armorlab / ballistics / sandbox / video / passport / timeline / offline / share / monograph / cartridges / story / atlas)
 │   ├── i18n/                      # Strictly parity-checked zh/en dictionaries (0 CJK leaks in EN)
-│   ├── narration/                 # Audio queue, speechSynthesis fallback & 3D Story Director
+│   ├── narration/                 # Audio queue, Web Speech API fallback & 3D Story Director
 │   ├── store/                     # Strongly typed Zustand store (useAppStore)
-│   └── weapons/                   # 34 lazy-loaded self-contained exhibit plugins (27 firearms + 2 archery + 4 1:1 MBTs + 1:1 GAU-8/A) + SSOT museumMetrics
-└── tests/                         # 103+ Vitest geometry, rifling, sabot/rotary VFX, heavy acoustics, Specular AA, Prussian cutaway, glossary, dossier, a11y, GLB, kinematics & i18n contract suites (637+ tests)
+│   └── weapons/                   # 34 Flagship lazy plugins + expansion/ (66 Centennial blueprints, 28-archetype CAD geometry factory, 22-law lazy plugin factory, acyclic projectors) + SSOT museumMetrics
+└── tests/                         # 120 Vitest suites (698 tests): geometry, rifling, sabot/rotary VFX, heavy acoustics, Specular AA, Prussian cutaway, 42 rivalries, timeline, glossary, a11y, GLB, kinematics & i18n contracts
 ```
 
 ---

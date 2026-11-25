@@ -153,21 +153,143 @@ export const TIMELINE_STRINGS = {
 
 const MIN_YEAR = MUSEUM_TIMELINE_MIN_YEAR;
 const MAX_YEAR = MUSEUM_TIMELINE_MAX_YEAR;
-const SVG_W = 1080;
-const SVG_H = 356;
-const PAD_L = 56;
-const PAD_R = 56;
-const PAD_T = 34;
-const PAD_B = 42;
+const MODERN_START_YEAR = 1870;
+const PRE_INDUSTRIAL_START_X = 0.03;
+const PRE_INDUSTRIAL_END_X = 0.06;
+const MODERN_START_X = 0.14;
+const MODERN_END_X = 0.97;
 
-function normalizedXForYear(year: number): number {
-  if (year <= 1965) {
-    return ((year - MIN_YEAR) / (1965 - MIN_YEAR)) * 0.28;
+export const TIMELINE_SCALE_BREAK_NORM_X = 0.095;
+export const TIMELINE_AXIS_TICKS = [
+  1415,
+  1875,
+  1900,
+  1925,
+  1950,
+  1975,
+  2000,
+  2026,
+] as const;
+
+export const TIMELINE_SVG_METRICS = {
+  width: 1080,
+  height: 356,
+  padL: 56,
+  padR: 56,
+  padT: 34,
+  padB: 42,
+} as const;
+
+const SVG_W = TIMELINE_SVG_METRICS.width;
+const SVG_H = TIMELINE_SVG_METRICS.height;
+const PAD_L = TIMELINE_SVG_METRICS.padL;
+const PAD_R = TIMELINE_SVG_METRICS.padR;
+const PAD_T = TIMELINE_SVG_METRICS.padT;
+const PAD_B = TIMELINE_SVG_METRICS.padB;
+
+/**
+ * Smithsonian piecewise scale-break X mapping:
+ * - Anchors medieval 1415 roots cleanly on the left (`3%..6%`)
+ * - Leaves open room at `9.5%` for the crisp `//` axis-break glyph
+ * - Expands modern 1870–2026 industrial eras evenly across `14%..97%`
+ */
+export function normalizedXForYear(year: number): number {
+  if (year <= MIN_YEAR) return PRE_INDUSTRIAL_START_X;
+  if (year < MODERN_START_YEAR) {
+    const ratio = (year - MIN_YEAR) / (MODERN_START_YEAR - MIN_YEAR);
+    return (
+      PRE_INDUSTRIAL_START_X +
+      ratio * (PRE_INDUSTRIAL_END_X - PRE_INDUSTRIAL_START_X)
+    );
   }
-  if (year <= 2005) {
-    return 0.28 + ((year - 1965) / (2005 - 1965)) * 0.42;
+  const clamped = Math.min(MAX_YEAR, year);
+  const ratio =
+    (clamped - MODERN_START_YEAR) / (MAX_YEAR - MODERN_START_YEAR);
+  return MODERN_START_X + ratio * (MODERN_END_X - MODERN_START_X);
+}
+
+export function computeTimelineTickX(year: number): number {
+  return PAD_L + normalizedXForYear(year) * (SVG_W - PAD_L - PAD_R);
+}
+
+export interface TimelineNodeCoord {
+  readonly x: number;
+  readonly y: number;
+  readonly labelBelow: boolean;
+  readonly node: (typeof HISTORY_TIMELINE_NODES)[number];
+  readonly color: string;
+}
+
+/**
+ * Computes non-overlapping node label visibility for dense 100-node views:
+ * - When `visibleIds.size <= denseThreshold` (36), every visible node shows its label.
+ * - Otherwise, always shows `priorityIds` (selected, hovered, active tour) plus a
+ *   greedy per-lane non-overlapping subset enforcing `>= minGapPx` (default 78px).
+ */
+export function selectVisibleTimelineLabels(params: {
+  coords: ReadonlyMap<string, TimelineNodeCoord>;
+  visibleIds: ReadonlySet<string>;
+  priorityIds: ReadonlySet<string>;
+  minGapPx?: number;
+  denseThreshold?: number;
+}): ReadonlySet<string> {
+  const {
+    coords,
+    visibleIds,
+    priorityIds,
+    minGapPx = 78,
+    denseThreshold = 36,
+  } = params;
+
+  if (visibleIds.size <= denseThreshold) {
+    return new Set(visibleIds);
   }
-  return 0.70 + ((year - 2005) / (MAX_YEAR - 2005)) * 0.30;
+
+  const keptIds = new Set<string>();
+  const keptXsByLane = new Map<number, number[]>();
+
+  const tryKeep = (id: string, force: boolean): void => {
+    const pt = coords.get(id);
+    if (!pt) return;
+    const laneXs = keptXsByLane.get(pt.node.lane) ?? [];
+    if (!force && laneXs.some((kx) => Math.abs(pt.x - kx) < minGapPx)) {
+      return;
+    }
+    keptIds.add(id);
+    laneXs.push(pt.x);
+    keptXsByLane.set(pt.node.lane, laneXs);
+  };
+
+  for (const pid of priorityIds) {
+    if (coords.has(pid)) {
+      tryKeep(pid, true);
+    }
+  }
+
+  const visibleByLane = new Map<number, TimelineNodeCoord[]>();
+  for (const id of visibleIds) {
+    if (keptIds.has(id)) continue;
+    const pt = coords.get(id);
+    if (!pt) continue;
+    const list = visibleByLane.get(pt.node.lane);
+    if (list) list.push(pt);
+    else visibleByLane.set(pt.node.lane, [pt]);
+  }
+
+  for (const list of visibleByLane.values()) {
+    list.sort((a, b) => a.x - b.x);
+    if (list.length > 0) {
+      tryKeep(list[0].node.weaponId, false);
+    }
+    if (list.length > 1) {
+      tryKeep(list[list.length - 1].node.weaponId, false);
+    }
+    for (let i = 1; i < list.length - 1; i++) {
+      tryKeep(list[i].node.weaponId, false);
+    }
+  }
+
+  return keptIds;
 }
 
 export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
@@ -196,6 +318,7 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
   const [activeTourId, setActiveTourId] = useState<TimelineTourId | null>(
     initialTourId
   );
+  const [hoveredWeaponId, setHoveredWeaponId] = useState<string | null>(null);
   const [selectedWeaponId, setSelectedWeaponId] = useState<string>(() => {
     if (initialTourId) {
       const tour = HISTORY_TIMELINE_TOURS.find((t) => t.id === initialTourId);
@@ -239,18 +362,14 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
   const nodeCoords = useMemo(() => {
     const plotW = SVG_W - PAD_L - PAD_R;
     const plotH = SVG_H - PAD_T - PAD_B;
-    const map = new Map<
-      string,
-      {
-        x: number;
-        y: number;
-        labelBelow: boolean;
-        node: (typeof HISTORY_TIMELINE_NODES)[number];
-        color: string;
-      }
-    >();
+    const minRightX = PAD_L + plotW - 10;
+    const modernMinX = PAD_L + (MODERN_START_X - 0.01) * plotW;
+    const map = new Map<string, TimelineNodeCoord>();
     const laneCount = TIMELINE_LINEAGES.length;
-    const laneNodes = new Map<number, typeof HISTORY_TIMELINE_NODES[number][]>();
+    const laneNodes = new Map<
+      number,
+      (typeof HISTORY_TIMELINE_NODES)[number][]
+    >();
 
     for (const node of HISTORY_TIMELINE_NODES) {
       const list = laneNodes.get(node.lane);
@@ -259,25 +378,52 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
     }
 
     for (const [lane, list] of laneNodes.entries()) {
-      const sorted = [...list].sort((a, b) => a.year - b.year);
+      const sorted = [...list].sort(
+        (a, b) => a.year - b.year || a.weaponId.localeCompare(b.weaponId)
+      );
       const laneH = plotH / laneCount;
       const baseY = PAD_T + lane * laneH + laneH * 0.5;
-      let prevX = -999;
-      let prevBelow = false;
+      const minGap = sorted.length > 20 ? 15 : sorted.length > 12 ? 22 : 34;
 
+      const xs = sorted.map((node) => PAD_L + normalizedXForYear(node.year) * plotW);
+
+      // Forward pass: preserve scale-break boundary while gently spacing close neighbors
+      for (let i = 1; i < sorted.length; i++) {
+        const sameZone =
+          (sorted[i].year < MODERN_START_YEAR) ===
+          (sorted[i - 1].year < MODERN_START_YEAR);
+        if (sameZone && xs[i] - xs[i - 1] < minGap) {
+          xs[i] = xs[i - 1] + minGap;
+        }
+      }
+
+      // Reverse pass: prevent right-edge pileup while staying right of scale-break
+      if (xs.length > 0 && xs[xs.length - 1] > minRightX) {
+        xs[xs.length - 1] = minRightX;
+        for (let i = xs.length - 2; i >= 0; i--) {
+          if (sorted[i].year < MODERN_START_YEAR) break;
+          const maxAllowed = xs[i + 1] - minGap;
+          if (xs[i] > maxAllowed) {
+            xs[i] = Math.max(modernMinX, maxAllowed);
+          }
+        }
+      }
+
+      const staggerOffsets = [-8, 0, 8] as const;
       for (let idx = 0; idx < sorted.length; idx++) {
         const node = sorted[idx];
-        let x = PAD_L + normalizedXForYear(node.year) * plotW;
-        if (x - prevX < 46) {
-          x = Math.min(PAD_L + plotW, prevX + 46);
-        }
-        const closeToPrev = x - prevX < 88;
-        const labelBelow: boolean = closeToPrev ? !prevBelow : idx % 2 === 1;
-        const y = baseY + (closeToPrev ? (labelBelow ? 6 : -6) : 0);
+        const x = xs[idx];
+        const closeToPrev = idx > 0 && x - xs[idx - 1] < 48;
+        const labelBelow = idx % 2 === 1;
+        const y =
+          baseY +
+          (closeToPrev
+            ? staggerOffsets[idx % staggerOffsets.length]
+            : labelBelow
+              ? 3
+              : -3);
         const color = lineageMap.get(node.lineageId)?.colorHex ?? '#38bdf8';
         map.set(node.weaponId, { x, y, labelBelow, node, color });
-        prevX = x;
-        prevBelow = labelBelow;
       }
     }
     return map;
@@ -810,13 +956,11 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                 );
               })()}
 
-              {/* Year Ticks */}
-              {[1900, 1940, 1965, 1980, 1995, 2010, 2025].map((yr) => {
-                const x =
-                  PAD_L +
-                  normalizedXForYear(yr) * (SVG_W - PAD_L - PAD_R);
+              {/* Year Ticks (Smithsonian Scale-Break: 1415 // 1875..2026) */}
+              {TIMELINE_AXIS_TICKS.map((yr) => {
+                const x = computeTimelineTickX(yr);
                 return (
-                  <g key={yr}>
+                  <g key={yr} data-testid={`timeline-tick-${yr}`}>
                     <line
                       x1={x}
                       y1={PAD_T}
@@ -837,6 +981,35 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                   </g>
                 );
               })}
+
+              {/* Smithsonian // Scale-Break Divider (1415 // 1870+) */}
+              {(() => {
+                const breakX =
+                  PAD_L + TIMELINE_SCALE_BREAK_NORM_X * (SVG_W - PAD_L - PAD_R);
+                const axisY = SVG_H - 16;
+                return (
+                  <g
+                    data-testid="timeline-scale-break"
+                    aria-hidden="true"
+                  >
+                    <line
+                      x1={breakX}
+                      y1={PAD_T}
+                      x2={breakX}
+                      y2={SVG_H - PAD_B}
+                      stroke="rgba(148,163,184,0.28)"
+                      strokeDasharray="3 5"
+                    />
+                    <path
+                      d={`M${(breakX - 5).toFixed(1)},${axisY + 6} L${(breakX - 1).toFixed(1)},${axisY - 6} M${(breakX + 1).toFixed(1)},${axisY + 6} L${(breakX + 5).toFixed(1)},${axisY - 6}`}
+                      fill="none"
+                      stroke="#64748b"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                    />
+                  </g>
+                );
+              })()}
 
               {/* Lineage swimlanes */}
               {TIMELINE_LINEAGES.map((lin, idx) => {
@@ -903,68 +1076,140 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                   );
                 })}
 
-              {/* Clickable Exhibit Nodes */}
-              {HISTORY_TIMELINE_NODES.map((node) => {
-                const pt = nodeCoords.get(node.weaponId)!;
-                const isSelected = node.weaponId === selectedWeaponId;
-                const inEra = matchesTimelineEra(node.year, selectedEra);
-                const dimmed =
-                  !inEra ||
-                  (selectedLineage !== 'all' &&
-                    node.lineageId !== selectedLineage) ||
-                  (tourSet !== null && !tourSet.has(node.weaponId));
-                const tourOrder = activeTour
-                  ? activeTour.weaponIds.indexOf(node.weaponId)
-                  : -1;
-                const shortLabel = isWeaponId(node.weaponId)
-                  ? getLocalizedShortWeaponLabel(node.weaponId, lang)
-                  : node.weaponId;
-                return (
-                  <g
-                    key={node.weaponId}
-                    className="timeline-node-g"
-                    style={{
-                      opacity: dimmed ? 0.2 : 1,
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => {
-                      playWorkbenchFoley('part_select');
-                      setSelectedWeaponId(node.weaponId);
-                    }}
-                  >
-                    {tourOrder >= 0 && (
+              {/* Clickable Exhibit Nodes (Decluttered Non-Overlapping Labels in 100-Node View) */}
+              {(() => {
+                const visibleIds = new Set<string>();
+                for (const node of HISTORY_TIMELINE_NODES) {
+                  const inEra = matchesTimelineEra(node.year, selectedEra);
+                  const dimmed =
+                    !inEra ||
+                    (selectedLineage !== 'all' &&
+                      node.lineageId !== selectedLineage) ||
+                    (tourSet !== null && !tourSet.has(node.weaponId));
+                  if (!dimmed) visibleIds.add(node.weaponId);
+                }
+                const priorityIds = new Set<string>([selectedWeaponId]);
+                if (hoveredWeaponId) priorityIds.add(hoveredWeaponId);
+                if (activeTour) {
+                  for (const tw of activeTour.weaponIds) priorityIds.add(tw);
+                }
+                const visibleLabelIds = selectVisibleTimelineLabels({
+                  coords: nodeCoords,
+                  visibleIds,
+                  priorityIds,
+                  minGapPx: 78,
+                  denseThreshold: 36,
+                });
+
+                // Render selected & hovered nodes last so active circles & labels float above neighbors
+                const orderedNodes = [...HISTORY_TIMELINE_NODES].sort((a, b) => {
+                  const pa =
+                    a.weaponId === selectedWeaponId
+                      ? 2
+                      : a.weaponId === hoveredWeaponId
+                        ? 1
+                        : 0;
+                  const pb =
+                    b.weaponId === selectedWeaponId
+                      ? 2
+                      : b.weaponId === hoveredWeaponId
+                        ? 1
+                        : 0;
+                  return pa - pb;
+                });
+
+                return orderedNodes.map((node) => {
+                  const pt = nodeCoords.get(node.weaponId)!;
+                  const isSelected = node.weaponId === selectedWeaponId;
+                  const isHovered = node.weaponId === hoveredWeaponId;
+                  const dimmed = !visibleIds.has(node.weaponId);
+                  const showLabel = visibleLabelIds.has(node.weaponId);
+                  const tourOrder = activeTour
+                    ? activeTour.weaponIds.indexOf(node.weaponId)
+                    : -1;
+                  const shortLabel = isWeaponId(node.weaponId)
+                    ? getLocalizedShortWeaponLabel(node.weaponId, lang)
+                    : node.weaponId;
+                  return (
+                    <g
+                      key={node.weaponId}
+                      className="timeline-node-g"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${shortLabel} (${node.year})`}
+                      style={{
+                        opacity: dimmed ? 0.2 : 1,
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        playWorkbenchFoley('part_select');
+                        setSelectedWeaponId(node.weaponId);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          playWorkbenchFoley('part_select');
+                          setSelectedWeaponId(node.weaponId);
+                        }
+                      }}
+                      onMouseEnter={() => setHoveredWeaponId(node.weaponId)}
+                      onMouseLeave={() =>
+                        setHoveredWeaponId((cur) =>
+                          cur === node.weaponId ? null : cur
+                        )
+                      }
+                      onFocus={() => setHoveredWeaponId(node.weaponId)}
+                      onBlur={() =>
+                        setHoveredWeaponId((cur) =>
+                          cur === node.weaponId ? null : cur
+                        )
+                      }
+                    >
+                      <title>{`${shortLabel} · ${node.year}`}</title>
+                      <circle
+                        className="timeline-node-hit"
+                        cx={pt.x}
+                        cy={pt.y}
+                        r={19}
+                        fill="transparent"
+                      />
+                      {tourOrder >= 0 && (
+                        <circle
+                          cx={pt.x}
+                          cy={pt.y}
+                          r={isSelected ? 14 : 11}
+                          fill="none"
+                          stroke="#fbbf24"
+                          strokeWidth={1.6}
+                          strokeOpacity={isSelected ? 0.95 : 0.55}
+                        />
+                      )}
                       <circle
                         cx={pt.x}
                         cy={pt.y}
-                        r={isSelected ? 14 : 11}
-                        fill="none"
-                        stroke="#fbbf24"
-                        strokeWidth={1.6}
-                        strokeOpacity={isSelected ? 0.95 : 0.55}
+                        r={isSelected ? 9 : isHovered ? 7.5 : 5.5}
+                        fill={isSelected ? pt.color : '#0f172a'}
+                        stroke={pt.color}
+                        strokeWidth={isSelected ? 3 : isHovered ? 2.5 : 1.8}
                       />
-                    )}
-                    <circle
-                      cx={pt.x}
-                      cy={pt.y}
-                      r={isSelected ? 9.5 : 6.5}
-                      fill={isSelected ? pt.color : '#0f172a'}
-                      stroke={pt.color}
-                      strokeWidth={isSelected ? 3 : 2}
-                    />
-                    <text
-                      x={pt.x}
-                      y={pt.labelBelow ? pt.y + 18 : pt.y - 11}
-                      textAnchor="middle"
-                      fill={isSelected ? '#f8fafc' : '#cbd5e1'}
-                      fontSize={isSelected ? '10.5' : '9'}
-                      fontWeight={isSelected ? 700 : 500}
-                      fontFamily="sans-serif"
-                    >
-                      {shortLabel}
-                    </text>
-                  </g>
-                );
-              })}
+                      {showLabel && (
+                        <text
+                          x={pt.x}
+                          y={pt.labelBelow ? pt.y + 18 : pt.y - 11}
+                          textAnchor="middle"
+                          fill={isSelected || isHovered ? '#f8fafc' : '#cbd5e1'}
+                          fontSize={isSelected || isHovered ? '10.5' : '9'}
+                          fontWeight={isSelected || isHovered ? 700 : 500}
+                          fontFamily="sans-serif"
+                          data-testid={`timeline-node-label-${node.weaponId}`}
+                        >
+                          {shortLabel}
+                        </text>
+                      )}
+                    </g>
+                  );
+                });
+              })()}
             </svg>
           </div>
 

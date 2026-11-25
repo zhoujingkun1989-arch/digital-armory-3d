@@ -24,6 +24,7 @@ import {
   type Vec3Tuple,
 } from './centennialLayoutMath';
 import {
+  isCentennialShellSlot,
   resolveCentennialGroupMetas,
   resolveCentennialPartMeta,
 } from './centennialPartNomenclature';
@@ -1418,7 +1419,7 @@ export function buildCentennialPluginForBlueprint(
       nameEn: meta.nameEn,
       group: meta.group,
       material: meta.material,
-      isShell: meta.isShell,
+      isShell: isCentennialShellSlot(bp, slot),
       assembledPos: [assembled[0], assembled[1], assembled[2]],
       explodeSteps: buildExplodeSteps(slot, explodeOffset),
       calloutDir: UPPER_CALLOUT_SLOTS.has(slot) ? 'up' : 'down',

@@ -195,23 +195,23 @@ function computeCameraPresetsFromBounds(
     const r = Math.max(spanY * 0.68, spanX * 0.72, 38);
     return {
       armory_showcase: {
-        pos: v3(cx + r * 0.45, cy + r * 0.12, r * 2.15),
-        target: v3(cx, cy - r * 0.05, 0),
+        pos: v3(cx + r * 0.5, cy + r * 0.14, r * 2.4),
+        target: v3(cx, cy - r * 0.04, 0),
       },
       iso: {
-        pos: v3(cx + r * 0.52, cy + r * 0.26, r * 1.92),
+        pos: v3(cx + r * 0.58, cy + r * 0.28, r * 2.22),
         target: v3(cx, cy, 0),
       },
       right: {
-        pos: v3(cx, cy, r * 2.02),
+        pos: v3(cx, cy, r * 2.28),
         target: v3(cx, cy, 0),
       },
       left: {
-        pos: v3(cx, cy, -r * 2.02),
+        pos: v3(cx, cy, -r * 2.28),
         target: v3(cx, cy, 0),
       },
       top: {
-        pos: v3(cx, cy + r * 2.12, r * 0.22),
+        pos: v3(cx, cy + r * 2.18, r * 0.22),
         target: v3(cx, cy, 0),
       },
       cutaway_focus: {
@@ -219,7 +219,7 @@ function computeCameraPresetsFromBounds(
         target: v3(cx, boreY, 0),
       },
       firing_view: {
-        pos: v3(cx + r * 0.36, boreY + r * 0.14, r * 1.82),
+        pos: v3(cx + r * 0.4, boreY + r * 0.16, r * 2.08),
         target: v3(cx + r * 0.15, boreY, 0),
       },
     };
@@ -427,13 +427,14 @@ function computeOrdnanceLayout(
   bp: CentennialWeaponBlueprint
 ): CentennialLayoutResult {
   if (bp.archetype === 'rotary_cannon') {
-    // 1:1 GE M61A1 Vulcan 20mm six-barrel fighter autocannon
+    // 1:1 GE M61A1 Vulcan 20mm six-barrel fighter autocannon grounded on -120 cm hangar floor
     const barL = clamp(bp.cad.barrelLenCm, 120, 175);
     const recL = clamp(bp.cad.receiverLenCm, 44, 64);
     const recH = clamp(bp.cad.receiverHeightCm, 22, 30);
     const recW = recH;
     const pitchR = Math.max(3.8, barL * 0.038);
-    const boreY = 0;
+    // Drum bottom sits 44.08 cm below boreY -> boreY = -75.8 seats resting drum flush at -119.88 cm
+    const boreY = -75.8;
     const recX = -32;
     const barrelX = recX + recL * 0.5 - 6 + barL * 0.5;
     const barrelTipX = barrelX + barL * 0.5;
@@ -516,8 +517,8 @@ function computeOrdnanceLayout(
 
     const muzzlePos = v3(barrelTipX + 2, boreY, 0);
     const chamberGlowPos = v3(recX + recL * 0.35, boreY, 0);
-    const boundsMin = v3(recX - 72, -46, -26);
-    const boundsMax = v3(barrelTipX + 6, 30, 26);
+    const boundsMin = v3(recX - 72, -120.0, -26);
+    const boundsMax = v3(barrelTipX + 6, boreY + 30, 26);
 
     return {
       sceneScale: 1,
@@ -526,8 +527,8 @@ function computeOrdnanceLayout(
       explodeOffset,
       muzzlePos,
       chamberGlowPos,
-      boreY,
-      gridY: -50.0,
+      boreY: round2(boreY),
+      gridY: -121.0,
       boundsMin,
       boundsMax,
       cameraPresets: computeCameraPresetsFromBounds(
@@ -981,7 +982,7 @@ function computeArcheryLayout(
     muzzlePos,
     chamberGlowPos,
     boreY,
-    gridY: -54.0,
+    gridY: isLongbow ? -58.0 : -54.0,
     boundsMin,
     boundsMax,
     cameraPresets: computeCameraPresetsFromBounds(
@@ -1399,25 +1400,25 @@ function computeLongArmLayout(
 
   const explodeOffset: Record<CentennialPartSlot, Vec3Tuple> = {
     receiver: v3(0, 0, 0),
-    barrel: v3(12, 3.2, 0),
-    muzzle: v3(21, 3.2, 0),
-    bolt_carrier: v3(-4.5, 9.2, 0),
-    bolt: v3(4.5, 11.4, 0),
-    recoil_spring: v3(-11.5, 7.6, 0),
-    handguard: v3(9.5, -5.4, 0),
-    stock: v3(-13.5, -1.2, 0),
-    grip: v3(isBullpup ? 4.5 : -4.2, -9.2, 0),
-    optic: v3(isPan ? -3.4 : 0.8, isPan ? 10.6 : 13.8, 0),
-    gas_system: v3(8.5, 8.4, 0),
-    mount_rail: v3(bp.cad.hasBipod ? 14 : 4, bp.cad.hasBipod ? -11.5 : 8.5, 0),
-    trigger: v3(trigX > 0 ? 3.2 : -1.4, -7.8, 3.5),
-    hammer: v3(-3.6, -5.8, -3.2),
-    hammer_spring: v3(-5.8, -7.4, 2.8),
-    selector: v3(-3.6, 1.4, 7.6),
-    mag_body: v3(isTube || isHelical ? 10 : 2.4, isPan ? 12.5 : -12.5, isBelt ? -10 : 0),
-    follower: v3(isTube || isHelical ? 6 : 2.4, isPan ? 9.5 : -7.5, isBelt ? -7 : 0),
-    mag_spring: v3(isTube || isHelical ? 13 : 2.4, isPan ? 15.5 : -15.5, isBelt ? -12 : 2.8),
-    mag_base: v3(isTube || isHelical ? 18 : 2.4, isPan ? 18.2 : -18.5, isBelt ? -14 : 0),
+    barrel: v3(12, 2.3, 0),
+    muzzle: v3(21, 2.3, 0),
+    bolt_carrier: v3(-4.5, 6.6, 0),
+    bolt: v3(4.5, 8.2, 0),
+    recoil_spring: v3(-11.5, 5.5, 0),
+    handguard: v3(9.5, -4.0, 0),
+    stock: v3(-13.5, -0.9, 0),
+    grip: v3(isBullpup ? 4.5 : -4.2, -6.8, 0),
+    optic: v3(isPan ? -3.4 : 0.8, isPan ? 7.6 : 9.6, 0),
+    gas_system: v3(8.5, 6.0, 0),
+    mount_rail: v3(bp.cad.hasBipod ? 14 : 4, bp.cad.hasBipod ? -8.4 : 6.2, 0),
+    trigger: v3(trigX > 0 ? 3.2 : -1.4, -5.8, 3.5),
+    hammer: v3(-3.6, -4.2, -3.2),
+    hammer_spring: v3(-5.8, -5.4, 2.8),
+    selector: v3(-3.6, 1.0, 7.6),
+    mag_body: v3(isTube || isHelical ? 10 : 2.4, isPan ? 9.2 : -9.2, isBelt ? -10 : 0),
+    follower: v3(isTube || isHelical ? 6 : 2.4, isPan ? 6.8 : -5.4, isBelt ? -7 : 0),
+    mag_spring: v3(isTube || isHelical ? 13 : 2.4, isPan ? 11.4 : -11.4, isBelt ? -12 : 2.8),
+    mag_base: v3(isTube || isHelical ? 18 : 2.4, isPan ? 13.4 : -13.6, isBelt ? -14 : 0),
   };
 
   const muzzlePos = v3(muzzleX + muzzleLen * 0.52, boreY, 0);

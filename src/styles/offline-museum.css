@@ -320,6 +320,8 @@
   color: #7dd3fc;
   font-family: var(--font-mono);
   font-size: 9.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 :is([data-theme='light'], .theme-light) .offline-bay {

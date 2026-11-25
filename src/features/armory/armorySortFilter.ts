@@ -6,6 +6,7 @@ import {
   getWeaponManifest,
   matchesArmoryCategory,
 } from '../../weapons/manifests';
+import { MUSEUM_TIMELINE_MIN_YEAR } from '../../weapons/museumMetrics';
 import type {
   ArmoryCategory,
   ArmoryWeaponItem,
@@ -78,7 +79,7 @@ export const ARMORY_SORT_FILTER_STRINGS: Record<
     archeryBadge: '弓弩储能',
     sortOptions: {
       curatorial: '排序 · 策展序',
-      year_asc: '排序 · 年代 1894→',
+      year_asc: `排序 · 年代 ${MUSEUM_TIMELINE_MIN_YEAR}→`,
       energy_desc: '排序 · 枪口动能 ↓',
       length_desc: '排序 · 全长尺度 ↓',
       rpm_desc: '排序 · 理论射速 ↓',
@@ -105,7 +106,7 @@ export const ARMORY_SORT_FILTER_STRINGS: Record<
     archeryBadge: 'Cam Archery',
     sortOptions: {
       curatorial: 'Sort · Curatorial',
-      year_asc: 'Sort · Year 1894→',
+      year_asc: `Sort · Year ${MUSEUM_TIMELINE_MIN_YEAR}→`,
       energy_desc: 'Sort · Energy ↓',
       length_desc: 'Sort · Length ↓',
       rpm_desc: 'Sort · Cyclic Rate ↓',

@@ -158,10 +158,15 @@
   border: 1px solid rgba(148, 163, 184, 0.22);
   background: rgba(2, 6, 23, 0.65);
   padding: 8px;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .timeline-svg {
   width: 100%;
+  min-width: 1020px;
   height: auto;
   display: block;
 }
