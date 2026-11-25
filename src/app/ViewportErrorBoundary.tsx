@@ -2,6 +2,7 @@ import React from 'react';
 import { AlertTriangle, Gauge, LayoutGrid, RotateCcw } from 'lucide-react';
 import type { LanguageCode } from '../narration/types';
 import { useAppStore } from '../store/useAppStore';
+import { MUSEUM_EXHIBIT_COUNT } from '../weapons/museumMetrics';
 
 export type ViewportFailureKind = 'webgl' | 'runtime';
 
@@ -46,8 +47,7 @@ export const VIEWPORT_RECOVERY_STRINGS: Readonly<
     runtimeTitle: '3D 视口遇到场景渲染异常',
     webglDesc:
       '当前浏览器或显卡驱动未能创建或保持硬件加速 WebGL 2.0 上下文。建议切换至「节能画质」降低显存占用后重试，或直接重新加载视口。',
-    runtimeDesc:
-      '当前三维展品组件在渲染期间抛出了运行时异常。你可以立即重试加载当前视口、切换节能画质安全重启，或返回 34 展位兵器库选择其他展品。',
+    runtimeDesc: `当前三维展品组件在渲染期间抛出了运行时异常。你可以立即重试加载当前视口、切换节能画质安全重启，或返回 ${MUSEUM_EXHIBIT_COUNT} 展位兵器库选择其他展品。`,
     defaultWebglMessage: 'WebGL 2.0 渲染上下文初始化失败',
     diagnosticLabel: '诊断信息',
     currentQualityLabel: '当前画质档位',
@@ -63,14 +63,13 @@ export const VIEWPORT_RECOVERY_STRINGS: Readonly<
     runtimeTitle: '3D Viewport Encountered a Render Exception',
     webglDesc:
       'Your browser or GPU driver could not initialize or retain a hardware-accelerated WebGL 2.0 context. Drop to Eco Graphics to reduce VRAM load and retry, or reload the viewport.',
-    runtimeDesc:
-      'The active 3D exhibit scene threw a runtime render exception. You can reload the viewport immediately, drop to Eco Graphics for a safe restart, or return to the 34-Bay Vault.',
+    runtimeDesc: `The active 3D exhibit scene threw a runtime render exception. You can reload the viewport immediately, drop to Eco Graphics for a safe restart, or return to the ${MUSEUM_EXHIBIT_COUNT}-Bay Vault.`,
     defaultWebglMessage: 'WebGL 2.0 rendering context failed to initialize',
     diagnosticLabel: 'Diagnostic',
     currentQualityLabel: 'Active Tier',
     reloadBtn: 'Reload 3D Viewport',
     ecoRetryBtn: 'Drop to Eco Graphics & Retry',
-    returnVaultBtn: 'Return to 34-Bay Vault',
+    returnVaultBtn: `Return to ${MUSEUM_EXHIBIT_COUNT}-Bay Vault`,
     recoveryTip:
       'Tip: Eco Graphics disables heavy post-processing and ultra shadow maps for resilient GPU recovery.',
   },
