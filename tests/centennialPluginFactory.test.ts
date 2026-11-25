@@ -13,8 +13,10 @@ import {
 } from '../src/weapons/expansion/centennialLayoutMath';
 import { isCentennialShellSlot } from '../src/weapons/expansion/centennialPartNomenclature';
 import {
+  CENTENNIAL_SHARED_MATERIAL_SUITES,
   buildCentennialPlugin,
   buildCentennialPluginForBlueprint,
+  resolveCentennialPartMaterialSuite,
 } from '../src/weapons/expansion/centennialPluginFactory';
 import {
   CENTENNIAL_66_IDS,
@@ -69,7 +71,7 @@ describe('Centennial Lazy Runtime Plugin & 22-Law Kinematic Engine (Phase 2H)', 
       expect(plugin.partGroups).toHaveLength(4);
       expect(plugin.timelinePresets).toHaveLength(4);
       expect(plugin.firingPhases).toHaveLength(7);
-      expect(plugin.pbrBindings).toEqual({});
+      expect(Object.keys(plugin.pbrBindings)).toHaveLength(20);
       expect(plugin.pbrSuites).toEqual([]);
 
       // Exact timeline preset IDs & progress anchors
@@ -475,5 +477,204 @@ describe('Centennial Lazy Runtime Plugin & 22-Law Kinematic Engine (Phase 2H)', 
     expect(bowLayout.cameraPresets.armory_showcase.pos[2]).toBeGreaterThanOrEqual(
       142
     );
+  });
+
+  it('locks Wave A-C3 constitutional 1,320 shared PBR bindings (all 13 suites), cutaway mag_body/grip shells & domain materials', () => {
+    const allowedSuites = new Set<string>(CENTENNIAL_SHARED_MATERIAL_SUITES);
+    expect(allowedSuites.size).toBe(13);
+
+    const usedSuites = new Set<string>();
+    let boundParts = 0;
+
+    for (const bp of CENTENNIAL_BLUEPRINTS) {
+      const plugin = buildCentennialPlugin(bp.id);
+      expect(Object.keys(plugin.pbrBindings)).toHaveLength(20);
+      expect(plugin.pbrSuites).toEqual([]);
+
+      for (const slot of CENTENNIAL_PART_SLOTS) {
+        const partId = `${bp.id}_${slot}`;
+        const binding = plugin.pbrBindings[partId];
+        expect(binding, `missing PBR binding for ${partId}`).toBeDefined();
+        const suite = resolveCentennialPartMaterialSuite(bp, slot);
+        expect(allowedSuites.has(suite)).toBe(true);
+        usedSuites.add(suite);
+
+        expect(binding.albedoFile).toBe(`centennial_mat_${suite}_albedo.webp`);
+        expect(binding.normalFile).toBe(`centennial_mat_${suite}_normal.webp`);
+        expect(binding.roughnessFile).toBe(
+          `centennial_mat_${suite}_roughness.webp`
+        );
+        expect(binding.repeat).toBe(1);
+        expect(binding.normalScale).toBeGreaterThanOrEqual(0.42);
+        expect(binding.normalScale).toBeLessThanOrEqual(0.78);
+        boundParts += 1;
+      }
+
+      // Cutaway magazine & grip shell contract
+      const magPart = plugin.parts.find((p) => p.id === `${bp.id}_mag_body`);
+      const gripPart = plugin.parts.find((p) => p.id === `${bp.id}_grip`);
+      const expectsMagShell =
+        bp.category !== 'archery' &&
+        bp.category !== 'armor' &&
+        bp.category !== 'ordnance' &&
+        bp.archetype !== 'revolver_sa' &&
+        bp.archetype !== 'revolver_da' &&
+        bp.cad.magStyle !== 'tube' &&
+        bp.cad.magStyle !== 'belt';
+      expect(
+        Boolean(magPart?.isShell),
+        `${bp.id}_mag_body cutaway shell expectation`
+      ).toBe(expectsMagShell);
+      expect(
+        Boolean(gripPart?.isShell),
+        `${bp.id}_grip cutaway shell expectation`
+      ).toBe(bp.cad.magStyle === 'pistol_grip');
+    }
+
+    expect(boundParts).toBe(1320);
+    // Every single one of the 13 shared museum PBR suites must be utilized
+    expect(usedSuites.size).toBe(13);
+
+    // Authentic material spot-checks across iconic exhibits
+    expect(
+      resolveCentennialPartMaterialSuite(CENTENNIAL_BLUEPRINT_MAP.ak47, 'stock')
+    ).toBe('russian_laminate');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.wa2000,
+        'stock'
+      )
+    ).toBe('oiled_walnut');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.englishlongbow,
+        'receiver'
+      )
+    ).toBe('beech_yew');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.t34_85,
+        'receiver'
+      )
+    ).toBe('cast_rha_armor');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.t90m,
+        'bolt_carrier'
+      )
+    ).toBe('carc_olive');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.merkava4,
+        'receiver'
+      )
+    ).toBe('carc_desert');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.beretta92,
+        'grip'
+      )
+    ).toBe('checkered_grip');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.beretta92,
+        'receiver'
+      )
+    ).toBe('anodized_alloy');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.sw500,
+        'barrel'
+      )
+    ).toBe('brushed_stainless');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.usp45,
+        'receiver'
+      )
+    ).toBe('tactical_polymer');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.ak47,
+        'follower'
+      )
+    ).toBe('cartridge_brass');
+
+    // Regression locks for material-to-geometry alignment (#464)
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.ppsh41,
+        'handguard'
+      )
+    ).toBe('blued_steel');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.dp28,
+        'handguard'
+      )
+    ).toBe('blued_steel');
+    expect(
+      buildCentennialPlugin('ppsh41').parts.find(
+        (p) => p.id === 'ppsh41_handguard'
+      )
+    ).toMatchObject({
+      material: 'nitride_steel',
+      nameEn: 'Perforated Steel Barrel Cooling Shroud',
+    });
+    expect(
+      buildCentennialPlugin('dp28').parts.find((p) => p.id === 'dp28_handguard')
+    ).toMatchObject({
+      material: 'nitride_steel',
+      nameEn: 'Perforated Steel Barrel Cooling Shroud',
+    });
+
+    for (const id of ['spas12', 'pkm', 'm240b', 'm60e4'] as const) {
+      expect(
+        resolveCentennialPartMaterialSuite(
+          CENTENNIAL_BLUEPRINT_MAP[id],
+          'handguard'
+        )
+      ).toBe('parkerized_steel');
+    }
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.spas12,
+        'stock'
+      )
+    ).toBe('parkerized_steel');
+    expect(
+      buildCentennialPlugin('spas12').parts.find((p) => p.id === 'spas12_stock')
+        ?.material
+    ).toBe('nitride_steel');
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.mp40,
+        'handguard'
+      )
+    ).toBe('blued_steel');
+
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.winchester1887,
+        'grip'
+      )
+    ).toBe('blued_steel');
+    expect(
+      buildCentennialPlugin('winchester1887').parts.find(
+        (p) => p.id === 'winchester1887_grip'
+      )?.material
+    ).toBe('nitride_steel');
+
+    expect(
+      resolveCentennialPartMaterialSuite(
+        CENTENNIAL_BLUEPRINT_MAP.englishlongbow,
+        'muzzle'
+      )
+    ).toBe('beech_yew');
+    expect(
+      buildCentennialPlugin('englishlongbow').parts.find(
+        (p) => p.id === 'englishlongbow_muzzle'
+      )?.material
+    ).toBe('polymer_frame');
   });
 });

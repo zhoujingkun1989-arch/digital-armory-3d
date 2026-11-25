@@ -1494,7 +1494,7 @@ function resolveArcherySlotMeta(
       descEn: `Launches at ${bp.muzzleVelocityMs} m/s with helical fletching inducing aerodynamic spin stabilization.`,
     },
     muzzle: {
-      material: 'copper_accent',
+      material: isLongbow ? 'polymer_frame' : 'copper_accent',
       nameZh: isLongbow
         ? '锻钢四棱破甲箭头与牛角弦槽'
         : isCrossbow
@@ -1529,7 +1529,7 @@ function resolveArcherySlotMeta(
           : 'Drops clear milliseconds after launch so helical vanes pass with zero contact interference.',
     },
     bolt_carrier: {
-      material: 'stainless',
+      material: isLongbow ? 'polymer_frame' : 'stainless',
       nameZh: isLongbow
         ? '紫杉上/下弹性储能弓臂'
         : isCrossbow
@@ -1556,7 +1556,7 @@ function resolveArcherySlotMeta(
       descEn: `Stores peak bending strain energy across the ${bp.barrelLengthMm} mm draw stroke and releases it cleanly into the arrow.`,
     },
     bolt: {
-      material: 'copper_accent',
+      material: isLongbow ? 'polymer_frame' : 'copper_accent',
       nameZh: isLongbow
         ? '手工搓制亚麻纤维主弓弦'
         : isCrossbow
@@ -1683,7 +1683,7 @@ function resolveArcherySlotMeta(
       descEn: `Centers push force cleanly on the riser plane to prevent hand torque from deflecting arrow flight.`,
     },
     optic: {
-      material: 'nitride_steel',
+      material: isLongbow ? 'polymer_frame' : 'nitride_steel',
       nameZh: isLongbow
         ? '传统直觉瞄准与弓身测距参考'
         : isCrossbow
@@ -1710,7 +1710,7 @@ function resolveArcherySlotMeta(
       descEn: `Compensates for arched arrow trajectory across multiple target distances.`,
     },
     gas_system: {
-      material: 'stainless',
+      material: isLongbow ? 'polymer_frame' : 'stainless',
       nameZh: isLongbow
         ? '全弓自然弓档（Brace Height）张力区'
         : isCrossbow
@@ -1735,36 +1735,56 @@ function resolveArcherySlotMeta(
       roleTagEn: isCrossbow ? 'Crank Cocking' : 'Cable Clearance',
       descZh: isCrossbow
         ? '内置静音棘轮曲柄将 290 lbf 巨大拉弓阻力降至约 12 lbf 省力摇动，并可安全无声卸弦。'
-        : '将辅助缆绳侧向平滑引开，为箭矢尾羽留出无障碍飞行通道。',
+        : isLongbow
+          ? '维持约 165 mm 古典弓档距离，确保亚麻主弦回弹到位不击打弓手前臂。'
+          : '将辅助缆绳侧向平滑引开，为箭矢尾羽留出无障碍飞行通道。',
       descEn: isCrossbow
         ? 'Internal ratchet crank cuts 290 lbf draw load to ~12 lbf effort and allows silent de-cocking.'
-        : 'Holds power cables cleanly clear of arrow fletching while minimizing lateral cam torque.',
+        : isLongbow
+          ? 'Maintains classic ~165 mm brace height so the waxed linen string recovers cleanly without slap.'
+          : 'Holds power cables cleanly clear of arrow fletching while minimizing lateral cam torque.',
     },
     mount_rail: {
-      material: 'nitride_steel',
+      material: isLongbow ? 'polymer_frame' : 'nitride_steel',
       nameZh: isLongbow
-        ? '牛皮护臂与传统矢道基准'
+        ? '紫杉单体弓身配平基准环'
         : '一体化燕尾瞄具与平衡杆接口',
       nameEn: isLongbow
         ? 'Traditional Stave Balance Reference'
         : 'Integrated Dovetail Optic & Stabilizer Mount',
       calloutLabelZh: isLongbow ? '弓身配平基准' : '一体化燕尾接口',
-      calloutLabelEn: isLongbow ? 'Stave Balance Ref' : 'Dovetail Accessory Rail',
-      roleTagZh: '附件挂载',
-      roleTagEn: 'Accessory Interface',
-      descZh: `为瞄具、箭壶与减震平衡杆提供零松动刚性锁紧接口。`,
-      descEn: `Provides zero-play structural mounting for optics, quivers, and stabilizers.`,
+      calloutLabelEn: isLongbow ? 'Stave Balance Ref' : 'Dovetail Optic Mount',
+      roleTagZh: isLongbow ? '弓臂调校' : '附件挂载',
+      roleTagEn: isLongbow ? 'Stave Tiller' : 'Accessory Interface',
+      descZh: isLongbow
+        ? '沿 1.96 米紫杉单体弓身标定拉弯对称平衡点，确保上下弓臂满弓均匀受力。'
+        : '为瞄具、箭壶与减震平衡杆提供零松动刚性锁紧接口。',
+      descEn: isLongbow
+        ? 'Balances mass along the 1.96 m self-yew stave so upper and lower limbs tiller symmetrically at full draw.'
+        : 'Provides zero-play structural mounting for optics, quivers, and stabilizers.',
     },
     trigger: {
-      material: 'nitride_steel',
-      nameZh: isCrossbow
-        ? 'Pro-Shot 两段式竞赛扳机'
-        : 'D-Loop 撒放环与撒放器接口',
-      nameEn: isCrossbow
-        ? 'Pro-Shot Two-Stage Match Trigger'
-        : 'D-Loop & Release Aid Interface',
-      calloutLabelZh: isCrossbow ? '两段式竞赛扳机' : 'D-Loop 撒放环',
-      calloutLabelEn: isCrossbow ? 'Two-Stage Trigger' : 'D-Loop Release Point',
+      material: isLongbow ? 'polymer_frame' : 'nitride_steel',
+      nameZh: isLongbow
+        ? '三指地中海式搭弦撒放位'
+        : isCrossbow
+          ? 'Pro-Shot 两段式竞赛扳机'
+          : 'D-Loop 撒放环与撒放器接口',
+      nameEn: isLongbow
+        ? 'Mediterranean Three-Finger Draw Point'
+        : isCrossbow
+          ? 'Pro-Shot Two-Stage Match Trigger'
+          : 'D-Loop & Release Aid Interface',
+      calloutLabelZh: isLongbow
+        ? '地中海撒放位'
+        : isCrossbow
+          ? '两段式竞赛扳机'
+          : 'D-Loop 撒放环',
+      calloutLabelEn: isLongbow
+        ? 'Finger Draw Point'
+        : isCrossbow
+          ? 'Two-Stage Trigger'
+          : 'D-Loop Release Point',
       roleTagZh: '精密撒放',
       roleTagEn: 'Clean Release',
       descZh: isCrossbow
@@ -1805,7 +1825,7 @@ function resolveArcherySlotMeta(
       descEn: `Powers the safety latch that prevents catastrophic dry-firing when no arrow or bolt is seated.`,
     },
     selector: {
-      material: 'copper_accent',
+      material: isLongbow ? 'polymer_frame' : 'copper_accent',
       nameZh: isCrossbow
         ? '自动保险与 CeaseFire 防空放拨片'
         : '拉距微调模组锁止销',
@@ -2268,14 +2288,28 @@ function resolvePistolSlotMeta(
     },
     handguard: {
       material: 'nitride_steel',
-      nameZh: isBroomhandle ? '前置弹仓防尘壁与导轨' : '底把前端防尘盖与战术槽',
+      nameZh: isBroomhandle
+        ? '前置弹仓防尘壁与导槽'
+        : bp.year < 1990
+          ? '锻造底把前端光滑防尘盖'
+          : '底把前端防尘盖与附件导轨槽',
       nameEn: isBroomhandle
-        ? 'Forward Magazine Wall & Frame Rails'
-        : 'Frame Dust Cover & Accessory Rail',
-      calloutLabelZh: isBroomhandle ? '前弹仓防尘壁' : '底把前防尘盖',
-      calloutLabelEn: isBroomhandle ? 'Mag Well Dust Cover' : 'Frame Dust Cover',
+        ? 'Forward Magazine Wall & Frame Guides'
+        : bp.year < 1990
+          ? 'Smooth Forged Frame Dust Cover'
+          : 'Frame Dust Cover & Accessory Rail',
+      calloutLabelZh: isBroomhandle
+        ? '前弹仓防尘壁'
+        : bp.year < 1990
+          ? '底把光滑防尘盖'
+          : '底把前防尘盖',
+      calloutLabelEn: isBroomhandle
+        ? 'Mag Well Dust Cover'
+        : bp.year < 1990
+          ? 'Smooth Dust Cover'
+          : 'Frame Dust Cover',
       roleTagZh: '防尘导向',
-      roleTagEn: 'Dust Shield & Rail',
+      roleTagEn: bp.year < 1990 ? 'Dust Shield' : 'Dust Shield & Rail',
       descZh: `封闭复进簧导杆槽防止泥沙侵入，并支撑套筒长导轨平稳滑行。`,
       descEn: `Seals the recoil-spring tunnel against grit while extending full-length slide guide rails.`,
     },
@@ -2296,12 +2330,24 @@ function resolvePistolSlotMeta(
       material: 'polymer_frame',
       nameZh: bp.cad.hasWoodFurniture
         ? '经典横槽/格纹核桃木握把片'
-        : '人体工学防滑纹握把',
+        : bp.year < 1990
+          ? '经典格纹防滑握把片'
+          : '人体工学防滑纹握把',
       nameEn: bp.cad.hasWoodFurniture
         ? 'Ribbed Classic Hardwood Grip Panels'
-        : 'Checkered Ergonomic Pistol Grip',
-      calloutLabelZh: bp.cad.hasWoodFurniture ? '核桃木握把片' : '防滑战术握把',
-      calloutLabelEn: bp.cad.hasWoodFurniture ? 'Hardwood Grip Panels' : 'Textured Pistol Grip',
+        : bp.year < 1990
+          ? 'Checkered Classic Pistol Grip Panels'
+          : 'Checkered Ergonomic Pistol Grip',
+      calloutLabelZh: bp.cad.hasWoodFurniture
+        ? '核桃木握把片'
+        : bp.year < 1990
+          ? '经典格纹握把'
+          : '防滑战术握把',
+      calloutLabelEn: bp.cad.hasWoodFurniture
+        ? 'Hardwood Grip Panels'
+        : bp.year < 1990
+          ? 'Checkered Grip Panels'
+          : 'Textured Pistol Grip',
       roleTagZh: '防滑指向',
       roleTagEn: 'Natural Pointability',
       descZh: `契合手掌自然握持角度，稳固抵御手枪连射时的腕部翻转力矩。`,
@@ -2396,6 +2442,194 @@ function resolvePistolSlotMeta(
   };
 
   return makeMeta(slot, map[slot]);
+}
+
+function resolveSmallArmMountRailSpec(
+  bp: CentennialWeaponBlueprint
+): PartTextSpec {
+  const isPre1990 = bp.year < 1990;
+
+  if (bp.cad.hasBipod) {
+    if (isPre1990) {
+      const isSovietDovetail = bp.id === 'pkm' || bp.id === 'rpk74';
+      return {
+        material: 'nitride_steel',
+        nameZh: isSovietDovetail
+          ? '折叠式两脚架与俄式侧装燕尾座'
+          : '折叠式钢制两脚架与背带环座',
+        nameEn: isSovietDovetail
+          ? 'Folding Steel Bipod & Dovetail Base'
+          : 'Folding Steel Bipod & Sling Stud',
+        calloutLabelZh: isSovietDovetail ? '两脚架与侧装座' : '折叠钢制两脚架',
+        calloutLabelEn: isSovietDovetail
+          ? 'Bipod & Side Mount'
+          : 'Folding Steel Bipod',
+        roleTagZh: '卧姿支撑',
+        roleTagEn: 'Prone Stability',
+        descZh:
+          '在阵地卧姿与远距压制射击时提供稳固三点支撑，大幅收敛连发散布。',
+        descEn:
+          'Stabilizes prone precision or sustained automatic bursts across long sightlines.',
+      };
+    }
+    return {
+      material: 'nitride_steel',
+      nameZh: '折叠式战术两脚架与导轨座',
+      nameEn: 'Folding Tactical Bipod & Rail Mount',
+      calloutLabelZh: '折叠战术两脚架',
+      calloutLabelEn: 'Folding Bipod Mount',
+      roleTagZh: '卧姿支撑',
+      roleTagEn: 'Prone Stability',
+      descZh: '在阵地卧姿与远距压制射击时提供稳固三点支撑，大幅收敛散布。',
+      descEn:
+        'Stabilizes prone precision or sustained automatic bursts across long sightlines.',
+    };
+  }
+
+  if (isPre1990) {
+    if (bp.id === 'm16a1') {
+      return {
+        material: 'nitride_steel',
+        nameZh: '固定式 A1 提把照门与前准星塔',
+        nameEn: 'Fixed A1 Carry Handle & Sight Base',
+        calloutLabelZh: 'A1固定提把瞄座',
+        calloutLabelEn: 'Fixed A1 Sight Base',
+        roleTagZh: '固定提把',
+        roleTagEn: 'Integral Carry Sight',
+        descZh:
+          '冷战经典锻造一体式固定提把与翻转觇孔照门基座，兼顾提携保护与机械归零。',
+        descEn:
+          'Forged integral carry handle housing the protected flip-aperture rear sight and sling hardware.',
+      };
+    }
+
+    if (bp.id === 'svd') {
+      return {
+        material: 'nitride_steel',
+        nameZh: '俄式机匣燕尾侧装光学瞄具轨',
+        nameEn: 'Soviet Dovetail Side Optic Rail',
+        calloutLabelZh: '燕尾侧装瞄具轨',
+        calloutLabelEn: 'Dovetail Side Rail',
+        roleTagZh: '侧装归零',
+        roleTagEn: 'Side Optic Mount',
+        descZh:
+          '铆接于机匣左侧的华约标准燕尾侧轨，可快拆安装 PSO-1 光学狙击镜并稳定保持归零。',
+        descEn:
+          'Receiver-side Warsaw Pact dovetail rail built for quick-detach PSO-1 telescopic optics with repeatable zero.',
+      };
+    }
+
+    if (bp.id === 'm2hb') {
+      return {
+        material: 'nitride_steel',
+        nameZh: '重机枪三脚架耳轴与框式表尺座',
+        nameEn: 'Tripod Pintle Mount & Leaf Sight Base',
+        calloutLabelZh: '三脚架耳轴/表尺',
+        calloutLabelEn: 'Tripod & Sight Base',
+        roleTagZh: '重架承力',
+        roleTagEn: 'Tripod Mounting',
+        descZh:
+          '将重型机匣刚性锁定于 M3 三脚架或车载摇架，并承载可翻折远距框式机械表尺。',
+        descEn:
+          'Anchors the heavy receiver to M3 tripod or vehicle cradles alongside its folding leaf rear sight.',
+      };
+    }
+
+    if (
+      bp.id === 'mosin' ||
+      bp.id === 'leeenfield' ||
+      bp.id === 'springfield1903'
+    ) {
+      return {
+        material: 'nitride_steel',
+        nameZh: '经典机匣侧装光学镜桥与表尺座',
+        nameEn: 'Vintage Side-Mount Scope Bracket Base',
+        calloutLabelZh: '侧装狙击镜桥座',
+        calloutLabelEn: 'Side Scope Bracket',
+        roleTagZh: '镜桥归零',
+        roleTagEn: 'Optic Bridge Base',
+        descZh:
+          '沿机匣侧壁精密螺接的经典光学镜桥座，保留顶置桥夹装弹通道与原装机械表尺。',
+        descEn:
+          'Receiver-side milled optic bracket supporting period telescopic sights while preserving clip loading.',
+      };
+    }
+
+    if (bp.category === 'shotgun') {
+      return {
+        material: 'nitride_steel',
+        nameZh: '机匣防反光瞄准筋与枪带环座',
+        nameEn: 'Receiver Sight Rib & Sling Swivel',
+        calloutLabelZh: '机匣瞄准筋/背带',
+        calloutLabelEn: 'Receiver Sight Rib',
+        roleTagZh: '快速瞄准',
+        roleTagEn: 'Sighting Rib',
+        descZh:
+          '沿机匣顶面铣削的防反光瞄准筋与背带固定环，提供近距快速指向视野。',
+        descEn:
+          'Anti-glare receiver sighting plane and sling swivel hardware for brisk close-range pointing.',
+      };
+    }
+
+    return {
+      material: 'nitride_steel',
+      nameZh: '表尺照门座与钢制枪带环',
+      nameEn: 'Tangent Iron Sight Base & Sling Loop',
+      calloutLabelZh: '表尺照门基座',
+      calloutLabelEn: 'Tangent Sight Base',
+      roleTagZh: '机械瞄座',
+      roleTagEn: 'Iron Sight Base',
+      descZh:
+        '承载时代经典机械表尺照门与护翼准星基座，并配合作战背带挂环实现稳固携行。',
+      descEn:
+        'Supports period graduated tangent or flip iron sights alongside stamped steel sling attachment loops.',
+    };
+  }
+
+  if (bp.id === 'ak74m' || bp.id === 'bizon' || bp.id === 'saiga12') {
+    return {
+      material: 'nitride_steel',
+      nameZh: '俄式燕尾侧装瞄具轨与背带环',
+      nameEn: 'Russian Dovetail Side Rail & Sling Loop',
+      calloutLabelZh: '燕尾侧装瞄具轨',
+      calloutLabelEn: 'Dovetail Side Rail',
+      roleTagZh: '侧装归零',
+      roleTagEn: 'Side Optic Mount',
+      descZh:
+        '铆接于机匣左侧的标准燕尾快拆镜轨，支持白光瞄具或夜视镜零归零偏移拆装。',
+      descEn:
+        'Receiver-side riveted dovetail rail enabling repeatable zero mounting of Russian optics.',
+    };
+  }
+
+  if (bp.id === 'qbz95') {
+    return {
+      material: 'nitride_steel',
+      nameZh: '提把燕尾光学镜桥与背带环',
+      nameEn: 'Carry-Handle Dovetail Optic Bridge',
+      calloutLabelZh: '提把燕尾镜桥',
+      calloutLabelEn: 'Carry Handle Bridge',
+      roleTagZh: '提把挂载',
+      roleTagEn: 'Optic Bridge Mount',
+      descZh:
+        '位于无托提把顶面的专用燕尾接口，可快装 YMA95 白光瞄具与微光夜视仪。',
+      descEn:
+        'Dedicated dovetail bridge atop the bullpup carry handle for quick-detach optical and night sights.',
+    };
+  }
+
+  return {
+    material: 'nitride_steel',
+    nameZh: '皮卡汀尼战术导轨与附件接口',
+    nameEn: 'Picatinny Rail & Sling Interface',
+    calloutLabelZh: '战术导轨接口',
+    calloutLabelEn: 'Picatinny Rail Mount',
+    roleTagZh: '模块化挂载',
+    roleTagEn: 'Modular Mount',
+    descZh: '用于零归零偏移安装白光瞄具、激光指示器或枪带附件。',
+    descEn:
+      'Maintains repeatable zero for optics, illuminators, and sling hardware.',
+  };
 }
 
 function resolveStandardSmallArmSlotMeta(
@@ -2556,93 +2790,153 @@ function resolveStandardSmallArmSlotMeta(
         : 'Absorbs carrier recoil energy and powers smooth forward chambering and lockup.',
     },
     handguard: {
-      material: bp.cad.hasWoodFurniture ? 'polymer_frame' : 'nitride_steel',
-      nameZh: bp.cad.hasWoodFurniture
-        ? '经典实木隔热前护木'
-        : isPump
-          ? '防滑罗纹往复泵动前护木'
-          : '战术散热护木与隔热罩',
-      nameEn: bp.cad.hasWoodFurniture
-        ? 'Classic Hardwood Forend Handguard'
-        : isPump
-          ? 'Ribbed Reciprocating Pump Forend'
-          : 'Ventilated Tactical Handguard',
-      calloutLabelZh: bp.cad.hasWoodFurniture
-        ? '实木前护木'
-        : isPump
-          ? '泵动滑动护木'
-          : '战术散热护木',
-      calloutLabelEn: bp.cad.hasWoodFurniture
-        ? 'Hardwood Forend'
-        : isPump
-          ? 'Pump Forend Slide'
-          : 'Tactical Handguard',
+      material:
+        bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? 'nitride_steel'
+          : bp.cad.hasWoodFurniture
+            ? 'polymer_frame'
+            : 'nitride_steel',
+      nameZh:
+        bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? '多孔散热钢制枪管护筒'
+          : bp.cad.hasWoodFurniture
+            ? '经典实木隔热前护木'
+            : isPump
+              ? '防滑罗纹往复泵动前护木'
+              : bp.year < 1990
+                ? '经典散热前护木与隔热罩'
+                : '战术散热护木与隔热罩',
+      nameEn:
+        bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? 'Perforated Steel Barrel Cooling Shroud'
+          : bp.cad.hasWoodFurniture
+            ? 'Classic Hardwood Forend Handguard'
+            : isPump
+              ? 'Ribbed Reciprocating Pump Forend'
+              : bp.year < 1990
+                ? 'Classic Ventilated Forend Handguard'
+                : 'Ventilated Tactical Handguard',
+      calloutLabelZh:
+        bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? '多孔钢制护筒'
+          : bp.cad.hasWoodFurniture
+            ? '实木前护木'
+            : isPump
+              ? '泵动滑动护木'
+              : bp.year < 1990
+                ? '经典散热护木'
+                : '战术散热护木',
+      calloutLabelEn:
+        bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? 'Steel Cooling Shroud'
+          : bp.cad.hasWoodFurniture
+            ? 'Hardwood Forend'
+            : isPump
+              ? 'Pump Forend Slide'
+              : bp.year < 1990
+                ? 'Ventilated Handguard'
+                : 'Tactical Handguard',
       roleTagZh: isPump ? '手动抽拉' : '隔热握持',
       roleTagEn: isPump ? 'Manual Cycling' : 'Heat Shield',
       descZh: isPump
         ? '通过双钢连杆直连枪机滑架，前后拉推即可干脆利落完成退壳上膛。'
-        : '隔绝连发高温枪管热辐射，提供稳定前手支撑与附件挂载空间。',
+        : bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? '冲压多孔钢制散热护筒包裹连发高温枪管，强化空气对流冷却并保护前手免受烫伤。'
+          : bp.year < 1990
+            ? '隔绝连发高温枪管热辐射，提供经典稳固的前手握持支撑。'
+            : '隔绝连发高温枪管热辐射，提供稳定前手支撑与附件挂载空间。',
       descEn: isPump
         ? 'Coupled via twin action bars to the bolt carrier for brisk manual shell cycling.'
-        : 'Insulates the support hand from barrel heat while bracing steady forward control.',
+        : bp.id === 'ppsh41' || bp.id === 'dp28'
+          ? 'Stamped perforated steel cooling jacket promoting convective airflow and hand protection during sustained fire.'
+          : 'Insulates the support hand from barrel heat while bracing steady forward control.',
     },
     stock: {
-      material: 'polymer_frame',
+      material:
+        bp.id === 'spas12' ||
+        bp.id === 'mp40' ||
+        bp.id === 'sten' ||
+        bp.id === 'mac10' ||
+        bp.id === 'm2hb'
+          ? 'nitride_steel'
+          : 'polymer_frame',
       nameZh: isHeavyMg
         ? '后置双铲形握把与缓冲尾板'
         : bp.cad.hasWoodFurniture
           ? '经典胡桃/桦木定型枪托'
           : isBullpup
             ? '无托减震橡胶抵肩托板'
-            : '战术固定/可折叠抵肩枪托',
+            : bp.year < 1990
+              ? '经典固定/可折叠抵肩枪托'
+              : '战术固定/可折叠抵肩枪托',
       nameEn: isHeavyMg
         ? 'Twin Spade Grips & Buffer Backplate'
         : bp.cad.hasWoodFurniture
           ? 'Classic Hardwood Rifle Buttstock'
           : isBullpup
             ? 'Bullpup Recoil-Pad Buttplate'
-            : 'Tactical Rifle Buttstock',
+            : bp.year < 1990
+              ? 'Classic Fixed/Folding Buttstock'
+              : 'Tactical Rifle Buttstock',
       calloutLabelZh: isHeavyMg
         ? '双铲形握把尾板'
         : bp.cad.hasWoodFurniture
           ? '实木抵肩枪托'
-          : '战术抵肩枪托',
+          : bp.year < 1990
+            ? '经典抵肩枪托'
+            : '战术抵肩枪托',
       calloutLabelEn: isHeavyMg
         ? 'Twin Spade Grips'
         : bp.cad.hasWoodFurniture
           ? 'Hardwood Buttstock'
-          : 'Tactical Buttstock',
+          : bp.year < 1990
+            ? 'Classic Buttstock'
+            : 'Tactical Buttstock',
       roleTagZh: '抵肩传力',
       roleTagEn: 'Recoil Transfer',
       descZh: `将 ${bp.recoilImpulseNs} N·s 后坐冲量平稳导至肩窝或三脚架基座，维持精准瞄准视线。`,
       descEn: `Channels ${bp.recoilImpulseNs} N·s recoil impulse evenly into the shoulder or mount for steady sight recovery.`,
     },
     grip: {
-      material: 'polymer_frame',
+      material: isLever ? 'nitride_steel' : 'polymer_frame',
       nameZh: isHeavyMg
         ? '右侧防烫快换枪管提把'
-        : isLever
-          ? '经典直握颈与下压指环杠杆'
-          : '人体工学防滑主握把',
+        : bp.id === 'ppsh41'
+          ? '一体式桦木枪托握颈与背带环'
+          : isLever
+            ? '经典直握颈与下压指环杠杆'
+            : '人体工学防滑主握把',
       nameEn: isHeavyMg
         ? 'Heavy Quick-Change Barrel Handle'
-        : isLever
-          ? 'Straight Wrist Grip & Finger Loop'
-          : 'Ergonomic Checkered Pistol Grip',
+        : bp.id === 'ppsh41'
+          ? 'One-Piece Birch Stock Wrist & Sling Collar'
+          : isLever
+            ? 'Straight Wrist Grip & Finger Loop'
+            : 'Ergonomic Checkered Pistol Grip',
       calloutLabelZh: isHeavyMg
         ? '快换枪管提把'
-        : isLever
-          ? '握颈与指环杠杆'
-          : '人体工学主握把',
+        : bp.id === 'ppsh41'
+          ? '桦木托握颈/背带'
+          : isLever
+            ? '握颈与指环杠杆'
+            : '人体工学主握把',
       calloutLabelEn: isHeavyMg
         ? 'Barrel Carry Handle'
-        : isLever
-          ? 'Grip & Finger Lever'
-          : 'Ergonomic Main Grip',
-      roleTagZh: '人机操控',
-      roleTagEn: 'Firing Control',
-      descZh: `提供清晰触发手指角度与稳固防滑抓握力，适配连续射击操控。`,
-      descEn: `Positions the firing hand cleanly for consistent trigger reach and recoil stability.`,
+        : bp.id === 'ppsh41'
+          ? 'Birch Stock Wrist'
+          : isLever
+            ? 'Grip & Finger Lever'
+            : 'Ergonomic Main Grip',
+      roleTagZh: bp.id === 'ppsh41' ? '握颈控枪' : '人机操控',
+      roleTagEn: bp.id === 'ppsh41' ? 'Stock Wrist Control' : 'Firing Control',
+      descZh:
+        bp.id === 'ppsh41'
+          ? '与俄式桦木枪托浑然一体的直颈握持区及背带挂环，还原二战经典直托操枪姿态。'
+          : '提供清晰触发手指角度与稳固防滑抓握力，适配连续射击操控。',
+      descEn:
+        bp.id === 'ppsh41'
+          ? 'Contoured wrist tang integrated seamlessly into the one-piece Russian birch rifle stock with steel sling collar.'
+          : 'Positions the firing hand cleanly for consistent trigger reach and recoil stability.',
     },
     optic: {
       material: 'nitride_steel',
@@ -2718,25 +3012,7 @@ function resolveStandardSmallArmSlotMeta(
             ? 'Guides manual cycling cleanly and kicks fired brass clear at rear stroke.'
             : 'Taps bore propellant gas to drive the piston and power reliable automatic cycling.',
     },
-    mount_rail: {
-      material: 'nitride_steel',
-      nameZh: bp.cad.hasBipod
-        ? '折叠式战术两脚架与导轨座'
-        : '皮卡汀尼战术导轨与附件接口',
-      nameEn: bp.cad.hasBipod
-        ? 'Folding Tactical Bipod & Rail Mount'
-        : 'Accessory Rail & Sling Interface',
-      calloutLabelZh: bp.cad.hasBipod ? '折叠战术两脚架' : '战术导轨接口',
-      calloutLabelEn: bp.cad.hasBipod ? 'Folding Bipod Mount' : 'Tactical Rail Mount',
-      roleTagZh: bp.cad.hasBipod ? '卧姿支撑' : '模块化挂载',
-      roleTagEn: bp.cad.hasBipod ? 'Prone Stability' : 'Modular Mount',
-      descZh: bp.cad.hasBipod
-        ? '在阵地卧姿与远距压制射击时提供稳固三点支撑，大幅收敛散布。'
-        : '用于零归零偏移安装白光瞄具、激光指示器或枪带附件。',
-      descEn: bp.cad.hasBipod
-        ? 'Stabilizes prone precision or sustained automatic bursts across long sightlines.'
-        : 'Maintains repeatable zero for optics, illuminators, and sling hardware.',
-    },
+    mount_rail: resolveSmallArmMountRailSpec(bp),
     trigger: {
       material: 'nitride_steel',
       nameZh: isHeavyMg ? '尾板蝶形拇指击发扳机' : '两道火精密扳机与阻铁连杆',
@@ -2829,21 +3105,51 @@ function resolveStandardSmallArmSlotMeta(
  * Resolves authentic, archetype-tailored bilingual part nomenclature for any
  * of the 66 Centennial exhibits and 20 canonical structural slots.
  */
+const CUTAWAY_MAGAZINE_STYLES: ReadonlySet<
+  CentennialWeaponBlueprint['cad']['magStyle']
+> = new Set([
+  'curved',
+  'straight',
+  'pistol_grip',
+  'drum',
+  'pan',
+  'box_internal',
+]);
+
 /**
  * Returns true when `slot` acts as an outer housing/armor shell that should
  * slice open under CT section cutaway (`?cut=1`) and soften in X-Ray mode.
- * Includes MBT armored turrets and semi-auto pistol outer slides (`bolt_carrier`).
+ * - `receiver`: all exhibits
+ * - `bolt_carrier`: 1:1 MBT armored turrets & semi-auto pistol outer slides
+ * - `mag_body`: removable/box/drum/pan small-arms magazines (skipping archery,
+ *   armor, ordnance, revolvers, fixed tubular shotguns, and off-center belts)
+ * - `grip`: grip-fed pistols & SMGs (`magStyle === 'pistol_grip'`) so the grip
+ *   housing opens cleanly with `mag_body` to expose brass rounds, follower & spring
  */
 export function isCentennialShellSlot(
   bp: CentennialWeaponBlueprint,
   slot: CentennialPartSlot
 ): boolean {
-  return (
-    slot === 'receiver' ||
-    slot === 'mag_body' ||
-    (slot === 'bolt_carrier' &&
-      (bp.category === 'armor' || bp.archetype === 'pistol_slide'))
-  );
+  if (slot === 'receiver') return true;
+  if (slot === 'bolt_carrier') {
+    return bp.category === 'armor' || bp.archetype === 'pistol_slide';
+  }
+  if (slot === 'mag_body') {
+    if (
+      bp.category === 'archery' ||
+      bp.category === 'armor' ||
+      bp.category === 'ordnance' ||
+      bp.archetype === 'revolver_sa' ||
+      bp.archetype === 'revolver_da'
+    ) {
+      return false;
+    }
+    return CUTAWAY_MAGAZINE_STYLES.has(bp.cad.magStyle);
+  }
+  if (slot === 'grip') {
+    return bp.cad.magStyle === 'pistol_grip';
+  }
+  return false;
 }
 
 export function resolveCentennialPartMeta(
@@ -3080,7 +3386,10 @@ export function resolveCentennialGroupMetas(
     },
     {
       key: 'frame',
-      nameZh: '护木枪托、导气/缓冲系统与瞄具导轨',
+      nameZh:
+        bp.year < 1990
+          ? '护木枪托、导气/缓冲系统与机械瞄具'
+          : '护木枪托、导气/缓冲系统与瞄具导轨',
       nameEn: 'Furniture, Operating System & Sights',
       badgeColor: '#7c3aed',
     },

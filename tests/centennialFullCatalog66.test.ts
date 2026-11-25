@@ -310,5 +310,94 @@ describe('100-Weapon Expansion Phase 2G — Unified 66-Exhibit Catalog & 1,320-P
     );
     expect(fiveSevenAction.nameEn).toContain('Lever-Delayed');
     expect(fiveSevenAction.roleTagZh).not.toBe('短后坐闭锁');
+
+    // Constitutional zero pre-1990 Picatinny / anachronistic tactical-rail nomenclature check
+    const PRE_1990_ANACHRONISM_RE =
+      /picatinny|皮卡汀尼|mil-std-1913|1913|tactical rail|战术导轨|accessory rail|战术槽|激光指示器|illuminators/i;
+    for (const bp of CENTENNIAL_BLUEPRINTS) {
+      if (bp.year >= 1990) continue;
+      for (const slot of CENTENNIAL_PART_SLOTS) {
+        const meta = resolveCentennialPartMeta(bp, slot);
+        for (const text of [
+          meta.nameZh,
+          meta.nameEn,
+          meta.calloutLabelZh,
+          meta.calloutLabelEn,
+          meta.roleTagZh,
+          meta.roleTagEn,
+          meta.descZh,
+          meta.descEn,
+        ]) {
+          expect(
+            PRE_1990_ANACHRONISM_RE.test(text),
+            `pre-1990 Picatinny/rail anachronism on ${bp.id} (${bp.year}).${slot}: "${text}"`
+          ).toBe(false);
+        }
+      }
+      for (const g of resolveCentennialGroupMetas(bp)) {
+        expect(
+          PRE_1990_ANACHRONISM_RE.test(g.nameZh),
+          `pre-1990 rail anachronism in group ${bp.id}.${g.key}: "${g.nameZh}"`
+        ).toBe(false);
+        expect(
+          PRE_1990_ANACHRONISM_RE.test(g.nameEn),
+          `pre-1990 rail anachronism in group ${bp.id}.${g.key}: "${g.nameEn}"`
+        ).toBe(false);
+      }
+    }
+
+    // Authentic pre-1990 historic spot-checks
+    expect(
+      resolveCentennialPartMeta(CENTENNIAL_BLUEPRINT_MAP.m16a1, 'mount_rail')
+        .nameEn
+    ).toContain('Fixed A1 Carry Handle');
+    expect(
+      resolveCentennialPartMeta(CENTENNIAL_BLUEPRINT_MAP.svd, 'mount_rail')
+        .nameEn
+    ).toContain('Dovetail Side');
+    expect(
+      resolveCentennialPartMeta(CENTENNIAL_BLUEPRINT_MAP.ppsh41, 'grip').nameEn
+    ).toContain('Birch Stock Wrist');
+    expect(
+      resolveCentennialPartMeta(CENTENNIAL_BLUEPRINT_MAP.beretta92, 'handguard')
+        .nameEn
+    ).toContain('Smooth Forged Frame Dust Cover');
+
+    // Cutaway mag_body shell spot-checks (true for removable/box small arms, false for archery/armor/ordnance/revolver/tube/belt)
+    for (const id of [
+      'ak47',
+      'm16a1',
+      'ppsh41',
+      'dp28',
+      'beretta92',
+      'saiga12',
+      'aa12',
+      'svd',
+      'c96',
+    ] as const) {
+      expect(
+        isCentennialShellSlot(CENTENNIAL_BLUEPRINT_MAP[id], 'mag_body'),
+        `${id}_mag_body must be cutaway shell`
+      ).toBe(true);
+    }
+    for (const id of [
+      'englishlongbow',
+      'hoytrx8',
+      't90m',
+      't34_85',
+      'm61vulcan',
+      'bofors40',
+      'saa1873',
+      'sw500',
+      'mossberg500',
+      'winchester1887',
+      'pkm',
+      'm2hb',
+    ] as const) {
+      expect(
+        isCentennialShellSlot(CENTENNIAL_BLUEPRINT_MAP[id], 'mag_body'),
+        `${id}_mag_body must NOT be cutaway shell`
+      ).toBe(false);
+    }
   });
 });
