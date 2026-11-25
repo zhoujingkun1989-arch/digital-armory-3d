@@ -1,4 +1,9 @@
 import { create } from 'zustand';
+import {
+  buildCentennialTankCrewSpecs,
+  type CentennialTankNationCode,
+  type CentennialTankWeaponId,
+} from '../../weapons/expansion/centennialProjectors';
 import type { MutablePartPose, WeaponId } from '../../weapons/types';
 import {
   getCaliberBallisticsSpec,
@@ -8,7 +13,12 @@ import { getWeaponManifest } from '../../weapons/manifests';
 
 export type TankCrewStation = 'exterior' | 'gunner' | 'interior';
 export type TankOpticMode = 'daylight' | 'flir_whot' | 'flir_bhot' | 'green_nvg';
-export type TankWeaponId = 'ztz99a' | 'm1a2' | 'leopard2a7' | 'tiger1';
+export type TankWeaponId =
+  | 'ztz99a'
+  | 'm1a2'
+  | 'leopard2a7'
+  | 'tiger1'
+  | CentennialTankWeaponId;
 export type TankReticleStyle =
   | 'pla_ztz99a'
   | 'us_m1a2_gps'
@@ -34,7 +44,7 @@ export interface TankCrewKinematicsSpec {
 export interface TankGunnerOpticProfile {
   weaponId: TankWeaponId;
   reticleStyle: TankReticleStyle;
-  nationCode: 'CN' | 'US' | 'DE' | 'DE-1943';
+  nationCode: 'CN' | 'US' | 'DE' | 'DE-1943' | CentennialTankNationCode;
   designationZh: string;
   designationEn: string;
   ammoTag: string;
@@ -49,6 +59,8 @@ export interface TankGunnerOpticProfile {
   museumStudyThermalNoteZh: string | null;
   museumStudyThermalNoteEn: string | null;
 }
+
+const CENTENNIAL_TANK_CREW = buildCentennialTankCrewSpecs();
 
 export const TANK_GUNNER_OPTIC_PROFILES: Readonly<
   Record<TankWeaponId, TankGunnerOpticProfile>
@@ -127,18 +139,16 @@ export const TANK_GUNNER_OPTIC_PROFILES: Readonly<
     museumStudyThermalNoteEn:
       'Museum X-Ray / FLIR Study Mode (1943 Tiger 131 was optical-only)',
   },
+  ...CENTENNIAL_TANK_CREW.gunnerOptics,
 };
 
 export function getTankGunnerOpticProfile(
   weaponId: WeaponId | string
 ): TankGunnerOpticProfile | null {
   if (
-    weaponId === 'ztz99a' ||
-    weaponId === 'm1a2' ||
-    weaponId === 'leopard2a7' ||
-    weaponId === 'tiger1'
+    Object.prototype.hasOwnProperty.call(TANK_GUNNER_OPTIC_PROFILES, weaponId)
   ) {
-    return TANK_GUNNER_OPTIC_PROFILES[weaponId];
+    return TANK_GUNNER_OPTIC_PROFILES[weaponId as TankWeaponId];
   }
   return null;
 }
@@ -280,6 +290,7 @@ export const TANK_CREW_SPECS: Readonly<
       'tiger_breech_spring',
     ]),
   },
+  ...CENTENNIAL_TANK_CREW.kinematics,
 };
 
 export interface TankGunnerCameraPose {
@@ -332,13 +343,8 @@ export interface TankFcsSolution {
 export function getTankCrewSpec(
   weaponId: WeaponId | string
 ): TankCrewKinematicsSpec | null {
-  if (
-    weaponId === 'ztz99a' ||
-    weaponId === 'm1a2' ||
-    weaponId === 'leopard2a7' ||
-    weaponId === 'tiger1'
-  ) {
-    return TANK_CREW_SPECS[weaponId];
+  if (Object.prototype.hasOwnProperty.call(TANK_CREW_SPECS, weaponId)) {
+    return TANK_CREW_SPECS[weaponId as TankWeaponId];
   }
   return null;
 }

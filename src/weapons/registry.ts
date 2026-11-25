@@ -1,8 +1,15 @@
 import { useEffect, useSyncExternalStore } from 'react';
+import {
+  CENTENNIAL_66_IDS,
+  type FlagshipWeaponId,
+} from './expansion/centennialTypes';
 import type { WeaponId, WeaponRuntimePlugin } from './types';
 import { isWeaponId } from './types';
 
-const PLUGIN_LOADERS: Record<WeaponId, () => Promise<WeaponRuntimePlugin>> = {
+const FLAGSHIP_PLUGIN_LOADERS: Record<
+  FlagshipWeaponId,
+  () => Promise<WeaponRuntimePlugin>
+> = {
   ak15: () => import('./ak15/plugin').then((m) => m.AK15_PLUGIN),
   m4a1: () => import('./m4a1/plugin').then((m) => m.M4A1_PLUGIN),
   mp5: () => import('./mp5/plugin').then((m) => m.MP5_PLUGIN),
@@ -40,6 +47,21 @@ const PLUGIN_LOADERS: Record<WeaponId, () => Promise<WeaponRuntimePlugin>> = {
   thompson: () => import('./thompson/plugin').then((m) => m.THOMPSON_PLUGIN),
   gau8: () => import('./gau8/plugin').then((m) => m.GAU8_PLUGIN),
 };
+
+const CENTENNIAL_PLUGIN_LOADERS = Object.fromEntries(
+  CENTENNIAL_66_IDS.map((cid) => [
+    cid,
+    () =>
+      import('./expansion/centennialPluginFactory').then((m) =>
+        m.buildCentennialPlugin(cid)
+      ),
+  ])
+);
+
+const PLUGIN_LOADERS: Record<WeaponId, () => Promise<WeaponRuntimePlugin>> = {
+  ...FLAGSHIP_PLUGIN_LOADERS,
+  ...CENTENNIAL_PLUGIN_LOADERS,
+} as Record<WeaponId, () => Promise<WeaponRuntimePlugin>>;
 
 const pluginCache = new Map<WeaponId, WeaponRuntimePlugin>();
 const inflightMap = new Map<WeaponId, Promise<WeaponRuntimePlugin>>();

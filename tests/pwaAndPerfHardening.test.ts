@@ -249,19 +249,21 @@ describe('PWA Offline Museum Manifests, Zero-404 Asset Parity & Cache Lifecycle'
         expect(fs.statSync(diskPath).size).toBeGreaterThan(0);
       }
 
-      // Assert exact expected assets derived from GLB_WEAPON_CONFIGS[weaponId]
+      // Assert exact expected assets derived from GLB_WEAPON_CONFIGS[weaponId] (Flagship 34)
       const glbCfg = GLB_WEAPON_CONFIGS[weaponId];
-      expect(manifest.urls).toContain(`/models/${glbCfg.modelFile}`);
       expect(manifest.urls).toContain(`/narrations/${weaponId}.json`);
+      if (glbCfg) {
+        expect(manifest.urls).toContain(`/models/${glbCfg.modelFile}`);
 
-      const expectedTexFiles = new Set<string>();
-      for (const spec of Object.values(glbCfg.pbrOverrides)) {
-        expectedTexFiles.add(spec.albedoFile);
-        expectedTexFiles.add(spec.normalFile);
-        expectedTexFiles.add(spec.roughnessFile);
-      }
-      for (const texFile of expectedTexFiles) {
-        expect(manifest.urls).toContain(`/textures/${texFile}`);
+        const expectedTexFiles = new Set<string>();
+        for (const spec of Object.values(glbCfg.pbrOverrides)) {
+          expectedTexFiles.add(spec.albedoFile);
+          expectedTexFiles.add(spec.normalFile);
+          expectedTexFiles.add(spec.roughnessFile);
+        }
+        for (const texFile of expectedTexFiles) {
+          expect(manifest.urls).toContain(`/textures/${texFile}`);
+        }
       }
 
       // Heavy armor (4 MBTs) + GAU-8/A use hangar HDRI + armor micro-detail maps

@@ -1,3 +1,5 @@
+import { buildCentennialTimelineNodes } from '../../weapons/expansion/centennialProjectors';
+
 export type TimelineLineageId =
   | 'toggle_short_recoil'
   | 'gas_rotating_bolt'
@@ -14,6 +16,7 @@ export type TimelineTourId =
 
 export type TimelineEraId =
   | 'all'
+  | 'pre_1894'
   | 'pioneers'
   | 'wwii_titans'
   | 'cold_war'
@@ -33,14 +36,25 @@ export interface HistoryTimelineEraSpec {
 export const TIMELINE_ERAS: readonly HistoryTimelineEraSpec[] = [
   {
     id: 'all',
-    minYear: 1894,
+    minYear: 1415,
     maxYear: 2026,
-    rangeLabel: '1894–2026',
+    rangeLabel: '1415–2026',
     labelZh: '全馆跨代总览',
     labelEn: 'Full Archive',
-    summaryZh: '横跨 132 年的无烟火药、自动闭锁、航空重炮与主战坦克演化全景',
+    summaryZh: '横跨 611 年的冷兵器长弓、黑火药转轮、自动闭锁、航空重炮与主战坦克演化全景',
     summaryEn:
-      '132-year panorama spanning smokeless repeaters, automatic locking, rotary cannons, and MBTs',
+      '611-year panorama spanning medieval warbows, frontier revolvers, automatic locking, rotary cannons, and MBTs',
+  },
+  {
+    id: 'pre_1894',
+    minYear: 1415,
+    maxYear: 1893,
+    rangeLabel: '1415–1893',
+    labelZh: '中世纪与黑火药先驱',
+    labelEn: 'Medieval & Black-Powder Roots',
+    summaryZh: '从阿金库尔英格兰紫杉战弓、1873 单动转轮到 1887 杠杆霰弹枪的机械蓄能与连发萌芽',
+    summaryEn:
+      'From Agincourt yew warbows and the 1873 Peacemaker revolver to 1887 lever-action repeaters',
   },
   {
     id: 'pioneers',
@@ -98,13 +112,15 @@ export function matchesTimelineEra(year: number, eraId: TimelineEraId): boolean 
 export function getTimelineEraCounts(): Record<TimelineEraId, number> {
   const counts: Record<TimelineEraId, number> = {
     all: HISTORY_TIMELINE_NODES.length,
+    pre_1894: 0,
     pioneers: 0,
     wwii_titans: 0,
     cold_war: 0,
     modern_armor: 0,
   };
   for (const node of HISTORY_TIMELINE_NODES) {
-    if (matchesTimelineEra(node.year, 'pioneers')) counts.pioneers += 1;
+    if (matchesTimelineEra(node.year, 'pre_1894')) counts.pre_1894 += 1;
+    else if (matchesTimelineEra(node.year, 'pioneers')) counts.pioneers += 1;
     else if (matchesTimelineEra(node.year, 'wwii_titans')) counts.wwii_titans += 1;
     else if (matchesTimelineEra(node.year, 'cold_war')) counts.cold_war += 1;
     else if (matchesTimelineEra(node.year, 'modern_armor')) counts.modern_armor += 1;
@@ -199,11 +215,12 @@ export const TIMELINE_LINEAGES: readonly HistoryTimelineLineageSpec[] = [
   },
 ];
 
-export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
-  {
-    weaponId: 'winchester1894',
-    year: 1894,
-    lineageId: 'manual_revolver_lever',
+export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = (
+  [
+    {
+      weaponId: 'winchester1894',
+      year: 1894,
+      lineageId: 'manual_revolver_lever' as const,
     lane: 3,
     ancestors: [],
     designerZh: '约翰·摩西·勃朗宁 (John M. Browning)',
@@ -613,7 +630,9 @@ export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
     innovationEn:
       'SwitchWeight-X binary synchronized cams coupled with quad split carbon limbs & magnesium riser',
   },
-];
+  ...buildCentennialTimelineNodes(),
+  ] satisfies HistoryTimelineNodeSpec[]
+).sort((a, b) => a.year - b.year);
 
 export const HISTORY_TIMELINE_TOURS: readonly HistoryTimelineTourSpec[] = [
   {

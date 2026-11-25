@@ -1,4 +1,6 @@
+import { buildCentennialMalfunctionProfiles } from '../../weapons/expansion/centennialProjectors';
 import type { WeaponId } from '../../weapons/types';
+import { isArcheryWeapon } from '../physics/armoryPhysics';
 
 /**
  * WP-09 — Classic Firearm Malfunction Cutaway & Clearing Diagnostics Specifications
@@ -306,7 +308,7 @@ export const MALFUNCTION_SCENARIOS: Readonly<
 export function isArcheryMalfunctionWeapon(
   weaponId: WeaponId | string | null | undefined
 ): boolean {
-  return weaponId === 'lift33' || weaponId === 'r500';
+  return isArcheryWeapon(weaponId);
 }
 
 /**
@@ -3343,4 +3345,5 @@ export const WEAPON_MALFUNCTION_PROFILES: Readonly<
     lightStrikeF: 0.09,
     outOfBatteryF: 0.89,
   },
+  ...buildCentennialMalfunctionProfiles(),
 };

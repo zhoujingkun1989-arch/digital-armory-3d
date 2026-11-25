@@ -4,6 +4,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import { useFrame } from '@react-three/fiber';
 import { Edges } from '@react-three/drei';
 import { useAppStore } from '../../store/useAppStore';
+import { buildCentennialBallisticsConfigs } from '../../weapons/expansion/centennialProjectors';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { getLoadedWeaponPlugin } from '../../weapons/registry';
 import type { CaliberProfile, WeaponId } from '../../weapons/types';
@@ -2168,6 +2169,8 @@ export interface WeaponRoundFitSpec {
  * Static zero-allocation per-weapon fit & primer-strike timing lookup table.
  * Verified against every weapon's magazine cavity, feed lips, chamber, and ejection port!
  */
+const CENTENNIAL_BALLISTICS_CONFIGS = buildCentennialBallisticsConfigs();
+
 export const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   g17: { roundScale: 0.96, magLocalShiftX: -0.44, ignitionF: 0.09 },
   p320: { roundScale: 0.95, magLocalShiftX: -0.44, ignitionF: 0.09 },
@@ -2203,6 +2206,7 @@ export const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   k98k: { roundScale: 1.25, magLocalShiftX: -0.3, ignitionF: 0.14 },
   thompson: { roundScale: 0.92, magLocalShiftX: -0.34, ignitionF: 0.22 },
   gau8: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.09 },
+  ...CENTENNIAL_BALLISTICS_CONFIGS.roundFit,
 };
 
 const caliberGeoCache = new Map<CaliberProfile, CaliberGeometryBundle>();
@@ -2768,6 +2772,7 @@ const MUZZLE_DEVICE_SPECS: Record<WeaponId, MuzzleDeviceSpec> = {
     forwardDamp: 0.94,
     jets: radialProngJets([0, 51, 103, 154, -154, -103, -51], 6.4, 1.45),
   },
+  ...CENTENNIAL_BALLISTICS_CONFIGS.muzzleDevices,
 };
 
 const _jetUp = new THREE.Vector3(0, 1, 0);
