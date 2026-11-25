@@ -10,11 +10,14 @@ import {
 import {
   type ArcheryPartKind,
   type ArcheryStyle,
+  applyMetricBoxUVs,
   type BarrelMuzzleStyle,
   type BoltCarrierStyle,
   buildArcheryGeo,
+  buildBeveledProfile,
   buildBoltAndCarrierGeo,
   buildChamferedReceiverGeo,
+  buildChamferedSlab,
   buildDynamicHelicalSpringGeo,
   buildHandguardGeo,
   buildHeavyArmorHullAndTurretGeo,
@@ -221,12 +224,13 @@ describe('Centennial Parametric CAD Primitives Library (Phase 1B)', () => {
     }
   });
 
-  it('builds valid machined bolts, carriers, pistol slides & fluted 6-chamber revolver cylinders', () => {
+  it('builds valid machined bolts, carriers, pistol slides (incl. open-top Beretta 92) & fluted 6-chamber revolver cylinders', () => {
     const p = CENTENNIAL_FINISH_COLORS.blued_steel;
     const styles: BoltCarrierStyle[] = [
       'rotating',
       'straight_pull',
       'slide',
+      'slide_open_top',
       'falling_block',
       'revolver_cylinder',
     ];
@@ -238,11 +242,12 @@ describe('Centennial Parametric CAD Primitives Library (Phase 1B)', () => {
     }
   });
 
-  it('builds valid sculpted handguards across all 5 architectural styles', () => {
+  it('builds valid sculpted handguards across all 6 architectural styles', () => {
     const p = CENTENNIAL_FINISH_COLORS.walnut_classic;
     const styles: HandguardStyle[] = [
       'ventilated_tube',
       'quad_rail',
+      'ribbed_historical',
       'triangular_retro',
       'walnut_forend',
       'polymer_bullpup',
@@ -255,11 +260,13 @@ describe('Centennial Parametric CAD Primitives Library (Phase 1B)', () => {
     }
   });
 
-  it('builds valid buttstocks & grips across all 13 styles (walnut, straight, Dragunov thumbhole, SPAS-12 top-fold, folding, AR, bullpup, crossbow thumbhole, lever loop, pistol, broomhandle, plowhandle, spade)', () => {
+  it('builds valid buttstocks & grips across all 15 styles (incl. PPSh-41 one-piece & M16A1 fixed)', () => {
     const p = CENTENNIAL_FINISH_COLORS.walnut_classic;
     const styles: StockGripStyle[] = [
       'walnut_rifle',
       'straight_walnut',
+      'ppsh_one_piece',
+      'm16a1_fixed',
       'dragunov_thumbhole',
       'spas12_top_fold',
       'folding_skeleton',
@@ -457,5 +464,72 @@ describe('Centennial Parametric CAD Primitives Library (Phase 1B)', () => {
     t90Turret.dispose();
     merkTurret.dispose();
     challyTurret.dispose();
+  });
+
+  it('enforces Wave A-C4 Metric Box-UVs, beveled slab/profile builders, Beretta open-top slide cutout, and articulated MBT track link belts', () => {
+    // 1. Metric Box-Projection UVs align primary U strictly along +X at exact physical tileSizeCm
+    const slab = buildChamferedSlab(28, 4.4, 3.2, 0.25, '#4c5664');
+    applyMetricBoxUVs(slab, 14);
+    slab.computeBoundingBox();
+    const uv = slab.getAttribute('uv');
+    let minU = Infinity;
+    let maxU = -Infinity;
+    for (let i = 0; i < uv.count; i++) {
+      const u = uv.getX(i);
+      if (u < minU) minU = u;
+      if (u > maxU) maxU = u;
+    }
+    const dx = slab.boundingBox!.max.x - slab.boundingBox!.min.x;
+    expect(Math.abs(maxU - minU - dx / 14)).toBeLessThan(0.05);
+    expect(slab.getAttribute('position').count).toBeGreaterThan(72); // beveled, never raw 36-vert box
+    slab.dispose();
+
+    const prof = buildBeveledProfile(
+      [
+        [-5, -2],
+        [5, -2],
+        [4, 2],
+        [-4, 2],
+      ],
+      2.4,
+      0.16,
+      '#59321e'
+    );
+    expect(prof.getAttribute('position').count).toBeGreaterThan(72);
+    prof.dispose();
+
+    // 2. Beretta 92FS open-top slide exposes barrel along central cutout window
+    const openSlide = buildBoltAndCarrierGeo(18, 1.15, '#3c4450', 'slide_open_top');
+    const pos = openSlide.getAttribute('position');
+    let topCenterBlockers = 0;
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i);
+      const y = pos.getY(i);
+      const z = pos.getZ(i);
+      if (Math.abs(x) < 2.2 && Math.abs(z) < 0.35 && y > 0.75) {
+        topCenterBlockers++;
+      }
+    }
+    expect(topCenterBlockers, 'open-top slide center cutout must remain unobstructed').toBe(0);
+    openSlide.dispose();
+
+    // 3. Articulated individual track link belts on both modern and WWII MBTs
+    for (const [style, variant] of [
+      ['mbt_modern', 't90m'],
+      ['mbt_wwii', 't34_85'],
+    ] as const) {
+      const tracks = buildHeavyArmorHullAndTurretGeo(
+        'suspension_tracks',
+        100,
+        '#45543a',
+        style,
+        variant
+      );
+      expect(
+        tracks.getAttribute('position').count,
+        `${variant} tracks must contain articulated individual track shoes + toothed sprockets`
+      ).toBeGreaterThan(6000);
+      tracks.dispose();
+    }
   });
 });
