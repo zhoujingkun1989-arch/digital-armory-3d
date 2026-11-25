@@ -11,6 +11,7 @@ import { getWeaponManifest } from '../../weapons/manifests';
 import type { WeaponScaleProfile } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
 import { lockLinearTextureColorSpace } from '../materials/pbrManager';
+import { isHeavyScaleWeapon } from '../physics/armoryPhysics';
 import type { GraphicsQualityTier } from './graphicsQuality';
 import {
   getStudioHdriEnvIntensityForScale,
@@ -3321,7 +3322,9 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
     const resolvedScaleProfile =
       scaleProfile ?? getWeaponManifest(activeWeaponId).workbenchMeta.scaleProfile;
     const isTank =
-      resolvedScaleProfile === 'main_battle_tank' && screen !== 'cartridges';
+      (resolvedScaleProfile === 'main_battle_tank' ||
+        isHeavyScaleWeapon(activeWeaponId)) &&
+      screen !== 'cartridges';
 
     const geos = useMemo(() => buildTakedownMatGeometries(), []);
     const hangarGeos = useMemo(() => buildHeavyArmorHangarGeometries(), []);

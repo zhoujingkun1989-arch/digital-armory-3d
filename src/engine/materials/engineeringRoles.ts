@@ -1825,10 +1825,11 @@ export function resolvePartEngineeringRole(
   }
 
   if (
-    !part.isShell &&
-    /bolt_carrier|charging_handle|recoil_guide|recoil_rod|guide_rod/.test(
-      localId
-    )
+    localId === 'bolt_carrier' ||
+    (!part.isShell &&
+      /bolt_carrier|charging_handle|recoil_guide|recoil_rod|guide_rod/.test(
+        localId
+      ))
   ) {
     return 'bolt_carrier';
   }
