@@ -29,7 +29,7 @@ describe('WP-24 Timeline & WP-25a KTX2/Basis + PWA Offline Museum', () => {
     }
 
     for (const node of HISTORY_TIMELINE_NODES) {
-      expect(node.year).toBeGreaterThanOrEqual(1894);
+      expect(node.year).toBeGreaterThanOrEqual(1415);
       expect(node.year).toBeLessThanOrEqual(2026);
       expect(lineageIds.has(node.lineageId)).toBe(true);
       expect(CJK_REGEX.test(node.designerEn)).toBe(false);

@@ -235,6 +235,10 @@ describe('Cycle 6B · Offline Museum Featured 5 Legends Pack', () => {
       'm1a2',
       'leopard2a7',
       'tiger1',
+      't90m',
+      'challenger2',
+      'merkava4',
+      't34_85',
     ]);
 
     const summary = summarizeOfflinePack(FEATURED_LEGENDS_OFFLINE_IDS, '/');

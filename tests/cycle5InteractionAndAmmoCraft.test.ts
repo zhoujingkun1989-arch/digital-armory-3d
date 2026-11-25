@@ -35,6 +35,7 @@ import {
   updateManualActionRack,
 } from '../src/engine/interaction/InteractiveActionController';
 import { useAppStore } from '../src/store/useAppStore';
+import { isFlagshipWeaponId } from '../src/weapons/expansion/centennialTypes';
 import { loadWeaponPlugin } from '../src/weapons/registry';
 import {
   WEAPON_IDS,
@@ -548,7 +549,7 @@ describe('Cycle 5A: 34-Exhibit Direct 3D Interaction, Handle Sheen & Cutaway Car
   it('validates all 34 exhibit magazine stacks including Deagle, M1911, K98k, Thompson, MG 42, GAU-8, Win 1894, Rem 870, P08 & AK-15', () => {
     const pose = createMutableMagazineRoundPose();
 
-    // 1. All 34 exhibits accounted for cleanly: 27 instanced + 7 sculptural GLB ammo exhibits
+    // 1. All 100 exhibits accounted for cleanly: 27 flagship instanced + 73 sculptural/procedural ammo exhibits (7 heavy flagship + 66 Centennial)
     let instancedCount = 0;
     let sculpturalCount = 0;
     for (const id of WEAPON_IDS) {
@@ -562,12 +563,16 @@ describe('Cycle 5A: 34-Exhibit Direct 3D Interaction, Handle Sheen & Cutaway Car
         expect(spec.slots.length).toBe(0);
         const meta = SCULPTURAL_AMMO_EXHIBITS[id];
         expect(meta, `Missing sculptural ammo metadata for ${id}`).toBeDefined();
-        expect(meta!.capacityRounds).toBeGreaterThanOrEqual(22);
+        if (isFlagshipWeaponId(id)) {
+          expect(meta!.capacityRounds).toBeGreaterThanOrEqual(22);
+        } else {
+          expect(meta!.capacityRounds).toBeGreaterThanOrEqual(1);
+        }
       }
     }
     expect(instancedCount + sculpturalCount).toBe(WEAPON_IDS.length);
     expect(instancedCount).toBe(27);
-    expect(sculpturalCount).toBe(7);
+    expect(sculpturalCount).toBe(73);
 
     // 2. Spotlight exhibit contracts
     expect(MAGAZINE_STACK_SPECS.deagle.roundCount).toBe(7);

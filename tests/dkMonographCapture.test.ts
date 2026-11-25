@@ -39,6 +39,7 @@ import {
   requestMonographCapture,
 } from '../src/features/monograph/monographCaptureStore';
 import { loadWeaponPlugin } from '../src/weapons/registry';
+import { FLAGSHIP_34_IDS } from '../src/weapons/expansion/centennialTypes';
 import { WEAPON_IDS } from '../src/weapons/types';
 
 function orientation2d(
@@ -725,7 +726,7 @@ describe('DK Visual Encyclopedia Capture Engine & Callout Solver', () => {
       ] as const;
 
       let totalVerifiedPlates = 0;
-      for (const weaponId of WEAPON_IDS) {
+      for (const weaponId of FLAGSHIP_34_IDS) {
         const entry = manifest.weapons[weaponId];
         expect(entry, `Missing Cycles manifest entry for ${weaponId}`).toBeDefined();
         expect(entry!.resolution).toEqual([2880, 1800]);

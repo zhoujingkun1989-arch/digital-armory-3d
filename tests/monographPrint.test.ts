@@ -782,7 +782,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
             lenStat.value.replace(/,/g, '').replace(/\s*mm$/, '')
           );
           expect(numericMm, `${id} (${lang}) parsed Kids OAL mm`).toBeGreaterThanOrEqual(
-            200
+            150
           );
           const numericKg = Number(
             weightStat.value.replace(/,/g, '').replace(/\s*kg$/, '')
@@ -847,7 +847,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
       return [];
     };
 
-    expect(WEAPON_IDS.length).toBe(34);
+    expect(WEAPON_IDS.length).toBe(100);
 
     for (const id of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(id);

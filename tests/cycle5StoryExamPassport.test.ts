@@ -162,12 +162,12 @@ describe('Cycle 5C — BBC/Smithsonian Documentary Player, Exam Celebration & 10
     expect(WP_LEAK_RE.test(examCss)).toBe(false);
   });
 
-  it('aggregates 10-Hall mastery summing cleanly to all 34 exhibits and filters Passport rows accurately', () => {
+  it('aggregates 10-Hall mastery summing cleanly to all 100 exhibits and filters Passport rows accurately', () => {
     const emptyMastery = computePassportHallMastery({});
     expect(emptyMastery.length).toBe(PASSPORT_SPECIALIZED_HALLS.length);
     const totalAcrossHalls = emptyMastery.reduce((acc, h) => acc + h.total, 0);
     expect(totalAcrossHalls).toBe(MUSEUM_EXHIBIT_COUNT);
-    expect(totalAcrossHalls).toBe(34);
+    expect(totalAcrossHalls).toBe(100);
     expect(emptyMastery.every((h) => h.certified === 0 && h.pct === 0)).toBe(
       true
     );
@@ -212,29 +212,29 @@ describe('Cycle 5C — BBC/Smithsonian Documentary Player, Exam Celebration & 10
     const ordnance = populated.find((h) => h.hallId === 'ordnance');
     expect(ordnance).toEqual({
       hallId: 'ordnance',
-      total: 1,
+      total: 4,
       certified: 1,
-      pct: 100,
+      pct: 25,
     });
     const armor = populated.find((h) => h.hallId === 'armor');
     expect(armor).toEqual({
       hallId: 'armor',
-      total: 4,
+      total: 8,
       certified: 1,
-      pct: 25,
+      pct: 13,
     });
 
     const rows = WEAPON_MANIFESTS.map((manifest) => ({
       manifest,
       summary: buildSummaryFromRecord(manifest.id, sampleLedger[manifest.id]),
     }));
-    expect(filterPassportRows(rows, 'all', 'all').length).toBe(34);
+    expect(filterPassportRows(rows, 'all', 'all').length).toBe(100);
     expect(filterPassportRows(rows, 'certified', 'all').length).toBe(4);
-    expect(filterPassportRows(rows, 'pending', 'all').length).toBe(30);
-    expect(filterPassportRows(rows, 'all', 'armor').length).toBe(4);
+    expect(filterPassportRows(rows, 'pending', 'all').length).toBe(96);
+    expect(filterPassportRows(rows, 'all', 'armor').length).toBe(8);
     expect(filterPassportRows(rows, 'certified', 'armor').length).toBe(1);
-    expect(filterPassportRows(rows, 'pending', 'armor').length).toBe(3);
-    expect(filterPassportRows(rows, 'pending', 'ordnance').length).toBe(0);
+    expect(filterPassportRows(rows, 'pending', 'armor').length).toBe(7);
+    expect(filterPassportRows(rows, 'pending', 'ordnance').length).toBe(3);
 
     const passportHtml = renderToStaticMarkup(
       React.createElement(ArmorerPassportModal, { onClose: () => {} })
@@ -245,7 +245,7 @@ describe('Cycle 5C — BBC/Smithsonian Documentary Player, Exam Celebration & 10
       10
     );
     expect((passportHtml.match(/class="passport-train-btn"/g) ?? []).length).toBe(
-      34
+      100
     );
     expect(passportHtml).toContain(PASSPORT_STRINGS.zh.launchDrillBtn);
 

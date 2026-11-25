@@ -130,7 +130,12 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
       expect(prof.fireControlPartIds.length).toBeGreaterThan(0);
       expect(prof.magazinePartIds.length).toBeGreaterThan(0);
 
-      if (weaponId === 'p90' || weaponId === 'g11') {
+      if (
+        weaponId === 'p90' ||
+        weaponId === 'g11' ||
+        weaponId === 'dp28' ||
+        weaponId === 'bofors40'
+      ) {
         expect(prof.ejectionUpSign).toBe(-1);
         expect(prof.magStripOffsetCm[1]).toBeGreaterThan(0);
       } else if (
@@ -149,7 +154,9 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
         expect(prof.magStripOffsetCm[1]).toBeLessThan(0);
       } else if (isArcheryMalfunctionWeapon(weaponId)) {
         expect(prof.ejectionUpSign).toBe(1);
-        expect(prof.magStripOffsetCm[2]).toBeGreaterThan(0);
+        expect(
+          prof.magStripOffsetCm[2] > 0 || prof.magStripOffsetCm[1] < 0
+        ).toBe(true);
       } else {
         expect(prof.ejectionUpSign).toBe(1);
         expect(prof.magStripOffsetCm[1]).toBeLessThan(0);

@@ -144,8 +144,8 @@ describe('Cycle 18B — HD Share Poster Rifling Metrology & Modernized CONTRIBUT
     expect(r500En.stampLabel).not.toContain('BORE');
   });
 
-  it('covers all 34/34 exhibits with zero EN CJK and zero WP-XX leaks and renders stamps on 16:9 & 4:5 Smithsonian/Obsidian posters', () => {
-    expect(WEAPON_MANIFESTS.length).toBe(34);
+  it('covers all 100/100 exhibits with zero EN CJK and zero WP-XX leaks and renders stamps on 16:9 & 4:5 Smithsonian/Obsidian posters', () => {
+    expect(WEAPON_MANIFESTS.length).toBe(100);
     for (const manifest of WEAPON_MANIFESTS) {
       const enSpec = formatPosterRiflingMetrology(manifest.id, 'en');
       const zhSpec = formatPosterRiflingMetrology(manifest.id, 'zh');

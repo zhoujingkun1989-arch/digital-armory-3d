@@ -18,6 +18,7 @@ import {
 } from '../src/i18n/weaponFallbacks';
 import type { WeaponNarrationBundle } from '../src/narration/types';
 import { useAppStore } from '../src/store/useAppStore';
+import { isFlagshipWeaponId } from '../src/weapons/expansion/centennialTypes';
 import { loadWeaponGeometryBuilders } from '../src/weapons/geometryLoaders';
 import {
   ARMORY_WEAPONS,
@@ -225,47 +226,47 @@ function findFirstNonFiniteIndex(arr: ArrayLike<number>): number {
   return -1;
 }
 
-describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR contracts', () => {
-  it('registers all 34 iconic exhibits totaling 854 parts across all 10 categories with accurate camera presets', () => {
-    expect(WEAPON_MANIFESTS).toHaveLength(34);
-    expect(ARMORY_WEAPONS).toHaveLength(34);
+describe('100-Exhibit Digital Armory Centennial 1:1 plugin, geometry, kinematics & PBR contracts', () => {
+  it('registers all 100 iconic exhibits totaling 2,174 parts across all 10 categories with accurate camera presets', () => {
+    expect(WEAPON_MANIFESTS).toHaveLength(100);
+    expect(ARMORY_WEAPONS).toHaveLength(100);
 
     const totalCatalogParts = WEAPON_MANIFESTS.reduce(
       (sum, m) => sum + m.catalog.partsCount,
       0
     );
-    expect(totalCatalogParts).toBe(854);
+    expect(totalCatalogParts).toBe(2174);
 
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'all'))
-    ).toHaveLength(34);
+    ).toHaveLength(100);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'assault'))
-    ).toHaveLength(9);
+    ).toHaveLength(24);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'lmg'))
-    ).toHaveLength(3);
+    ).toHaveLength(10);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'smg'))
-    ).toHaveLength(4);
+    ).toHaveLength(13);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'sniper'))
-    ).toHaveLength(3);
+    ).toHaveLength(12);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'shotgun'))
-    ).toHaveLength(2);
+    ).toHaveLength(8);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'pistol'))
-    ).toHaveLength(6);
+    ).toHaveLength(16);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'archery'))
-    ).toHaveLength(2);
+    ).toHaveLength(5);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'armor'))
-    ).toHaveLength(4);
+    ).toHaveLength(8);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'ordnance'))
-    ).toHaveLength(1);
+    ).toHaveLength(4);
 
     for (const manifest of WEAPON_MANIFESTS) {
       expect(manifest.atlasHeadingCn).toContain('Packed ORM');
@@ -483,8 +484,8 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
       }
     }
 
-    expect(totalRuntimeParts).toBe(854);
-    expect(globalPartIds.size).toBe(854);
+    expect(totalRuntimeParts).toBe(2174);
+    expect(globalPartIds.size).toBe(2174);
 
     // 1. M82A1 short-recoil barrel + accelerator motion law
     const m82Plugin = loadedPlugins.get('m82a1')!;
@@ -1345,7 +1346,7 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
       }
     }
 
-    expect(builtPartsCount).toBe(854);
+    expect(builtPartsCount).toBe(2174);
   }, 120000);
 
   it('verifies all 414 WebP PBR textures exist on disk (0 PNGs) and all 139 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
@@ -1418,11 +1419,17 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
         ).toBe(true);
       }
 
-      expect(plugin.pbrSuites.length).toBeGreaterThan(0);
-      for (const suite of plugin.pbrSuites) {
-        for (const ch of suite.channels) {
-          expect(diskSet.has(normalizeTextureFileName(ch.fileName))).toBe(true);
+      if (isFlagshipWeaponId(manifest.id)) {
+        expect(plugin.pbrSuites.length).toBeGreaterThan(0);
+        for (const suite of plugin.pbrSuites) {
+          for (const ch of suite.channels) {
+            expect(diskSet.has(normalizeTextureFileName(ch.fileName))).toBe(
+              true
+            );
+          }
         }
+      } else {
+        expect(plugin.pbrSuites).toHaveLength(0);
       }
     }
   });
@@ -1534,6 +1541,7 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
 
     for (const manifest of WEAPON_MANIFESTS) {
       const wid = manifest.id;
+      const isFlagship = isFlagshipWeaponId(wid);
       const narrationPath = path.join(
         ROOT_DIR,
         'public',
@@ -1545,14 +1553,17 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
         `missing narration bundle for ${wid}`
       ).toBe(true);
 
-      const hashPath = path.join(TTS_CACHE_DIR, `${wid}_tts_hashes.json`);
-      expect(
-        fs.existsSync(hashPath),
-        `missing Charon TTS SHA-256 hash manifest for ${wid}`
-      ).toBe(true);
-      const ttsHashes = JSON.parse(
-        fs.readFileSync(hashPath, 'utf-8')
-      ) as Record<string, string>;
+      let ttsHashes: Record<string, string> = {};
+      if (isFlagship) {
+        const hashPath = path.join(TTS_CACHE_DIR, `${wid}_tts_hashes.json`);
+        expect(
+          fs.existsSync(hashPath),
+          `missing Charon TTS SHA-256 hash manifest for ${wid}`
+        ).toBe(true);
+        ttsHashes = JSON.parse(
+          fs.readFileSync(hashPath, 'utf-8')
+        ) as Record<string, string>;
+      }
 
       const bundle = JSON.parse(
         fs.readFileSync(narrationPath, 'utf-8')
@@ -1562,9 +1573,15 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
 
       expect(bundle.schemaVersion).toBe(1);
       expect(bundle.weaponId).toBe(wid);
-      expect(bundle.generatorModels.text).toBe('gemini-3.8-flash');
-      expect(bundle.generatorModels.storyTts).toBe(EXPECTED_TTS_MODEL);
-      expect(bundle.generatorModels.partTts).toBe(EXPECTED_TTS_MODEL);
+      if (isFlagship) {
+        expect(bundle.generatorModels.text).toBe('gemini-3.8-flash');
+        expect(bundle.generatorModels.storyTts).toBe(EXPECTED_TTS_MODEL);
+        expect(bundle.generatorModels.partTts).toBe(EXPECTED_TTS_MODEL);
+      } else {
+        expect(bundle.generatorModels.text).toBe('centennial-blueprint-v1');
+        expect(bundle.generatorModels.storyTts).toBe('web-speech-api');
+        expect(bundle.generatorModels.partTts).toBe('web-speech-api');
+      }
 
       // Strictly 0 CJK/fullwidth characters across all English plugin metadata & English narration fields
       for (const grp of plugin.partGroups) {
@@ -1595,9 +1612,11 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
         expect(tr.description.length).toBeGreaterThan(15);
       }
 
-      // Verify 4-act bilingual R&D stories, 3 breakthroughs, >=5 milestones & exact Charon TTS hashes
-      const expectedWeaponClipCount = 8 + plugin.parts.length * 2;
-      expect(Object.keys(ttsHashes)).toHaveLength(expectedWeaponClipCount);
+      // Verify 4-act bilingual R&D stories, 3 breakthroughs, >=5 milestones & exact Charon TTS hashes (Flagship 34)
+      if (isFlagship) {
+        const expectedWeaponClipCount = 8 + plugin.parts.length * 2;
+        expect(Object.keys(ttsHashes)).toHaveLength(expectedWeaponClipCount);
+      }
 
       for (const lang of ['zh', 'en'] as const) {
         const story = bundle.story[lang];
@@ -1610,18 +1629,22 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
         for (const act of story.acts) {
           expect(act.paragraphs.length).toBeGreaterThanOrEqual(2);
           expect(act.audioScript.length).toBeGreaterThan(35);
-          expect(act.audioUrl).toMatch(
-            new RegExp(`^audio/${wid}/story_act[1-4]_${lang}\\.mp3$`)
-          );
-          const expectedSig = sha256Hex(
-            `${EXPECTED_TTS_MODEL}|${EXPECTED_TTS_VOICE}|${EXPECTED_TTS_STYLE[lang]}|${act.audioScript}`
-          );
-          expect(
-            ttsHashes[act.audioUrl],
-            `${wid}: TTS SHA-256 hash mismatch on ${act.audioUrl}`
-          ).toBe(expectedSig);
-          totalVerifiedHashes++;
-          allReferencedAudioPaths.push(act.audioUrl);
+          if (isFlagship) {
+            expect(act.audioUrl).toMatch(
+              new RegExp(`^audio/${wid}/story_act[1-4]_${lang}\\.mp3$`)
+            );
+            const expectedSig = sha256Hex(
+              `${EXPECTED_TTS_MODEL}|${EXPECTED_TTS_VOICE}|${EXPECTED_TTS_STYLE[lang]}|${act.audioScript}`
+            );
+            expect(
+              ttsHashes[act.audioUrl],
+              `${wid}: TTS SHA-256 hash mismatch on ${act.audioUrl}`
+            ).toBe(expectedSig);
+            totalVerifiedHashes++;
+            allReferencedAudioPaths.push(act.audioUrl);
+          } else {
+            expect(act.audioUrl).toBe('');
+          }
           if (act.focusPartId) {
             expect(
               partIds.has(act.focusPartId),
@@ -1639,7 +1662,7 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
         }
       }
 
-      // Verify 100% part coverage, 0 CJK in English part entries, and bilingual Charon TTS hashes
+      // Verify 100% part coverage, 0 CJK in English part entries, and bilingual Charon TTS hashes (Flagship 34)
       expect(Object.keys(bundle.parts)).toHaveLength(plugin.parts.length);
       totalNarratedParts += Object.keys(bundle.parts).length;
 
@@ -1667,18 +1690,22 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
           expect(loc.kinematicRole.length).toBeGreaterThan(15);
           expect(loc.designHighlight.length).toBeGreaterThan(15);
           expect(loc.audioScript.length).toBeGreaterThan(25);
-          expect(loc.audioUrl).toBe(
-            `audio/${wid}/parts/${part.id}_${lang}.mp3`
-          );
-          const expectedPartSig = sha256Hex(
-            `${EXPECTED_TTS_MODEL}|${EXPECTED_TTS_VOICE}|${EXPECTED_TTS_STYLE[lang]}|${loc.audioScript}`
-          );
-          expect(
-            ttsHashes[loc.audioUrl],
-            `${wid}: TTS SHA-256 hash mismatch on ${loc.audioUrl}`
-          ).toBe(expectedPartSig);
-          totalVerifiedHashes++;
-          allReferencedAudioPaths.push(loc.audioUrl);
+          if (isFlagship) {
+            expect(loc.audioUrl).toBe(
+              `audio/${wid}/parts/${part.id}_${lang}.mp3`
+            );
+            const expectedPartSig = sha256Hex(
+              `${EXPECTED_TTS_MODEL}|${EXPECTED_TTS_VOICE}|${EXPECTED_TTS_STYLE[lang]}|${loc.audioScript}`
+            );
+            expect(
+              ttsHashes[loc.audioUrl],
+              `${wid}: TTS SHA-256 hash mismatch on ${loc.audioUrl}`
+            ).toBe(expectedPartSig);
+            totalVerifiedHashes++;
+            allReferencedAudioPaths.push(loc.audioUrl);
+          } else {
+            expect(loc.audioUrl).toBe('');
+          }
         }
 
         const labelEn = resolvePartCalloutLabel(part, 'en', entry);
@@ -1696,8 +1723,8 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
       assertZeroCjkInEnglish(metaEn, `${wid}.metaEn`);
     }
 
-    // 854 total parts across 34 exhibits -> 272 story MP3s + 1,708 part MP3s = 1,980 MP3 files
-    expect(totalNarratedParts).toBe(854);
+    // 2,174 total narrated parts across 100 exhibits; 34 Flagships lock exact 1,980 Charon MP3 files
+    expect(totalNarratedParts).toBe(2174);
     expect(allReferencedAudioPaths).toHaveLength(1980);
     expect(totalVerifiedHashes).toBe(1980);
 

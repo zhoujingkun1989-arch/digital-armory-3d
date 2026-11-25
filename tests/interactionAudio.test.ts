@@ -41,6 +41,7 @@ import {
   updateManualActionRack,
 } from '../src/engine/interaction/InteractiveActionController';
 import { useAppStore } from '../src/store/useAppStore';
+import { CENTENNIAL_BLUEPRINTS } from '../src/weapons/expansion/centennialCatalog';
 import { loadWeaponPlugin } from '../src/weapons/registry';
 import { WEAPON_IDS, type WeaponId } from '../src/weapons/types';
 
@@ -52,7 +53,45 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     setAcousticEnvironment('indoor_range');
   });
 
-  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 29 exhibits', () => {
+  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 100 exhibits', () => {
+    const centennialOpenBoltAuto: WeaponId[] = [];
+    const centennialSemiOnly: WeaponId[] = [];
+    const centennialSelectFire: WeaponId[] = [];
+
+    for (const bp of CENTENNIAL_BLUEPRINTS) {
+      if (
+        bp.kinematicLaw === 'rotary_gatling' ||
+        bp.archetype === 'lmg_belt' ||
+        bp.archetype === 'lmg_pan' ||
+        bp.archetype === 'heavy_mg' ||
+        bp.archetype === 'aa_autocannon' ||
+        (bp.kinematicLaw === 'open_bolt_blowback' &&
+          bp.id !== 'ppsh41' &&
+          bp.id !== 'uzi' &&
+          bp.id !== 'sten' &&
+          bp.id !== 'mac10')
+      ) {
+        centennialOpenBoltAuto.push(bp.id);
+      } else if (
+        bp.category === 'pistol' ||
+        bp.category === 'archery' ||
+        bp.category === 'armor' ||
+        bp.category === 'sniper' ||
+        bp.archetype === 'howitzer' ||
+        bp.kinematicLaw === 'bolt_action' ||
+        bp.kinematicLaw === 'pump_action' ||
+        bp.kinematicLaw === 'lever_action' ||
+        bp.kinematicLaw === 'revolver_cylinder' ||
+        bp.id === 'sks' ||
+        bp.id === 'spas12' ||
+        bp.id === 'saiga12'
+      ) {
+        centennialSemiOnly.push(bp.id);
+      } else {
+        centennialSelectFire.push(bp.id);
+      }
+    }
+
     const selectFireWeapons: WeaponId[] = [
       'ak15',
       'm4a1',
@@ -65,8 +104,15 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'vss',
       'an94',
       'thompson',
+      ...centennialSelectFire,
     ];
-    const openBoltAutoWeapons: WeaponId[] = ['m249', 'm134', 'mg42', 'gau8'];
+    const openBoltAutoWeapons: WeaponId[] = [
+      'm249',
+      'm134',
+      'mg42',
+      'gau8',
+      ...centennialOpenBoltAuto,
+    ];
     const semiOnlyWeapons: WeaponId[] = [
       'g17',
       'p320',
@@ -87,6 +133,7 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'rem870',
       'm1911',
       'k98k',
+      ...centennialSemiOnly,
     ];
 
     expect(

@@ -25,8 +25,8 @@ function escapeHtml(text: string): string {
 }
 
 describe('Cycle 11C — Free-Pair 34×33 Mechanism Showdown Custom Duel Builder & 6-Axis Engineering Radar', () => {
-  it('computes finite clamped [0..100] 6-axis radar metrics across all 34 exhibits with physically accurate ordering', () => {
-    expect(WEAPON_IDS).toHaveLength(34);
+  it('computes finite clamped [0..100] 6-axis radar metrics across all 100 exhibits with physically accurate ordering', () => {
+    expect(WEAPON_IDS).toHaveLength(100);
     expect(SHOWDOWN_RADAR_AXES).toHaveLength(6);
 
     const byId = new Map(
@@ -123,8 +123,8 @@ describe('Cycle 11C — Free-Pair 34×33 Mechanism Showdown Custom Duel Builder 
       expect(a).not.toBe(b);
     }
 
-    // All 30 curated iconic presets remain intact
-    expect(getClassicRivalryPresets('en')).toHaveLength(30);
+    // All 30+ curated iconic presets remain intact
+    expect(getClassicRivalryPresets('en').length).toBeGreaterThanOrEqual(30);
 
     // Render arbitrary cross-era duels in English & Chinese
     const testPairs = [
@@ -162,7 +162,7 @@ describe('Cycle 11C — Free-Pair 34×33 Mechanism Showdown Custom Duel Builder 
         expect(htmlEn).toContain('data-testid="sd-staging-split3d-cta"');
         expect(htmlEn).toContain('data-testid="sd-active-split3d-cta"');
 
-        // Both selects contain all 34 exhibit options
+        // Both selects contain all 100 exhibit options
         const selectAMatch = htmlEn.match(
           /data-testid="sd-custom-select-a"[\s\S]*?<\/select>/
         );
@@ -171,8 +171,8 @@ describe('Cycle 11C — Free-Pair 34×33 Mechanism Showdown Custom Duel Builder 
         );
         expect(selectAMatch).not.toBeNull();
         expect(selectBMatch).not.toBeNull();
-        expect((selectAMatch![0].match(/<option\b/g) ?? []).length).toBe(34);
-        expect((selectBMatch![0].match(/<option\b/g) ?? []).length).toBe(34);
+        expect((selectAMatch![0].match(/<option\b/g) ?? []).length).toBe(100);
+        expect((selectBMatch![0].match(/<option\b/g) ?? []).length).toBe(100);
 
         // Live 6-Axis Radar SVG & interactive axis rows
         expect(htmlEn).toContain('data-testid="sd-radar-card"');
@@ -217,7 +217,7 @@ describe('Cycle 11C — Free-Pair 34×33 Mechanism Showdown Custom Duel Builder 
         onClose: () => {},
       })
     );
-    expect(htmlZh).toContain('34×33 自由对决');
+    expect(htmlZh).toContain('100×99 自由对决');
     expect(htmlZh).toContain('六维定量工程雷达图');
     expect(WP_LEAK_RE.test(htmlZh)).toBe(false);
   });

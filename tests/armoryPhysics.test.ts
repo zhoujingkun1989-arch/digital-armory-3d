@@ -238,8 +238,8 @@ describe('SAAMI / CIP internal ballistics model', () => {
     expect(computeGasPortUncoverF('762_nato', WEAPON_FIRING_TIMING.m134)).toBeNull();
   });
 
-  it('defines ordered firing timing for all 34 exhibits and retains revolver / caseless G11 zero-brass physics', () => {
-    expect(WEAPON_IDS).toHaveLength(34);
+  it('defines ordered firing timing for all 100 exhibits and retains revolver / caseless G11 zero-brass physics', () => {
+    expect(WEAPON_IDS).toHaveLength(100);
     for (const id of WEAPON_IDS) {
       const t = WEAPON_FIRING_TIMING[id];
       expect(t.ignitionF).toBeLessThan(t.muzzleExitF);
