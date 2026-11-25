@@ -58,6 +58,10 @@ import { VECTOR_PARTS } from '../src/weapons/vector/plugin';
 import { VSS_PARTS } from '../src/weapons/vss/plugin';
 import { WINCHESTER1894_PARTS } from '../src/weapons/winchester1894/plugin';
 import { ZTZ99A_PARTS } from '../src/weapons/ztz99a/plugin';
+import {
+  CENTENNIAL_66_IDS,
+  FLAGSHIP_34_IDS,
+} from '../src/weapons/expansion/centennialTypes';
 import { WEAPON_IDS, type WeaponId } from '../src/weapons/types';
 
 /**
@@ -249,12 +253,17 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     expect(wasmBytes[3]).toBe(0x6d);
   });
 
-  it('resolves subpath-safe Draco decoder & GLB model URLs for ALL 29/29 exhibits and routes loaders to vendor-three-postfx', () => {
-    // Root deployment ('/') across all 29 exhibits
+  it('resolves subpath-safe Draco decoder & GLB model URLs for ALL 34/34 flagship GLB exhibits and routes loaders to vendor-three-postfx', () => {
+    // Root deployment ('/') across all 34 flagship GLB exhibits (66 Centennial exhibits run procedural CAD)
     expect(resolveDracoDecoderPath('/')).toBe('/draco/');
-    expect(WEAPON_IDS).toHaveLength(34);
-    for (const wid of WEAPON_IDS) {
+    expect(WEAPON_IDS).toHaveLength(100);
+    expect(FLAGSHIP_34_IDS).toHaveLength(34);
+    for (const wid of FLAGSHIP_34_IDS) {
       expect(resolveWeaponGlbUrl(wid, '/')).toBe(`/models/${wid}.glb`);
+    }
+    for (const cid of CENTENNIAL_66_IDS) {
+      expect(hasGlbWeaponAsset(cid)).toBe(false);
+      expect(resolveWeaponGlbUrl(cid, '/')).toBeNull();
     }
     expect(resolveWeaponGlbUrl('unknown_exhibit' as WeaponId, '/')).toBeNull();
 
@@ -265,7 +274,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     expect(resolveDracoDecoderPath('digital-armory-3d')).toBe(
       '/digital-armory-3d/draco/'
     );
-    for (const wid of WEAPON_IDS) {
+    for (const wid of FLAGSHIP_34_IDS) {
       expect(resolveWeaponGlbUrl(wid, '/digital-armory-3d/')).toBe(
         `/digital-armory-3d/models/${wid}.glb`
       );
@@ -337,12 +346,14 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       'gau8',
     ];
     expect(migrated).toHaveLength(34);
-    expect([...migrated].sort()).toEqual([...WEAPON_IDS].sort());
+    expect([...migrated].sort()).toEqual([...FLAGSHIP_34_IDS].sort());
     for (const wid of migrated) {
       expect(hasGlbWeaponAsset(wid)).toBe(true);
       expect(getGlbWeaponConfig(wid)).not.toBeNull();
     }
-    expect(Object.keys(GLB_WEAPON_CONFIGS).sort()).toEqual([...WEAPON_IDS].sort());
+    expect(Object.keys(GLB_WEAPON_CONFIGS).sort()).toEqual(
+      [...FLAGSHIP_34_IDS].sort()
+    );
 
     // Unknown or non-own-property IDs degrade gracefully with safe null/false fallbacks
     for (const unknownId of [

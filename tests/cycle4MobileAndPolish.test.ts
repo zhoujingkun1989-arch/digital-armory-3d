@@ -220,10 +220,10 @@ describe('Cycle 4B — Mobile Header Parity, Keynote Typography & Camera Polish'
   it('tightens Showcase keynote hero copy & fixes mobile sticky nav clipping and eyebrow wrap', () => {
     for (const lang of ['zh', 'en'] as const) {
       const h = SHOWCASE_STRINGS[lang].hero;
-      expect(h.eyebrow).toContain('34');
+      expect(h.eyebrow).toContain('100');
       expect(h.eyebrow).toContain('1980');
       const combined = `${h.subLead}${h.subPartsStrong}${h.subMapsStrong}${h.subAudioStrong}${h.subTail}`;
-      expect(combined).toContain('854');
+      expect(combined).toContain('2174');
       expect(combined).toContain('414');
       expect(combined).toContain('1980');
       if (lang === 'zh') {

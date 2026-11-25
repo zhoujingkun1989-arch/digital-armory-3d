@@ -25,11 +25,12 @@ import {
   isArcheryWeapon,
   isTankWeapon,
 } from '../src/engine/physics/armoryPhysics';
+import { CENTENNIAL_BLUEPRINTS } from '../src/weapons/expansion/centennialCatalog';
 import { getWeaponManifest } from '../src/weapons/manifests';
 import { loadWeaponPlugin } from '../src/weapons/registry';
 import { WEAPON_IDS, type WeaponId } from '../src/weapons/types';
 
-const GAS_OPERATED_WEAPONS: ReadonlySet<WeaponId> = new Set([
+const GAS_OPERATED_WEAPONS: ReadonlySet<WeaponId> = new Set<WeaponId>([
   'ak15',
   'm4a1',
   'scar',
@@ -42,11 +43,13 @@ const GAS_OPERATED_WEAPONS: ReadonlySet<WeaponId> = new Set([
   'vss',
   'an94',
   'mg42',
-]);
-
-const ELASTIC_DRIVE_WEAPONS: ReadonlySet<WeaponId> = new Set([
-  'lift33',
-  'r500',
+  ...CENTENNIAL_BLUEPRINTS.filter(
+    (bp) =>
+      bp.kinematicLaw === 'long_stroke_piston' ||
+      bp.kinematicLaw === 'short_stroke_piston' ||
+      bp.kinematicLaw === 'direct_impingement' ||
+      bp.kinematicLaw === 'tilting_bolt'
+  ).map((bp) => bp.id),
 ]);
 
 describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
@@ -102,7 +105,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
       // drive/powertrain parts as 'gas_drive'; recoil/blowback/manual firearms must not.
       if (
         GAS_OPERATED_WEAPONS.has(weaponId) ||
-        ELASTIC_DRIVE_WEAPONS.has(weaponId) ||
+        isArcheryWeapon(weaponId) ||
         isTankWeapon(weaponId)
       ) {
         expect(roleCounts.get('gas_drive') ?? 0).toBeGreaterThan(0);
@@ -111,7 +114,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
       }
     }
 
-    expect(totalParts).toBe(854);
+    expect(totalParts).toBe(2174);
   });
 
   it('keeps WebGL shader program cache keys 100% invariant when functional tint uniforms toggle', () => {

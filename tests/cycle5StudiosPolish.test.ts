@@ -21,6 +21,7 @@ import {
   getMonographDomainLabels,
 } from '../src/features/monograph/monographStrings';
 import type { WeaponNarrationBundle } from '../src/narration/types';
+import { FLAGSHIP_34_IDS } from '../src/weapons/expansion/centennialTypes';
 import { loadWeaponPlugin } from '../src/weapons/registry';
 import { WEAPON_IDS, type WeaponId } from '../src/weapons/types';
 
@@ -235,8 +236,8 @@ describe('Cycle 5B · Print Studio (DK & Kids 34-Exhibit Audit)', () => {
     }
   });
 
-  it('assembles clean monograph dossiers for all 34 exhibits including V6.0 WWII classics, MBTs, and GAU-8/A', async () => {
-    expect(WEAPON_IDS.length).toBe(34);
+  it('assembles clean monograph dossiers for all 100 exhibits including Centennial expansion, V6.0 WWII classics, MBTs, and GAU-8/A', async () => {
+    expect(WEAPON_IDS.length).toBe(100);
     for (const weaponId of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(weaponId);
       const narration = loadNarration(weaponId);
@@ -340,7 +341,7 @@ describe('Cycle 5B · 101-Suite PBR Texture Atlas Inspector Upgrade', () => {
       ATLAS_SUITE_SEARCH_INDEX.map((e) => e.weaponId)
     );
     expect(indexedWeapons.size).toBe(34);
-    for (const id of WEAPON_IDS) {
+    for (const id of FLAGSHIP_34_IDS) {
       expect(indexedWeapons.has(id), `Missing weapon ${id} in atlas search index`).toBe(
         true
       );

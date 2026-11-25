@@ -182,9 +182,9 @@ describe('Cycle 3F · Causality Sandbox Experiments, History Timeline Era/Tour S
     expect(html).not.toMatch(/WP-20/i);
   });
 
-  it('partitions all 34 exhibits cleanly across 1894-2026 eras, preserves valid DAG ancestry, and renders Guided Tour Stepper', () => {
+  it('partitions all 100 exhibits cleanly across 1415-2026 eras, preserves valid DAG ancestry, and renders Guided Tour Stepper', () => {
     expect(HISTORY_TIMELINE_NODES.length).toBe(WEAPON_IDS.length);
-    expect(HISTORY_TIMELINE_NODES.length).toBe(34);
+    expect(HISTORY_TIMELINE_NODES.length).toBe(100);
 
     const nodeById = new Map(HISTORY_TIMELINE_NODES.map((n) => [n.weaponId, n]));
     for (const id of WEAPON_IDS) {
@@ -205,24 +205,28 @@ describe('Cycle 3F · Causality Sandbox Experiments, History Timeline Era/Tour S
     expect(nodeById.get('vector')?.ancestors).toContain('thompson');
     expect(nodeById.get('gau8')?.ancestors).toContain('m134');
 
-    // Era partition integrity (sum of 4 eras === 34)
+    // Era partition integrity (sum of 5 eras === 100)
     expect(TIMELINE_ERAS.map((e) => e.id)).toEqual([
       'all',
+      'pre_1894',
       'pioneers',
       'wwii_titans',
       'cold_war',
       'modern_armor',
     ]);
     const counts = getTimelineEraCounts();
-    expect(counts.all).toBe(34);
+    expect(counts.all).toBe(100);
     expect(
-      counts.pioneers +
+      counts.pre_1894 +
+        counts.pioneers +
         counts.wwii_titans +
         counts.cold_war +
         counts.modern_armor
-    ).toBe(34);
+    ).toBe(100);
+    expect(counts.pre_1894).toBeGreaterThanOrEqual(3);
     expect(counts.pioneers).toBeGreaterThanOrEqual(3);
     expect(counts.wwii_titans).toBeGreaterThanOrEqual(5);
+    expect(matchesTimelineEra(1415, 'pre_1894')).toBe(true);
     expect(matchesTimelineEra(1894, 'pioneers')).toBe(true);
     expect(matchesTimelineEra(1942, 'wwii_titans')).toBe(true);
     expect(matchesTimelineEra(1977, 'cold_war')).toBe(true);

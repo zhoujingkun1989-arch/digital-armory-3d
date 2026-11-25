@@ -92,8 +92,8 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     );
   });
 
-  it('WP-02: splits all 232 bilingual act audioScripts across all 29 exhibits into valid monotonic cues without breaking decimals', () => {
-    expect(WEAPON_IDS).toHaveLength(34);
+  it('WP-02: splits all 800 bilingual act audioScripts across all 100 exhibits into valid monotonic cues without breaking decimals', () => {
+    expect(WEAPON_IDS).toHaveLength(100);
     for (const weaponId of WEAPON_IDS) {
       const jsonPath = path.resolve(
         process.cwd(),

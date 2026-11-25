@@ -705,15 +705,21 @@ export function buildCentennialFiringTimings(): Record<
     const isOrdnance = bp.category === 'ordnance';
     const isArchery = bp.category === 'archery';
 
+    const isDownwardEject = bp.id === 'dp28' || bp.id === 'bofors40';
+    const rawEjectX = -0.22;
+    const rawEjectY = isDownwardEject ? -0.85 : 0.45;
+    const rawEjectZ = isDownwardEject ? 0.2 : 0.86;
+    const ejectMag = Math.hypot(rawEjectX, rawEjectY, rawEjectZ);
+
     out[bp.id] = {
       ignitionF: isArmor ? 0.08 : isArchery ? 0.12 : 0.1,
       muzzleExitF: isArmor ? 0.24 : isOrdnance ? 0.22 : isArchery ? 0.36 : 0.26,
       ejectF: isArmor ? 0.62 : isArchery ? 0.5 : 0.56,
       batteryF: isArmor ? 0.94 : 0.9,
       gasPortTravel: isGas ? 0.62 : null,
-      ejectDirX: -0.22,
-      ejectDirY: bp.id === 'dp28' || bp.id === 'bofors40' ? -0.85 : 0.45,
-      ejectDirZ: bp.id === 'dp28' || bp.id === 'bofors40' ? 0.2 : 0.86,
+      ejectDirX: rawEjectX / ejectMag,
+      ejectDirY: rawEjectY / ejectMag,
+      ejectDirZ: rawEjectZ / ejectMag,
     };
   }
   return out;
@@ -1189,8 +1195,10 @@ export function buildCentennialTurntableMetrics(): Record<
     >) {
       const a = layout.assembledPos[slot];
       const o = layout.explodeOffset[slot];
-      const x = a[0] + o[0] * 0.58;
-      const y = a[1] + o[1] * 0.58;
+      // Stage 1-2 `explodeSteps` in `centennialPluginFactory.ts` complete within [0.06, 0.55],
+      // so exploded parts already reach full `o` displacement by `t = 0.58`.
+      const x = a[0] + o[0];
+      const y = a[1] + o[1];
       if (x < eMinX) eMinX = x;
       if (x > eMaxX) eMaxX = x;
       if (y < eMinY) eMinY = y;
