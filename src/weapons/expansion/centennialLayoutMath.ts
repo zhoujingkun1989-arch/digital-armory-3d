@@ -1407,7 +1407,7 @@ function computeLongArmLayout(
     handguard: v3(9.5, -5.4, 0),
     stock: v3(-13.5, -1.2, 0),
     grip: v3(isBullpup ? 4.5 : -4.2, -9.2, 0),
-    optic: v3(0.8, 13.8, 0),
+    optic: v3(isPan ? -3.4 : 0.8, isPan ? 10.6 : 13.8, 0),
     gas_system: v3(8.5, 8.4, 0),
     mount_rail: v3(bp.cad.hasBipod ? 14 : 4, bp.cad.hasBipod ? -11.5 : 8.5, 0),
     trigger: v3(trigX > 0 ? 3.2 : -1.4, -7.8, 3.5),

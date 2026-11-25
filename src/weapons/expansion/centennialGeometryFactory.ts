@@ -26,6 +26,7 @@ import {
   type OpticSightStyle,
   type StockGripStyle,
 } from './centennialCadPrimitives';
+import { CENTENNIAL_BLUEPRINT_MAP } from './centennialCatalog';
 import {
   CENTENNIAL_PART_SLOTS,
   centennialPartId,
@@ -33,7 +34,10 @@ import {
   type CentennialPartDims,
   type CentennialPartSlot,
 } from './centennialLayoutMath';
-import type { CentennialWeaponBlueprint } from './centennialTypes';
+import type {
+  CentennialWeaponBlueprint,
+  CentennialWeaponId,
+} from './centennialTypes';
 
 export {
   CENTENNIAL_PART_SLOTS,
@@ -1241,4 +1245,19 @@ export function buildCentennialGeometryBuildersForBlueprint(
     builders[centennialPartId(bp.id, slot)] = slotBuilders[slot];
   }
   return builders;
+}
+
+/**
+ * Lazily invoked by `src/weapons/geometryLoaders.ts` inside the Geometry Web
+ * Worker to resolve exact 20 procedural CAD builders for any of the 66
+ * Centennial Expansion exhibits (`BAY-35 .. BAY-100`).
+ */
+export function buildCentennialGeometryBuilders(
+  id: CentennialWeaponId
+): Record<string, () => THREE.BufferGeometry> {
+  const bp = CENTENNIAL_BLUEPRINT_MAP[id];
+  if (!bp) {
+    throw new Error(`Unknown Centennial exhibit id: ${String(id)}`);
+  }
+  return buildCentennialGeometryBuildersForBlueprint(bp);
 }
