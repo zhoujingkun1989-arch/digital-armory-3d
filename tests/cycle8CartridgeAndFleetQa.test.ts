@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import React from 'react';
@@ -245,7 +246,7 @@ describe('Cycle 8A · Full 34-Exhibit Automated WebGL Fleet Audit Harness', () =
       cwd: REPO_ROOT,
       encoding: 'utf8',
     });
-    expect(helpOut).toContain('--mode=quick|full');
+    expect(helpOut).toContain('--mode=quick|flagship|full');
     expect(helpOut).toContain('--theme=dark|light');
     expect(helpOut).toContain('--cut');
     expect(helpOut).toContain('--json');
@@ -340,7 +341,20 @@ describe('Cycle 8A · Full 34-Exhibit Automated WebGL Fleet Audit Harness', () =
       };
     };
 
-    for (const heavyId of ['ztz99a', 'm1a2', 'leopard2a7', 'tiger1', 'gau8']) {
+    for (const heavyId of [
+      'ztz99a',
+      'm1a2',
+      'leopard2a7',
+      'tiger1',
+      't90m',
+      'challenger2',
+      'merkava4',
+      't34_85',
+      'gau8',
+      'm61vulcan',
+      'bofors40',
+      'm777',
+    ]) {
       expect(fleetMod.HEAVY_EXHIBIT_IDS.has(heavyId)).toBe(true);
     }
 
@@ -390,5 +404,149 @@ describe('Cycle 8A · Full 34-Exhibit Automated WebGL Fleet Audit Harness', () =
     expect(scriptSrc).toContain("Target.closeTarget");
     expect(scriptSrc).toContain("Page.captureScreenshot");
     expect(scriptSrc).toContain('process.exit(exitCode);');
+  });
+
+  it('supports 100-exhibit spread/alias discovery in types.ts + centennialTypes.ts and --mode=flagship / --mode=quick / --mode=full', async () => {
+    const fleetModUrl = pathToFileURL(FLEET_SCRIPT).href;
+    const fleetMod = (await import(/* @vite-ignore */ fleetModUrl)) as {
+      FLEET_VALID_MODES: readonly string[];
+      discoverFleetWeaponIds: (repoRoot?: string) => string[];
+      discoverFlagshipWeaponIds: (repoRoot?: string) => string[];
+      buildFleetAuditTargets: (
+        baseUrl: string,
+        options?: { repoRoot?: string; mode?: string; theme?: string }
+      ) => Array<{ id: string; weaponId: string | null }>;
+    };
+
+    expect(fleetMod.FLEET_VALID_MODES).toEqual(['quick', 'flagship', 'full']);
+
+    // Real repo today: 34 flagships -> --mode=flagship produces exact 34 + 8 = 42 targets
+    const realFlagshipRaw = execFileSync(
+      process.execPath,
+      [FLEET_SCRIPT, '--mode=flagship', '--dry-run', '--json'],
+      { cwd: REPO_ROOT, encoding: 'utf8' }
+    );
+    const realFlagshipPlan = JSON.parse(realFlagshipRaw) as {
+      mode: string;
+      exhibitTargets: number;
+      viewTargets: number;
+      totalTargets: number;
+    };
+    expect(realFlagshipPlan.mode).toBe('flagship');
+    expect(realFlagshipPlan.exhibitTargets).toBe(34);
+    expect(realFlagshipPlan.viewTargets).toBe(8);
+    expect(realFlagshipPlan.totalTargets).toBe(42);
+
+    // Synthetic 100-exhibit workspace using [...FLAGSHIP_34_IDS, ...CENTENNIAL_66_IDS]
+    const tmpRoot = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'armory-fleet-100w-')
+    );
+    try {
+      const expansionDir = path.join(
+        tmpRoot,
+        'src',
+        'weapons',
+        'expansion'
+      );
+      fs.mkdirSync(expansionDir, { recursive: true });
+      fs.copyFileSync(
+        path.join(REPO_ROOT, 'src', 'weapons', 'expansion', 'centennialTypes.ts'),
+        path.join(expansionDir, 'centennialTypes.ts')
+      );
+
+      // 1. Spread syntax: [...FLAGSHIP_34_IDS, ...CENTENNIAL_66_IDS] as const
+      fs.writeFileSync(
+        path.join(tmpRoot, 'src', 'weapons', 'types.ts'),
+        `import { CENTENNIAL_66_IDS, FLAGSHIP_34_IDS } from './expansion/centennialTypes';\nexport const WEAPON_IDS = [...FLAGSHIP_34_IDS, ...CENTENNIAL_66_IDS] as const;\n`,
+        'utf8'
+      );
+
+      const discovered100 = fleetMod.discoverFleetWeaponIds(tmpRoot);
+      expect(discovered100).toHaveLength(100);
+      expect(discovered100[0]).toBe('ak15');
+      expect(discovered100[33]).toBe('gau8');
+      expect(discovered100[34]).toBe('ak47');
+      expect(discovered100[99]).toBe('m777');
+
+      const discovered34 = fleetMod.discoverFlagshipWeaponIds(tmpRoot);
+      expect(discovered34).toHaveLength(34);
+      expect(discovered34[33]).toBe('gau8');
+
+      // CLI dry-runs against 100-exhibit root: full=108, flagship=42, quick=18 (10 exhibits + 8 views)
+      const full100Plan = JSON.parse(
+        execFileSync(
+          process.execPath,
+          [
+            FLEET_SCRIPT,
+            '--root',
+            tmpRoot,
+            '--mode=full',
+            '--dry-run',
+            '--json',
+          ],
+          { cwd: REPO_ROOT, encoding: 'utf8' }
+        )
+      ) as { exhibitTargets: number; viewTargets: number; totalTargets: number };
+      expect(full100Plan.exhibitTargets).toBe(100);
+      expect(full100Plan.viewTargets).toBe(8);
+      expect(full100Plan.totalTargets).toBe(108);
+
+      const flagship100Plan = JSON.parse(
+        execFileSync(
+          process.execPath,
+          [
+            FLEET_SCRIPT,
+            '--root',
+            tmpRoot,
+            '--mode=flagship',
+            '--dry-run',
+            '--json',
+          ],
+          { cwd: REPO_ROOT, encoding: 'utf8' }
+        )
+      ) as { exhibitTargets: number; viewTargets: number; totalTargets: number };
+      expect(flagship100Plan.exhibitTargets).toBe(34);
+      expect(flagship100Plan.viewTargets).toBe(8);
+      expect(flagship100Plan.totalTargets).toBe(42);
+
+      const quick100Plan = JSON.parse(
+        execFileSync(
+          process.execPath,
+          [
+            FLEET_SCRIPT,
+            '--root',
+            tmpRoot,
+            '--mode=quick',
+            '--dry-run',
+            '--json',
+          ],
+          { cwd: REPO_ROOT, encoding: 'utf8' }
+        )
+      ) as {
+        exhibitTargets: number;
+        viewTargets: number;
+        totalTargets: number;
+        targets: Array<{ id: string }>;
+      };
+      expect(quick100Plan.exhibitTargets).toBe(10);
+      expect(quick100Plan.viewTargets).toBe(8);
+      expect(quick100Plan.totalTargets).toBe(18);
+      expect(quick100Plan.targets.some((t) => t.id === 'exhibit:t90m')).toBe(
+        true
+      );
+      expect(quick100Plan.targets.some((t) => t.id === 'exhibit:m777')).toBe(
+        true
+      );
+
+      // 2. Direct alias syntax: export const WEAPON_IDS = ALL_100_WEAPON_IDS;
+      fs.writeFileSync(
+        path.join(tmpRoot, 'src', 'weapons', 'types.ts'),
+        `import { ALL_100_WEAPON_IDS } from './expansion/centennialTypes';\nexport const WEAPON_IDS = ALL_100_WEAPON_IDS;\n`,
+        'utf8'
+      );
+      expect(fleetMod.discoverFleetWeaponIds(tmpRoot)).toHaveLength(100);
+    } finally {
+      fs.rmSync(tmpRoot, { recursive: true, force: true });
+    }
   });
 });
