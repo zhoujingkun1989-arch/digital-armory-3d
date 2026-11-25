@@ -40,6 +40,7 @@ import {
   useAppStore,
 } from '../store/useAppStore';
 import { getWeaponManifest } from '../weapons/manifests';
+import { MUSEUM_EXHIBIT_COUNT } from '../weapons/museumMetrics';
 import {
   getLoadedWeaponPlugin,
   loadWeaponPlugin,
@@ -332,8 +333,8 @@ export function formatMuseumDocumentTitle(
       : `${shortLabel} · ${viewLabel} | 数字兵器库`;
   }
   return lang === 'en'
-    ? `${shortLabel} · 34-Bay Mechanical Vault | Digital Armory 3D`
-    : `${shortLabel} · 34 槽 10 展厅数字兵器库 | 数字兵器库`;
+    ? `${shortLabel} · ${MUSEUM_EXHIBIT_COUNT}-Bay Mechanical Vault | Digital Armory 3D`
+    : `${shortLabel} · ${MUSEUM_EXHIBIT_COUNT} 槽 10 展厅数字兵器库 | 数字兵器库`;
 }
 
 export function getDefaultEntryScreen(): 'showcase' | 'armory' {
