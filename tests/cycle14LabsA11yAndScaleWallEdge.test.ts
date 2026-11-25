@@ -83,7 +83,7 @@ describe('Cycle 14B · Scale Wall Rightmost Badge Flip, Cmd+K Input Label & 10-L
         'src/features/workbench/CommandPaletteModal.tsx'
       );
       const enMatch = tsx.match(
-        /aria-label=\{\s*lang === 'zh'\s*\?\s*'([^']+)'\s*:\s*'([^']+)'\s*\}/
+        /aria-label=\{\s*lang === 'zh'\s*\?\s*`([^`]+)`\s*:\s*`([^`]+)`\s*\}/
       );
       expect(enMatch).not.toBeNull();
       const zhLabel = enMatch![1];
@@ -96,7 +96,7 @@ describe('Cycle 14B · Scale Wall Rightmost Badge Flip, Cmd+K Input Label & 10-L
       const html = renderToStaticMarkup(
         React.createElement(CommandPaletteModal, { forceOpen: true })
       );
-      expect(html).toMatch(/<input[^>]*class="cmdk-search-input"[^>]*aria-label="[^"]+"/);
+      expect(html).toMatch(/<input[^>]*class="cmdk-search-input"[^>]*aria-label="[^"]*100[^"]*2,174[^"]*"/);
     });
   });
 

@@ -3,6 +3,8 @@ import type { GraphicsQualityTier } from '../engine/canvas/graphicsQuality';
 import type { FireSelectorMode } from '../engine/interaction/InteractiveActionController';
 import type { ArmoryWearPreset } from '../engine/materials/armoryShader';
 import type { LanguageCode } from '../narration/types';
+import { FLAGSHIP_34_IDS } from '../weapons/expansion/centennialTypes';
+import { WEAPON_MANIFESTS } from '../weapons/manifests';
 import {
   WEAPON_IDS,
   type ArmoryCategory,
@@ -10,9 +12,18 @@ import {
   type MaterialKind,
 } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 34
-const VAULT_EXHIBIT_ZH = '三十四';
-const VAULT_PARTS_TOTAL = 854;
+const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length;
+const VAULT_EXHIBIT_ZH =
+  VAULT_EXHIBIT_COUNT === 100 ? '百' : `${VAULT_EXHIBIT_COUNT} `;
+const VAULT_PARTS_TOTAL = WEAPON_MANIFESTS.reduce(
+  (sum, manifest) => sum + manifest.catalog.partsCount,
+  0
+);
+const FLAGSHIP_ATLAS_COUNT = FLAGSHIP_34_IDS.length;
+const FLAGSHIP_ATLAS_PARTS_TOTAL = WEAPON_MANIFESTS.slice(
+  0,
+  FLAGSHIP_ATLAS_COUNT
+).reduce((sum, manifest) => sum + manifest.catalog.partsCount, 0);
 const VAULT_TEXTURES_TOTAL = 414;
 const VAULT_SUITES_TOTAL = 101;
 const VAULT_AUDIO_TOTAL = 1980;
@@ -1058,9 +1069,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     atlasModal: {
       dialogAria: 'PBR 真实贴图图集检视器',
-      kicker: `${VAULT_EXHIBIT_COUNT}-EXHIBIT 2K/4K PBR ATLAS`,
-      weaponSwitcherAria: `${VAULT_EXHIBIT_ZH}款馆藏兵器 PBR 贴图库切换`,
-      subtitle: `全馆${VAULT_EXHIBIT_ZH}款名枪、复合弓弩与主战坦克共 ${VAULT_TEXTURES_TOTAL} 张定制 2K/4K WebP 物理材质贴图（${VAULT_SUITES_TOTAL} 套图集 · public/textures/*.webp）· 已按三角面 UV 实时绑定至全部 ${VAULT_PARTS_TOTAL} 个精密零件`,
+      kicker: `${FLAGSHIP_ATLAS_COUNT}-FLAGSHIP 2K/4K PBR ATLAS`,
+      weaponSwitcherAria: `${FLAGSHIP_ATLAS_COUNT} 款旗舰馆藏 PBR 贴图库切换`,
+      subtitle: `全馆 ${FLAGSHIP_ATLAS_COUNT} 款旗舰名枪、复合弓弩与主战坦克共 ${VAULT_TEXTURES_TOTAL} 张定制 2K/4K WebP 物理材质贴图（${VAULT_SUITES_TOTAL} 套图集 · public/textures/*.webp）· 已按三角面 UV 实时绑定至 ${FLAGSHIP_ATLAS_PARTS_TOTAL} 个旗舰精密零件`,
       liveOn: '3D 实时贴图：已开启',
       liveOff: '3D 实时贴图：已关闭',
       closeAria: '关闭贴图检视窗口',
@@ -1146,17 +1157,14 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       copyViewLinkCmdSub:
         '复制当前完整 3D 剖视、改装与选中零件直达 URL 到剪贴板',
       scaleWallChip: '1:1 尺度对比墙',
-      scaleWallChipTitle:
-        '打开 1:1 真实尺度对比墙：按毫米级比例并排对比全馆 34 款名枪、坦克与 30mm 航炮及人体身高参照',
+      scaleWallChipTitle: `打开 1:1 真实尺度对比墙：按毫米级比例并排对比全馆 ${VAULT_EXHIBIT_COUNT} 款名枪、坦克与重型火炮及人体身高参照`,
       scaleWallCmdTitle: '1:1 真实尺度对比墙',
-      scaleWallCmdSub:
-        '按真实毫米比例并排对比全馆 34 款名枪、主战坦克、30mm 航炮与 1.75m 人体/手掌参照',
+      scaleWallCmdSub: `按真实毫米比例并排对比全馆 ${VAULT_EXHIBIT_COUNT} 款名枪、主战坦克、重型火炮与 1.75m 人体/手掌参照`,
       recoilLabChip: '后坐实验室',
       recoilLabChipTitle:
         '打开后坐冲量、火药燃气喷射动量与枪口上跳力矩物理实验室',
       recoilLabCmdTitle: '后坐冲量与枪口上跳实验室',
-      recoilLabCmdSub:
-        '对比全馆 34 款展品弹丸与燃气动量、自由后坐能、枪口制退减冲与枪管轴线力矩波形',
+      recoilLabCmdSub: `对比全馆 ${VAULT_EXHIBIT_COUNT} 款展品弹丸与燃气动量、自由后坐能、枪口制退减冲与枪管轴线力矩波形`,
     },
     bom: {
       collapsedBtn: (n) => `零件目录 (${n})`,
@@ -2084,9 +2092,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     atlasModal: {
       dialogAria: 'PBR Texture Atlas Inspector',
-      kicker: `${VAULT_EXHIBIT_COUNT}-EXHIBIT 2K/4K PBR ATLAS`,
-      weaponSwitcherAria: `Switch ${VAULT_EXHIBIT_COUNT}-exhibit PBR texture library`,
-      subtitle: `${VAULT_TEXTURES_TOTAL} custom 2K/4K WebP PBR textures (${VAULT_SUITES_TOTAL} suites · public/textures/*.webp) across all ${VAULT_EXHIBIT_COUNT} vault firearms, archery & heavy armor exhibits · UV-bound live to all ${VAULT_PARTS_TOTAL} precision CAD parts`,
+      kicker: `${FLAGSHIP_ATLAS_COUNT}-FLAGSHIP 2K/4K PBR ATLAS`,
+      weaponSwitcherAria: `Switch ${FLAGSHIP_ATLAS_COUNT}-flagship PBR texture library`,
+      subtitle: `${VAULT_TEXTURES_TOTAL} custom 2K/4K WebP PBR textures (${VAULT_SUITES_TOTAL} suites · public/textures/*.webp) across ${FLAGSHIP_ATLAS_COUNT} flagship firearms, archery & heavy armor exhibits · UV-bound live to ${FLAGSHIP_ATLAS_PARTS_TOTAL} flagship CAD parts`,
       liveOn: 'Live 3D Textures: ON',
       liveOff: 'Live 3D Textures: OFF',
       closeAria: 'Close PBR texture atlas inspector',
@@ -2176,17 +2184,14 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       copyViewLinkCmdSub:
         'Copy exact shareable 3D cutaway, attachment, and part deep-link URL to clipboard',
       scaleWallChip: '1:1 True-Scale Wall',
-      scaleWallChipTitle:
-        'Open 1:1 True-Scale Museum Wall: compare all 34 exhibits side-by-side at true millimeter scale with human reference',
+      scaleWallChipTitle: `Open 1:1 True-Scale Museum Wall: compare all ${VAULT_EXHIBIT_COUNT} exhibits side-by-side at true millimeter scale with human reference`,
       scaleWallCmdTitle: '1:1 True-Scale Museum Wall',
-      scaleWallCmdSub:
-        'Compare all 34 firearms, 1:1 MBTs & 30mm GAU-8 at true millimeter scale with 1.75m human & hand references',
+      scaleWallCmdSub: `Compare all ${VAULT_EXHIBIT_COUNT} firearms, 1:1 MBTs & heavy ordnance at true millimeter scale with 1.75m human & hand references`,
       recoilLabChip: 'Recoil Lab',
       recoilLabChipTitle:
         'Open Recoil Impulse, Gas-Jet Momentum & Muzzle-Climb Torque Physics Lab',
       recoilLabCmdTitle: 'Recoil Impulse & Muzzle-Climb Lab',
-      recoilLabCmdSub:
-        'Compare projectile vs rocket gas-jet momentum, muzzle-brake counter-thrust & bore-axis climb torque across all 34 exhibits',
+      recoilLabCmdSub: `Compare projectile vs rocket gas-jet momentum, muzzle-brake counter-thrust & bore-axis climb torque across all ${VAULT_EXHIBIT_COUNT} exhibits`,
     },
     bom: {
       collapsedBtn: (n) => `BOM Parts (${n})`,
