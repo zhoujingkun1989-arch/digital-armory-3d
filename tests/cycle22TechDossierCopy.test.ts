@@ -24,9 +24,9 @@ const CJK_RE = /[\u3000-\u303f\u3400-\u9fff\uf900-\ufaff\uff00-\uffef]/;
 const WP_LEAK_RE = /\bWP-\d{2}[a-z]?\b/i;
 
 describe('Cycle 22D — 1-Click Smithsonian Engineering Technical Dossier Copy', () => {
-  it('maintains 100% provenance year parity with HISTORY_TIMELINE_NODES across all 34 exhibits', () => {
-    expect(WEAPON_MANIFESTS.length).toBe(34);
-    expect(Object.keys(EXHIBIT_PROVENANCE_TABLE)).toHaveLength(34);
+  it('maintains 100% provenance year parity with HISTORY_TIMELINE_NODES across all 100 exhibits', () => {
+    expect(WEAPON_MANIFESTS.length).toBe(100);
+    expect(Object.keys(EXHIBIT_PROVENANCE_TABLE)).toHaveLength(100);
 
     const timelineYearByWeapon = new Map<string, number>();
     for (const node of HISTORY_TIMELINE_NODES) {

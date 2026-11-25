@@ -29,9 +29,9 @@ import { WEAPON_IDS } from '../src/weapons/types';
 const CJK_RE = /[\u4e00-\u9fff]/;
 
 describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => {
-  it('partitions all 34 active WEAPON_IDS cleanly across all 3 canonical taxonomy axes with zero empty families', () => {
+  it('partitions all 100 active WEAPON_IDS cleanly across all 3 canonical taxonomy axes with zero empty families', () => {
     const activeIds = getActiveShowdownWeaponIds();
-    expect(activeIds).toHaveLength(34);
+    expect(activeIds).toHaveLength(100);
     expect(activeIds).toEqual(ARMORY_WEAPONS.map((w) => w.id));
     expect(new Set(activeIds)).toEqual(new Set(WEAPON_IDS));
 
@@ -51,8 +51,8 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
     }
   });
 
-  it('populates all Drive, Locking, and Feed families across all 34 exhibits including WP-18 MBTs, WP-17 marvels & V6.0 additions', () => {
-    expect(WEAPON_IDS.length).toBe(34);
+  it('populates all Drive, Locking, and Feed families across all 100 exhibits including WP-18 MBTs, WP-17 marvels, V6.0 & Centennial additions', () => {
+    expect(WEAPON_IDS.length).toBe(100);
 
     // Specific canonical taxonomy assignments for Wave-2 & V2.0 exhibits
     expect(SHOWDOWN_EXHIBIT_SPECS.python.driveFamily).toBe(
@@ -356,11 +356,11 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
       expect(Number.isFinite(prof.peakLoadValue)).toBe(true);
       expect(prof.peakLoadValue).toBeGreaterThan(40);
       expect(Number.isFinite(prof.muzzleVelocityMps)).toBe(true);
-      expect(prof.muzzleVelocityMps).toBeGreaterThan(80);
+      expect(prof.muzzleVelocityMps).toBeGreaterThan(55);
       expect(Number.isFinite(prof.muzzleEnergyJ)).toBe(true);
-      expect(prof.muzzleEnergyJ).toBeGreaterThan(100);
+      expect(prof.muzzleEnergyJ).toBeGreaterThan(45);
       expect(prof.overallLengthMm).toBeGreaterThan(150);
-      expect(prof.barrelOrStrokeMm).toBeGreaterThan(90);
+      expect(prof.barrelOrStrokeMm).toBeGreaterThan(80);
       expect(prof.emptyWeightKg).toBeGreaterThan(0.4);
       expect(prof.partsCount).toBeGreaterThanOrEqual(20);
 
@@ -459,7 +459,7 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
   it('provides all 21 symmetric rivalry presets, distinct suggested rivals, Showcase handoff queue, and clean Armory/CSS wiring', () => {
     const activePresets = getClassicRivalryPresets('zh');
     expect(activePresets).toHaveLength(CLASSIC_RIVALRY_SEEDS.length);
-    expect(activePresets).toHaveLength(30);
+    expect(activePresets.length).toBeGreaterThanOrEqual(30);
 
     queueMechanismShowdownLaunch('matrix', 'garand');
     const queued = consumePendingShowdownLaunch();

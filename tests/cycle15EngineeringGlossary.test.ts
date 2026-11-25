@@ -79,8 +79,8 @@ describe('Cycle 15B — Interactive Smithsonian Engineering Glossary & Cross-Exh
     }
   });
 
-  it('2. Maps ALL 34/34 museum exhibits to 2–4 authentic engineering glossary terms', () => {
-    expect(WEAPON_MANIFESTS.length).toBe(34);
+  it('2. Maps ALL 100/100 museum exhibits to 2–4 authentic engineering glossary terms', () => {
+    expect(WEAPON_MANIFESTS.length).toBe(100);
     for (const m of WEAPON_MANIFESTS) {
       const terms = getGlossaryTermsForWeapon(m.id);
       expect(

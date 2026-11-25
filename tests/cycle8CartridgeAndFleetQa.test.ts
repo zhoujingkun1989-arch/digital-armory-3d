@@ -279,9 +279,9 @@ describe('Cycle 8A · Full 34-Exhibit Automated WebGL Fleet Audit Harness', () =
     expect(fullPlan.mode).toBe('full');
     expect(fullPlan.theme).toBe('light');
     expect(fullPlan.cut).toBe(true);
-    expect(fullPlan.exhibitTargets).toBe(34);
+    expect(fullPlan.exhibitTargets).toBe(100);
     expect(fullPlan.viewTargets).toBe(8);
-    expect(fullPlan.totalTargets).toBe(42);
+    expect(fullPlan.totalTargets).toBe(108);
 
     const ak15Target = fullPlan.targets.find((t) => t.id === 'exhibit:ak15');
     expect(ak15Target?.url).toContain('cut=1');
@@ -301,7 +301,7 @@ describe('Cycle 8A · Full 34-Exhibit Automated WebGL Fleet Audit Harness', () =
       'view:panel_recoil',
     ]);
 
-    // Quick mode dry-run: 6 representative exhibits + 8 museum views = 14 targets
+    // Quick mode dry-run: 10 representative exhibits (6 Flagship + 4 Centennial) + 8 museum views = 18 targets
     const quickDryRaw = execFileSync(
       process.execPath,
       [FLEET_SCRIPT, '--mode=quick', '--dry-run', '--json'],
@@ -313,9 +313,9 @@ describe('Cycle 8A · Full 34-Exhibit Automated WebGL Fleet Audit Harness', () =
       totalTargets: number;
       targets: Array<{ id: string; url: string }>;
     };
-    expect(quickPlan.exhibitTargets).toBe(6);
+    expect(quickPlan.exhibitTargets).toBe(10);
     expect(quickPlan.viewTargets).toBe(8);
-    expect(quickPlan.totalTargets).toBe(14);
+    expect(quickPlan.totalTargets).toBe(18);
 
     // Split Showdown target passes weaponA/weaponB as parsed by useUrlStateSync.ts
     const splitTarget = quickPlan.targets.find((t) => t.id === 'view:split_showdown');
