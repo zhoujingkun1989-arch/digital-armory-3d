@@ -680,7 +680,7 @@ export const SCALE_WALL_STRINGS: Readonly<
 > = {
   zh: {
     kicker: '史密森尼级 · 1:1 真实尺度对比墙',
-    title: '全馆 34 款馆藏 1:1 毫米级工程尺度对比墙',
+    title: `全馆 ${WEAPON_MANIFESTS.length} 款馆藏 1:1 毫米级工程尺度对比墙`,
     subtitle:
       '在同一张 1:1 建筑蓝图网格上按真实毫米长度同框对比 204 mm 随身手枪、6.06 m 七管航炮与 10.97 m 主战坦克，量化呈现跨越 50 倍的几何、质量与炮口动能跨度',
     closeAria: '关闭 1:1 真实尺度对比墙',
@@ -705,14 +705,14 @@ export const SCALE_WALL_STRINGS: Readonly<
     colMass: '系统 / 战斗质量',
     colEnergy: '单发炮口动能',
     pickerHeading: (selected, max) =>
-      `从全馆 34 款馆藏自由增减对比项（已选 ${selected} / ${max}）`,
+      `从全馆 ${WEAPON_MANIFESTS.length} 款馆藏自由增减对比项（已选 ${selected} / ${max}）`,
     pickerHint: '点击展品标签即可实时加入或移出 1:1 蓝图墙（支持 2–6 款同框）',
     rulerCaption: (tickLabel) => `1:1 精密蓝图主网格 · 每格 ${tickLabel}`,
     maxReachedNote: '已达同框上限 (6 款)，取消任意展品后可替换',
   },
   en: {
     kicker: 'SMITHSONIAN 1:1 TRUE-SCALE WALL',
-    title: '34-Exhibit 1:1 Millimeter Engineering Scale Wall',
+    title: `${WEAPON_MANIFESTS.length}-Exhibit 1:1 Millimeter Engineering Scale Wall`,
     subtitle:
       'Compare 204 mm sidearms, the 6.06 m 7-barrel rotary cannon, and 10.97 m main battle tanks side-by-side at strict 1:1 scale on an architectural blueprint grid with synchronized mass and kinetic energy bars',
     closeAria: 'Close 1:1 True-Scale Museum Wall',
@@ -737,7 +737,7 @@ export const SCALE_WALL_STRINGS: Readonly<
     colMass: 'System / Combat Mass',
     colEnergy: 'Muzzle Kinetic Energy',
     pickerHeading: (selected, max) =>
-      `Add or Remove Across All 34 Exhibits (${selected} / ${max} Active)`,
+      `Add or Remove Across All ${WEAPON_MANIFESTS.length} Exhibits (${selected} / ${max} Active)`,
     pickerHint: 'Click any exhibit chip to add or remove from the 1:1 blueprint wall (2-6 exhibits)',
     rulerCaption: (tickLabel) => `1:1 Blueprint Drafting Grid · ${tickLabel} per division`,
     maxReachedNote: 'Maximum 6 exhibits staged — deselect one to add another',

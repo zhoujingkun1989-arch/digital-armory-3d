@@ -4,6 +4,10 @@ import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import type { LanguageCode } from '../../narration/types';
 import { useAppStore } from '../../store/useAppStore';
+import {
+  MUSEUM_EXHIBIT_COUNT,
+  MUSEUM_TOTAL_PARTS,
+} from '../../weapons/museumMetrics';
 
 export type KeyboardShortcutGroupId =
   | 'viewport'
@@ -173,8 +177,8 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
       {
         id: 'command-palette',
         keys: ['⌘ / Ctrl', 'K'],
-        labelZh: '全局双语瞬搜（直达 34 展品、854 零件与全部实验室）',
-        labelEn: 'Global Bilingual Search (34 Exhibits, 854 Parts & All Labs)',
+        labelZh: `全局双语瞬搜（直达 ${MUSEUM_EXHIBIT_COUNT} 展品、${MUSEUM_TOTAL_PARTS.toLocaleString('en-US')} 零件与全部实验室）`,
+        labelEn: `Global Bilingual Search (${MUSEUM_EXHIBIT_COUNT} Exhibits, ${MUSEUM_TOTAL_PARTS.toLocaleString('en-US')} Parts & All Labs)`,
       },
       {
         id: 'shortcuts-help',
@@ -228,8 +232,8 @@ export const KEYBOARD_POWER_TOOLS: readonly KeyboardPowerToolEntry[] = [
     id: 'scale-wall',
     accessZh: '⌘K · 实验室',
     accessEn: '⌘K · Labs',
-    labelZh: '1:1 真实尺度对比墙（全馆 34 展品）',
-    labelEn: '1:1 True-Scale Museum Wall (All 34 Exhibits)',
+    labelZh: `1:1 真实尺度对比墙（全馆 ${MUSEUM_EXHIBIT_COUNT} 展品）`,
+    labelEn: `1:1 True-Scale Museum Wall (All ${MUSEUM_EXHIBIT_COUNT} Exhibits)`,
   },
   {
     id: 'recoil-lab',
