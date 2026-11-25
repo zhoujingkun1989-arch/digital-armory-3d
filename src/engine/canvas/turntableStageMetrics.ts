@@ -490,11 +490,12 @@ export function computeTurntableFraming(
             : 35;
 
   const aspect = Math.max(0.35, viewportW / Math.max(1, viewportH));
+  const sweepRadius = Math.max(rimR, env.spanX * 0.5);
   const dVert =
     (spanY * 0.5) /
       (TAN_HALF_FOV_41 *
         Math.max(0.14, (availH * fillY) / Math.max(1, viewportH))) +
-    rimR * COS_ELEV;
+    sweepRadius * COS_ELEV;
   const dHoriz =
     (effectiveSpanX * 0.5) /
     (TAN_HALF_FOV_41 *
