@@ -250,7 +250,7 @@ export const ATLAS_PIPELINE_STRINGS: Readonly<
   >
 > = {
   zh: {
-    searchPlaceholder: '搜索全馆 101+ 套贴图（如 4K / 胡桃木 / 装甲 / ZTZ / 弹鼓 / 防磁）...',
+    searchPlaceholder: '搜索全馆 114 套贴图（如 4K / 胡桃木 / 装甲 / ZTZ / 弹鼓 / 防磁）...',
     searchAria: '按展品或材质关键词检索 PBR 贴图套件',
     clearSearch: '清除检索',
     filterAll: '全部套件',
@@ -268,7 +268,7 @@ export const ATLAS_PIPELINE_STRINGS: Readonly<
   },
   en: {
     searchPlaceholder:
-      'Search 101+ PBR suites (e.g. 4K, walnut, ERA, zimmerit, GAU-8, chrome)...',
+      'Search 114 PBR suites (e.g. 4K, walnut, ERA, zimmerit, GAU-8, chrome)...',
     searchAria: 'Filter PBR texture suites by exhibit or material keyword',
     clearSearch: 'Clear search',
     filterAll: 'All Suites',
@@ -305,8 +305,8 @@ export interface AtlasPipelineTelemetry {
   readonly tank4kMaps: number;
 }
 
-export const VERIFIED_ATLAS_SUITE_COUNT = 101;
-export const VERIFIED_ATLAS_MAP_COUNT = 414;
+export const VERIFIED_ATLAS_SUITE_COUNT = 114;
+export const VERIFIED_ATLAS_MAP_COUNT = 453;
 export const VERIFIED_TANK_4K_MAP_COUNT = 24;
 
 /**

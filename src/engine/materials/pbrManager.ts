@@ -20,6 +20,13 @@ export interface PartPbrBundle {
 export const ARMOR_DETAIL_NORMAL_FILE = 'armor_detail_normal.webp';
 export const ARMOR_DETAIL_ROUGHNESS_FILE = 'armor_detail_roughness.webp';
 
+/** Filename prefix for the shared 13-material 1024x1024 Centennial PBR library. */
+export const CENTENNIAL_SHARED_MATERIAL_PREFIX = 'centennial_mat_' as const;
+
+export function isCentennialSharedTextureFile(fileName: string): boolean {
+  return fileName.startsWith(CENTENNIAL_SHARED_MATERIAL_PREFIX);
+}
+
 export interface ArmorDetailTextureBundle {
   normalMap: THREE.Texture | null;
   roughnessMap: THREE.Texture | null;
@@ -503,20 +510,34 @@ export function getPartPbrBundle(
   const ownerWeapon: WeaponId = isWeaponId(weaponIdRaw) ? weaponIdRaw : 'ak15';
 
   if (customBinding) {
+    // Shared 13-material Centennial PBR maps (`centennial_mat_*`) are pooled once
+    // globally (`ownerWeapon: 'shared'`) with seamless RepeatWrapping so metric
+    // Box-UVs tile cleanly at `repeat: 1` with zero GPU LRU eviction churn.
+    const isCentennialShared =
+      isCentennialSharedTextureFile(customBinding.albedoFile) ||
+      isCentennialSharedTextureFile(customBinding.normalFile) ||
+      isCentennialSharedTextureFile(customBinding.roughnessFile);
+    const resolvedOwner: WeaponId | 'shared' = isCentennialShared
+      ? 'shared'
+      : ownerWeapon;
+
     const alb = loadCachedTexture(customBinding.albedoFile, {
       srgb: true,
       repeat: customBinding.repeat,
-      ownerWeapon,
+      wrapRepeat: isCentennialShared,
+      ownerWeapon: resolvedOwner,
     });
     const nrm = loadCachedTexture(customBinding.normalFile, {
       srgb: false,
       repeat: customBinding.repeat,
-      ownerWeapon,
+      wrapRepeat: isCentennialShared,
+      ownerWeapon: resolvedOwner,
     });
     const rgh = loadCachedTexture(customBinding.roughnessFile, {
       srgb: false,
       repeat: customBinding.repeat,
-      ownerWeapon,
+      wrapRepeat: isCentennialShared,
+      ownerWeapon: resolvedOwner,
     });
     const albKey = alb.key;
     const nrmKey = nrm.key;

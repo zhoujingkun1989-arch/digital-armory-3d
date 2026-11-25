@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Digital Armory 3D — 100 Exhibits · 10 Halls · 2,174 Parts (1415–2026) · 1:1 Firearms, Heavy Armor & 30mm Aviation Ordnance Museum",
   "short_name": "Armory 3D",
-  "description": "100 Exhibits · 10 Halls · 2,174 Parts (1415–2026) — Browser-native 1:1 3D Firearms, Compound Archery, Heavy Armor & 30mm Aviation Ordnance Mechanical Engineering Museum (34 Flagship Blender 5.2 Draco GLB + 66 Centennial Procedural CAD, 414 Packed ORM maps, 1,980 Charon TTS + 100 bilingual narrations).",
+  "description": "100 Exhibits · 10 Halls · 2,174 Parts (1415–2026) — Browser-native 1:1 3D Firearms, Compound Archery, Heavy Armor & 30mm Aviation Ordnance Mechanical Engineering Museum (34 Flagship Blender 5.2 Draco GLB + 66 Centennial Procedural CAD, 453 Packed ORM maps, 1,980 Charon TTS + 100 bilingual narrations).",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

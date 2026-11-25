@@ -74,7 +74,7 @@ describe('100-Weapon Expansion Phase 4A — SSOT Museum Copy & HTML/PWA Metadata
     );
     expect(CJK_OR_FULLWIDTH_RE.test(manifestRaw)).toBe(false);
     expect(manifestRaw).toContain('100-Bay 3D Vault');
-    expect(manifestRaw).toContain('414 Packed ORM maps');
+    expect(manifestRaw).toContain('453 Packed ORM maps');
     expect(manifestRaw).toContain('1,980 Charon TTS + 100 bilingual narrations');
   });
 

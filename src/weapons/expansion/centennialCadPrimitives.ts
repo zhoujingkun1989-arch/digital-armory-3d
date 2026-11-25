@@ -50,164 +50,165 @@ export interface CentennialFinishColorSet {
 }
 
 /**
- * AgX-calibrated museum finish palettes (no crushed `#000` black; steels sit cleanly in
- * sRGB 0.18–0.34, oiled walnut & birch laminate in deep museum wood tones, and matte
+ * AgX-calibrated museum finish palettes calibrated for multiplicative 1024×1024
+ * `centennial_mat_*_albedo.webp` detail textures (~0.88 mean albedo): steels sit cleanly
+ * in sRGB 0.22–0.38, oiled walnut & birch laminate in warm museum wood tones, and matte
  * anodized dark gunmetal optics — anti-reflective glass sheen is restricted strictly
- * to tiny recessed scope lens faces inside `buildOpticAndSightGeo`).
+ * to tiny recessed scope lens faces inside `buildOpticAndSightGeo`.
  */
 export const CENTENNIAL_FINISH_COLORS: Record<
   CentennialFinishPaletteName,
   CentennialFinishColorSet
 > = {
   blued_steel: {
-    primary: '#323c4a',
-    secondary: '#435061',
-    accent: '#6f7a88',
-    furniture: '#4a2916',
-    barrel: '#2d3746',
-    bolt: '#b8c0cc',
-    brass: '#cfa244',
-    optic: '#232830',
+    primary: '#3c4756',
+    secondary: '#4c596b',
+    accent: '#788494',
+    furniture: '#58331e',
+    barrel: '#374252',
+    bolt: '#c2cad6',
+    brass: '#d8ab4c',
+    optic: '#2c323c',
   },
   parkerized: {
-    primary: '#3d444d',
-    secondary: '#4c545e',
-    accent: '#767f8c',
-    furniture: '#522e19',
-    barrel: '#373e47',
-    bolt: '#adb5c0',
-    brass: '#d1a345',
-    optic: '#282f38',
+    primary: '#464e58',
+    secondary: '#555e69',
+    accent: '#808a98',
+    furniture: '#603720',
+    barrel: '#404852',
+    bolt: '#b6beca',
+    brass: '#d9ac4d',
+    optic: '#313944',
   },
   stainless: {
-    primary: '#aeb7c4',
-    secondary: '#8d97a6',
-    accent: '#4a5360',
-    furniture: '#343a44',
-    barrel: '#b8c1cd',
-    bolt: '#cfd6e0',
-    brass: '#d5a84b',
-    optic: '#282f38',
+    primary: '#b6bfcc',
+    secondary: '#96a0af',
+    accent: '#545e6c',
+    furniture: '#3e4551',
+    barrel: '#c0c9d5',
+    bolt: '#d4dbe5',
+    brass: '#ddb053',
+    optic: '#313944',
   },
   fde: {
-    primary: '#9e845c',
-    secondary: '#7d6748',
-    accent: '#464b52',
-    furniture: '#8a724e',
-    barrel: '#3a414a',
-    bolt: '#9ea6b2',
-    brass: '#d2a547',
-    optic: '#2c2b29',
+    primary: '#aa8f66',
+    secondary: '#897251',
+    accent: '#50565f',
+    furniture: '#967d58',
+    barrel: '#434b55',
+    bolt: '#a8b0bc',
+    brass: '#daae50',
+    optic: '#363532',
   },
   od_green: {
-    primary: '#46543e',
-    secondary: '#374432',
-    accent: '#636d78',
-    furniture: '#4c5c42',
-    barrel: '#373f48',
-    bolt: '#a9b1bc',
-    brass: '#cfa144',
-    optic: '#272d2c',
+    primary: '#516048',
+    secondary: '#42503c',
+    accent: '#6d7884',
+    furniture: '#58694d',
+    barrel: '#404953',
+    bolt: '#b2bac5',
+    brass: '#d7a94c',
+    optic: '#303736',
   },
   bakelite_ak: {
-    primary: '#343c46',
-    secondary: '#424a54',
-    accent: '#58626e',
-    furniture: '#5e2c14',
-    barrel: '#2f3740',
-    bolt: '#b6beca',
-    brass: '#cc9c3e',
-    optic: '#232830',
+    primary: '#3e4752',
+    secondary: '#4c5560',
+    accent: '#636e7b',
+    furniture: '#6c361c',
+    barrel: '#38414c',
+    bolt: '#bfc7d3',
+    brass: '#d4a446',
+    optic: '#2c323c',
   },
   walnut_classic: {
-    primary: '#333c48',
-    secondary: '#454f5d',
-    accent: '#636d7a',
-    furniture: '#4c2817',
-    barrel: '#2e3744',
-    bolt: '#bfc6d1',
-    brass: '#d4a648',
-    optic: '#232830',
+    primary: '#3d4755',
+    secondary: '#4f5a69',
+    accent: '#6e7987',
+    furniture: '#59321e',
+    barrel: '#374150',
+    bolt: '#c7ced9',
+    brass: '#dcaf51',
+    optic: '#2c323c',
   },
   tactical_black: {
-    primary: '#323943',
-    secondary: '#424b58',
-    accent: '#6b7584',
-    furniture: '#363d47',
-    barrel: '#2d343e',
-    bolt: '#b2bac6',
-    brass: '#d0a246',
-    optic: '#232830',
+    primary: '#3c4450',
+    secondary: '#4c5664',
+    accent: '#768090',
+    furniture: '#404854',
+    barrel: '#363e4a',
+    bolt: '#bbc3cf',
+    brass: '#d8aa4e',
+    optic: '#2c323c',
   },
   desert_carc: {
-    primary: '#8f7d5d',
-    secondary: '#76664b',
-    accent: '#4f514d',
-    furniture: '#7b6a4e',
-    barrel: '#807053',
-    bolt: '#9da5b0',
-    brass: '#cfa143',
-    optic: '#2d2b28',
+    primary: '#9b8867',
+    secondary: '#827154',
+    accent: '#595b57',
+    furniture: '#877557',
+    barrel: '#8c7b5d',
+    bolt: '#a7afb9',
+    brass: '#d7a94b',
+    optic: '#373531',
   },
   nato_camo: {
-    primary: '#434e38',
-    secondary: '#544736',
-    accent: '#353c42',
-    furniture: '#404a36',
-    barrel: '#3c4632',
-    bolt: '#9aa2ad',
-    brass: '#cea044',
-    optic: '#262c2b',
+    primary: '#4c5840',
+    secondary: '#5f513e',
+    accent: '#3f474e',
+    furniture: '#4a553f',
+    barrel: '#45503a',
+    bolt: '#a4acb7',
+    brass: '#d6a84c',
+    optic: '#2f3635',
   },
   russian_green: {
-    primary: '#3c4932',
-    secondary: '#2f3a28',
-    accent: '#4a5543',
-    furniture: '#425038',
-    barrel: '#35412d',
-    bolt: '#a2aab5',
-    brass: '#cda043',
-    optic: '#262d2a',
+    primary: '#45543a',
+    secondary: '#384530',
+    accent: '#54604c',
+    furniture: '#4c5c41',
+    barrel: '#3e4c35',
+    bolt: '#acb4bf',
+    brass: '#d5a84b',
+    optic: '#2f3734',
   },
   wwii_soviet: {
-    primary: '#3f4c32',
-    secondary: '#333e29',
-    accent: '#4f5944',
-    furniture: '#4e2b18',
-    barrel: '#39452e',
-    bolt: '#9ca4af',
-    brass: '#c99b3f',
-    optic: '#282e2a',
+    primary: '#49573b',
+    secondary: '#3c4931',
+    accent: '#59644d',
+    furniture: '#5a341f',
+    barrel: '#425036',
+    bolt: '#a6aeb9',
+    brass: '#d1a347',
+    optic: '#313834',
   },
   titanium_matte: {
-    primary: '#66717f',
-    secondary: '#505a66',
-    accent: '#9ca6b4',
-    furniture: '#424b57',
-    barrel: '#5a6472',
-    bolt: '#c2cad6',
-    brass: '#d3a64a',
-    optic: '#293038',
+    primary: '#717d8c',
+    secondary: '#5b6673',
+    accent: '#a6b0be',
+    furniture: '#4c5664',
+    barrel: '#65707f',
+    bolt: '#cbd3df',
+    brass: '#dbae52',
+    optic: '#333b44',
   },
   yew_wood: {
-    primary: '#6e3c1e',
-    secondary: '#542c16',
-    accent: '#cfc09e',
-    furniture: '#452412',
-    barrel: '#7a4926',
-    bolt: '#b9a888',
-    brass: '#cfa247',
-    optic: '#2e2a25',
+    primary: '#7a4524',
+    secondary: '#60341b',
+    accent: '#d7c8a6',
+    furniture: '#522c17',
+    barrel: '#86532d',
+    bolt: '#c2b292',
+    brass: '#d7aa4f',
+    optic: '#37322c',
   },
   carbon_camo: {
-    primary: '#39414b',
-    secondary: '#4c5560',
-    accent: '#c45b22',
-    furniture: '#313841',
-    barrel: '#414a55',
-    bolt: '#b7c0cc',
-    brass: '#c9953e',
-    optic: '#242a32',
+    primary: '#434c58',
+    secondary: '#56606c',
+    accent: '#cf6429',
+    furniture: '#3b434d',
+    barrel: '#4b5561',
+    bolt: '#c0c9d5',
+    brass: '#d29e46',
+    optic: '#2d343e',
   },
 };
 
@@ -228,6 +229,12 @@ export interface ReceiverGeoOptions {
   roundedTop?: boolean;
   accentColorHex?: string;
   railLengthRatio?: number;
+  /** Stamped/milled AK dust-cover stiffening ribs, side rivets & rear takedown button. */
+  akStyle?: boolean;
+  /** Classic Colt M16A1 teardrop forward assist & upper forging contours. */
+  arA1Style?: boolean;
+  /** Warsaw Pact left-flank dovetail side-mount rail bar (authentic pre-1990 optic rail). */
+  dovetailSideRail?: boolean;
 }
 
 export interface BarrelGeoOptions {
@@ -237,18 +244,26 @@ export interface BarrelGeoOptions {
   gasBlock?: boolean;
   muzzleStyle?: BarrelMuzzleStyle;
   accentColorHex?: string;
+  /** Authentic AK-47 45-degree slanted gas block + hooded front sight post. */
+  akGasBlock45?: boolean;
+  /** Authentic Colt M16A1 triangular forged A-frame front sight tower + bayonet lug. */
+  m16AFrameSight?: boolean;
+  /** Authentic modern MBT ribbed thermal barrel shroud sleeve bands. */
+  thermalSleeve?: boolean;
 }
 
 export type BoltCarrierStyle =
   | 'rotating'
   | 'straight_pull'
   | 'slide'
+  | 'slide_open_top'
   | 'falling_block'
   | 'revolver_cylinder';
 
 export type HandguardStyle =
   | 'ventilated_tube'
   | 'quad_rail'
+  | 'ribbed_historical'
   | 'triangular_retro'
   | 'walnut_forend'
   | 'polymer_bullpup';
@@ -256,6 +271,8 @@ export type HandguardStyle =
 export type StockGripStyle =
   | 'walnut_rifle'
   | 'straight_walnut'
+  | 'ppsh_one_piece'
+  | 'm16a1_fixed'
   | 'dragunov_thumbhole'
   | 'spas12_top_fold'
   | 'folding_skeleton'
@@ -386,13 +403,90 @@ function ensureUnitNormals(geo: THREE.BufferGeometry): THREE.BufferGeometry {
   return geo;
 }
 
+/**
+ * Projects razor-sharp physical metric tri-planar Box-Projection UVs onto any
+ * non-indexed geometry (`1 world unit = 1 cm`) with primary `U` strictly aligned
+ * along the barrel `+X` axis (longitudinal wood grain, brushed CNC steel streaks,
+ * and 20-LPI grip checkering map with zero stretching across shared 1024×1024
+ * seamless PBR textures).
+ */
+export function applyMetricBoxUVs(
+  geo: THREE.BufferGeometry,
+  tileSizeCm = 10
+): THREE.BufferGeometry {
+  const pos = geo.getAttribute('position');
+  if (!pos) return geo;
+  const invTile = 1 / Math.max(0.5, Number.isFinite(tileSizeCm) ? tileSizeCm : 10);
+  const count = pos.count;
+  const uvArr = new Float32Array(count * 2);
+  const pArr = pos.array as ArrayLike<number>;
+
+  for (let i = 0; i + 2 < count; i += 3) {
+    const i0 = i * 3;
+    const i1 = (i + 1) * 3;
+    const i2 = (i + 2) * 3;
+    const ax = pArr[i0];
+    const ay = pArr[i0 + 1];
+    const az = pArr[i0 + 2];
+    const bx = pArr[i1];
+    const by = pArr[i1 + 1];
+    const bz = pArr[i1 + 2];
+    const cx = pArr[i2];
+    const cy = pArr[i2 + 1];
+    const cz = pArr[i2 + 2];
+
+    const e1x = bx - ax;
+    const e1y = by - ay;
+    const e1z = bz - az;
+    const e2x = cx - ax;
+    const e2y = cy - ay;
+    const e2z = cz - az;
+
+    const nx = Math.abs(e1y * e2z - e1z * e2y);
+    const ny = Math.abs(e1z * e2x - e1x * e2z);
+    const nz = Math.abs(e1x * e2y - e1y * e2x);
+
+    // Choose dominant face axis per triangle so no triangle straddles a projection seam
+    if (nz >= nx && nz >= ny) {
+      // Side flanks (+Z / -Z): U along barrel +X, V along vertical +Y
+      uvArr[i * 2] = ax * invTile;
+      uvArr[i * 2 + 1] = ay * invTile;
+      uvArr[(i + 1) * 2] = bx * invTile;
+      uvArr[(i + 1) * 2 + 1] = by * invTile;
+      uvArr[(i + 2) * 2] = cx * invTile;
+      uvArr[(i + 2) * 2 + 1] = cy * invTile;
+    } else if (ny >= nx) {
+      // Top / bottom surfaces (+Y / -Y): U along barrel +X, V along flank +Z
+      uvArr[i * 2] = ax * invTile;
+      uvArr[i * 2 + 1] = az * invTile;
+      uvArr[(i + 1) * 2] = bx * invTile;
+      uvArr[(i + 1) * 2 + 1] = bz * invTile;
+      uvArr[(i + 2) * 2] = cx * invTile;
+      uvArr[(i + 2) * 2 + 1] = cz * invTile;
+    } else {
+      // Front / rear faces (+X / -X): U along flank +Z, V along vertical +Y
+      uvArr[i * 2] = az * invTile;
+      uvArr[i * 2 + 1] = ay * invTile;
+      uvArr[(i + 1) * 2] = bz * invTile;
+      uvArr[(i + 1) * 2 + 1] = by * invTile;
+      uvArr[(i + 2) * 2] = cz * invTile;
+      uvArr[(i + 2) * 2 + 1] = cy * invTile;
+    }
+  }
+
+  geo.setAttribute('uv', new THREE.BufferAttribute(uvArr, 2));
+  return geo;
+}
+
 function finalizeClean(
   parts: THREE.BufferGeometry[],
-  creaseRad = Math.PI / 5.2
+  creaseRad = Math.PI / 5.2,
+  uvTileCm = 10
 ): THREE.BufferGeometry {
   const merged = mergeParts(parts, creaseRad);
   for (let i = 0; i < parts.length; i++) parts[i].dispose();
   ensureUnitNormals(merged);
+  applyMetricBoxUVs(merged, uvTileCm);
   merged.computeBoundingBox();
   merged.computeBoundingSphere();
   return merged;
@@ -537,6 +631,49 @@ function extrudeProfileZYAlongX(
   nonIdx.computeVertexNormals();
   paintGeometry(nonIdx, colorHex);
   return nonIdx;
+}
+
+/**
+ * Exported reusable beveled 2D profile extruder in XY plane (zero harsh sharp boxes).
+ */
+export function buildBeveledProfile(
+  pts: ReadonlyArray<readonly [number, number]>,
+  thicknessZ: number,
+  bevel: number,
+  colorHex: string,
+  bevelSegments = 2
+): THREE.BufferGeometry {
+  return extrudeProfileXY(pts, thicknessZ, bevel, colorHex, bevelSegments);
+}
+
+/**
+ * Exported reusable chamfered 3D slab via beveled 8-corner octagonal cross-section
+ * extruded cleanly along +X (eliminating sharp 90-degree raw slabs).
+ */
+export function buildChamferedSlab(
+  lenX: number,
+  heightY: number,
+  widthZ: number,
+  bevel: number,
+  colorHex: string
+): THREE.BufferGeometry {
+  const L = clampPos(lenX, 2);
+  const H = clampPos(heightY, 1);
+  const W = clampPos(widthZ, 1);
+  const hw = W * 0.5;
+  const hh = H * 0.5;
+  const c = Math.min(Math.max(bevel, Math.min(W, H) * 0.1), hw * 0.42, hh * 0.42);
+  const prof: Array<[number, number]> = [
+    [-hw + c, -hh],
+    [hw - c, -hh],
+    [hw, -hh + c],
+    [hw, hh - c],
+    [hw - c, hh],
+    [-hw + c, hh],
+    [-hw, hh - c],
+    [-hw, -hh + c],
+  ];
+  return extrudeProfileZYAlongX(prof, L, Math.min(c * 0.6, L * 0.18), colorHex, 2);
 }
 
 /** Beveled cylinder oriented along +X, centered at origin. */
@@ -720,6 +857,46 @@ export function buildChamferedReceiverGeo(
     parts.push(pin);
   }
 
+  // Authentic AK stamped/milled dust-cover longitudinal stiffening ribs, side rivets & rear button
+  if (opts.akStyle) {
+    for (const rz of [-hw * 0.46, 0, hw * 0.46]) {
+      const dustRib = createChamferedBox(L * 0.66, H * 0.08, W * 0.12, 0.03, accentHex);
+      dustRib.translate(-L * 0.06, hh * 0.94, rz);
+      parts.push(dustRib);
+    }
+    for (const side of [-1, 1] as const) {
+      for (const rx of [-L * 0.42, -L * 0.36, L * 0.35, L * 0.41]) {
+        const rivet = cylAlongZ(0.18, 0.14, W * 0.14, 0.03, 12, accentHex);
+        rivet.translate(rx, hh * 0.04, side * (hw + 0.02));
+        parts.push(rivet);
+      }
+    }
+    const rearBtn = createChamferedBox(0.95, H * 0.24, W * 0.32, 0.04, accentHex);
+    rearBtn.translate(-L * 0.51, hh * 0.24, 0);
+    parts.push(rearBtn);
+  }
+
+  // Iconic Colt M16A1 teardrop forward assist & upper forging housing boss on right flank (+Z)
+  if (opts.arA1Style) {
+    const faHousing = cylAlongX(H * 0.2, H * 0.16, L * 0.22, 0.05, 18, colorHex);
+    faHousing.rotateY(-0.34);
+    faHousing.translate(-L * 0.18, hh * 0.26, hw + W * 0.16);
+    parts.push(faHousing);
+    const faPlunger = createChamferedBox(L * 0.08, H * 0.22, W * 0.28, 0.05, accentHex);
+    faPlunger.translate(-L * 0.29, hh * 0.26, hw + W * 0.24);
+    parts.push(faPlunger);
+  }
+
+  // Authentic Warsaw Pact left-flank (-Z) dovetail side-mount optic plate (zero Picatinny!)
+  if (opts.dovetailSideRail) {
+    const doveBar = createChamferedBox(L * 0.44, H * 0.34, W * 0.14, 0.04, accentHex);
+    doveBar.translate(-L * 0.06, -hh * 0.06, -(hw + W * 0.07));
+    parts.push(doveBar);
+    const doveRidge = createChamferedBox(L * 0.38, H * 0.12, W * 0.18, 0.03, darkHex);
+    doveRidge.translate(-L * 0.06, hh * 0.08, -(hw + W * 0.09));
+    parts.push(doveRidge);
+  }
+
   return finalizeClean(parts, Math.PI / 5.2);
 }
 
@@ -790,15 +967,28 @@ export function buildSteppedBarrelGeo(
   // Optional gas block & upper gas-tube boss
   if (opts.gasBlock) {
     const gx = -halfL + L * 0.66;
-    const block = createChamferedBox(
-      Math.min(3.2, L * 0.09),
-      rM * 3.1,
-      rM * 2.1,
-      0.08,
-      accentHex
-    );
-    block.translate(gx, rM * 0.55, 0);
-    parts.push(block);
+    if (opts.akGasBlock45) {
+      // Iconic AK-47 45-degree slanted forged gas block + exposed upper steel gas tube
+      const slantPts: Array<[number, number]> = [
+        [-1.4, -rM * 0.6],
+        [1.1, -rM * 0.6],
+        [0.45, rM * 2.2],
+        [-0.95, rM * 2.2],
+      ];
+      const block = extrudeProfileXY(slantPts, rM * 1.85, 0.07, accentHex, 2);
+      block.translate(gx, rM * 0.35, 0);
+      parts.push(block);
+    } else {
+      const block = createChamferedBox(
+        Math.min(3.0, L * 0.09),
+        rM * 2.95,
+        rM * 2.0,
+        0.08,
+        accentHex
+      );
+      block.translate(gx, rM * 0.55, 0);
+      parts.push(block);
+    }
 
     const tubeLen = L * 0.52;
     const tube = cylAlongX(rM * 0.38, rM * 0.38, tubeLen, 0.03, 18, accentHex);
@@ -806,8 +996,30 @@ export function buildSteppedBarrelGeo(
     parts.push(tube);
   }
 
-  // Optional forged A-frame front sight tower
-  if (opts.frontSightTower) {
+  // Optional forged A-frame front sight tower (M16A1 iconic open A-frame or AK hooded front post)
+  if (opts.m16AFrameSight) {
+    const sx = halfL - Math.min(5.2, L * 0.18);
+    const towerH = Math.max(2.9, rM * 4.1);
+    const rearLeg = createChamferedBox(0.72, towerH, rM * 0.92, 0.05, accentHex);
+    rearLeg.rotateZ(-0.24);
+    rearLeg.translate(sx - 0.95, rM * 0.7 + towerH * 0.45, 0);
+    parts.push(rearLeg);
+    const frontLeg = createChamferedBox(0.72, towerH, rM * 0.92, 0.05, accentHex);
+    frontLeg.rotateZ(0.2);
+    frontLeg.translate(sx + 0.85, rM * 0.7 + towerH * 0.45, 0);
+    parts.push(frontLeg);
+    const topBridge = createChamferedBox(1.45, 0.65, rM * 1.15, 0.05, accentHex);
+    topBridge.translate(sx, rM * 0.7 + towerH * 0.96, 0);
+    parts.push(topBridge);
+    const bayoLug = createChamferedBox(1.5, rM * 1.15, rM * 0.95, 0.05, darkHex);
+    bayoLug.translate(sx + 0.5, -rM * 1.15, 0);
+    parts.push(bayoLug);
+    for (const side of [-1, 1] as const) {
+      const ear = createChamferedBox(0.85, towerH * 0.36, 0.22, 0.03, accentHex);
+      ear.translate(sx, rM * 0.7 + towerH * 1.16, side * (rM * 0.54));
+      parts.push(ear);
+    }
+  } else if (opts.frontSightTower) {
     const sx = halfL - Math.min(4.2, L * 0.14);
     const towerH = Math.max(2.2, rM * 3.2);
     const towerPts: Array<[number, number]> = [
@@ -820,11 +1032,29 @@ export function buildSteppedBarrelGeo(
     tower.translate(sx, rM * 0.6, 0);
     parts.push(tower);
 
-    // Protective front sight ears
-    for (const side of [-1, 1] as const) {
-      const ear = createChamferedBox(0.9, towerH * 0.42, 0.24, 0.04, accentHex);
-      ear.translate(sx, rM * 0.6 + towerH * 1.05, side * (rM * 0.55));
-      parts.push(ear);
+    // Protective front sight hood / ears
+    if (opts.akGasBlock45) {
+      const hood = new THREE.TorusGeometry(rM * 0.68, rM * 0.16, 10, 20);
+      paintGeometry(hood, accentHex);
+      hood.rotateY(Math.PI / 2);
+      hood.translate(sx, rM * 0.6 + towerH * 1.02, 0);
+      parts.push(hood);
+    } else {
+      for (const side of [-1, 1] as const) {
+        const ear = createChamferedBox(0.9, towerH * 0.42, 0.24, 0.04, accentHex);
+        ear.translate(sx, rM * 0.6 + towerH * 1.05, side * (rM * 0.55));
+        parts.push(ear);
+      }
+    }
+  }
+
+  // Optional modern MBT ribbed thermal barrel shroud bands
+  if (opts.thermalSleeve) {
+    for (const frac of [-0.34, -0.18, -0.02, 0.16, 0.34]) {
+      const bandR = frac < 0 ? rMid * 1.14 : rM * 1.16;
+      const band = cylAlongX(bandR, bandR, L * 0.018, bandR * 0.06, 24, accentHex);
+      band.translate(L * frac, 0, 0);
+      parts.push(band);
     }
   }
 
@@ -942,45 +1172,115 @@ export function buildBoltAndCarrierGeo(
     return finalizeClean(parts, Math.PI / 5.2);
   }
 
+  if (style === 'slide_open_top') {
+    // Iconic Beretta 92FS / M9 OPEN-TOP cut-out pistol slide exposing cylindrical barrel & locking block!
+    const slideH = R * 2.75;
+    const slideW = R * 2.52;
+    const hw = slideW * 0.5;
+    const hh = slideH * 0.5;
+    const wallT = slideW * 0.25;
+
+    // Rear solid sculpted breech bridge (back 34% of slide) w/ rounded bevel crown
+    const rearLen = L * 0.34;
+    const rearProf: Array<[number, number]> = [
+      [-hw, -hh],
+      [hw, -hh],
+      [hw, hh * 0.38],
+      [hw * 0.82, hh * 0.82],
+      [hw * 0.45, hh],
+      [-hw * 0.45, hh],
+      [-hw * 0.82, hh * 0.82],
+      [-hw, hh * 0.38],
+    ];
+    const rearBridge = extrudeProfileZYAlongX(rearProf, rearLen, Math.min(0.1, R * 0.12), colorHex, 2);
+    rearBridge.translate(-L * 0.5 + rearLen * 0.5, 0, 0);
+    parts.push(rearBridge);
+
+    // Sculpted left & right open-top slide side rails framing the wide open barrel cutout (center 50%)
+    const midLen = L * 0.54;
+    for (const side of [-1, 1] as const) {
+      const sideRail = buildChamferedSlab(midLen, slideH * 0.72, wallT, 0.06, colorHex);
+      sideRail.translate(-L * 0.5 + rearLen + midLen * 0.48, -hh * 0.16, side * (hw - wallT * 0.5));
+      parts.push(sideRail);
+    }
+
+    // Front sculpted barrel-bushing muzzle bridge (front 16% of slide) w/ beveled nose
+    const frontLen = L * 0.17;
+    const frontBridge = extrudeProfileZYAlongX(rearProf, frontLen, Math.min(0.1, R * 0.12), colorHex, 2);
+    frontBridge.translate(L * 0.5 - frontLen * 0.5, 0, 0);
+    parts.push(frontBridge);
+
+    // 8 angled rear slide cocking serration ribs + slide-mounted ambidextrous safety/decocker wings
+    for (const side of [-1, 1] as const) {
+      for (let i = 0; i < 8; i++) {
+        const sx = -L * 0.44 + i * (L * 0.028);
+        const rib = createChamferedBox(L * 0.015, slideH * 0.64, slideW * 0.07, 0.015, brightHex);
+        rib.rotateZ(-0.24);
+        rib.translate(sx, -hh * 0.08, side * (hw + slideW * 0.015));
+        parts.push(rib);
+      }
+      const safetyWing = createChamferedBox(L * 0.095, slideH * 0.24, slideW * 0.14, 0.03, darkHex);
+      safetyWing.rotateZ(-0.22);
+      safetyWing.translate(-L * 0.34, hh * 0.42, side * (hw + slideW * 0.06));
+      parts.push(safetyWing);
+    }
+
+    // Integral low dovetail rear notch & swept front blade sight
+    const rearSight = createChamferedBox(L * 0.07, slideH * 0.28, slideW * 0.62, 0.04, darkHex);
+    rearSight.translate(-L * 0.42, hh + slideH * 0.1, 0);
+    parts.push(rearSight);
+    const frontSight = createChamferedBox(L * 0.065, slideH * 0.28, slideW * 0.2, 0.03, darkHex);
+    frontSight.translate(L * 0.44, hh + slideH * 0.1, 0);
+    parts.push(frontSight);
+    return finalizeClean(parts, Math.PI / 5.0);
+  }
+
   if (style === 'slide') {
-    // Chamfered pistol top slide with rounded crown, cocking serrations, ejection step & iron sights
-    const slideH = R * 2.8;
-    const slideW = R * 2.55;
+    // Chamfered pistol top slide with multi-faceted beveled crown, cocking serrations, ejection step & iron sights
+    const slideH = R * 2.75;
+    const slideW = R * 2.52;
     const hw = slideW * 0.5;
     const hh = slideH * 0.5;
     const slideProf: Array<[number, number]> = [
-      [-hw, -hh],
-      [hw, -hh],
-      [hw, hh * 0.46],
-      [hw * 0.72, hh],
-      [-hw * 0.72, hh],
-      [-hw, hh * 0.46],
+      [-hw + R * 0.18, -hh],
+      [hw - R * 0.18, -hh],
+      [hw, -hh + R * 0.18],
+      [hw, hh * 0.42],
+      [hw * 0.84, hh * 0.84],
+      [hw * 0.52, hh],
+      [-hw * 0.52, hh],
+      [-hw * 0.84, hh * 0.84],
+      [-hw, hh * 0.42],
+      [-hw, -hh + R * 0.18],
     ];
-    parts.push(extrudeProfileZYAlongX(slideProf, L, Math.min(0.1, R * 0.12), colorHex, 2));
+    parts.push(extrudeProfileZYAlongX(slideProf, L, Math.min(0.11, R * 0.13), colorHex, 2));
 
-    // Ejection port accent step on right (+Z) upper crown
-    const port = createChamferedBox(L * 0.26, slideH * 0.44, slideW * 0.14, 0.03, darkHex);
+    // Recessed ejection port cutout step + external extractor claw bar on right (+Z) upper crown
+    const port = createChamferedBox(L * 0.27, slideH * 0.44, slideW * 0.14, 0.03, darkHex);
     port.translate(L * 0.05, hh * 0.48, hw - slideW * 0.02);
     parts.push(port);
+    const extractor = createChamferedBox(L * 0.14, slideH * 0.16, slideW * 0.08, 0.02, brightHex);
+    extractor.translate(-L * 0.13, hh * 0.34, hw + slideW * 0.015);
+    parts.push(extractor);
 
     // 7 angled rear slide cocking serration ribs on both flanks
     for (const side of [-1, 1] as const) {
       for (let i = 0; i < 7; i++) {
         const sx = -L * 0.42 + i * (L * 0.032);
-        const rib = createChamferedBox(L * 0.016, slideH * 0.68, slideW * 0.08, 0.015, brightHex);
+        const rib = createChamferedBox(L * 0.016, slideH * 0.66, slideW * 0.08, 0.015, brightHex);
         rib.rotateZ(-0.2);
         rib.translate(sx, -hh * 0.06, side * (hw + slideW * 0.015));
         parts.push(rib);
       }
     }
 
-    // Dovetail rear notch sight & front blade sight
-    const rearSight = createChamferedBox(L * 0.08, slideH * 0.34, slideW * 0.68, 0.04, darkHex);
-    rearSight.translate(-L * 0.41, hh + slideH * 0.14, 0);
+    // Sleek dovetail rear notch sight & front blade sight
+    const rearSight = createChamferedBox(L * 0.075, slideH * 0.28, slideW * 0.64, 0.04, darkHex);
+    rearSight.translate(-L * 0.41, hh + slideH * 0.11, 0);
     parts.push(rearSight);
 
-    const frontSight = createChamferedBox(L * 0.07, slideH * 0.32, slideW * 0.22, 0.03, darkHex);
-    frontSight.translate(L * 0.43, hh + slideH * 0.14, 0);
+    const frontSight = createChamferedBox(L * 0.065, slideH * 0.28, slideW * 0.2, 0.03, darkHex);
+    frontSight.translate(L * 0.43, hh + slideH * 0.11, 0);
     parts.push(frontSight);
     return finalizeClean(parts, Math.PI / 5.2);
   }
@@ -1001,16 +1301,23 @@ export function buildBoltAndCarrierGeo(
   // 'rotating' & 'straight_pull': Cylindrical precision bolt body + radial locking lugs + bolt handle
   parts.push(cylAlongX(R, R, L * 0.86, R * 0.08, 26, colorHex));
 
-  // Rear cocking shroud
+  // Rear cocking shroud & visible machined firing-pin striker tail (for `?cut=1` breech richness!)
   const shroud = cylAlongX(R * 1.18, R * 1.1, L * 0.18, R * 0.08, 24, darkHex);
   shroud.translate(-L * 0.44, 0, 0);
   parts.push(shroud);
 
-  // Carrier top gas-key / op-rod boss for rotating gas bolts
+  const firingPinTail = cylAlongX(R * 0.24, R * 0.2, L * 0.26, 0.02, 14, brightHex);
+  firingPinTail.translate(-L * 0.56, 0, 0);
+  parts.push(firingPinTail);
+
+  // Carrier top gas-key / op-rod boss + machined cam-pin boss for rotating gas bolts
   if (style === 'rotating') {
     const key = createChamferedBox(L * 0.56, R * 0.9, R * 1.15, R * 0.1, darkHex);
     key.translate(L * 0.04, R * 0.95, 0);
     parts.push(key);
+    const camPin = createBeveledCylinder(R * 0.26, R * 0.26, R * 0.72, 0.03, 14, brightHex);
+    camPin.translate(L * 0.22, R * 0.88, 0);
+    parts.push(camPin);
   }
 
   // Multi-lug machined bolt head (6 lugs for rotating, 2 heavy lugs for straight_pull)
@@ -1141,8 +1448,42 @@ export function buildHandguardGeo(
     return finalizeClean(parts, Math.PI / 5.2);
   }
 
+  if (style === 'ribbed_historical') {
+    // Sleek pre-1990 contoured historical composite/steel forend w/ horizontal heat vents (ZERO Picatinny!)
+    const prof: Array<[number, number]> = [
+      [-hw * 0.68, hh * 0.88],
+      [hw * 0.68, hh * 0.88],
+      [hw, hh * 0.28],
+      [hw * 0.94, -hh * 0.56],
+      [hw * 0.54, -hh],
+      [-hw * 0.54, -hh],
+      [-hw * 0.94, -hh * 0.56],
+      [-hw, hh * 0.28],
+    ];
+    parts.push(extrudeProfileZYAlongX(prof, L, 0.15, colorHex, 3));
+    const ventCols = Math.min(7, Math.max(4, Math.floor(L / 3.0)));
+    for (let i = 0; i < ventCols; i++) {
+      const vx = -L * 0.34 + (i / Math.max(1, ventCols - 1)) * (L * 0.68);
+      for (const side of [-1, 1] as const) {
+        const rib = createChamferedBox(
+          Math.min(1.15, (L * 0.46) / ventCols),
+          H * 0.2,
+          0.18,
+          0.03,
+          accentHex
+        );
+        rib.translate(vx, H * 0.18, side * (hw + 0.04));
+        parts.push(rib);
+      }
+    }
+    const frontCap = createChamferedBox(1.1, H * 0.96, W * 0.94, 0.06, accentHex);
+    frontCap.translate(L * 0.47, 0, 0);
+    parts.push(frontCap);
+    return finalizeClean(parts, Math.PI / 4.8);
+  }
+
   if (style === 'triangular_retro') {
-    // Classic M16A1 triangular tapered handguard + rear delta slip ring
+    // Classic Colt M16A1 triangular tapered handguard w/ longitudinal cooling ribs & delta slip ring
     const tri: Array<[number, number]> = [
       [-hw * 0.42, hh],
       [hw * 0.42, hh],
@@ -1152,10 +1493,23 @@ export function buildHandguardGeo(
       [-hw, -hh * 0.45],
     ];
     parts.push(extrudeProfileZYAlongX(tri, L, 0.14, colorHex, 3));
+    // Sculpted longitudinal grip flutes + upper cooling vent strip along M16A1 triangular flanks
+    const ventDark = '#2b313c';
+    for (const side of [-1, 1] as const) {
+      const rib = createChamferedBox(L * 0.78, H * 0.14, 0.16, 0.03, accentHex);
+      rib.translate(0, -hh * 0.22, side * (hw * 0.88));
+      parts.push(rib);
+      for (let i = 0; i < 6; i++) {
+        const vx = -L * 0.34 + (i / 5) * (L * 0.68);
+        const vent = createChamferedBox(L * 0.065, H * 0.12, 0.22, 0.02, ventDark);
+        vent.translate(vx, hh * 0.56, side * (hw * 0.56));
+        parts.push(vent);
+      }
+    }
     const delta = cylAlongX(hh * 1.12, hh * 0.96, Math.min(2.4, L * 0.14), 0.08, 26, accentHex);
     delta.translate(-L * 0.46, 0, 0);
     parts.push(delta);
-    const cap = createChamferedBox(0.9, H * 0.92, W * 0.88, 0.06, accentHex);
+    const cap = createChamferedBox(0.95, H * 0.92, W * 0.88, 0.06, accentHex);
     cap.translate(L * 0.48, 0, 0);
     parts.push(cap);
     return finalizeClean(parts, Math.PI / 5.2);
@@ -1220,21 +1574,74 @@ export function buildStockAndGripGeo(
   const parts: THREE.BufferGeometry[] = [];
 
   if (style === 'walnut_rifle') {
+    // Ergonomic sculpted walnut buttstock w/ smooth curved cheek comb, wrist neck & curved buttplate
     const pts: Array<[number, number]> = [
       [-L * 0.5, -H * 0.52],
-      [L * 0.15, -H * 0.22],
-      [L * 0.36, -H * 0.42],
-      [L * 0.5, -H * 0.26],
+      [-L * 0.12, -H * 0.34],
+      [L * 0.18, -H * 0.2],
+      [L * 0.38, -H * 0.34],
+      [L * 0.5, -H * 0.22],
       [L * 0.5, H * 0.24],
-      [L * 0.16, H * 0.34],
-      [-L * 0.46, H * 0.46],
-      [-L * 0.5, H * 0.42],
+      [L * 0.24, H * 0.28],
+      [L * 0.02, H * 0.38],
+      [-L * 0.44, H * 0.46],
+      [-L * 0.5, H * 0.4],
     ];
-    parts.push(extrudeProfileXY(pts, W, Math.min(0.32, W * 0.16), colorHex, 3));
-    const buttplate = createChamferedBox(0.85, H * 0.96, W * 0.96, 0.1, steelHex);
-    buttplate.translate(-L * 0.5 - 0.25, -H * 0.04, 0);
+    parts.push(extrudeProfileXY(pts, W, Math.min(0.36, W * 0.2), colorHex, 3));
+    const buttplate = createChamferedBox(0.85, H * 0.92, W * 0.94, 0.12, steelHex);
+    buttplate.translate(-L * 0.5 - 0.24, -H * 0.05, 0);
     parts.push(buttplate);
-    return finalizeClean(parts, Math.PI / 4.2);
+    const swivel = new THREE.TorusGeometry(0.48, 0.11, 8, 16);
+    paintGeometry(swivel, steelHex);
+    swivel.translate(-L * 0.36, -H * 0.46, 0);
+    parts.push(swivel);
+    return finalizeClean(parts, Math.PI / 4.2, 14);
+  }
+
+  if (style === 'ppsh_one_piece') {
+    // Iconic 1941 PPSh-41 continuous one-piece contoured Russian birch rifle stock flowing seamlessly
+    // forward right under the receiver & trigger tang (ZERO separate AK pistol grip!)
+    const pts: Array<[number, number]> = [
+      [-L * 0.5, -H * 0.5],
+      [-L * 0.1, -H * 0.32],
+      [L * 0.24, -H * 0.24],
+      [L * 0.46, -H * 0.42],
+      [L * 0.72, -H * 0.22],
+      [L * 0.96, -H * 0.04],
+      [L * 0.96, H * 0.24],
+      [L * 0.52, H * 0.22],
+      [L * 0.24, H * 0.24],
+      [-L * 0.46, H * 0.42],
+      [-L * 0.5, H * 0.38],
+    ];
+    parts.push(extrudeProfileXY(pts, W * 0.96, Math.min(0.36, W * 0.2), colorHex, 3));
+    const buttplate = createChamferedBox(0.8, H * 0.9, W * 0.94, 0.1, steelHex);
+    buttplate.translate(-L * 0.5 - 0.24, -H * 0.05, 0);
+    parts.push(buttplate);
+    const slingLoop = new THREE.TorusGeometry(0.46, 0.1, 8, 16);
+    paintGeometry(slingLoop, steelHex);
+    slingLoop.translate(-L * 0.38, -H * 0.44, 0);
+    parts.push(slingLoop);
+    return finalizeClean(parts, Math.PI / 4.2, 14);
+  }
+
+  if (style === 'm16a1_fixed') {
+    // Iconic 1967 Colt M16A1 solid triangular fixed polymer buttstock w/ flat upper comb & sling swivel
+    const pts: Array<[number, number]> = [
+      [-L * 0.5, -H * 0.5],
+      [L * 0.48, -H * 0.04],
+      [L * 0.5, H * 0.34],
+      [-L * 0.5, H * 0.38],
+    ];
+    parts.push(extrudeProfileXY(pts, W * 0.96, Math.min(0.28, W * 0.16), colorHex, 3));
+    const pad = createChamferedBox(0.9, H * 0.9, W * 0.98, 0.12, rubberHex);
+    pad.translate(-L * 0.52, -H * 0.06, 0);
+    parts.push(pad);
+    const swivel = new THREE.TorusGeometry(0.45, 0.1, 8, 16);
+    paintGeometry(swivel, steelHex);
+    swivel.translate(-L * 0.36, -H * 0.46, 0);
+    parts.push(swivel);
+    return finalizeClean(parts, Math.PI / 4.8);
   }
 
   if (style === 'straight_walnut') {
@@ -1454,29 +1861,41 @@ export function buildStockAndGripGeo(
   }
 
   if (style === 'broomhandle_grip') {
-    // Iconic Mauser C96 rounded ribbed wooden broomhandle grip + lanyard ring pommel
+    // Iconic Mauser C96 rounded ribbed wooden broomhandle grip (10 carved grip grooves) + lanyard ring pommel
     const gripL = Math.max(H, 9.2);
-    const rTop = Math.min(L, W) * 0.46;
-    const rBot = rTop * 1.18;
+    const rTop = Math.min(L, W) * 0.44;
+    const rBot = rTop * 1.2;
     const prof: Array<[number, number]> = [
       [0, -gripL * 0.5],
       [rBot * 0.85, -gripL * 0.5],
       [rBot, -gripL * 0.42],
-      [rBot * 0.94, -gripL * 0.12],
-      [rTop * 1.04, gripL * 0.18],
-      [rTop, gripL * 0.46],
-      [rTop * 0.82, gripL * 0.5],
-      [0, gripL * 0.5],
     ];
+    // 10 distinct horizontal broomhandle wooden grip grooves sculpted into the revolved lathe profile
+    const grooves = 10;
+    for (let i = 0; i < grooves; i++) {
+      const t0 = i / grooves;
+      const tMid = (i + 0.5) / grooves;
+      const y0 = -gripL * 0.36 + t0 * (gripL * 0.72);
+      const yMid = -gripL * 0.36 + tMid * (gripL * 0.72);
+      const rOuter = rBot * (1 - t0) + rTop * t0;
+      const rIn = (rBot * (1 - tMid) + rTop * tMid) * 0.89;
+      prof.push([rOuter, y0], [rIn, yMid]);
+    }
+    prof.push([rTop, gripL * 0.44], [rTop * 0.82, gripL * 0.5], [0, gripL * 0.5]);
     const body = buildRevolvedAlongX(prof, 24, colorHex);
     body.rotateZ(Math.PI / 2 - 0.24);
     parts.push(body);
 
+    const ferrule = createBeveledCylinder(rBot * 0.94, rBot * 0.86, 0.75, 0.08, 22, steelHex);
+    ferrule.rotateZ(-0.24);
+    ferrule.translate(-Math.sin(0.24) * gripL * 0.47, -Math.cos(0.24) * gripL * 0.47, 0);
+    parts.push(ferrule);
+
     const ring = new THREE.TorusGeometry(rBot * 0.42, rBot * 0.1, 12, 20);
     paintGeometry(ring, steelHex);
-    ring.translate(-Math.sin(0.24) * gripL * 0.52, -Math.cos(0.24) * gripL * 0.54, 0);
+    ring.translate(-Math.sin(0.24) * gripL * 0.55, -Math.cos(0.24) * gripL * 0.57, 0);
     parts.push(ring);
-    return finalizeClean(parts, Math.PI / 4.5);
+    return finalizeClean(parts, Math.PI / 4.2, 8);
   }
 
   if (style === 'plowhandle_grip') {
@@ -1542,20 +1961,42 @@ export function buildStockAndGripGeo(
     return finalizeClean(parts, Math.PI / 5.2);
   }
 
-  // 'pistol_grip': contoured ergonomic angled pistol grip w/ finger-swell & flared base cap
+  // 'pistol_grip': contoured ergonomic angled pistol grip w/ palm-swell backstrap,
+  // sweeping beavertail tang, curved front finger-grooves & flared base cap
   const pts: Array<[number, number]> = [
-    [-L * 0.48, -H * 0.5],
-    [L * 0.12, -H * 0.48],
-    [L * 0.34, -H * 0.05],
-    [L * 0.48, H * 0.48],
-    [-L * 0.16, H * 0.48],
+    [-L * 0.52, -H * 0.5],
+    [L * 0.14, -H * 0.48],
+    [L * 0.24, -H * 0.22],
+    [L * 0.36, 0],
+    [L * 0.34, H * 0.24],
+    [L * 0.46, H * 0.48],
+    [-L * 0.36, H * 0.5],
+    [-L * 0.24, H * 0.3],
     [-L * 0.38, H * 0.04],
+    [-L * 0.48, -H * 0.22],
   ];
-  parts.push(extrudeProfileXY(pts, W, Math.min(0.22, W * 0.16), colorHex, 3));
-  const baseCap = createChamferedBox(L * 0.66, H * 0.09, W * 1.06, 0.05, steelHex);
-  baseCap.translate(-L * 0.18, -H * 0.49, 0);
+  parts.push(extrudeProfileXY(pts, W, Math.min(0.28, W * 0.2), colorHex, 3));
+  // Subtle recessed checkered grip side panels on both flanks
+  for (const side of [-1, 1] as const) {
+    const panel = extrudeProfileXY(
+      [
+        [-L * 0.38, -H * 0.38],
+        [L * 0.08, -H * 0.36],
+        [L * 0.24, H * 0.28],
+        [-L * 0.18, H * 0.32],
+      ],
+      W * 0.12,
+      0.04,
+      shadeHex(colorHex, 0.9),
+      2
+    );
+    panel.translate(0, 0, side * (W * 0.48));
+    parts.push(panel);
+  }
+  const baseCap = createChamferedBox(L * 0.7, H * 0.09, W * 1.04, 0.06, steelHex);
+  baseCap.translate(-L * 0.19, -H * 0.49, 0);
   parts.push(baseCap);
-  return finalizeClean(parts, Math.PI / 4.5);
+  return finalizeClean(parts, Math.PI / 4.2, 4.5);
 }
 
 // =============================================================================
@@ -1991,7 +2432,25 @@ export function buildHeavyArmorHullAndTurretGeo(
         parts.push(bowMg);
       }
     }
-    return finalizeClean(parts, Math.PI / 5.2);
+    // Front & rear forged steel tow shackles + armored blackout headlamps on hull glacis
+    for (const side of [-1, 1] as const) {
+      const shackleF = new THREE.TorusGeometry(s * 0.12, s * 0.032, 8, 16);
+      paintGeometry(shackleF, steelHex);
+      shackleF.rotateY(Math.PI / 2);
+      shackleF.translate(hullL * 0.52, -hullH * 0.1, side * s * 1.08);
+      parts.push(shackleF);
+
+      const shackleR = new THREE.TorusGeometry(s * 0.12, s * 0.032, 8, 16);
+      paintGeometry(shackleR, steelHex);
+      shackleR.rotateY(Math.PI / 2);
+      shackleR.translate(-hullL * 0.52, -hullH * 0.06, side * s * 1.05);
+      parts.push(shackleR);
+
+      const lamp = cylAlongX(s * 0.11, s * 0.12, s * 0.22, s * 0.02, 14, darkHex);
+      lamp.translate(hullL * 0.34, hullH * 0.44, side * s * 1.24);
+      parts.push(lamp);
+    }
+    return finalizeClean(parts, Math.PI / 5.2, 75);
   }
 
   if (partKind === 'turret') {
@@ -2030,7 +2489,15 @@ export function buildHeavyArmorHullAndTurretGeo(
       const cupola = createBeveledCylinder(s * 0.4, s * 0.44, s * 0.3, s * 0.05, 24, accentHex);
       cupola.translate(-s * 0.42, s * 0.62, -s * 0.28);
       parts.push(cupola);
-      return finalizeClean(parts, Math.PI / 4.2);
+      // Loader armored roof hatch + dual rear radio whip antennas
+      const loaderHatch = createBeveledCylinder(s * 0.34, s * 0.36, s * 0.12, s * 0.03, 20, darkHex);
+      loaderHatch.translate(-s * 0.28, s * 0.56, s * 0.38);
+      parts.push(loaderHatch);
+      const whip = createBeveledCylinder(s * 0.018, s * 0.03, s * 1.65, s * 0.005, 8, steelHex);
+      whip.rotateZ(0.08);
+      whip.translate(-rTur * 0.95, s * 1.15, s * 0.52);
+      parts.push(whip);
+      return finalizeClean(parts, Math.PI / 4.2, 75);
     }
 
     if (resolvedVariant === 'merkava4') {
@@ -2050,10 +2517,15 @@ export function buildHeavyArmorHullAndTurretGeo(
       turGeo.rotateX(Math.PI / 2);
       parts.push(turGeo);
 
-      // Modular low-angle upper composite roof slab
+      // Modular low-angle upper composite roof slab + armored hatches & dual whip antennas
       const roofPlate = createChamferedBox(turL * 0.62, s * 0.16, turW * 0.56, s * 0.05, accentHex);
       roofPlate.translate(-turL * 0.06, turH * 0.5, 0);
       parts.push(roofPlate);
+      for (const hz of [-s * 0.48, s * 0.48]) {
+        const hatch = createBeveledCylinder(s * 0.32, s * 0.35, s * 0.12, s * 0.03, 20, darkHex);
+        hatch.translate(-turL * 0.12, turH * 0.62, hz);
+        parts.push(hatch);
+      }
 
       // Sloped narrow mantlet slot
       const mantlet = createChamferedBox(s * 0.65, turH * 0.66, s * 0.78, s * 0.06, darkHex);
@@ -2065,7 +2537,7 @@ export function buildHeavyArmorHullAndTurretGeo(
       basket.translate(-turL * 0.54, turH * 0.06, 0);
       parts.push(basket);
 
-      // 4 Flat Angled Trophy (Meil Ruach) Elta EL/M-2133 APS radar array panels + twin interceptor pods
+      // 4 Flat Angled Trophy (Meil Ruach) Elta EL/M-2133 APS radar array panels + twin interceptor pods + whip antennas
       for (const side of [-1, 1] as const) {
         const frontRadar = createChamferedBox(s * 0.52, s * 0.42, s * 0.14, s * 0.03, steelHex);
         frontRadar.rotateY(side * -0.44);
@@ -2082,8 +2554,13 @@ export function buildHeavyArmorHullAndTurretGeo(
         const launcher = createChamferedBox(s * 0.54, s * 0.36, s * 0.42, s * 0.04, darkHex);
         launcher.translate(-turL * 0.12, turH * 0.52, side * (turW * 0.38));
         parts.push(launcher);
+
+        const whip = createBeveledCylinder(s * 0.018, s * 0.032, s * 1.75, s * 0.005, 8, steelHex);
+        whip.rotateZ(0.1);
+        whip.translate(-turL * 0.46, turH * 1.35, side * s * 0.72);
+        parts.push(whip);
       }
-      return finalizeClean(parts, Math.PI / 5.2);
+      return finalizeClean(parts, Math.PI / 5.2, 75);
     }
 
     if (resolvedVariant === 'challenger2') {
@@ -2113,13 +2590,20 @@ export function buildHeavyArmorHullAndTurretGeo(
       togsBox.translate(turL * 0.44, turH * 0.62, 0);
       parts.push(togsBox);
 
-      // Deep armored rear turret stowage bin + NBC pack
+      // Deep armored rear turret stowage bin + twin roof hatches & whip antennas
       const rearBin = createChamferedBox(s * 0.78, turH * 0.74, turW * 0.78, s * 0.06, darkHex);
       rearBin.translate(-turL * 0.58, turH * 0.04, 0);
       parts.push(rearBin);
 
-      // Twin 5-barrel British L8 forward smoke grenade discharger banks
       for (const side of [-1, 1] as const) {
+        const hatch = createBeveledCylinder(s * 0.34, s * 0.38, s * 0.14, s * 0.03, 20, accentHex);
+        hatch.translate(-turL * 0.14, turH * 0.56, side * s * 0.55);
+        parts.push(hatch);
+        const whip = createBeveledCylinder(s * 0.018, s * 0.032, s * 1.85, s * 0.005, 8, steelHex);
+        whip.rotateZ(0.08);
+        whip.translate(-turL * 0.46, turH * 1.35, side * s * 0.92);
+        parts.push(whip);
+        // Twin 5-barrel British L8 forward smoke grenade discharger banks
         for (let b = 0; b < 5; b++) {
           const tube = cylAlongX(s * 0.055, s * 0.055, s * 0.36, s * 0.01, 10, steelHex);
           tube.rotateZ(0.35);
@@ -2127,7 +2611,7 @@ export function buildHeavyArmorHullAndTurretGeo(
           parts.push(tube);
         }
       }
-      return finalizeClean(parts, Math.PI / 5.2);
+      return finalizeClean(parts, Math.PI / 5.2, 75);
     }
 
     // 't90m' (default modern): Low-profile Russian welded turret clad in V-angled Relikt ERA arrowhead cheeks
@@ -2152,6 +2636,15 @@ export function buildHeavyArmorHullAndTurretGeo(
       wedge.rotateY(side * -0.46);
       wedge.translate(turL * 0.34, 0, side * (turW * 0.33));
       parts.push(wedge);
+
+      // Roof crew hatches + dual slender whip antennas
+      const hatch = createBeveledCylinder(s * 0.32, s * 0.35, s * 0.12, s * 0.03, 20, darkHex);
+      hatch.translate(-turL * 0.1, turH * 0.56, side * s * 0.52);
+      parts.push(hatch);
+      const whip = createBeveledCylinder(s * 0.018, s * 0.03, s * 1.75, s * 0.005, 8, steelHex);
+      whip.rotateZ(0.08);
+      whip.translate(-turL * 0.44, turH * 1.32, side * s * 0.82);
+      parts.push(whip);
 
       // Twin 6-tube 81mm Tucha smoke-grenade discharger clusters on turret cheeks
       for (let t = 0; t < 6; t++) {
@@ -2183,7 +2676,7 @@ export function buildHeavyArmorHullAndTurretGeo(
     sosna.translate(turL * 0.14, turH * 0.58, s * 0.56);
     parts.push(sosna);
 
-    return finalizeClean(parts, Math.PI / 5.2);
+    return finalizeClean(parts, Math.PI / 5.2, 75);
   }
 
   if (partKind === 'era_skirts') {
@@ -2295,40 +2788,138 @@ export function buildHeavyArmorHullAndTurretGeo(
   }
 
   if (partKind === 'suspension_tracks') {
+    // Constitutional Rule 10.3: ARTICULATED INDIVIDUAL TRACK LINK BELTS + TOOTHED DRIVE SPROCKETS +
+    // BOLTED/SPOKED RUBBER-RIMMED ROADWHEELS + RETURN ROLLERS (ZERO smooth flat track boxes!)
     const trackL = s * 6.3;
     const trackH = s * 0.94;
+    const trackW = s * 0.62;
     const wheelCount = style === 'mbt_wwii' ? 5 : 6;
     const wheelR = s * (style === 'mbt_wwii' ? 0.43 : 0.36);
+    const padHex = '#323840';
+    const cleatHex = '#48505a';
+
+    const pushLinkShoe = (
+      x: number,
+      y: number,
+      z: number,
+      pitchRad: number,
+      linkLen: number
+    ) => {
+      const shoe = createChamferedBox(linkLen * 0.82, s * 0.11, trackW, s * 0.018, padHex);
+      shoe.rotateZ(pitchRad);
+      shoe.translate(x, y, z);
+      parts.push(shoe);
+      const cleat = createChamferedBox(linkLen * 0.28, s * 0.045, trackW * 0.94, s * 0.01, cleatHex);
+      cleat.rotateZ(pitchRad);
+      cleat.translate(
+        x - Math.sin(pitchRad) * s * 0.06,
+        y + Math.cos(pitchRad) * s * 0.06,
+        z
+      );
+      parts.push(cleat);
+    };
 
     for (const side of [-1, 1] as const) {
       const zPos = side * s * 1.48;
-      // Top & bottom continuous track runs
-      const topRun = createChamferedBox(trackL, s * 0.14, s * 0.62, s * 0.03, darkHex);
-      topRun.translate(0, trackH * 0.44, zPos);
-      parts.push(topRun);
-      const botRun = createChamferedBox(trackL * 0.84, s * 0.14, s * 0.62, s * 0.03, darkHex);
-      botRun.translate(0, -trackH * 0.44, zPos);
-      parts.push(botRun);
+      // 1. Top return track run: 22 articulated individual track link shoes
+      const topCount = 22;
+      const topPitch = (trackL * 0.92) / topCount;
+      for (let i = 0; i < topCount; i++) {
+        const lx = -trackL * 0.46 + (i + 0.5) * topPitch;
+        pushLinkShoe(lx, trackH * 0.44, zPos, 0, topPitch);
+      }
 
-      // Roadwheels along suspension run (with crisp steel hubcaps)
+      // 2. Bottom ground-contact track run: 18 articulated individual track shoes w/ cleats
+      const botCount = 18;
+      const botSpan = trackL * 0.8;
+      const botPitch = botSpan / botCount;
+      for (let i = 0; i < botCount; i++) {
+        const lx = -botSpan * 0.5 + (i + 0.5) * botPitch;
+        pushLinkShoe(lx, -trackH * 0.44, zPos, Math.PI, botPitch);
+      }
+
+      // 3. Angled front idler & rear drive-sprocket articulated track wrap segments (4 links each)
+      for (const endSign of [-1, 1] as const) {
+        const x0 = endSign * botSpan * 0.5;
+        const y0 = -trackH * 0.42;
+        const x1 = endSign * trackL * 0.48;
+        const y1 = trackH * 0.28;
+        const rampAngle = Math.atan2(y1 - y0, x1 - x0);
+        const rampLen = Math.hypot(x1 - x0, y1 - y0);
+        const rampLinks = 4;
+        for (let k = 0; k < rampLinks; k++) {
+          const u = (k + 0.5) / rampLinks;
+          pushLinkShoe(
+            x0 + (x1 - x0) * u,
+            y0 + (y1 - y0) * u,
+            zPos,
+            rampAngle,
+            rampLen / rampLinks
+          );
+        }
+      }
+
+      // 4. Bolted / spoked dual-flange roadwheels w/ dark rubber road-tire rings & radial lug bolts
       for (let i = 0; i < wheelCount; i++) {
         const wx = -trackL * 0.36 + (i / (wheelCount - 1)) * (trackL * 0.72);
-        const wheel = cylAlongZ(wheelR, wheelR, s * 0.52, s * 0.05, 22, steelHex);
-        wheel.translate(wx, -trackH * 0.14, zPos);
-        parts.push(wheel);
-        const hub = cylAlongZ(wheelR * 0.34, wheelR * 0.34, s * 0.58, s * 0.03, 14, accentHex);
-        hub.translate(wx, -trackH * 0.14, zPos);
+        const wy = -trackH * 0.14;
+        // Matte black rubber outer roadwheel tire
+        const tire = cylAlongZ(wheelR, wheelR, s * 0.5, s * 0.04, 22, padHex);
+        tire.translate(wx, wy, zPos);
+        parts.push(tire);
+        // Painted / steel inner dished wheel rim
+        const rim = cylAlongZ(wheelR * 0.76, wheelR * 0.76, s * 0.54, s * 0.03, 20, steelHex);
+        rim.translate(wx, wy, zPos);
+        parts.push(rim);
+        // Central armored bearing hubcap + 6 radial steel wheel-lug bolts
+        const hub = cylAlongZ(wheelR * 0.26, wheelR * 0.26, s * 0.6, s * 0.025, 14, accentHex);
+        hub.translate(wx, wy, zPos);
         parts.push(hub);
+        for (let b = 0; b < 6; b++) {
+          const ba = (b / 6) * Math.PI * 2;
+          const bolt = cylAlongZ(wheelR * 0.08, wheelR * 0.08, s * 0.58, s * 0.01, 8, cleatHex);
+          bolt.translate(
+            wx + Math.cos(ba) * wheelR * 0.5,
+            wy + Math.sin(ba) * wheelR * 0.5,
+            zPos
+          );
+          parts.push(bolt);
+        }
       }
 
-      // Rear toothed drive sprocket & front tension idler
-      for (const sx of [-trackL * 0.46, trackL * 0.46]) {
-        const sprocket = cylAlongZ(wheelR * 0.92, wheelR * 0.92, s * 0.56, s * 0.05, 20, accentHex);
-        sprocket.translate(sx, trackH * 0.16, zPos);
-        parts.push(sprocket);
+      // 5. Modern MBT steel top return rollers supporting the upper articulated track belt
+      if (style === 'mbt_modern') {
+        for (const frac of [-0.26, 0, 0.26]) {
+          const roller = cylAlongZ(s * 0.12, s * 0.12, s * 0.44, s * 0.02, 14, cleatHex);
+          roller.translate(trackL * frac, trackH * 0.28, zPos);
+          parts.push(roller);
+        }
       }
+
+      // 6. Toothed rear drive sprocket (10 radial drive teeth!) & smooth front tension idler
+      const rearX = -trackL * 0.46;
+      const frontX = trackL * 0.46;
+      const sprockY = trackH * 0.16;
+      const sprockR = wheelR * 0.9;
+      const driveDrum = cylAlongZ(sprockR * 0.86, sprockR * 0.86, s * 0.56, s * 0.04, 20, accentHex);
+      driveDrum.translate(rearX, sprockY, zPos);
+      parts.push(driveDrum);
+      for (let t = 0; t < 10; t++) {
+        const ta = (t / 10) * Math.PI * 2;
+        const tooth = createChamferedBox(s * 0.1, s * 0.14, s * 0.62, s * 0.015, cleatHex);
+        tooth.rotateZ(ta);
+        tooth.translate(
+          rearX + Math.cos(ta) * sprockR * 0.94,
+          sprockY + Math.sin(ta) * sprockR * 0.94,
+          zPos
+        );
+        parts.push(tooth);
+      }
+      const idler = cylAlongZ(sprockR * 0.9, sprockR * 0.9, s * 0.54, s * 0.04, 20, accentHex);
+      idler.translate(frontX, sprockY, zPos);
+      parts.push(idler);
     }
-    return finalizeClean(parts, Math.PI / 5.2);
+    return finalizeClean(parts, Math.PI / 5.2, 75);
   }
 
   if (partKind === 'engine_block') {

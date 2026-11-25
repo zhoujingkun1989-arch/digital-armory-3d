@@ -24,8 +24,8 @@ const FLAGSHIP_ATLAS_PARTS_TOTAL = WEAPON_MANIFESTS.slice(
   0,
   FLAGSHIP_ATLAS_COUNT
 ).reduce((sum, manifest) => sum + manifest.catalog.partsCount, 0);
-const VAULT_TEXTURES_TOTAL = 414;
-const VAULT_SUITES_TOTAL = 101;
+const VAULT_TEXTURES_TOTAL = 453;
+const VAULT_SUITES_TOTAL = 114;
 const VAULT_AUDIO_TOTAL = 1980;
 const LAB_CALIBER_TOTAL = 17;
 const LAB_CALIBER_ZH = '十七';

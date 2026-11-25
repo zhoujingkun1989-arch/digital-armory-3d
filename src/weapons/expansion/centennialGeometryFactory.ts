@@ -7,9 +7,11 @@ import {
 } from '../../engine/geometry/csgBuilder';
 import {
   CENTENNIAL_FINISH_COLORS,
+  applyMetricBoxUVs,
   buildArcheryGeo,
   buildBoltAndCarrierGeo,
   buildChamferedReceiverGeo,
+  buildChamferedSlab,
   buildDynamicHelicalSpringGeo,
   buildHandguardGeo,
   buildHeavyArmorHullAndTurretGeo,
@@ -185,10 +187,16 @@ function resolveHandguardStyle(bp: CentennialWeaponBlueprint): HandguardStyle {
   if (bp.cad.hasWoodFurniture) {
     return 'walnut_forend';
   }
+  // Constitutional Rule 10.2: ZERO Picatinny 1913 quad rails on pre-1990 historical weapons!
+  if (bp.year < 1990) {
+    return 'ribbed_historical';
+  }
   return 'quad_rail';
 }
 
 function resolveStockStyle(bp: CentennialWeaponBlueprint): StockGripStyle {
+  if (bp.id === 'ppsh41') return 'ppsh_one_piece';
+  if (bp.id === 'm16a1') return 'm16a1_fixed';
   if (bp.id === 'svd') return 'dragunov_thumbhole';
   if (bp.id === 'spas12') return 'spas12_top_fold';
   if (bp.archetype === 'shotgun_lever') return 'straight_walnut';
@@ -367,6 +375,27 @@ function buildStandaloneMuzzleGeo(
   }
 
   if (style === 'shroud') {
+    if (bp.id === 'ppsh41') {
+      // Iconic 1941 PPSh-41 slanted-cut stamped barrel shroud integral compensator + hooded front sight!
+      const shroud = cylX(r * 1.62, r * 1.56, L * 0.86, 0.08, 26, pal.secondary);
+      shroud.translate(-L * 0.08, 0, 0);
+      parts.push(shroud);
+      // Signature forward-angled slanted baffle plate extending ahead of muzzle
+      const slantPlate = createChamferedBox(L * 0.24, r * 3.25, r * 2.6, 0.06, pal.accent);
+      slantPlate.rotateZ(-0.42);
+      slantPlate.translate(L * 0.36, -r * 0.14, 0);
+      parts.push(slantPlate);
+      // Hooded Soviet front sight ring perched atop the shroud nose
+      const sightBase = createChamferedBox(L * 0.28, r * 0.72, r * 0.95, 0.04, pal.secondary);
+      sightBase.translate(0, r * 1.78, 0);
+      parts.push(sightBase);
+      const hood = new THREE.TorusGeometry(r * 0.76, r * 0.18, 10, 20);
+      paintGeo(hood, pal.accent);
+      hood.rotateY(Math.PI / 2);
+      hood.translate(0, r * 2.55, 0);
+      parts.push(hood);
+      return finalizeParts(parts);
+    }
     parts.push(cylX(r * 1.56, r * 1.5, L, 0.07, 26, pal.secondary));
     const lip = createChamferedBox(L * 0.28, r * 3.1, r * 2.8, 0.06, pal.accent);
     lip.translate(L * 0.36, 0, 0);
@@ -393,7 +422,17 @@ function buildStandaloneMuzzleGeo(
     return finalizeParts(parts);
   }
 
-  // 'bare': precision-crowned muzzle thread protector & front blade sight collar
+  // 'bare': precision-crowned muzzle thread protector / AK slant brake / revolver crescent front blade
+  if (bp.id === 'ak47') {
+    // Classic AK slant-cut muzzle compensator
+    const sleeve = cylX(r * 1.26, r * 1.22, L * 1.15, 0.05, 24, pal.barrel);
+    parts.push(sleeve);
+    const slantLip = createChamferedBox(L * 0.55, r * 1.05, r * 1.9, 0.04, pal.secondary);
+    slantLip.rotateZ(-0.46);
+    slantLip.translate(L * 0.44, -r * 0.56, 0);
+    parts.push(slantLip);
+    return finalizeParts(parts);
+  }
   parts.push(cylX(r * 1.18, r * 1.12, L, 0.04, 24, pal.barrel));
   if (bp.archetype === 'revolver_sa' || bp.archetype === 'revolver_da') {
     // Classic Colt SAA 1873 / revolver low swept half-moon crescent blued-steel front blade sight
@@ -418,33 +457,60 @@ function buildTriggerAssemblyGeo(
 ): THREE.BufferGeometry {
   const s = clampMin(scale, 0.6);
   const parts: THREE.BufferGeometry[] = [];
-  // Swept curved trigger shoe
-  const shoe = createChamferedBox(0.55 * s, 2.2 * s, 0.52 * s, 0.05 * s, pal.bolt);
-  shoe.rotateZ(0.28);
-  shoe.translate(0, -0.35 * s, 0);
-  parts.push(shoe);
-  // Protective lower trigger guard bow
-  const bowBot = createChamferedBox(3.6 * s, 0.36 * s, 0.92 * s, 0.05 * s, pal.secondary);
-  bowBot.translate(0.15 * s, -1.65 * s, 0);
-  parts.push(bowBot);
-  const bowFront = createChamferedBox(0.42 * s, 1.85 * s, 0.92 * s, 0.05 * s, pal.secondary);
-  bowFront.rotateZ(-0.22);
-  bowFront.translate(1.8 * s, -0.75 * s, 0);
-  parts.push(bowFront);
-  const bowRear = createChamferedBox(0.42 * s, 1.75 * s, 0.92 * s, 0.05 * s, pal.secondary);
-  bowRear.translate(-1.55 * s, -0.8 * s, 0);
-  parts.push(bowRear);
+  // Ergonomic curved crescent trigger shoe (2-segment swept finger arc!)
+  const upperShoe = createChamferedBox(0.46 * s, 1.18 * s, 0.48 * s, 0.05 * s, pal.bolt);
+  upperShoe.rotateZ(0.18);
+  upperShoe.translate(0.12 * s, -0.02 * s, 0);
+  parts.push(upperShoe);
+  const lowerShoe = createChamferedBox(0.44 * s, 1.12 * s, 0.48 * s, 0.05 * s, pal.bolt);
+  lowerShoe.rotateZ(0.48);
+  lowerShoe.translate(-0.18 * s, -0.92 * s, 0);
+  parts.push(lowerShoe);
+
+  // Smooth curved rounded oval/teardrop trigger guard loop (Constitutional Rule 10.2: ZERO square brackets!)
+  const segs = 10;
+  const rx = 1.85 * s;
+  const ry = 1.62 * s;
+  const bandT = 0.3 * s;
+  const bandW = 0.86 * s;
+  for (let i = 0; i < segs; i++) {
+    const a0 = -Math.PI + (i / segs) * Math.PI;
+    const a1 = -Math.PI + ((i + 1) / segs) * Math.PI;
+    const x0 = Math.cos(a0) * rx + 0.1 * s;
+    const y0 = Math.sin(a0) * ry;
+    const x1 = Math.cos(a1) * rx + 0.1 * s;
+    const y1 = Math.sin(a1) * ry;
+    const segLen = Math.hypot(x1 - x0, y1 - y0) * 1.12;
+    const angle = Math.atan2(y1 - y0, x1 - x0);
+    const seg = createChamferedBox(segLen, bandT, bandW, 0.05 * s, pal.secondary);
+    seg.rotateZ(angle);
+    seg.translate((x0 + x1) * 0.5, (y0 + y1) * 0.5, 0);
+    parts.push(seg);
+  }
   return finalizeParts(parts);
 }
 
 function buildHammerGeo(
   scale: number,
-  pal: CentennialFinishColorSet
+  pal: CentennialFinishColorSet,
+  skeletonized = false
 ): THREE.BufferGeometry {
   const s = clampMin(scale, 0.6);
   const parts: THREE.BufferGeometry[] = [];
-  const hub = cylZ(0.58 * s, 0.58 * s, 0.85 * s, 0.05 * s, 18, pal.bolt);
+  const hub = cylZ(0.56 * s, 0.56 * s, 0.82 * s, 0.05 * s, 18, pal.bolt);
   parts.push(hub);
+  if (skeletonized) {
+    // Iconic Beretta 92FS skeletonized DA/SA ring-spur hammer
+    const ring = new THREE.TorusGeometry(0.76 * s, 0.22 * s, 10, 18);
+    paintGeo(ring, pal.bolt);
+    ring.translate(-0.52 * s, 1.15 * s, 0);
+    parts.push(ring);
+    const spur = createChamferedBox(0.9 * s, 0.38 * s, 0.58 * s, 0.05 * s, pal.accent);
+    spur.rotateZ(0.28);
+    spur.translate(-1.12 * s, 1.75 * s, 0);
+    parts.push(spur);
+    return finalizeParts(parts);
+  }
   const arm = createChamferedBox(0.75 * s, 2.1 * s, 0.68 * s, 0.06 * s, pal.bolt);
   arm.rotateZ(0.32);
   arm.translate(-0.25 * s, 0.95 * s, 0);
@@ -531,7 +597,41 @@ function buildBipodOrRailGeo(
     return finalizeParts(parts);
   }
 
-  // Precision MIL-STD-1913 top/under accessory Picatinny mount rail
+  // Constitutional Rule 10.2: STRICTLY FORBID Picatinny 1913 toothed rails on pre-1990 classics!
+  if (bp.year < 1990) {
+    const isEasternSideRail =
+      bp.id === 'ak47' ||
+      bp.id === 'svd' ||
+      bp.id === 'mosin' ||
+      bp.id === 'sks' ||
+      bp.id === 'stg44' ||
+      bp.id === 'ks23';
+    if (isEasternSideRail) {
+      // Authentic Warsaw Pact / historical blued-steel dovetail side-mount rail on left receiver flank (-Z)
+      const barL = clampMin(dims.receiverLen * 0.42, 4.2);
+      const bar = buildChamferedSlab(barL, 0.72, 0.42, 0.06, pal.secondary);
+      bar.translate(-dims.receiverLen * 0.34, -dims.receiverH * 0.56, -(dims.receiverW * 0.54));
+      const lug = createChamferedBox(barL * 0.76, 0.28, 0.24, 0.03, pal.accent);
+      lug.translate(-dims.receiverLen * 0.34, -dims.receiverH * 0.44, -(dims.receiverW * 0.62));
+      return finalizeParts([bar, lug]);
+    }
+    if (bp.id === 'ppsh41') {
+      // Iconic 1941 PPSh-41 smooth stamped barrel-shroud hinge & receiver top catch (ZERO Picatinny!)
+      const catchPlate = buildChamferedSlab(3.8, 0.46, dims.receiverW * 0.62, 0.08, pal.secondary);
+      catchPlate.translate(-0.8, -0.1, 0);
+      const pin = cylZ(0.28, 0.28, dims.receiverW * 0.96, 0.04, 14, pal.accent);
+      pin.translate(0.7, -0.22, 0);
+      return finalizeParts([catchPlate, pin]);
+    }
+    // Smooth contoured historical receiver top sight rib / rear sight leaf saddle (ZERO Picatinny teeth!)
+    const ribL = clampMin(dims.receiverLen * 0.38, 3.8);
+    const ribW = clampMin(Math.min(1.5, dims.receiverW * 0.48), 1.0);
+    const rib = buildChamferedSlab(ribL, 0.34, ribW, 0.06, pal.secondary);
+    rib.translate(-dims.receiverLen * 0.14, -0.1, 0);
+    return finalizeParts([rib]);
+  }
+
+  // Modern (>= 1990) MIL-STD-1913 top accessory Picatinny mount rail
   const railL = clampMin(dims.receiverLen * 0.52, 4.5);
   const railW = clampMin(Math.min(2.1, dims.receiverW * 0.72), 1.4);
   const rail = createMilStdPicatinnyRail(railL, -railL * 0.5, 0.45, railW, pal.accent);
@@ -564,19 +664,56 @@ function buildGasSystemGeo(
 function buildFollowerGeo(
   dims: CentennialPartDims,
   pal: CentennialFinishColorSet,
-  isTubeOrPan: boolean
+  isTubeOrPan: boolean,
+  withCutawayBrassStack = false,
+  isCurvedMag = false
 ): THREE.BufferGeometry {
   if (isTubeOrPan) {
     const r = clampMin(Math.min(dims.magT, dims.magW) * 0.38, 0.65);
     return finalizeParts([cylX(r, r * 0.92, r * 2.2, 0.05, 20, FOLLOWER_ORANGE)]);
   }
-  const w = clampMin(dims.magW * 0.84, 2.2);
-  const t = clampMin(dims.magT * 0.76, 1.2);
-  const parts = [
-    createChamferedBox(w, 0.82, t, 0.06, FOLLOWER_ORANGE),
-    createChamferedBox(w * 0.68, 0.42, t * 0.42, 0.04, pal.brass),
-  ];
-  parts[1].translate(0, 0.48, 0);
+  const w = clampMin(dims.magW * 0.82, 2.1);
+  const t = clampMin(dims.magT * 0.74, 1.15);
+  const parts: THREE.BufferGeometry[] = [];
+
+  if (withCutawayBrassStack && dims.magH >= 6.0) {
+    // Constitutional Rule 10.4: Gleaming stacked metallic brass cartridges + copper FMJ bullet tips
+    // seated cleanly above the orange follower sled inside the sliced cutaway magazine (`?cut=1`)!
+    const roundCount = 5;
+    const roundR = Math.min(t * 0.32, Math.max(0.24, dims.magH * 0.036));
+    const pitchY = roundR * 2.18;
+    const stackH = roundCount * pitchY;
+    const caseLen = w * 0.58;
+    const bulletLen = w * 0.3;
+    const topY = Math.min(dims.magH * 0.12, 1.35);
+    const followerY = topY - stackH - 0.35;
+
+    const sled = createChamferedBox(w * 0.94, 0.68, t * 0.92, 0.05, FOLLOWER_ORANGE);
+    sled.translate(isCurvedMag ? dims.magH * 0.05 : 0, followerY, 0);
+    parts.push(sled);
+
+    for (let i = 0; i < roundCount; i++) {
+      const ry = followerY + 0.52 + i * pitchY;
+      // Gentle double-stack stagger inside the magazine wall thickness (zero side-wall poke-through!)
+      const rz = (i % 2 === 0 ? -1 : 1) * Math.min(t * 0.15, roundR * 0.42);
+      const tFromTop = Math.max(0, (topY - ry) / Math.max(dims.magH, 1));
+      const rxCurve = isCurvedMag ? tFromTop * tFromTop * dims.magH * 0.2 : 0;
+
+      const casing = cylX(roundR, roundR * 0.88, caseLen, 0.02, 12, pal.brass);
+      casing.translate(rxCurve - bulletLen * 0.34, ry, rz);
+      parts.push(casing);
+
+      const bullet = cylX(roundR * 0.78, 0.05, bulletLen, 0.015, 12, '#c86c36');
+      bullet.translate(rxCurve + caseLen * 0.5 + bulletLen * 0.12, ry, rz);
+      parts.push(bullet);
+    }
+    return finalizeParts(parts);
+  }
+
+  const sled = createChamferedBox(w, 0.82, t, 0.06, FOLLOWER_ORANGE);
+  const rib = createChamferedBox(w * 0.68, 0.42, t * 0.42, 0.04, pal.brass);
+  rib.translate(0, 0.48, 0);
+  parts.push(sled, rib);
   return finalizeParts(parts);
 }
 
@@ -698,7 +835,11 @@ function buildMbtGeometryBuilders(
         dims.barrelBreechR,
         dims.barrelMuzzleR,
         pal.barrel,
-        { muzzleStyle: 'bare', accentColorHex: pal.accent }
+        {
+          muzzleStyle: 'bare',
+          thermalSleeve: style === 'mbt_modern',
+          accentColorHex: pal.accent,
+        }
       ),
     muzzle: () => buildStandaloneMuzzleGeo(bp, dims, pal),
     bolt_carrier: () =>
@@ -1314,7 +1455,11 @@ function buildPistolRevolverGeometryBuilders(
             dims.boltLen,
             dims.boltR,
             pal.primary,
-            isBroom ? 'falling_block' : 'slide'
+            isBroom
+              ? 'falling_block'
+              : bp.id === 'beretta92'
+                ? 'slide_open_top'
+                : 'slide'
           ),
     bolt: () =>
       buildBoltAndCarrierGeo(
@@ -1410,13 +1555,15 @@ function buildPistolRevolverGeometryBuilders(
         cylX(0.3, 0.3, dims.springLen * 0.92, 0.04, 16, pal.bolt),
       ]),
     mount_rail: () => {
-      if (isRevolver || isBroom) {
-        // Sleek historical blued-steel front frame web / magazine housing collar (NO modern Picatinny!)
-        const web = createChamferedBox(2.2, 0.68, dims.receiverW * 0.62, 0.06, pal.secondary);
-        web.translate(-dims.receiverLen * 0.14, 0.12, 0);
-        return finalizeParts([web]);
+      if (isRevolver || isBroom || bp.year < 1990) {
+        // Constitutional Rule 10.2: ZERO Picatinny rails on pre-1990 pistols/revolvers!
+        // Smooth contoured steel front frame dustcover chin & disassembly latch (Beretta 92 / P226 / CZ 75 / PPK / TT-33)
+        const chinL = isRevolver || isBroom ? 2.2 : Math.min(dims.receiverLen * 0.28, 4.0);
+        const chin = buildChamferedSlab(chinL, 0.62, dims.receiverW * 0.68, 0.08, pal.secondary);
+        chin.translate(-dims.receiverLen * 0.16, 0.14, 0);
+        return finalizeParts([chin]);
       }
-      // Compact under-dustcover accessory rail strictly trimmed behind slide/muzzle nose (Beretta 92!)
+      // Modern (>= 1990: USP45 / Five-seveN) compact under-dustcover accessory rail strictly trimmed behind muzzle
       const railL = Math.min(dims.receiverLen * 0.28, 4.4);
       const railW = Math.min(1.85, dims.receiverW * 0.66);
       const rail = createMilStdPicatinnyRail(railL, -railL * 0.5, 0.26, railW, pal.accent);
@@ -1424,7 +1571,7 @@ function buildPistolRevolverGeometryBuilders(
       return finalizeParts([rail]);
     },
     trigger: () => buildTriggerAssemblyGeo(0.82, pal),
-    hammer: () => buildHammerGeo(0.86, pal),
+    hammer: () => buildHammerGeo(0.86, pal, bp.id === 'beretta92'),
     hammer_spring: () => {
       // Concealed cleanly inside pistol/revolver grip frame (ZERO exposed coil sticking out front!)
       const s = buildDynamicHelicalSpringGeo(
@@ -1471,7 +1618,7 @@ function buildPistolRevolverGeometryBuilders(
         star.translate(-dims.boltLen * 0.48, -dims.magH * 0.34, 0);
         return finalizeParts([star]);
       }
-      return buildFollowerGeo(dims, pal, false);
+      return buildFollowerGeo(dims, pal, false, !isBroom, false);
     },
     mag_spring: () => {
       if (isRevolver) {
@@ -1522,14 +1669,26 @@ function buildLongArmGeometryBuilders(
         dims.receiverW,
         pal.primary,
         {
-          topRail: bp.cad.hasOptic || bp.archetype === 'ar_rifle',
+          // Constitutional Rule 10.2: ZERO Picatinny top rails on pre-1990 classics!
+          topRail: bp.year >= 1990 && (bp.cad.hasOptic || bp.archetype === 'ar_rifle'),
           roundedTop:
             bp.archetype === 'smg_tube' ||
             bp.archetype === 'sniper_bolt' ||
-            bp.archetype === 'shotgun_pump',
+            bp.archetype === 'shotgun_pump' ||
+            bp.id === 'ppsh41',
           magwellCollar:
             magStyle === 'curved_banana' || magStyle === 'straight_box',
           ejectionPort: true,
+          akStyle:
+            bp.archetype === 'ak_rifle' ||
+            bp.id === 'bizon' ||
+            bp.id === 'saiga12',
+          arA1Style: bp.id === 'm16a1',
+          dovetailSideRail:
+            bp.id === 'ak74m' ||
+            bp.id === 'svd' ||
+            bp.id === 'rpk74' ||
+            bp.id === 'pkm',
           accentColorHex: pal.accent,
         }
       ),
@@ -1551,6 +1710,8 @@ function buildLongArmGeometryBuilders(
           gasBlock:
             bp.mechanismFilter === 'gas_piston' ||
             bp.mechanismFilter === 'direct_impingement',
+          akGasBlock45: bp.id === 'ak47',
+          m16AFrameSight: bp.id === 'm16a1',
           frontSightTower:
             bp.archetype === 'ak_rifle' ||
             bp.archetype === 'ar_rifle' ||
@@ -1642,6 +1803,7 @@ function buildLongArmGeometryBuilders(
       const isWoodStock =
         stockStyle === 'walnut_rifle' ||
         stockStyle === 'straight_walnut' ||
+        stockStyle === 'ppsh_one_piece' ||
         stockStyle === 'dragunov_thumbhole';
       return buildStockAndGripGeo(
         dims.stockLen,
@@ -1652,6 +1814,17 @@ function buildLongArmGeometryBuilders(
       );
     },
     grip: () => {
+      if (bp.id === 'ppsh41') {
+        // Iconic 1941 PPSh-41 one-piece birch rifle stock has NO separate vertical AK pistol grip!
+        // Tuck sleek blued-steel lower trigger tang & contoured wood wrist bridge seamlessly into stock wrist.
+        const tang = buildChamferedSlab(dims.gripLen * 1.35, 1.45, dims.receiverW * 0.72, 0.08, pal.secondary);
+        tang.rotateZ(0.14);
+        tang.translate(-0.55, dims.gripH * 0.44, 0);
+        const wristCollar = buildChamferedSlab(dims.gripLen * 1.1, 1.85, dims.gripW * 0.96, 0.14, pal.furniture);
+        wristCollar.rotateZ(0.22);
+        wristCollar.translate(-1.25, dims.gripH * 0.36, 0);
+        return finalizeParts([tang, wristCollar]);
+      }
       if (bp.archetype === 'shotgun_pump') {
         return buildHandguardGeo(
           Math.max(8, dims.handguardLen * 0.52),
@@ -1707,8 +1880,8 @@ function buildLongArmGeometryBuilders(
         'y'
       ),
     selector: () => buildSelectorLeverGeo(0.95, pal),
-    mag_body: () =>
-      buildMagazineGeo(
+    mag_body: () => {
+      const magGeo = buildMagazineGeo(
         magStyle,
         dims.magH,
         dims.magW,
@@ -1719,8 +1892,30 @@ function buildLongArmGeometryBuilders(
           bp.id !== 'ak47'
           ? pal.furniture
           : pal.secondary
+      );
+      if (bp.id === 'm16a1') {
+        // Iconic 20-round Colt M16A1 aluminum waffle-rib straight magazine detail
+        const parts: THREE.BufferGeometry[] = [magGeo];
+        for (const side of [-1, 1] as const) {
+          for (let i = 0; i < 4; i++) {
+            const ry = -dims.magH * 0.32 + (i / 3) * (dims.magH * 0.62);
+            const hRib = createChamferedBox(dims.magW * 0.78, 0.28, 0.14, 0.02, pal.accent);
+            hRib.translate(0, ry, side * (dims.magT * 0.52));
+            parts.push(hRib);
+          }
+        }
+        return finalizeParts(parts);
+      }
+      return magGeo;
+    },
+    follower: () =>
+      buildFollowerGeo(
+        dims,
+        pal,
+        isCircularMag,
+        magStyle === 'curved_banana' || magStyle === 'straight_box',
+        magStyle === 'curved_banana'
       ),
-    follower: () => buildFollowerGeo(dims, pal, isCircularMag),
     mag_spring: () => {
       if (magStyle === 'helical_64') {
         const s = buildDynamicHelicalSpringGeo(
@@ -1748,9 +1943,65 @@ function buildLongArmGeometryBuilders(
 }
 
 /**
+ * Physical metric UV tile size (`cm`) per exhibit class & part slot so shared
+ * 1024×1024 seamless PBR textures (`centennial_mat_*`) render at authentic
+ * real-world grain / checkering / machined-steel / armor-plate density with
+ * primary `U` aligned strictly along the barrel `+X` axis.
+ */
+export function resolveMetricUvTileCm(
+  bp: CentennialWeaponBlueprint,
+  slot: CentennialPartSlot
+): number {
+  if (bp.category === 'armor' || bp.category === 'ordnance') {
+    if (
+      slot === 'receiver' ||
+      slot === 'bolt_carrier' ||
+      slot === 'barrel' ||
+      slot === 'handguard' ||
+      slot === 'stock' ||
+      slot === 'gas_system' ||
+      slot === 'mount_rail' ||
+      slot === 'muzzle'
+    ) {
+      return 75;
+    }
+    return 28;
+  }
+  if (bp.category === 'archery') {
+    if (
+      slot === 'barrel' ||
+      slot === 'receiver' ||
+      slot === 'stock' ||
+      slot === 'bolt'
+    ) {
+      return 16;
+    }
+    return 10;
+  }
+  if (slot === 'grip') {
+    // Crisp 20-LPI diamond checkering pitch (~4.5 cm tile) on pistol & tactical grips
+    if (
+      bp.archetype === 'pistol_slide' ||
+      (!bp.cad.hasWoodFurniture && bp.archetype !== 'heavy_mg')
+    ) {
+      return 4.5;
+    }
+    return 10;
+  }
+  if (
+    bp.cad.hasWoodFurniture &&
+    (slot === 'stock' ||
+      (slot === 'handguard' && resolveHandguardStyle(bp) === 'walnut_forend'))
+  ) {
+    return 14;
+  }
+  return 10;
+}
+
+/**
  * Generates exact 20 watertight procedural CAD geometry builders keyed by
  * `${bp.id}_${slot}` for any of the 66 Centennial blueprints across all 28
- * architectural archetypes.
+ * architectural archetypes, with physical metric Box-Projection UVs (`+X` aligned).
  */
 export function buildCentennialGeometryBuildersForBlueprint(
   bp: CentennialWeaponBlueprint
@@ -1789,7 +2040,10 @@ export function buildCentennialGeometryBuildersForBlueprint(
 
   const builders: Record<string, () => THREE.BufferGeometry> = {};
   for (const slot of CENTENNIAL_PART_SLOTS) {
-    builders[centennialPartId(bp.id, slot)] = slotBuilders[slot];
+    const rawBuilder = slotBuilders[slot];
+    const tileCm = resolveMetricUvTileCm(bp, slot);
+    builders[centennialPartId(bp.id, slot)] = () =>
+      applyMetricBoxUVs(rawBuilder(), tileCm);
   }
   return builders;
 }
