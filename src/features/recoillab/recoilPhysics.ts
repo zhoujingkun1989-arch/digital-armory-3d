@@ -1,6 +1,7 @@
 import { CARTRIDGE_LAB_SPECS } from '../../engine/cartridges/cartridgeSpecs';
 import { getCaliberBallisticsSpec } from '../../engine/physics/armoryPhysics';
 import type { LanguageCode } from '../../narration/types';
+import { buildCentennialRecoilSpecs } from '../../weapons/expansion/centennialProjectors';
 import { WEAPON_MANIFESTS } from '../../weapons/manifests';
 import type { ArmoryWeaponItem, WeaponId } from '../../weapons/types';
 
@@ -419,6 +420,7 @@ const EXACT_RECOIL_SPECS: Readonly<Record<WeaponId, ExactRecoilSpec>> = {
     pivotKind: 'mount',
     supportsMuzzleDevices: false,
   },
+  ...buildCentennialRecoilSpecs(),
 };
 
 export interface RecoilExhibitProfile {

@@ -1,6 +1,7 @@
 import { getCaliberBallisticsSpec } from '../../engine/physics/armoryPhysics';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
 import type { LanguageCode } from '../../narration/types';
+import { buildCentennialArmorySortMeta } from '../../weapons/expansion/centennialProjectors';
 import {
   getWeaponManifest,
   matchesArmoryCategory,
@@ -126,6 +127,8 @@ export const ARMORY_SORT_FILTER_STRINGS: Record<
  * Historical design / adoption year per exhibit — synchronized 1:1 with the
  * 1894–2024 Curated Evolution Timeline without creating a lazy-chunk cycle.
  */
+const CENTENNIAL_SORT_META = buildCentennialArmorySortMeta();
+
 export const EXHIBIT_DESIGN_YEAR: Readonly<Record<WeaponId, number>> = {
   winchester1894: 1894,
   p08: 1900,
@@ -161,6 +164,7 @@ export const EXHIBIT_DESIGN_YEAR: Readonly<Record<WeaponId, number>> = {
   r500: 2022,
   ak15: 2023,
   lift33: 2024,
+  ...CENTENNIAL_SORT_META.years,
 };
 
 /**
@@ -206,6 +210,12 @@ export const EXHIBIT_MECHANISM_TAGS: Readonly<
   k98k: ['manual_action'],
   thompson: ['roller_delay'],
   gau8: ['rotary_cannon'],
+  ...(Object.fromEntries(
+    Object.entries(CENTENNIAL_SORT_META.filters).map(([id, f]) => [id, [f]])
+  ) as unknown as Record<
+    keyof typeof CENTENNIAL_SORT_META.filters,
+    readonly NonAllMechanismFilter[]
+  >),
 };
 
 /**

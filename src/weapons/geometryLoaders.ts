@@ -1,11 +1,15 @@
 import type * as THREE from 'three';
+import {
+  CENTENNIAL_66_IDS,
+  type FlagshipWeaponId,
+} from './expansion/centennialTypes';
 import type { WeaponId } from './types';
 import { isWeaponId } from './types';
 
 export type GeometryBuilderMap = Record<string, () => THREE.BufferGeometry>;
 
-export const GEOMETRY_MODULE_LOADERS: Record<
-  WeaponId,
+const FLAGSHIP_GEOMETRY_LOADERS: Record<
+  FlagshipWeaponId,
   () => Promise<GeometryBuilderMap>
 > = {
   ak15: () => import('./ak15/geometries').then((m) => m.GEOMETRY_BUILDERS),
@@ -48,6 +52,24 @@ export const GEOMETRY_MODULE_LOADERS: Record<
     import('./thompson/geometries').then((m) => m.GEOMETRY_BUILDERS),
   gau8: () => import('./gau8/geometries').then((m) => m.GEOMETRY_BUILDERS),
 };
+
+const CENTENNIAL_GEOMETRY_LOADERS = Object.fromEntries(
+  CENTENNIAL_66_IDS.map((cid) => [
+    cid,
+    () =>
+      import('./expansion/centennialGeometryFactory').then((m) =>
+        m.buildCentennialGeometryBuilders(cid)
+      ),
+  ])
+);
+
+export const GEOMETRY_MODULE_LOADERS: Record<
+  WeaponId,
+  () => Promise<GeometryBuilderMap>
+> = {
+  ...FLAGSHIP_GEOMETRY_LOADERS,
+  ...CENTENNIAL_GEOMETRY_LOADERS,
+} as Record<WeaponId, () => Promise<GeometryBuilderMap>>;
 
 export function loadWeaponGeometryBuilders(
   weaponId: string

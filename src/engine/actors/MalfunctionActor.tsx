@@ -141,7 +141,10 @@ export const MalfunctionActor: React.FC = () => {
     const ejectZ = 1;
 
     if (isArcheryActive) {
-      const isBow = (weaponId as string) === 'lift33';
+      const isBow =
+        weaponId === 'lift33' ||
+        weaponId === 'hoytrx8' ||
+        weaponId === 'englishlongbow';
       const nockBaseX = isBow ? -16.5 : -22.0;
       const boreY = isBow ? 2.4 : 1.8;
       const shaftScale = isBow ? 1.15 : 0.92;

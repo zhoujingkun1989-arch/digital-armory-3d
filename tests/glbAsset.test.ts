@@ -1053,7 +1053,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
 
     // --- 15. Benelli M4 Super 90 / USMC M1014 (26 parts = 3 dynamic springs + 7 receiver + 12 metal + 4 furniture) ---
-    const benelliCfg = GLB_WEAPON_CONFIGS.benellim4;
+    const benelliCfg = GLB_WEAPON_CONFIGS.benellim4!;
     expect(benelliCfg.modelFile).toBe('benellim4.glb');
     expect(benelliCfg.dynamicSpringParts).toEqual([
       'benellim4_recoil_spring',
@@ -1110,7 +1110,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
 
     // --- 16. FN M249 SAW (26 parts = 2 dynamic springs + 6 receiver + 13 metal + 5 furniture) ---
-    const m249Cfg = GLB_WEAPON_CONFIGS.m249;
+    const m249Cfg = GLB_WEAPON_CONFIGS.m249!;
     expect(m249Cfg.modelFile).toBe('m249.glb');
     expect(m249Cfg.dynamicSpringParts).toEqual([
       'm249_recoil_spring',
@@ -1164,7 +1164,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
 
     // --- 17. KRISS Vector SMG Gen II (25 parts = 3 dynamic springs + 7 housing + 12 metal + 3 mag) ---
-    const vectorCfg = GLB_WEAPON_CONFIGS.vector;
+    const vectorCfg = GLB_WEAPON_CONFIGS.vector!;
     expect(vectorCfg.modelFile).toBe('vector.glb');
     expect(vectorCfg.dynamicSpringParts).toEqual([
       'vector_recoil_spring',
@@ -1218,7 +1218,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
 
     // --- 18. Mathews LIFT 33 Compound Bow (24 parts = 5 dynamic CSG limbs/axles/strings + 6 riser + 8 cams_acc + 5 quiver_arrow) ---
-    const liftCfg = GLB_WEAPON_CONFIGS.lift33;
+    const liftCfg = GLB_WEAPON_CONFIGS.lift33!;
     expect(liftCfg.modelFile).toBe('lift33.glb');
     expect(liftCfg.dynamicSpringParts).toEqual([
       'lift33_upper_limbs',
@@ -1277,7 +1277,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
 
     // --- 19. Ravin R500 Crossbow (25 parts = 6 dynamic CSG limbs/axles/strings/spring + 6 chassis + 9 cams_mech + 4 optic_bolt) ---
-    const r500Cfg = GLB_WEAPON_CONFIGS.r500;
+    const r500Cfg = GLB_WEAPON_CONFIGS.r500!;
     expect(r500Cfg.modelFile).toBe('r500.glb');
     expect(r500Cfg.dynamicSpringParts).toEqual([
       'r500_left_limbs',
@@ -1334,7 +1334,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
 
     // --- 20. H&K G11 K2 (24 parts = 2 dynamic springs + 7 housing + 9 clockwork + 6 barrel_mag) ---
-    const g11Cfg = GLB_WEAPON_CONFIGS.g11;
+    const g11Cfg = GLB_WEAPON_CONFIGS.g11!;
     expect(g11Cfg.modelFile).toBe('g11.glb');
     expect(g11Cfg.dynamicSpringParts).toEqual([
       'g11_recoil_spring',
@@ -1390,7 +1390,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
 
     // --- 21. VSS Vintorez (24 parts = 2 dynamic springs + 7 receiver_supp + 4 wood_optic + 11 metal) ---
-    const vssCfg = GLB_WEAPON_CONFIGS.vss;
+    const vssCfg = GLB_WEAPON_CONFIGS.vss!;
     expect(vssCfg.modelFile).toBe('vss.glb');
     expect(vssCfg.dynamicSpringParts).toEqual([
       'vss_recoil_spring',
@@ -1444,7 +1444,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
 
     // --- 22. M134D Minigun (25 parts = 2 dynamic springs + 7 housing_motor + 6 barrels_rotor + 10 delinker_bolts) ---
-    const m134Cfg = GLB_WEAPON_CONFIGS.m134;
+    const m134Cfg = GLB_WEAPON_CONFIGS.m134!;
     expect(m134Cfg.modelFile).toBe('m134.glb');
     expect(m134Cfg.dynamicSpringParts).toEqual([
       'm134_clutch_spring',
@@ -1502,7 +1502,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
 
     // --- 23. AN-94 Abakan (26 parts = 2 dynamic springs + 7 receiver_stock + 10 pulley_metal + 7 barrel_mag) ---
-    const an94Cfg = GLB_WEAPON_CONFIGS.an94;
+    const an94Cfg = GLB_WEAPON_CONFIGS.an94!;
     expect(an94Cfg.modelFile).toBe('an94.glb');
     expect(an94Cfg.dynamicSpringParts).toEqual([
       'an94_recoil_spring',
@@ -1615,7 +1615,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     ];
 
     for (const tc of tankContracts) {
-      const cfg = GLB_WEAPON_CONFIGS[tc.id];
+      const cfg = GLB_WEAPON_CONFIGS[tc.id]!;
       expect(cfg.modelFile).toBe(tc.modelFile);
       expect(cfg.dynamicSpringParts).toEqual(tc.springs);
       expect(tc.parts).toHaveLength(26);
@@ -1672,7 +1672,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     ];
 
     for (const wc of wp25Contracts) {
-      const cfg = GLB_WEAPON_CONFIGS[wc.id];
+      const cfg = GLB_WEAPON_CONFIGS[wc.id]!;
       expect(cfg.modelFile).toBe(wc.modelFile);
       expect(cfg.dynamicSpringParts).toEqual(wc.springs);
       expect(wc.parts).toHaveLength(24);
@@ -1704,11 +1704,12 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
 
     // --- V6.0 34/34 part accounting invariant: 775 solid GLB + 79 dynamic CSG = 854 total parts ---
     const totalSolidGlbParts = migrated.reduce(
-      (sum, wid) => sum + Object.keys(GLB_WEAPON_CONFIGS[wid].pbrOverrides).length,
+      (sum, wid) =>
+        sum + Object.keys(GLB_WEAPON_CONFIGS[wid]!.pbrOverrides).length,
       0
     );
     const totalDynamicCsgParts = migrated.reduce(
-      (sum, wid) => sum + GLB_WEAPON_CONFIGS[wid].dynamicSpringParts.length,
+      (sum, wid) => sum + GLB_WEAPON_CONFIGS[wid]!.dynamicSpringParts.length,
       0
     );
     expect(totalSolidGlbParts).toBe(775);
@@ -1718,7 +1719,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     // --- Verify on-disk binary GLB headers, exact node/mesh alignment, referenced v3 WebP maps & per-exhibit MB size budgets ---
     const modelsDir = path.resolve(__dirname, '../public/models');
     const texturesDir = path.resolve(__dirname, '../public/textures');
-    const maxBudgetBytes: Record<WeaponId, number> = {
+    const maxBudgetBytes: Partial<Record<WeaponId, number>> = {
       p08: 10 * 1024 * 1024,
       python: 10 * 1024 * 1024,
       ak15: 12 * 1024 * 1024,
@@ -1811,7 +1812,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       expect(
         totalBytes,
         `${wid} total bundle (${(totalBytes / 1048576).toFixed(2)} MB) exceeds budget`
-      ).toBeLessThanOrEqual(maxBudgetBytes[wid]);
+      ).toBeLessThanOrEqual(maxBudgetBytes[wid]!);
     }
   });
 

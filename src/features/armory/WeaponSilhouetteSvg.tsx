@@ -1,4 +1,7 @@
 import React from 'react';
+import { CENTENNIAL_BLUEPRINT_MAP } from '../../weapons/expansion/centennialCatalog';
+import { renderCentennialWeaponSilhouette } from '../../weapons/expansion/centennialSilhouetteRenderer';
+import { isCentennialWeaponId } from '../../weapons/expansion/centennialTypes';
 
 export interface WeaponSilhouetteSvgProps {
   id: string;
@@ -20,6 +23,16 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
       ? 'var(--silhouette-accent, #38bdf8)'
       : '#94a3b8';
     const cutout = 'var(--silhouette-cutout, #0d1420)';
+
+    if (isCentennialWeaponId(id)) {
+      return renderCentennialWeaponSilhouette(CENTENNIAL_BLUEPRINT_MAP[id], {
+        stroke,
+        fill,
+        subFill,
+        accent,
+        cutout,
+      });
+    }
 
     switch (id) {
       case 'ak15':

@@ -84,7 +84,7 @@ export function filterEngineeringGlossaryTerms(
 
 export const TIMELINE_STRINGS = {
   zh: {
-    badge: '百年机械演化谱系档案 · 1894–2026',
+    badge: `跨世纪机械演化谱系档案 · ${MUSEUM_TIMELINE_MIN_YEAR}–${MUSEUM_TIMELINE_MAX_YEAR}`,
     title: `${MUSEUM_TIMELINE_MIN_YEAR} – ${MUSEUM_TIMELINE_MAX_YEAR} 交互式机构专利谱系与演化时间轴`,
     subtitle: `横跨 ${MUSEUM_TIMELINE_LINEAGE_COUNT} 大机械闭锁脉系纵览全馆 ${MUSEUM_EXHIBIT_COUNT} 款名枪、复合弓弩、1:1 主战坦克与航空重武工程突破，支持时代分期筛选、精选策展步进导览与一键跳转 3D 剖视工作台`,
     close: '关闭演化时间轴',

@@ -1,3 +1,4 @@
+import { buildCentennialFiringTimings } from '../../weapons/expansion/centennialProjectors';
 import type { CaliberProfile, WeaponId } from '../../weapons/types';
 
 // ============================================================================
@@ -76,11 +77,37 @@ export function isArcheryCaliber(
   return caliber === 'arrow_400gr' || caliber === 'bolt_400gr';
 }
 
-/** True for archery platforms (`lift33` compound bow & `r500` compound crossbow). */
+const ARCHERY_WEAPON_ID_SET: ReadonlySet<string> = new Set([
+  'lift33',
+  'r500',
+  'hoytrx8',
+  'excalibur',
+  'englishlongbow',
+]);
+
+const TANK_WEAPON_ID_SET: ReadonlySet<string> = new Set([
+  'ztz99a',
+  'm1a2',
+  'leopard2a7',
+  'tiger1',
+  't90m',
+  'challenger2',
+  'merkava4',
+  't34_85',
+]);
+
+const ORDNANCE_WEAPON_ID_SET: ReadonlySet<string> = new Set([
+  'gau8',
+  'm61vulcan',
+  'bofors40',
+  'm777',
+]);
+
+/** True for all 5 archery platforms (`lift33`, `r500`, `hoytrx8`, `excalibur`, `englishlongbow`). */
 export function isArcheryWeapon(
   weaponId: WeaponId | string | null | undefined
 ): boolean {
-  return weaponId === 'lift33' || weaponId === 'r500';
+  return !!weaponId && ARCHERY_WEAPON_ID_SET.has(weaponId);
 }
 
 /** True for 1:1 Main Battle Tank main-cannon ordnance calibers. */
@@ -94,16 +121,25 @@ export function isTankCaliber(
   );
 }
 
-/** True for 1:1 Heavy Armor Main Battle Tank exhibits (`BAY-24 ~ BAY-27`). */
+/** True for all 8 1:1 Heavy Armor Main Battle Tank exhibits. */
 export function isTankWeapon(
   weaponId: WeaponId | string | null | undefined
 ): boolean {
-  return (
-    weaponId === 'ztz99a' ||
-    weaponId === 'm1a2' ||
-    weaponId === 'leopard2a7' ||
-    weaponId === 'tiger1'
-  );
+  return !!weaponId && TANK_WEAPON_ID_SET.has(weaponId);
+}
+
+/** True for all 4 1:1 Heavy Ordnance exhibits (`gau8`, `m61vulcan`, `bofors40`, `m777`). */
+export function isOrdnanceWeapon(
+  weaponId: WeaponId | string | null | undefined
+): boolean {
+  return !!weaponId && ORDNANCE_WEAPON_ID_SET.has(weaponId);
+}
+
+/** True for all 12 1:1 heavy-hangar exhibits (8 MBTs + 4 Heavy Ordnance). */
+export function isHeavyScaleWeapon(
+  weaponId: WeaponId | string | null | undefined
+): boolean {
+  return isTankWeapon(weaponId) || isOrdnanceWeapon(weaponId);
 }
 
 /** Accepts canonical `CaliberProfile` keys as well as shorthand `'9x19'` / `'57x28'` aliases. */
@@ -937,6 +973,7 @@ export const WEAPON_FIRING_TIMING: Readonly<
   thompson: timing(0.23, 0.32, 0.52, 0.85, null, -0.18, 0.35, 0.92),
   // GE GAU-8/A Avenger 30×173mm — twin 38.5-HP hydraulic 7-barrel rotary + closed-loop aluminum case return
   gau8: timing(0.08, 0.19, 0.44, 0.88, null, -0.82, -0.32, 0.48),
+  ...buildCentennialFiringTimings(),
 };
 
 export function getWeaponFiringTiming(

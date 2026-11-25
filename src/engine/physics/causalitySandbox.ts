@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { buildCentennialCausalityDefaults } from '../../weapons/expansion/centennialProjectors';
 import { getWeaponManifest } from '../../weapons/manifests';
 import type { WeaponId } from '../../weapons/types';
 import {
@@ -124,6 +125,7 @@ const NOMINAL_CADENCE_RPM: Readonly<Record<WeaponId, number>> = {
   k98k: 15,
   thompson: 750,
   gau8: 3900,
+  ...buildCentennialCausalityDefaults(),
 };
 
 function clampRange(val: number, min: number, max: number): number {

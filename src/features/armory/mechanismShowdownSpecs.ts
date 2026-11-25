@@ -17,6 +17,8 @@ import {
   resolveWeaponDisplayMeta,
 } from '../../i18n/weaponFallbacks';
 import type { LanguageCode } from '../../narration/types';
+import { CENTENNIAL_BLUEPRINTS } from '../../weapons/expansion/centennialCatalog';
+import type { CentennialWeaponBlueprint } from '../../weapons/expansion/centennialTypes';
 import { ARMORY_WEAPONS, getWeaponManifest } from '../../weapons/manifests';
 import { isWeaponId, type CaliberProfile } from '../../weapons/types';
 
@@ -2235,6 +2237,132 @@ export const SHOWDOWN_EXHIBIT_SPECS: Readonly<
       en: '6.06 m length, 1,828 kg loaded mass & 44.5 kN recoil required designing the entire A-10 airframe around it',
     },
   },
+  ...Object.fromEntries(
+    CENTENNIAL_BLUEPRINTS.map((bp: CentennialWeaponBlueprint) => {
+      let driveFamily: DriveFamilyId = 'long_stroke_piston';
+      let lockingFamily: LockingFamilyId = 'rotating_lug_bolt';
+      let feedFamily: FeedFamilyId;
+
+      switch (bp.kinematicLaw) {
+        case 'long_stroke_piston':
+          driveFamily = 'long_stroke_piston';
+          lockingFamily = 'rotating_lug_bolt';
+          break;
+        case 'short_stroke_piston':
+        case 'tilting_bolt':
+          driveFamily = 'short_stroke_piston';
+          lockingFamily = 'rotating_lug_bolt';
+          break;
+        case 'direct_impingement':
+          driveFamily = 'direct_impingement';
+          lockingFamily = 'rotating_lug_bolt';
+          break;
+        case 'browning_tilt_barrel':
+        case 'falling_block_pistol':
+          driveFamily = 'short_recoil_barrel';
+          lockingFamily = 'tilting_barrel_cam';
+          break;
+        case 'roller_delayed':
+        case 'lever_delayed':
+        case 'open_bolt_blowback':
+        case 'closed_bolt_blowback':
+          driveFamily = 'delayed_or_straight_blowback';
+          lockingFamily = 'roller_or_mass_blowback';
+          break;
+        case 'rotary_gatling':
+          driveFamily = 'external_electric_rotary';
+          lockingFamily = 'rotating_lug_bolt';
+          break;
+        case 'bolt_action':
+        case 'pump_action':
+        case 'lever_action':
+          driveFamily = 'manual_bolt_or_revolver_linkage';
+          lockingFamily = 'rotating_lug_bolt';
+          break;
+        case 'revolver_cylinder':
+          driveFamily = 'manual_bolt_or_revolver_linkage';
+          lockingFamily = 'cylinder_notch_ratchet';
+          break;
+        case 'compound_bow':
+        case 'recurve_crossbow':
+        case 'self_longbow':
+          driveFamily = 'compound_cam_elastic';
+          lockingFamily = 'cam_letoff_or_adf_sled';
+          break;
+        case 'tank_carousel':
+        case 'tank_manual':
+        case 'aa_sliding_wedge':
+        case 'artillery_howitzer':
+          driveFamily = 'hydro_pneumatic_cannon_recoil';
+          lockingFamily = 'sliding_wedge_breech';
+          break;
+      }
+
+      switch (bp.cad.magStyle) {
+        case 'belt':
+          feedFamily = 'disintegrating_belt_shuttle';
+          break;
+        case 'cylinder':
+          feedFamily = 'swing_out_cylinder';
+          break;
+        case 'tube':
+          feedFamily = 'underbarrel_tubular_elevator';
+          break;
+        case 'quiver':
+          feedFamily = 'drop_away_or_flight_track';
+          break;
+        case 'carousel':
+        case 'bustle':
+        case 'breech_single':
+          feedFamily = 'autoloader_carousel_or_blast_bustle';
+          break;
+        case 'top_clip':
+        case 'box_internal':
+          feedFamily = 'top_enbloc_clip';
+          break;
+        case 'pan':
+          feedFamily = 'top_helical_90deg';
+          break;
+        default:
+          feedFamily = 'staggered_box_magazine';
+          break;
+      }
+
+      return [
+        bp.id,
+        {
+          id: bp.id,
+          driveFamily,
+          lockingFamily,
+          feedFamily,
+          driveDetail: {
+            zh: bp.actionMechanismZh,
+            en: bp.actionMechanismEn,
+          },
+          lockingDetail: {
+            zh: `${bp.rifling.noteZh}（峰值膛压 ${bp.peakPressureMpa} MPa）`,
+            en: `${bp.rifling.noteEn} (${bp.peakPressureMpa} MPa peak pressure)`,
+          },
+          feedDetail: {
+            zh: `${bp.magCapacity} 发 ${bp.caliberLabel} 供弹系统`,
+            en: `${bp.magCapacity}-round ${bp.caliberLabel} feed system`,
+          },
+          fireControlDetail: {
+            zh: `${bp.rateOfFireLabelZh} · ${bp.weaponTypeZh}`,
+            en: `${bp.rateOfFireLabelEn} · ${bp.weaponTypeEn}`,
+          },
+          signatureAdvantage: {
+            zh: bp.highlightsZh[0],
+            en: bp.highlightsEn[0],
+          },
+          engineeringTradeoff: {
+            zh: bp.highlightsZh[3],
+            en: bp.highlightsEn[3],
+          },
+        } satisfies ShowdownExhibitClassification,
+      ];
+    })
+  ),
 };
 
 const DEFAULT_CLASSIFICATION: ShowdownExhibitClassification =

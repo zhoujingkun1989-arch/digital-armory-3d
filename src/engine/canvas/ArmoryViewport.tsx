@@ -52,6 +52,7 @@ import {
 import { initKtx2Support } from '../materials/ktx2Support';
 import {
   getArmoryPhysicsState,
+  isOrdnanceWeapon,
   isTankWeapon,
   setBrassFloorImpactListener,
 } from '../physics/armoryPhysics';
@@ -297,11 +298,11 @@ export function computeCutawayFocusRefinement(
   }
 
   const scaleProfile = getWeaponManifest(weaponId).workbenchMeta.scaleProfile;
-  const isGau8 = weaponId === 'gau8';
-  const isMbt = scaleProfile === 'main_battle_tank' && !isGau8;
+  const isOrdnance = isOrdnanceWeapon(weaponId);
+  const isMbt = isTankWeapon(weaponId) || (scaleProfile === 'main_battle_tank' && !isOrdnance);
 
-  const minZ = isMbt ? 340 : isGau8 ? 180 : 9.5;
-  const maxZ = isMbt ? 900 : isGau8 ? 520 : 85;
+  const minZ = isMbt ? 340 : isOrdnance ? 180 : 9.5;
+  const maxZ = isMbt ? 900 : isOrdnance ? 520 : 85;
 
   const targetX = baseCam.target[0];
   const targetY = baseCam.target[1];

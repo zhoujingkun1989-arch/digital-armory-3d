@@ -1,4 +1,5 @@
 import type { LanguageCode } from '../../narration/types';
+import { buildCentennialArmorySortMeta } from '../../weapons/expansion/centennialProjectors';
 import { getWeaponManifest } from '../../weapons/manifests';
 import type { ArmoryWeaponItem, WeaponId } from '../../weapons/types';
 
@@ -108,6 +109,7 @@ const EXHIBIT_YEAR_BY_ID: Readonly<Record<WeaponId, number>> = {
   k98k: 1935,
   thompson: 1928,
   gau8: 1977,
+  ...buildCentennialArmorySortMeta().years,
 };
 
 const EN_CALIBER_OVERRIDES: Partial<Record<WeaponId, string>> = {
