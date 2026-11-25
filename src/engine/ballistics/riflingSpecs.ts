@@ -1,6 +1,8 @@
+import { buildCentennialRiflingSpecs } from '../../weapons/expansion/centennialProjectors';
 import { getWeaponManifest } from '../../weapons/manifests';
 import type { WeaponId } from '../../weapons/types';
 import { WEAPON_ATTACHMENT_PROFILES } from '../attachments/attachmentSpecs';
+import { isOrdnanceWeapon, isTankWeapon } from '../physics/armoryPhysics';
 
 // ============================================================================
 // Digital Armory 3D — 34-Exhibit Barrel Rifling & Chamber Throat Registry
@@ -491,6 +493,7 @@ export const WEAPON_RIFLING_SPECS: Readonly<
     labelEn: '9-Groove 30mm 7-Barrel Rotary Cannon · 1:39.4" (1,000 mm) RH · Chrome-Lined',
     labelZh: '9 条 30mm 七管航炮膛线 · 缠距 1:39.4" (1,000 mm) 右旋 · 镀铬内膛',
   }),
+  ...buildCentennialRiflingSpecs(),
 };
 
 export function getWeaponRiflingSpec(weaponId: WeaponId): WeaponRiflingSpec {
@@ -527,8 +530,8 @@ export function computeRiflingBoreBounds(
   const meta = manifest.workbenchMeta;
   const att = WEAPON_ATTACHMENT_PROFILES[weaponId];
   const modelScale = att.modelScale;
-  const isTank = meta.scaleProfile === 'main_battle_tank';
-  const isGau8 = weaponId === 'gau8';
+  const isTank = isTankWeapon(weaponId);
+  const isGau8 = isOrdnanceWeapon(weaponId);
 
   const chamberX = meta.chamberGlowPos[0];
   const chamberY = meta.chamberGlowPos[1];

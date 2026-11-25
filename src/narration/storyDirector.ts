@@ -4,6 +4,7 @@ import {
   type StoryDirectorStageSpec,
   useAppStore,
 } from '../store/useAppStore';
+import { buildCentennialDirectorProfiles } from '../weapons/expansion/centennialProjectors';
 import { isWeaponId, type WeaponId } from '../weapons/types';
 import {
   getNarrationAudioSnapshot,
@@ -277,6 +278,7 @@ export const EXHIBIT_DIRECTOR_PROFILES: Readonly<
     ['gau8_barrel_cluster', 'gau8_cam_track', 'gau8_ammo_drum', 'gau8_hydraulic_motors'],
     ['gau8_cam_track', 'gau8_ammo_drum']
   ),
+  ...buildCentennialDirectorProfiles(),
 };
 
 export function getExhibitDirectorProfile(

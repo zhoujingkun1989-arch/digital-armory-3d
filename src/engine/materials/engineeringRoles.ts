@@ -1,3 +1,4 @@
+import { buildCentennialGasManifolds } from '../../weapons/expansion/centennialProjectors';
 import type {
   AssemblyGroupKey,
   MaterialKind,
@@ -1017,6 +1018,7 @@ export const WEAPON_GAS_MANIFOLD_PROFILES: Readonly<
     gasTargetX: 30.0,
     ventPos: [320.0, 7.4, 0],
   },
+  ...buildCentennialGasManifolds(),
 };
 
 /**
@@ -1776,13 +1778,18 @@ export interface EngineeringPartClassifierInput {
  * mechanical engineering roles. O(1) dictionary/pattern lookup, safe for hot paths.
  */
 export function resolvePartEngineeringRole(
-  _weaponId: WeaponId,
+  weaponId: WeaponId,
   part: Pick<WeaponPartSpec, 'id' | 'group' | 'material' | 'isShell'>
 ): EngineeringRole {
   const explicit = EXPLICIT_PART_ROLE_OVERRIDES[part.id];
   if (explicit) return explicit;
 
-  if (part.material === 'spring_steel' || /spring/.test(part.id)) {
+  const prefix = `${weaponId}_`;
+  const localId = part.id.startsWith(prefix)
+    ? part.id.slice(prefix.length)
+    : part.id;
+
+  if (part.material === 'spring_steel' || /spring/.test(localId)) {
     return 'energy_spring';
   }
 
@@ -1793,18 +1800,25 @@ export function resolvePartEngineeringRole(
   if (
     part.group === 'fire_control' ||
     /trigger|hammer|striker|sear|disconnector|selector|firing_pin|connector/.test(
-      part.id
+      localId
     )
   ) {
     return 'fire_control';
   }
 
-  if (/gas_block|gas_tube|gas_piston|gas_regulator/.test(part.id)) {
+  if (
+    /gas_block|gas_tube|gas_piston|gas_regulator/.test(localId) ||
+    (localId === 'gas_system' &&
+      (WEAPON_GAS_MANIFOLD_PROFILES[weaponId]?.hasGasTap ||
+        isArcheryWeapon(weaponId) ||
+        isTankWeapon(weaponId)))
+  ) {
     return 'gas_drive';
   }
 
   if (
-    /locking|accelerator|barrel_extension/.test(part.id) ||
+    /locking|accelerator|barrel_extension/.test(localId) ||
+    localId === 'bolt' ||
     part.material === 'barrel_steel'
   ) {
     return 'locking';
@@ -1813,7 +1827,7 @@ export function resolvePartEngineeringRole(
   if (
     !part.isShell &&
     /bolt_carrier|charging_handle|recoil_guide|recoil_rod|guide_rod/.test(
-      part.id
+      localId
     )
   ) {
     return 'bolt_carrier';

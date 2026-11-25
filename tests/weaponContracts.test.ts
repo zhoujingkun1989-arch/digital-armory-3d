@@ -62,7 +62,7 @@ const DENSE_FIRING_SWEEP: readonly number[] = Array.from(
   (_, i) => Number((i * 0.02).toFixed(2))
 );
 
-const DYNAMIC_SPRING_PARTS: Readonly<Record<WeaponId, readonly string[]>> = {
+const DYNAMIC_SPRING_PARTS: Readonly<Partial<Record<WeaponId, readonly string[]>>> = {
   ak15: ['ak_recoil_spring'],
   m4a1: ['m4a1_buffer_spring'],
   mp5: ['mp5_recoil_spring'],
@@ -464,7 +464,7 @@ describe('34-Exhibit Digital Armory V6.0 1:1 plugin, geometry, kinematics & PBR 
       }
 
       // Dynamic spring deformation check per weapon
-      for (const springId of DYNAMIC_SPRING_PARTS[manifest.id]) {
+      for (const springId of DYNAMIC_SPRING_PARTS[manifest.id] ?? []) {
         let minScale = Infinity;
         let maxScale = -Infinity;
         for (const f of DENSE_FIRING_SWEEP) {

@@ -6,6 +6,7 @@ import {
   type AppViewMode,
   useAppStore,
 } from '../../store/useAppStore';
+import { isOrdnanceWeapon } from '../physics/armoryPhysics';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { useWeaponPlugin } from '../../weapons/registry';
 import type {
@@ -141,10 +142,10 @@ export function getExplodeGuideScaleSpec(
   weaponId?: WeaponId | string,
   parts?: readonly WeaponPartSpec[]
 ): ExplodeGuideScaleSpec {
-  const isGau8 =
-    weaponId === 'gau8' ||
+  const isOrdnance =
+    isOrdnanceWeapon(weaponId) ||
     Boolean(parts && parts.some((p) => p.id.startsWith('gau8_')));
-  if (isGau8) {
+  if (isOrdnance) {
     return {
       minDisplacementCm: 4.0,
       dashSize: 3.6,

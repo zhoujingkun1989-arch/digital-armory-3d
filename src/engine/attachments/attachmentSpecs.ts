@@ -1,3 +1,4 @@
+import { buildCentennialAttachmentSpecs } from '../../weapons/expansion/centennialProjectors';
 import type { WeaponId } from '../../weapons/types';
 
 // ============================================================================
@@ -1009,6 +1010,7 @@ export const WEAPON_ATTACHMENT_PROFILES: Readonly<
     opticCompatibilityNoteEn:
       'Hard-mounted along the A-10 Thunderbolt II fuselage centerline and aimed via cockpit HUD & CCIP fire-control computer.',
   },
+  ...buildCentennialAttachmentSpecs(),
 };
 
 export function getWeaponAttachmentMountProfile(

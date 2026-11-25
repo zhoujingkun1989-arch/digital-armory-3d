@@ -5,7 +5,10 @@ import type {
   PlatformAttachmentClass,
   WeaponAttachmentMountProfile,
 } from '../../engine/attachments/attachmentSpecs';
-import type { WeaponMagazineStackSpec } from '../../engine/ballistics/magazineStackSpecs';
+import type {
+  SculpturalAmmoExhibitMeta,
+  WeaponMagazineStackSpec,
+} from '../../engine/ballistics/magazineStackSpecs';
 import type {
   RiflingKind,
   RiflingTwistDirection,
@@ -1039,7 +1042,12 @@ export function buildCentennialAttachmentSpecs(): Record<
     const isRevolver =
       bp.archetype === 'revolver_sa' || bp.archetype === 'revolver_da';
     const receiverPos = layout.assembledPos.receiver;
-    const railY = round2(receiverPos[1] + layout.dims.receiverH * 0.55);
+    const railY = round2(
+      Math.max(
+        receiverPos[1] + layout.dims.receiverH * 0.55,
+        layout.muzzlePos[1] + (isPistol ? 1.45 : 1.35)
+      )
+    );
 
     out[bp.id] = {
       weaponId: asWeaponId(bp.id),
@@ -1097,6 +1105,45 @@ export function buildCentennialMagazineStackSpecs(): Record<
         normal: bp.cad.magStyle === 'tube' ? [-1, 0, 0] : [0, 1, 0],
       },
       slots: [],
+    };
+  }
+  return out;
+}
+
+const MAG_STYLE_LABELS: Record<
+  CentennialWeaponBlueprint['cad']['magStyle'],
+  { en: string; zh: string }
+> = {
+  curved: { en: 'Curved Detachable Box Magazine', zh: '弯弧可拆卸弹匣' },
+  straight: { en: 'Straight Box Magazine', zh: '直型弹匣' },
+  drum: { en: 'Rotary Drum Magazine', zh: '螺旋弹鼓' },
+  pan: { en: 'Top-Mounted Pan Magazine', zh: '顶置圆盘弹鼓' },
+  belt: { en: 'Linked Ammunition Belt & Box', zh: '金属弹链与弹箱' },
+  tube: { en: 'Underbarrel Tubular Magazine', zh: '管状弹仓' },
+  box_internal: { en: 'Fixed Internal Box Magazine', zh: '固定内置弹仓' },
+  cylinder: { en: 'Swing-Out / Fluted Revolving Cylinder', zh: '转轮弹巢' },
+  quiver: { en: 'Archery Quiver & Arrow Rest', zh: '箭壶与矢箭架' },
+  carousel: { en: 'Floor Carousel Autoloader', zh: '底置转盘自动装弹机' },
+  bustle: { en: 'Turret Bustle Ready Rack', zh: '炮塔尾舱待发弹药架' },
+  top_clip: { en: 'Top-Fed En-Bloc Clip Hopper', zh: '顶置桥夹供弹斗' },
+  breech_single: { en: 'Single-Shot Breech Loader', zh: '单发炮闩装填室' },
+  pistol_grip: { en: 'Grip-Housed Box Magazine', zh: '握把内置弹匣' },
+};
+
+export function buildCentennialSculpturalAmmoMeta(): Record<
+  CentennialWeaponId,
+  SculpturalAmmoExhibitMeta
+> {
+  const out = {} as Record<CentennialWeaponId, SculpturalAmmoExhibitMeta>;
+  for (const bp of CENTENNIAL_BLUEPRINTS) {
+    const label = MAG_STYLE_LABELS[bp.cad.magStyle];
+    const unitEn = bp.category === 'archery' ? 'Arrow' : 'Rd';
+    const unitZh = bp.category === 'archery' ? '箭' : '发';
+    out[bp.id] = {
+      weaponId: asWeaponId(bp.id),
+      capacityRounds: bp.magCapacity,
+      systemEn: `${bp.magCapacity}-${unitEn} ${label.en} (${bp.caliberLabel})`,
+      systemZh: `${bp.magCapacity} ${unitZh}${label.zh}（${bp.caliberLabel}）`,
     };
   }
   return out;
@@ -1689,8 +1736,14 @@ export function buildCentennialDkEditorialData(): {
         year: String(bp.year),
         name: { zh: bp.shortLabel, en: bp.shortLabel },
         subtitle: {
-          zh: bp.weaponTypeZh,
-          en: bp.weaponTypeEn,
+          zh:
+            bp.weaponTypeZh.trim().length >= 6
+              ? bp.weaponTypeZh
+              : `${bp.weaponTypeZh} · ${bp.caliberLabel}`,
+          en:
+            bp.weaponTypeEn.trim().length >= 6
+              ? bp.weaponTypeEn
+              : `${bp.weaponTypeEn} · ${bp.caliberLabel}`,
         },
         eraRelation: 'current',
       },

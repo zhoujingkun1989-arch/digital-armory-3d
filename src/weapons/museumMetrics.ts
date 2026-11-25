@@ -92,7 +92,7 @@ export const MUSEUM_PENETRATOR_COUNT = 5;
 export const MUSEUM_PBR_SUITE_COUNT = 101;
 export const MUSEUM_PBR_WEBP_COUNT = 414;
 
-export const MUSEUM_TIMELINE_MIN_YEAR = 1894;
+export const MUSEUM_TIMELINE_MIN_YEAR = 1415;
 export const MUSEUM_TIMELINE_MAX_YEAR = 2026;
 export const MUSEUM_TIMELINE_SPAN_LABEL =
   `${MUSEUM_TIMELINE_MIN_YEAR}–${MUSEUM_TIMELINE_MAX_YEAR}` as const;
@@ -143,16 +143,26 @@ export function resolveArmorLabPresetForWeapon(
 ): ArmorLabLaunchPreset {
   switch (weaponId) {
     case 'gau8':
+    case 'm61vulcan':
+    case 'bofors40':
       return { projectileId: '30x173_gau8', targetTankId: 'ztz99a' };
     case 'ztz99a':
+    case 't90m':
       return { projectileId: '125mm_apfsds', targetTankId: 'ztz99a' };
     case 'm1a2':
+    case 'merkava4':
       return { projectileId: '120mm_apfsds', targetTankId: 'm1a2' };
     case 'leopard2a7':
+    case 'challenger2':
       return { projectileId: '120mm_apfsds', targetTankId: 'leopard2a7' };
     case 'tiger1':
+    case 't34_85':
       return { projectileId: '88mm_pzgr39', targetTankId: 'tiger1' };
+    case 'm777':
+      return { projectileId: '125mm_apfsds', targetTankId: 'm1a2' };
     case 'm82a1':
+    case 'm2hb':
+    case 'm200':
       return { projectileId: '50_bmg', targetTankId: 'ztz99a' };
     default:
       return { projectileId: '125mm_apfsds', targetTankId: 'ztz99a' };

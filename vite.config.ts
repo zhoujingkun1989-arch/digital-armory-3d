@@ -53,6 +53,19 @@ export default defineConfig({
           }
 
           if (
+            normId.includes('/src/weapons/expansion/centennialTypes.ts') ||
+            normId.includes('/src/weapons/expansion/centennialCatalog.ts') ||
+            normId.includes('/src/weapons/expansion/centennialLayoutMath.ts') ||
+            normId.includes(
+              '/src/weapons/expansion/centennialPartNomenclature.ts'
+            ) ||
+            normId.includes('/src/weapons/expansion/centennialProjectors.ts') ||
+            normId.includes('/src/weapons/expansion/catalog/')
+          ) {
+            return 'armory-centennial-catalog';
+          }
+
+          if (
             normId.includes('/src/weapons/types.ts') ||
             normId.includes('/src/weapons/manifests.ts') ||
             normId.includes('/src/engine/physics/armoryPhysics.ts') ||
@@ -86,7 +99,12 @@ export default defineConfig({
             return 'armory-showdown-specs';
           }
 
-          if (normId.includes('/src/features/armory/WeaponSilhouetteSvg.tsx')) {
+          if (
+            normId.includes('/src/features/armory/WeaponSilhouetteSvg.tsx') ||
+            normId.includes(
+              '/src/weapons/expansion/centennialSilhouetteRenderer.tsx'
+            )
+          ) {
             return 'armory-silhouettes';
           }
 

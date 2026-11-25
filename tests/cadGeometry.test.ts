@@ -654,7 +654,7 @@ describe('worker zero-copy serialization of CAD attributes', () => {
   });
 
   it('preserves aSpringParam & aCurvature across all 40 helical weapon springs, w=3 V-mainspring & archery flex parts, and main-thread geometryService fallback', async () => {
-    const dynamicSprings: Readonly<Record<WeaponId, readonly string[]>> = {
+    const dynamicSprings: Readonly<Partial<Record<WeaponId, readonly string[]>>> = {
       ak15: ['ak_recoil_spring'],
       m4a1: ['m4a1_buffer_spring'],
       mp5: ['mp5_recoil_spring'],

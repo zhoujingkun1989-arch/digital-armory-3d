@@ -1,5 +1,6 @@
 import { resolveWeaponDisplayMeta, resolvePartMaterialLabel } from '../../i18n/weaponFallbacks';
 import type { LanguageCode } from '../../narration/types';
+import { buildCentennialTechDossierProvenance } from '../../weapons/expansion/centennialProjectors';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { getLoadedWeaponPlugin } from '../../weapons/registry';
 import type {
@@ -74,6 +75,7 @@ export const EXHIBIT_PROVENANCE_TABLE: Readonly<
   k98k: { year: 1935, manufacturerEn: 'Mauser-Werke Oberndorf', manufacturerZh: '德国奥伯恩多夫毛瑟工厂' },
   thompson: { year: 1928, manufacturerEn: 'Auto-Ordnance Corporation', manufacturerZh: '美国自动军械公司' },
   gau8: { year: 1977, manufacturerEn: 'General Electric Armament Systems', manufacturerZh: '通用电气军械系统部' },
+  ...buildCentennialTechDossierProvenance(),
 };
 
 const HALL_CLASSIFICATION_LABELS: Readonly<

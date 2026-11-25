@@ -743,7 +743,7 @@ const GAU8_V3_DRUM_PBR: PbrBindingSpec = {
 };
 
 export const GLB_WEAPON_CONFIGS: Readonly<
-  Record<WeaponId, GlbWeaponAssetConfig>
+  Partial<Record<WeaponId, GlbWeaponAssetConfig>>
 > = {
   p08: {
     modelFile: 'p08.glb',
@@ -1875,12 +1875,12 @@ export function getGlbWeaponConfig(
   weaponId: WeaponId
 ): GlbWeaponAssetConfig | null {
   return Object.prototype.hasOwnProperty.call(GLB_WEAPON_CONFIGS, weaponId)
-    ? GLB_WEAPON_CONFIGS[weaponId]
+    ? (GLB_WEAPON_CONFIGS[weaponId] ?? null)
     : null;
 }
 
 export function hasGlbWeaponAsset(weaponId: WeaponId): boolean {
-  return Object.prototype.hasOwnProperty.call(GLB_WEAPON_CONFIGS, weaponId);
+  return Boolean(getGlbWeaponConfig(weaponId));
 }
 
 export function isGlbDynamicSpringPart(

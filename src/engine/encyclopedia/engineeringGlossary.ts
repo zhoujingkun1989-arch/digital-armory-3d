@@ -1,3 +1,4 @@
+import { CENTENNIAL_BLUEPRINTS } from '../../weapons/expansion/centennialCatalog';
 import type { WeaponId } from '../../weapons/types';
 
 export interface EngineeringGlossaryTerm {
@@ -378,6 +379,12 @@ const EXHIBIT_SIGNATURE_TERMS: Readonly<Record<WeaponId, readonly string[]>> = {
   k98k: ['controlled_round_feed', 'rotating_bolt', 'en_bloc_clip'],
   thompson: ['blish_bronze_wedge', 'open_bolt_operation', 'super_v_off_axis'],
   gau8: ['hydraulic_rotary_cannon', 'electric_gatling_cam', 'apfsds_sabot_dart'],
+  ...(Object.fromEntries(
+    CENTENNIAL_BLUEPRINTS.map((bp) => [bp.id, bp.glossaryTermIds])
+  ) as unknown as Record<
+    (typeof CENTENNIAL_BLUEPRINTS)[number]['id'],
+    readonly string[]
+  >),
 };
 
 const TERM_BY_ID = new Map<string, EngineeringGlossaryTerm>(

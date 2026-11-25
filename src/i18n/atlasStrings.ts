@@ -75,7 +75,7 @@ export const CHANNEL_LABEL_EN = CHANNEL_LABEL_EN_MAP;
 export type AtlasWeaponId = WeaponId;
 
 export const ALL_ATLAS_EN_STRINGS: Readonly<
-  Record<AtlasWeaponId, AtlasWeaponTranslation>
+  Partial<Record<AtlasWeaponId, AtlasWeaponTranslation>>
 > = {
   ak15: {
     heading:
@@ -2466,10 +2466,13 @@ export const ALL_ATLAS_EN_STRINGS: Readonly<
 };
 
 export const ATLAS_EN_STRINGS: Readonly<
-  Record<WeaponId, AtlasWeaponTranslation>
+  Partial<Record<WeaponId, AtlasWeaponTranslation>>
 > = Object.fromEntries(
-  WEAPON_IDS.map((id) => [id, ALL_ATLAS_EN_STRINGS[id]])
-) as Record<WeaponId, AtlasWeaponTranslation>;
+  WEAPON_IDS.filter((id) => Boolean(ALL_ATLAS_EN_STRINGS[id])).map((id) => [
+    id,
+    ALL_ATLAS_EN_STRINGS[id],
+  ])
+) as Partial<Record<WeaponId, AtlasWeaponTranslation>>;
 
 export function getLocalizedAtlasHeading(
   weaponId: AtlasWeaponId,

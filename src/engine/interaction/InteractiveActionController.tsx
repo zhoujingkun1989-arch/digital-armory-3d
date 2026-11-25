@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useSyncExternalStore } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useAppStore } from '../../store/useAppStore';
+import { CENTENNIAL_BLUEPRINTS } from '../../weapons/expansion/centennialCatalog';
+import { buildCentennialInteractionSpecs } from '../../weapons/expansion/centennialProjectors';
+import type { CentennialWeaponBlueprint } from '../../weapons/expansion/centennialTypes';
 import { WEAPON_IDS, type WeaponId } from '../../weapons/types';
 import {
   playPressCheckSpringSound,
@@ -11,6 +14,12 @@ import {
 } from '../audio/mechanicalSoundEngine';
 import { playbackClock } from '../clock/playbackClock';
 import { clamp01 } from '../kinematics/math';
+import {
+  isArcheryWeapon,
+  isHeavyScaleWeapon,
+  isOrdnanceWeapon,
+  isTankWeapon,
+} from '../physics/armoryPhysics';
 
 export type FireSelectorMode = 'safe' | 'semi' | 'auto';
 
@@ -43,6 +52,90 @@ const OPEN_BOLT_AUTO_MODES: readonly FireSelectorMode[] = [
   'safe',
   'auto',
 ] as const;
+
+function resolveCentennialSelectorModes(
+  bp: CentennialWeaponBlueprint
+): readonly FireSelectorMode[] {
+  if (
+    bp.kinematicLaw === 'rotary_gatling' ||
+    bp.archetype === 'lmg_belt' ||
+    bp.archetype === 'lmg_pan' ||
+    bp.archetype === 'heavy_mg' ||
+    bp.archetype === 'aa_autocannon' ||
+    (bp.kinematicLaw === 'open_bolt_blowback' && bp.id !== 'ppsh41' && bp.id !== 'uzi' && bp.id !== 'sten' && bp.id !== 'mac10')
+  ) {
+    return OPEN_BOLT_AUTO_MODES;
+  }
+  if (
+    bp.category === 'pistol' ||
+    bp.category === 'archery' ||
+    bp.category === 'armor' ||
+    bp.category === 'sniper' ||
+    bp.archetype === 'howitzer' ||
+    bp.kinematicLaw === 'bolt_action' ||
+    bp.kinematicLaw === 'pump_action' ||
+    bp.kinematicLaw === 'lever_action' ||
+    bp.kinematicLaw === 'revolver_cylinder' ||
+    bp.id === 'sks' ||
+    bp.id === 'spas12' ||
+    bp.id === 'saiga12'
+  ) {
+    return SEMI_ONLY_MODES;
+  }
+  return SELECT_FIRE_MODES;
+}
+
+const CENTENNIAL_SELECTOR_CAPABILITIES = Object.fromEntries(
+  CENTENNIAL_BLUEPRINTS.map((bp) => [bp.id, resolveCentennialSelectorModes(bp)])
+) as Record<(typeof CENTENNIAL_BLUEPRINTS)[number]['id'], readonly FireSelectorMode[]>;
+
+const CENTENNIAL_FIRE_CONTROL_PROFILES = Object.fromEntries(
+  CENTENNIAL_BLUEPRINTS.map((bp) => {
+    const supportedModes = resolveCentennialSelectorModes(bp);
+    const modes: Partial<Record<FireSelectorMode, SelectorModeTooltipMeta>> = {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '保险锁止 (SAFE)',
+        labelEn: 'SAFE',
+        tooltipZh: `机械锁定 ${bp.shortLabel} 扳机或阻铁连杆，阻断击发行程确保勤务安全。`,
+        tooltipEn: `Mechanically blocks the ${bp.shortLabel} trigger or sear linkage to prevent discharge.`,
+      },
+    };
+    if (supportedModes.includes('semi')) {
+      modes.semi = {
+        mode: 'semi',
+        code: 'SEMI',
+        labelZh: '单发模式 (SEMI)',
+        labelEn: 'SEMI',
+        tooltipZh: `每次扣压扳机执行单循环击发与阻铁复位（${bp.caliberLabel}）。`,
+        tooltipEn: `Fires one controlled cycle per trigger pull with clean disconnector reset (${bp.caliberLabel}).`,
+      };
+    }
+    if (supportedModes.includes('auto')) {
+      modes.auto = {
+        mode: 'auto',
+        code: 'AUTO',
+        labelZh: `连发模式 (${bp.rateOfFireRpm} RPM)`,
+        labelEn: `AUTO (${bp.rateOfFireRpm} RPM)`,
+        tooltipZh: `解脱单发阻铁限制，保持 ${bp.rateOfFireLabelZh} 持续自动循环火力。`,
+        tooltipEn: `Bypasses the disconnector for continuous automatic cycling (${bp.rateOfFireLabelEn}).`,
+      };
+    }
+    return [
+      bp.id,
+      {
+        weaponId: bp.id as WeaponId,
+        supportedModes,
+        mechanismSummaryZh: bp.actionMechanismZh,
+        mechanismSummaryEn: bp.actionMechanismEn,
+        modes,
+      } satisfies WeaponFireControlProfile,
+    ];
+  })
+) as Record<(typeof CENTENNIAL_BLUEPRINTS)[number]['id'], WeaponFireControlProfile>;
+
+const CENTENNIAL_INTERACTION = buildCentennialInteractionSpecs();
 
 const WEAPON_SELECTOR_CAPABILITIES: Record<
   WeaponId,
@@ -86,6 +179,7 @@ const WEAPON_SELECTOR_CAPABILITIES: Record<
   k98k: SEMI_ONLY_MODES,
   thompson: SELECT_FIRE_MODES,
   gau8: OPEN_BOLT_AUTO_MODES,
+  ...CENTENNIAL_SELECTOR_CAPABILITIES,
 };
 
 /**
@@ -1196,12 +1290,13 @@ export const WEAPON_FIRE_CONTROL_PROFILES: Record<
       },
     },
   },
+  ...CENTENNIAL_FIRE_CONTROL_PROFILES,
 };
 
 function isArcheryInteractiveWeapon(
   weaponId: WeaponId | string | null | undefined
 ): boolean {
-  return weaponId === 'lift33' || weaponId === 'r500';
+  return isArcheryWeapon(weaponId);
 }
 
 /**
@@ -1300,6 +1395,7 @@ const EXPLICIT_WEAPON_ACTION_PARTS: Record<WeaponId, readonly string[]> = {
   k98k: ['k98k_bolt_body', 'k98k_claw_extractor', 'k98k_bolt_shroud'],
   thompson: ['thompson_actuator', 'thompson_bolt', 'thompson_blish_lock'],
   gau8: ['gau8_rotor_core', 'gau8_barrel_cluster', 'gau8_bolt_1', 'gau8_bolt_2'],
+  ...CENTENNIAL_INTERACTION.explicitActionParts,
 };
 
 const GENERIC_ACTION_PART_INCLUDE_RE =
@@ -1729,6 +1825,7 @@ export const WEAPON_ACTION_DRAG_SPECS: Readonly<
     labelZh: '拨转七管 30mm 转管簇',
     labelEn: 'Crank 7-Barrel 30mm Rotor',
   },
+  ...CENTENNIAL_INTERACTION.dragSpecs,
 };
 
 export function getWeaponActionDragSpec(
@@ -1874,13 +1971,7 @@ export function mapManualRackToFireProgress(
   if (weaponId === 'mg42' || weaponId === 'thompson') {
     return 0.28 + r * 0.3;
   }
-  if (
-    weaponId === 'ztz99a' ||
-    weaponId === 'm1a2' ||
-    weaponId === 'leopard2a7' ||
-    weaponId === 'tiger1' ||
-    weaponId === 'gau8'
-  ) {
+  if (isHeavyScaleWeapon(weaponId)) {
     return 0.2 + r * 0.34;
   }
   return 0.32 + r * 0.3;
@@ -1896,23 +1987,26 @@ export function computeRecoilSpringForceN(
   const r = clamp01(rackProgress01);
   if (r <= 0.0001) return 0;
 
-  if ((weaponId as string) === 'lift33') {
+  if (weaponId === 'lift33' || weaponId === 'hoytrx8') {
     const peakN = 311.4;
-    const holdN = 46.7;
+    const holdN = weaponId === 'hoytrx8' ? 62.3 : 46.7;
     if (r < 0.65) {
       return peakN * Math.sin((r / 0.65) * (Math.PI * 0.5));
     }
     const d = (r - 0.65) / 0.35;
     return peakN - (peakN - holdN) * (d * d * (3 - 2 * d));
   }
-  if ((weaponId as string) === 'r500') {
-    const peakN = 1334.5;
-    const holdN = 827.4;
+  if (weaponId === 'r500' || weaponId === 'excalibur') {
+    const peakN = weaponId === 'excalibur' ? 1201.0 : 1334.5;
+    const holdN = weaponId === 'excalibur' ? 1201.0 : 827.4;
     if (r < 0.72) {
       return peakN * Math.sin((r / 0.72) * (Math.PI * 0.5));
     }
     const d = (r - 0.72) / 0.28;
     return peakN - (peakN - holdN) * (d * d * (3 - 2 * d));
+  }
+  if (weaponId === 'englishlongbow') {
+    return 667.2 * r;
   }
 
   let preloadN = 52;
@@ -1977,15 +2071,10 @@ export function computeRecoilSpringForceN(
   } else if (weaponId === 'thompson') {
     preloadN = 68;
     rateN = 58;
-  } else if (weaponId === 'gau8') {
+  } else if (isOrdnanceWeapon(weaponId)) {
     preloadN = 1400;
     rateN = 1800;
-  } else if (
-    weaponId === 'ztz99a' ||
-    weaponId === 'm1a2' ||
-    weaponId === 'leopard2a7' ||
-    weaponId === 'tiger1'
-  ) {
+  } else if (isTankWeapon(weaponId)) {
     // Hydro-pneumatic tank main-gun recuperator & breech closing spring resistance (Newtons)
     preloadN = 3200;
     rateN = 4800;
