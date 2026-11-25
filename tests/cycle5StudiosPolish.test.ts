@@ -280,7 +280,7 @@ describe('Cycle 5B · Print Studio (DK & Kids 34-Exhibit Audit)', () => {
 describe('Cycle 5B · 9x9x9 Mechanism Showdown -> Split-Screen 3D Cutaway Unification', () => {
   it('renders 1-click Split-3D Cutaway triggers in header, staging bar, every rivalry preset pill, and active comparison verdict banner', () => {
     const presets = getClassicRivalryPresets('en');
-    expect(presets.length).toBe(30);
+    expect(presets.length).toBe(42);
 
     const matrixHtml = renderToStaticMarkup(
       React.createElement(MechanismShowdownModal, {
